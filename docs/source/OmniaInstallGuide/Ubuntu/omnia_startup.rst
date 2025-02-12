@@ -39,8 +39,8 @@ The ``omnia_startup.sh`` script performs the following tasks:
 
 	* Once the script execution is complete, a success message along with the next steps is displayed.
 
-Execute the** ``omnia_startup.sh`` **script
----------------------------------------------
+Execute the ``omnia_startup.sh`` script
+-----------------------------------------
 
 After you have cloned the Omnia repository to your OIM, navigate to the cloned directory and execute the ``omnia_startup.sh`` script located inside. Use the below command:
 ::
