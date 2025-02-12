@@ -10,7 +10,7 @@ Install Omnia on Ubuntu clusters
 
     Ubuntu_prereq
     UbuntuSpace
-    Prereq.sh/index
+    omnia_startup
     CreateLocalRepo/index
     Provision/index
     ViewInventory
