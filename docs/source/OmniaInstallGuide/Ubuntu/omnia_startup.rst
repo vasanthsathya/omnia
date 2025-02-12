@@ -16,7 +16,7 @@ Prerequisites
 * Ensure that either Podman container engine is installed on your OIM.
 * Ensure that the OIM hostname prerequisites are met. Here's a list of guidelines to follow while setting up the hostname:
 
-.. include:: ../../Appendices/hostnamereqs.rst
+    .. include:: ../../Appendices/hostnamereqs.rst
 
 Tasks performed by the ``omnia_startup.sh`` script
 -----------------------------------------------------
