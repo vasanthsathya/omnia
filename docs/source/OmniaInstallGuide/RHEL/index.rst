@@ -7,6 +7,7 @@ Install Omnia on Red Hat Enterprise Linux (RHEL) or Rocky Linux clusters
     RHEL_prereq
     RHELSpace
     Prereq.sh/index
+    omnia_startup
     CreateLocalRepo/index
     Provision/index
     ViewInventory
