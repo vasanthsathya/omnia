@@ -1,5 +1,5 @@
-Step 1: Deploy the Omnia container
-===================================
+Step 1: Deploy the Omnia core container
+=========================================
 
 The ``omnia_startup.sh`` is a one-stop script which deploys Omnia as a container on the Omnia Infrastructure Manager (OIM). A container is an isolated unit that packages an application and its dependencies, ensuring it runs consistently across any environment.
 The Omnia container ensures smooth cluster deployments, independent of the host environment. The deployment includes:
@@ -13,7 +13,7 @@ Prerequisites
 
 * The OIM must be connected to the internet in order to download the required packages for cluster deployment and configuration.
 * The OIM should have two NICs in active state. One of them is used to connect to the public network whereas the other one is used to communicate within the cluster.
-* Ensure that either Podman container engine is installed on your OIM.
+* Ensure that Podman container engine is installed on your OIM.
 * Ensure that the OIM hostname prerequisites are met. Here's a list of guidelines to follow while setting up the hostname:
 
     .. include:: ../../Appendices/hostnamereqs.rst
@@ -35,13 +35,42 @@ The ``omnia_startup.sh`` script performs the following tasks:
 
 	* Creates an input folder containing all the playbook inputs files and the software configs.
 
-	* The script checks if Podman is installed and initiates the Podman socket. Further, it pulls the Omnia container image from the Dell registry and starts the ``omnia-core`` container.
-
-	* Once the script execution is complete, a success message along with the next steps is displayed.
+	* The script checks if Podman is installed and initiates the Podman socket. Further, it pulls the Omnia container image from the Dell registry and starts the ``omnia_core`` container.
 
 Execute the ``omnia_startup.sh`` script
 ------------------------------------------
 
-After you have cloned the Omnia repository to your OIM, navigate to the cloned directory and execute the ``omnia_startup.sh`` script located inside. Use the below command:
+To initiate the ``omnia_startup.sh`` script, execute the following command:
 ::
-    sh omnia_startup.sh
+    wget https://raw.githubusercontent.com/dell/omnia/refs/heads/pub/new_architecture/omnia_startup.sh
+
+Log in to the ``omnia_core`` container
+----------------------------------------
+
+Omnia provides two ways of logging in to the ``omnia_core`` container from the OIM.
+
+1. **Through Podman**
+
+Execute the following podman command to log in to the ``omnia_core`` container: ::
+
+    podman exec -it -u root omnia_core bash
+
+2. **Direct SSH login**
+
+Execute the following command to log in to the ``omnia-core`` container via SSH: ::
+
+    ssh omnia_core
+
+The following are the main directories available in the ``omnia_core`` container:
+
+         - The shared directory, which is mapped to ``$omnia_path`` in OIM: ``/opt/omnia``
+         - The input directory: ``/opt/omnia/input``
+         - The Omnia source code directory: ``/omnia``
+         - The Omnia playbooks logs directory: ``/opt/omnia/log/core/playbooks``
+
+.. note::
+
+    * Do not delete any files manually from the omnia shared directory.
+    * Use the ``oim_cleanup.yml`` playbook to safely remove the omnia shared directory.
+    * To re-deploy or delete the ``omnia_core`` container, you need to re-run the ``omnia_startup.sh`` script.
+    * Provide any file paths (ISO, mapping files, etc.) that are mentioned in input files in the ``/opt/omnia`` directory.
