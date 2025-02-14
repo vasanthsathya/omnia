@@ -8,6 +8,6 @@ Follow the below steps to deploy the Omnia container on RHEL-based platforms:
 
     omnia_startup
     prepare_oim
-    local_repo
-    provision
-    kubernetes
+    CreateLocalRepo/index
+    Provision/index
+    OmniaCluster/index
