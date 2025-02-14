@@ -10,4 +10,5 @@ Follow the below steps to deploy the Omnia container on RHEL-based platforms:
     prepare_oim
     CreateLocalRepo/index
     Provision/index
+    ViewInventory
     OmniaCluster/index
