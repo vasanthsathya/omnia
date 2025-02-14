@@ -1,7 +1,7 @@
 Omnia Installation Guide
 =========================
 
-* `Quick installation guide for RHEL/Rocky Linux clusters <RHEL/index.html>`_
+* `Quick installation guide for RHEL/Rocky Linux clusters <RHEL_new/index.html>`_
 
 * `Maintenance <Maintenance/index.html>`_
 
