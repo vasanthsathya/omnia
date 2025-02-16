@@ -54,12 +54,12 @@ Instructions to pull images from the user registries in the form of a digest:
     * For "kserve" and "kubeflow" images sourced from ``gcr.io``, Omnia updates the digest tag to ``omnia-kserve`` and ``omnia-kubeflow`` while pushing the images to ``user_registry``.
 
 .. note::
-   * Enable a repository from your RHEL subscription, run the following commands: ::
+   * To enable a repository from your RHEL subscription, run the following commands: ::
 
             subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms
             subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms
 
-    * Enable an offline repository by creating a ``.repo`` file in ``/etc/yum.repos.d/``. Refer the below sample content: ::
+   * Enable an offline repository by creating a ``.repo`` file in ``/etc/yum.repos.d/``. Refer the below sample content: ::
 
                 [RHEL-8-appstream]
 
@@ -81,9 +81,7 @@ Instructions to pull images from the user registries in the form of a digest:
 
                 gpgcheck=0
 
-
-
-    * Verify your changes by running: ::
+   * Verify your changes by running: ::
 
             yum repolist enabled
             Updating Subscription Management repositories.
