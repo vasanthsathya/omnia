@@ -1,7 +1,7 @@
 Prerequisites
 ===============
 
-1. Set the hostname of the OIM in the "hostname.domain name" format.
+1. Set the hostname of the OIM in the ``<hostname>.<domain_name>`` format.
 
 .. include:: ../../../Appendices/hostnamereqs.rst
 
@@ -43,7 +43,7 @@ Instructions to pull images from the user registries in the form of a digest:
 
     * While pushing these images to ``user_registry``, user needs to manually enter a ``tag`` as shown in the sample below. Tags make the image unique to Omnia ``user_registry``. If not provided, image will be accessed from the ``gcr.io`` registry, that is, from the internet.
 
-        *Add "tag" value as "omnia" in <software>.json file while pushing the image to user_registry* ::
+        *While pushing a software image to the user_registry, add "tag" value as "omnia" in the <software>.json file.* ::
 
             {
                     "package": "gcr.io/knative-releases/knative.dev/serving/cmd/webhook",
