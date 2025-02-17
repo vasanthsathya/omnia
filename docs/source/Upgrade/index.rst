@@ -8,7 +8,7 @@ To upgrade the Omnia version 1.6.1 to version 1.7 on your OIM, you can use the `
 .. note::
 
     * Before initiating upgrade, ensure that the OIM has a stable internet connection to avoid intermittent issues caused by poor network connectivity.
-    * After upgrading the Omnia OIM running on a `supported OS <../Overview/SupportMatrix/OperatingSystems/index.html>`_ (except RHEL/Rocky Linux 8.6 and 8.8), the ``input/software_config.json`` file remains in its default state. This enables users to install the default software versions on a new cluster.
+    * After upgrading the Omnia OIM running on a `supported OS <../Overview/SupportMatrix/OperatingSystems/index.html>`_, the ``input/software_config.json`` file remains in its default state. This enables users to install the default software versions on a new cluster.
     * After upgrading your OIM from Omnia 1.6.1 to version 1.7, ensure that the cryptography version on the login nodes is also updated to 44.0.0. This is necessary to address a security vulnerability reported with the lower versions of the cryptography software. To update the cryptography software version, run the following command: ::
 
         pip install cryptography==44.0.0
@@ -42,15 +42,9 @@ To upgrade the Omnia OIM, do the following:
     cd omnia
     ./prereq.sh
 
-3. Use any one of the following commands to activate the Omnia virtual environment, based on the operating system running on the OIM:
+3. Use the following command to activate the Omnia virtual environment: ::
 
-    * For RHEL or Rocky Linux 8.8, and Ubuntu 20.04 or 22.04, use: ::
-
-        source /opt/omnia/omnia17_venv/bin/activate
-
-    * On RHEL/Rocky Linux 8.6 or 8.7, use: ::
-
-        source /opt/omnia/omnia161_venv/bin/activate
+    source /opt/omnia/omnia17_venv/bin/activate
 
 4. Update the ``omnia/upgrade/upgrade_config.yml`` file with the following details:
 

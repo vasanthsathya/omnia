@@ -5,5 +5,3 @@ Operating Systems (OS) Matrix
 
 .. toctree::
     RedHat
-    Rocky
-    Ubuntu
