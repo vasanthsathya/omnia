@@ -1,23 +1,29 @@
 Prerequisites
 ===============
 
-1. Set the hostname of the OIM in the ``<hostname>.<domain_name>`` format.
+1. Configure the hostname
+--------------------------
+
+Set the hostname of the OIM in the ``<hostname>.<domain_name>`` format.
 
 .. include:: ../../../Appendices/hostnamereqs.rst
 
-For example, ``controlplane.omnia.test`` is acceptable. ::
+For example, ``controlplane.omnia.test`` is acceptable. Use the following command as reference while configuring your hostname: ::
 
     hostnamectl set-hostname controlplane.omnia.test
 
-2. Creating user registries
+2. User registry
+------------------------
+
+User registry is a storehouse to store the software packages locally so that they can be accessed in an air-gapped environment, that is, without connecting to the public network.
 
 .. note::
 
-    * The ``user_registry`` in ``input/local_repo_config.yml`` supports only nerdctl and docker registries.
-    * If you define the ``cert_path`` variable, ensure that it points to the absolute path of the user registry certificate present on the Omnia OIM.
-    * To avoid docker pull limits, provide docker credentials (``docker_username``, ``docker_password``) in ``input/provision_config_credentials.yml``.
+    * The ``user_registry`` path mentioned in the ``input/local_repo_config.yml`` supports only nerdctl and docker registries.
+    * If you define the ``cert_path`` variable, ensure that it points to the absolute path of the user registry certificate present on the OIM.
+    * To avoid docker pull limit issues, provide docker credentials (``docker_username`` and ``docker_password``) in the ``input/provision_config_credentials.yml`` file.
 
-.. caution:: In order to download the software images from an user registry, the user needs to ensure that the ``user_registry`` address provided in ``input/local_repo_config.yml`` is accessible from the Omnia OIM. If the ``user_registry`` is not accessible from the OIM, Omnia will download all the software images listed in ``input/software_config.json`` to the Omnia-registry. Use the ``curl -k <user_registry>`` to check.
+.. caution:: In order to download the software images from an user registry, you need to ensure that the ``user_registry`` path provided in ``input/local_repo_config.yml`` is accessible from the OIM. If the ``user_registry`` is not accessible from the OIM, all software images listed in the ``input/software_config.json`` gets downloaded to the Omnia-registry. Use the ``curl -k <user_registry>`` command to check if the registry is accessible or not.
 
 Images listed in ``user_registry`` in ``input/local_repo_config.yml`` are accessed from user defined registries. To ensure that the OIM can correctly access the registry, ensure that the following naming convention is used to save the image: ::
 
@@ -31,9 +37,9 @@ Omnia will not be able to configure access to any registries that do not follow 
 
 Instructions to pull images from the user registries in the form of a digest:
 
-    * Images pulled from gcr.io does not have a ``tag``, but a ``digest value``.
+    * Images pulled from gcr.io (Google Container Registry) does not have a ``tag``, but a ``digest value``.
 
-        *Image pulled from gcr.io* ::
+        *Details of an image pulled from gcr.io* ::
 
              {
                     "package": "gcr.io/knative-releases/knative.dev/serving/cmd/webhook",
@@ -41,7 +47,7 @@ Instructions to pull images from the user registries in the form of a digest:
                     "type": "image"
              },
 
-    * While pushing these images to ``user_registry``, user needs to manually enter a ``tag`` as shown in the sample below. Tags make the image unique to Omnia ``user_registry``. If not provided, image will be accessed from the ``gcr.io`` registry, that is, from the internet.
+    * While pushing these images to ``user_registry``, you need to delete the ``digest value`` and manually enter a ``tag`` with value set to ``omnia``. Tags make the image unique to Omnia ``user_registry``. If not provided, image will be accessed from the ``gcr.io`` registry, that is, from the internet. Follow the below
 
         *While pushing a software image to the user_registry, add "tag" value as "omnia" in the <software>.json file.* ::
 

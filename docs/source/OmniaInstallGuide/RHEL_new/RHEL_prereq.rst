@@ -1,5 +1,5 @@
-Prerequisites
-=================
+Omnia Prerequisites
+=====================
 
 1. Choose a server outside of your intended cluster with the mentioned `storage requirements <RHELSpace.html>`_ to function as your Omnia Infrastructure Manager (OIM).
 
