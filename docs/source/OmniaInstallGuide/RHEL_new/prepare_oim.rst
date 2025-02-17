@@ -13,7 +13,7 @@ The ``prepare_oim.yml`` playbook is dependent on the inputs provided in the foll
 Add necessary inputs to the ``network_spec.yml`` file to configure the network on which the cluster will operate. Use the below table as reference while doing so:
 
 .. csv-table:: network_spec.yml
-   :file: ../../../Tables/network_spec.csv
+   :file: ../../Tables/network_spec.csv
    :header-rows: 1
    :keepspace:
 
@@ -86,7 +86,7 @@ A sample of the ``input/network_spec.yml`` where nodes are discovered using **BM
 Add necessary inputs to the ``provision_config_credentials.yml`` file for seamless authentication during cluster provisioning. Use the below table as reference while doing so:
 
 .. csv-table:: provision_config_credentials.yml
-   :file: ../../../Tables/Provision_creds.csv
+   :file: ../../Tables/Provision_creds.csv
    :header-rows: 1
    :keepspace:
 
@@ -96,7 +96,7 @@ Add necessary inputs to the ``provision_config_credentials.yml`` file for seamle
 The ``software_config.json`` file lists all the software packages to be installed on the OIM. Edit the ``software_config.json`` file based on the software stack you want on the OIM. Use the below table as reference while doing so:
 
 .. csv-table:: software_config.json
-   :file: ../../../Tables/software_config_rhel.csv
+   :file: ../../Tables/software_config_rhel.csv
    :header-rows: 1
    :keepspace:
 
