@@ -1,5 +1,5 @@
-Before you run the provision tool
----------------------------------
+Prerequisites
+=================
 
 * (Recommended) Run ``prereq.sh`` to get the system ready to deploy Omnia.
 
@@ -30,10 +30,9 @@ Before you run the provision tool
 
 .. note:: The domain name specified for the OIM should be the same as the one specified under ``domain_name`` in ``input/provision_config.yml``.
 
-* To provision the bare metal servers, download one of the following ISOs to the OIM:
+* To provision the bare metal servers, download the following ISO to the OIM:
 
-    * `RHEL 8.x <https://www.redhat.com/en/enterprise-linux-8>`_
-    * `Rocky Linux 8.x <https://rockylinux.org/>`_
+    * `RHEL 9.x <https://access.redhat.com/products/red-hat-enterprise-linux>`_
 
 .. note:: Ensure the ISO provided has downloaded seamlessly (No corruption). Verify the SHA checksum/ download size of the ISO file before provisioning to avoid future failures.
 
@@ -45,9 +44,6 @@ Note the compatibility between cluster OS and OIM OS below:
         +=====================+====================+==================+
         |                     |                    |                  |
         | RHEL [1]_           | RHEL               | Yes              |
-        +---------------------+--------------------+------------------+
-        |                     |                    |                  |
-        | Rocky               | Rocky              | Yes              |
         +---------------------+--------------------+------------------+
 
 .. [1] Ensure that OIMs running RHEL have an active subscription or are configured to access local repositories. The following repositories should be enabled on the OIM: **AppStream**, **BaseOS**.
@@ -61,7 +57,7 @@ Note the compatibility between cluster OS and OIM OS below:
 
              ip link show
 
-In the event of a mismatch, edit the file ``/etc/sysconfig/network-scripts/ifcfg-<nic name>`` using the vi editor for RHEL/Rocky Linux clusters.
+In the event of a mismatch, edit the file ``/etc/sysconfig/network-scripts/ifcfg-<nic name>`` using the vi editor for RHEL clusters.
 
 * When discovering nodes via a mapping file, all target nodes should be set up in PXE mode before running the playbook.
 

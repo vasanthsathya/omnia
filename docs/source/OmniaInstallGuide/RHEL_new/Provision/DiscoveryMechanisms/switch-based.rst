@@ -1,7 +1,7 @@
 switch_based
 -------------
 
-**Pre requisites**
+**Prerequisites**
 
 * Set the value of ``enable_switch_based`` to true in ``input/provision_config.yml``. Additionally, ensure that the variable ``switch_based_details`` in ``input/provision_config.yml`` is populated with the IP address and port details of the ToR switch.
 

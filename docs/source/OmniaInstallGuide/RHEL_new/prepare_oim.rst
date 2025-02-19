@@ -104,7 +104,7 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
 
     {
         "cluster_os_type": "rhel",
-        "cluster_os_version": "8.8",
+        "cluster_os_version": "9.4",
         "repo_config": "partial",
         "softwares": [
             {"name": "amdgpu", "version": "6.2.2"},
