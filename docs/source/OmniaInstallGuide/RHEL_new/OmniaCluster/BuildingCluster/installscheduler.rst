@@ -22,7 +22,9 @@ Cluster formation
 
 To run ``omnia.yml``: ::
 
-        ansible-playbook omnia.yml -i inventory
+        ssh omnia_core
+        cd /omnia
+        ansible-playbook omnia.yml -i <inventory filepath>
 
 
 .. note::

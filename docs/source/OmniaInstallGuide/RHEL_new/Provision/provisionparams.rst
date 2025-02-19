@@ -19,15 +19,15 @@ Fill in all required parameters in ``input/provision_config.yml``, ``input/provi
 
 .. note::
 
-    * The ``input/provision_config_credentials.yml`` file is encrypted on the first execution of the ``discovery_provision.yml`` or ``local_repo.yml`` playbooks.
+    The ``input/provision_config_credentials.yml`` file is encrypted on the first execution of the ``discovery_provision.yml`` or ``local_repo.yml`` playbooks.
 
-        * To view the encrypted parameters: ::
+      * To view the encrypted parameters: ::
 
-            ansible-vault view provision_config_credentials.yml --vault-password-file .provision_credential_vault_key
+          ansible-vault view provision_config_credentials.yml --vault-password-file .provision_credential_vault_key
 
-        * To edit the encrypted parameters: ::
+      * To edit the encrypted parameters: ::
 
-            ansible-vault edit provision_config_credentials.yml --vault-password-file .provision_credential_vault_key
+          ansible-vault edit provision_config_credentials.yml --vault-password-file .provision_credential_vault_key
 
 
 .. csv-table:: software_config.json
@@ -65,6 +65,7 @@ A sample of the ``input/network_spec.yml`` where nodes are discovered using a ma
              dynamic_range: "10.5.1.1-10.5.1.200"
              correlation_to_admin: true
              admin_uncorrelated_node_start_ip: "10.5.0.50"
+             primary_oim_admin_ip: "10.5.255.254"
              network_gateway: ""
              DNS: ""
              MTU: "1500"
@@ -90,6 +91,7 @@ A sample of the ``input/network_spec.yml`` where nodes are discovered using BMC 
             dynamic_range: ""
             correlation_to_admin: true
             admin_uncorrelated_node_start_ip: ""
+            primary_oim_admin_ip: ""
             network_gateway: ""
             DNS: ""
             MTU: ""
