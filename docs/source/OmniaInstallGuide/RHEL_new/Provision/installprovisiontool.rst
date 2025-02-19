@@ -43,39 +43,9 @@ Stages of the provision tool
 
 .. caution:: Always execute ``discovery_provision.yml`` within the ``omnia`` directory. That is, always change directories (using ``cd omnia``) to the path where the playbook resides before running the playbook.
 
-The provision tool, invoked by the ``discovery_provision.yml`` playbook, runs in three stages that can be called individually:
+The provision tool, invoked by the ``discovery_provision.yml`` playbook, runs in two stages that can be called individually:
 
-**Stage 1: Preparing the OIM**
-
-    * Installs required tool packages.
-    * Verifies and updates firewall settings.
-    * Installs xCAT.
-    * Configures Omnia databases basis ``input/network_spec.yml``.
-    * Creates empty inventory files on the OIM at ``/opt/omnia/omnia_inventory/``. These inventory files will be filled with information of compute node service tag post provisioning based on type of CPUs and GPUs they have. The inventory files are:
-
-        * ``compute_cpu_amd``
-        * ``compute_cpu_intel``
-        * ``compute_gpu_amd``
-        * ``compute_gpu_nvidia``
-        * ``compute_hostname_ip``
-
-    .. note::
-
-        * Service tags will only be written into the inventory files after the nodes are successfully PXE booted post provisioning.
-        * For a node's service tag to list in an inventory file, two conditions must be met:
-
-            * Node status must be "booted" in DB.
-            * Node's service tag information is present in DB.
-        * Nodes are not removed from the inventory files even if they are physically disconnected. Ensure to run the `delete node playbook <../../Maintenance/deletenode.html>`_ to remove the node.
-        * To regenerate an inventory file, use the playbook ``omnia/utils/inventory_tagging.yml``.
-
-
-    ::
-
-        cd prepare_oim
-        ansible-playbook prepare_oim.yml
-
-**Stage 2: Discovering the nodes**
+**Stage 1: Discovering the nodes**
 
     * Discovers all target servers.
 
@@ -89,7 +59,7 @@ The provision tool, invoked by the ``discovery_provision.yml`` playbook, runs in
         cd discovery
         ansible-playbook discovery.yml
 
-**Stage 3: Provisioning the nodes**
+**Stage 2: Provisioning the nodes**
 
     * The intended operating system and version is provisioned on the primary disk partition on the nodes. If a BOSS Controller card is available on the target node, the operating system is provisioned on the boss controller disks.
 

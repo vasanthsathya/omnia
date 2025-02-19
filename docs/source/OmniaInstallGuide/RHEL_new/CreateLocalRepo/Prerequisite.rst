@@ -4,9 +4,9 @@ Prerequisites
 1. Configure the hostname
 --------------------------
 
-Set the hostname of the OIM in the ``<hostname>.<domain_name>`` format.
+Set the hostname of the OIM in the ``<hostname>.<domain_name>`` format. Follow the guidelines below while setting up the hostname:
 
-.. include:: ../../../Appendices/hostnamereqs.rst
+    .. include:: ../../../Appendices/hostnamereqs.rst
 
 For example, ``controlplane.omnia.test`` is acceptable. Use the following command as reference while configuring your hostname: ::
 

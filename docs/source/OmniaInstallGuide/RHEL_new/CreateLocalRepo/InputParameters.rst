@@ -1,7 +1,14 @@
 Input parameters for Local Repositories
-----------------------------------------
+==========================================
 
-* Input all required values in ``input/software_config.json``.
+The ``local_repo.yml`` playbook is dependent on the inputs provided in the following input files:
+
+* ``input/software_config.json``
+* ``local_repo_config.yml``
+* ``input/provision_config_credentials.yml``
+
+1. ``input/software_config.json``
+------------------------------------
 
 .. csv-table:: Parameters for Software Configuration
    :file: ../../../Tables/software_config_rhel.csv
@@ -9,15 +16,13 @@ Input parameters for Local Repositories
    :keepspace:
    :class: longtable
 
-* Sample version for RHEL/Rocky Linux:
-
-.. note:: For Rocky Linux OS, the ``cluster_os_type`` in the below sample will be ``rocky``.
+A sample version for RHEL is provided below:
 
 ::
 
         {
             "cluster_os_type": "rhel",
-            "cluster_os_version": "8.8",
+            "cluster_os_version": "9.4",
             "repo_config": "partial",
             "softwares": [
                 {"name": "amdgpu", "version": "6.2.2"},
@@ -66,8 +71,7 @@ Input parameters for Local Repositories
         }
 
 
-For a list of accepted values in ``softwares``, go to ``input/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location (without the * .json extension) are a list of accepted software names. The repositories to be downloaded for each software are listed the corresponding JSON file. For example, for a cluster running RHEL 8.8, go to ``input/config/rhel/8.8/`` and view the file list:
-
+For a list of accepted values in ``softwares``, go to ``input/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location (without the * .json extension) are a list of accepted software names. The repositories to be downloaded for each software are listed the corresponding JSON file. For example, for a cluster running RHEL 9.4, go to ``input/config/rhel/9.4/`` and view the file list:
 ::
 
     amdgpu.json
@@ -104,11 +108,15 @@ For a list of repositories (and their types) configured for AMD GPUs, view the `
 
 .. note:: To configure a locally available repository that does not have a pre-defined json file, `click here <../AdvancedConfigurationsRHEL/CustomLocalRepo.html>`_.
 
-* Input the required values in ``input/local_repo_config.yml``.
+2. ``input/local_repo_config.yml``
+-------------------------------------
 
 .. csv-table:: Parameters for Local Repository Configuration
    :file: ../../../Tables/local_repo_config_rhel.csv
    :header-rows: 1
    :widths: auto
 
-* Input ``docker_username`` and ``docker_password`` in ``input/provision_config_credentials.yml`` to avoid image pullback errors.
+3. ``input/provision_config_credentials.yml``
+--------------------------------------------------
+
+Provide the ``docker_username`` and ``docker_password`` in the ``input/provision_config_credentials.yml`` file to avoid docker pull-limit issues.

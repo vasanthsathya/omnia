@@ -4,13 +4,13 @@
 ``string``
 
 Required","* The operating system running on the cluster.
-* **Value**: ``rhel``, ``rocky``"
+* **Value**: ``rhel``
 "**cluster_os_version**
 
 ``string``
 
 Required","* The OS Version that will be provisoned on compute nodes.
-* For RHEL and Rocky Linux, the accepted ``value`` is ``8.8``."
+* For RHEL, the accepted ``value`` is ``9.4``."
 "**repo_config**
 
 ``string``

@@ -150,3 +150,10 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
             {"name": "tensorflow_nvidia"}
         ]
     }
+
+Playbook execution
+-------------------
+
+After you have filled in the input files as mentioned above, execute the following command to trigger the playbook: ::
+
+    ansible-playbook prepare_oim.yml
