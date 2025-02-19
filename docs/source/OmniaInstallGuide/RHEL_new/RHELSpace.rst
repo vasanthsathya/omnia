@@ -1,5 +1,5 @@
-Space requirements for the OIM running on RHEL or Rocky Linux OS
-=====================================================================
+Space requirements for the OIM
+===================================
 
 * Entire software stack that Omnia supports: 50GB
 * To keep all the software images in ``/`` or ``/var`` partition: 500GB
