@@ -1,13 +1,13 @@
 Step 6: Configure the cluster
 ================================
 
-**Features enabled by omnia.yml**:
+The ``omnia.yml`` playbook allows you to set up the following on your cluster:
 
     * **Centralized authentication**: Once all the required parameters in `security_config.yml <schedulerinputparams.html#security-config-yml>`_ are filled in, ``omnia.yml`` can be used to set up FreeIPA/OpenLDAP.
 
-    * **Slurm**: Once all the required parameters in `omnia_config.yml <schedulerinputparams.html#id13>`_ are filled in, ``omnia.yml`` can be used to set up slurm.
+    * **Slurm**: Once all the required parameters in `omnia_config.yml <schedulerinputparams.html#id13>`_ are filled in, ``omnia.yml`` can be used to set up Slurm.
 
-    * **Kubernetes**: Once all the required parameters in `omnia_config.yml <schedulerinputparams.html#id12>`_ are filled in, ``omnia.yml`` can be used to set up kubernetes.
+    * **Kubernetes**: Once all the required parameters in `omnia_config.yml <schedulerinputparams.html#id12>`_ are filled in, ``omnia.yml`` can be used to set up Kubernetes.
 
     * **Login Node (Additionally secure login node)**
 

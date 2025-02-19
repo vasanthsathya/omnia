@@ -105,7 +105,7 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
     {
         "cluster_os_type": "rhel",
         "cluster_os_version": "9.4",
-        "repo_config": "partial",
+        "repo_config": "always",
         "softwares": [
             {"name": "amdgpu", "version": "6.2.2"},
             {"name": "cuda", "version": "12.3.2"},
@@ -154,6 +154,8 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
 Playbook execution
 -------------------
 
-After you have filled in the input files as mentioned above, execute the following command to trigger the playbook: ::
+After you have filled in the input files as mentioned above, execute the following commands to trigger the playbook: ::
 
+    ssh omnia_core
+    cd /omnia/prepare_oim
     ansible-playbook prepare_oim.yml

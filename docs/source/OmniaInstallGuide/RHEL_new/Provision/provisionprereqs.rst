@@ -1,9 +1,7 @@
 Prerequisites
 =================
 
-* (Recommended) Run ``prereq.sh`` to get the system ready to deploy Omnia.
-
-* All target bare-metal servers (cluster nodes) should be reachable to the chosen OIM.
+* All target bare-metal servers (cluster nodes) should be reachable from the OIM.
 
 * The UEFI boot setting should be configured in the BIOS settings before initiating PXE boot on the nodes.
 

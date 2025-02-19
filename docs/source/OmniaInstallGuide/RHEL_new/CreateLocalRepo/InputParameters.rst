@@ -23,7 +23,7 @@ A sample version for RHEL is provided below:
         {
             "cluster_os_type": "rhel",
             "cluster_os_version": "9.4",
-            "repo_config": "partial",
+            "repo_config": "always",
             "softwares": [
                 {"name": "amdgpu", "version": "6.2.2"},
                 {"name": "cuda", "version": "12.3.2"},

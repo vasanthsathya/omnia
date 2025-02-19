@@ -1,7 +1,7 @@
 Step 5: View node inventory
 =================================
 
-When ``discovery_provision.yml``, ``prepare_oim.yml``, or ``utils/inventory_tagging.yml`` is run, a set of inventory files is created in ``/opt/omnia/omnia_inventory/`` based on `the Omnia database. <Provision/ViewingDB.html>`_ The inventories are created based on the type of CPUs and GPUs nodes have. The inventory files are:
+When ``prepare_oim.yml`` or ``utils/inventory_tagging.yml`` is run, a set of inventory files is created in the ``/opt/omnia/omnia_inventory/`` directory on the ``omnia_core`` container, from the `Omnia database <Provision/ViewingDB.html>`_. The inventory files are created based on the type of CPUs and GPUs present on the nodes. The inventory files are:
 
       * ``compute_cpu_amd`` ::
 

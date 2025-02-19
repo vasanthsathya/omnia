@@ -1,76 +1,53 @@
 Provisioning the cluster
 ============================
 
-Edit the ``input/provision_config.yml``, ``input/provision_config.yml``, and ``input/network_spec.yml`` files to update the required variables. A list of the variables required is available by `discovery mechanism <DiscoveryMechanisms/index.html>`_.
+The ``discovery_provision.yml`` playbook discovers the probable bare-metal cluster nodes and provisions the minimal version of RHEL OS onto those nodes. This playbook is dependent on inputs from the following input files:
+
+* ``input/provision_config.yml``
+* ``input/provision_config.yml``
+* ``input/network_spec.yml``
 
 .. note:: The first PXE device on target nodes should be the designated active NIC for PXE booting.
 
     .. image:: ../../../images/BMC_PXE_Settings.png
 
-[Optional] Additional configurations handled by the provision tool
+Configurations made by the ``discovery_provision.yml`` playbook
+-----------------------------------------------------------------
+
+* Discovers all target servers.
+* PostgreSQL database is set up with all relevant cluster information such as MAC IDs, hostname, admin IP, BMC IPs etc.
+* Configures the OIM with NTP services for cluster  node synchronization.
+* The minimal version of the RHEL operating system is provisioned on the primary disk partition on the nodes. If a BOSS Controller card is available on the target node, the operating system is provisioned on the BOSS card.
+
+[Optional] Additional configuration handled by the provision tool
 -------------------------------------------------------------------------
-
-**Using multiple versions of a given OS**
-
-Omnia now supports deploying different versions of the same OS. With each run of ``discovery_provision.yml``, a new deployable OS image is created with a distinct type depending on the values provided in ``input/software_config.json``. Supported RHEL/Rocky Linux OS's are:
-
-    * RHEL 9.4
-
-.. note:: While Omnia deploys the minimal version of the OS, the multiple version feature requires that the Rocky Linux full (DVD) version of the OS be provided.
 
 **Disk partitioning**
 
-    Omnia now allows for customization of disk partitions applied to remote servers. The disk partition ``desired_capacity`` has to be provided in MB. Valid ``mount_point`` values accepted for disk partition are  ``/var``, ``/tmp``, ``/usr``, ``swap``. The default partition size provided for RHEL/Rocky Linux is /boot: 1024MB, /boot/efi: 256MB and remaining space to / partition. Default partition size provided for Ubuntu is /boot: 2148MB, /boot/efi: 1124MB and remaining space to / partition. Values are accepted in the form of JSON list such as:
+* Omnia now allows for customization of disk partitions applied to remote servers. The disk partition ``desired_capacity`` has to be provided in MB. Valid ``mount_point`` values accepted for disk partition are  ``/var``, ``/tmp``, ``/usr``, ``swap``. The default partition sizes provided for RHEL are:
 
-    ::
+  * ``/boot``: 1024MB,
+  * ``/boot/efi``: 256MB
+  * ``/`` partition: Remaining space.
 
-        disk_partition:
-            - { mount_point: "/var", desired_capacity: "102400" }
-            - { mount_point: "swap", desired_capacity: "10240" }
+* Values are accepted in the form of JSON list such as: ::
 
+    disk_partition:
+        - { mount_point: "/var", desired_capacity: "102400" }
+        - { mount_point: "swap", desired_capacity: "10240" }
 
 Running the provision tool
 -------------------------------
 
-To deploy the Omnia provision tool, ensure that ``input/provision_config.yml``, ``input/network_spec.yml``, and ``input/provision_config_credentials.yml`` are updated and then run::
+To deploy the Omnia provision tool, execute the following commands: ::
 
+    ssh omnia_core
+    cd /omnia
     ansible-playbook discovery_provision.yml
-
-.. note:: If the ``input/software_config.json`` has AMD ROCm and NVIDIA CUDA drivers mentioned, the AMD and NVIDIA accelerator drivers are installed on the nodes post provisioning.
-
-Stages of the provision tool
------------------------------
-
-.. caution:: Always execute ``discovery_provision.yml`` within the ``omnia`` directory. That is, always change directories (using ``cd omnia``) to the path where the playbook resides before running the playbook.
-
-The provision tool, invoked by the ``discovery_provision.yml`` playbook, runs in two stages that can be called individually:
-
-**Stage 1: Discovering the nodes**
-
-    * Discovers all target servers.
-
-    * PostgreSQL database is set up with all relevant cluster information such as MAC IDs, hostname, admin IP, BMC IPs etc.
-
-    * Configures the OIM with NTP services for cluster  node synchronization.
-
-
-    To call this playbook individually, run::
-
-        cd discovery
-        ansible-playbook discovery.yml
-
-**Stage 2: Provisioning the nodes**
-
-    * The intended operating system and version is provisioned on the primary disk partition on the nodes. If a BOSS Controller card is available on the target node, the operating system is provisioned on the boss controller disks.
-
-    To call this playbook individually, run: ::
-
-        cd provision
-        ansible-playbook provision.yml
 
 .. note::
 
-    * If you are using ``switch_based`` discovery mechanism, you do not need to run ``provision.yml`` playbook. Run ``prepare_oim.yml`` and ``discovery.yml`` and then manually boot the nodes in PXE mode.
+    * If the ``input/software_config.json`` has AMD ROCm and NVIDIA CUDA drivers mentioned, the AMD and NVIDIA accelerator drivers are installed on the nodes post provisioning.
 
     * After executing ``discovery_provision.yml`` playbook, user can check the log file available at ``/var/log/omnia.log`` for more information.
 
@@ -88,23 +65,9 @@ The provision tool, invoked by the ``discovery_provision.yml`` playbook, runs in
 
 .. caution::
 
-    * Once xCAT is installed, restart your SSH session to the OIM to ensure that the newly set up environment variables come into effect. If the new environment variables still do not come into effect, enable manually using: ::
-
-             source /etc/profile.d/xcat.sh
-
     * To avoid breaking the password-less SSH channel on the OIM, do not run ``ssh-keygen`` commands post execution of ``discovery_provision.yml`` to create a new key.
-    * Do not delete the following directories:
-        - ``/root/xcat``
-        - ``/root/xcat-dbback``
-        - ``/docker-registry``
-        - ``/opt/omnia``
-        - ``/var/log/omnia``
-        - ``/opt/omnia17_venv/``
-    * On subsequent runs of ``discovery_provision.yml``, if users are unable to log into the server, refresh the ssh key manually and retry. ::
 
-        ssh-keygen -R <node IP>
-
-    * If a subsequent run of ``discovery_provision.yml`` fails, the ``input/provision_config.yml`` file will be unencrypted.
+    * Do not delete the Omnia shared path or the NFS directory.
 
 **Next steps**:
 
