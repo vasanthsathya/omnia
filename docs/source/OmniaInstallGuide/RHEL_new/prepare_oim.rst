@@ -1,7 +1,17 @@
-Step 2: Execute the ``prepare_oim.yml`` playbook
+Step 3: Execute the ``prepare_oim.yml`` playbook
 ==================================================
 
-The ``prepare_oim.yml`` playbook is dependent on the inputs provided in the following input files:
+The ``prepare_oim.yml`` playbook is the first playbook that you need to run in Omnia. This playbook accomplishes the following tasks:
+
+* Sets up the PCS container: ``omnia_pcs``
+* Sets up the Kubespray container: ``omnia_kubespray_<version>``
+* Sets up the Provision container: ``omnia_provision``
+* Sets up the Pulp container: ``omnia_pulp``
+
+Input files for the playbook
+------------------------------
+
+The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the following input files:
 
 * ``network_spec.yml``: This input file is located in the ``omnia/input`` folder and contains the necessary configurations for the cluster network.
 * ``provision_config_credentials.yml``: This input file is located in the ``omnia/input`` folder and contains the necessary passwords required for provisioning the cluster.

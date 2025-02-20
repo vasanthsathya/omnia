@@ -4,9 +4,9 @@ Step 1: Deploy the Omnia core container
 The ``omnia_startup.sh`` is a one-stop script which deploys Omnia as a container on the Omnia Infrastructure Manager (OIM). A container is an isolated unit that packages an application and its dependencies, ensuring it runs consistently across any environment.
 The Omnia container ensures smooth cluster deployments, independent of the host environment. The deployment includes:
 
- * Downloading the container image
+ * Downloading the ``omnia_core`` container image
  * Setting up required mounts
- * Configuring secure SSH access with public-private key pairs
+ * Configuring secure SSH access to the container with public-private key pairs
 
 Prerequisites
 ---------------

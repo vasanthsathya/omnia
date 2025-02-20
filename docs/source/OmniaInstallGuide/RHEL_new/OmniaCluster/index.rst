@@ -1,4 +1,4 @@
-Step 6: Configure the cluster
+Step 7: Configure the cluster
 ================================
 
 The ``omnia.yml`` playbook allows you to set up the following on your cluster:
