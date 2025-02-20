@@ -38,7 +38,7 @@ The ``omnia_startup.sh`` script performs the following tasks:
 	* The script checks if Podman is installed and initiates the Podman socket. Further, it pulls the Omnia container image from the Dell registry and starts the ``omnia_core`` container.
 
 Execute the ``omnia_startup.sh`` script
-------------------------------------------
+-----------------------------------------
 
 To initiate the ``omnia_startup.sh`` script, execute the following commands:
 ::
