@@ -25,7 +25,7 @@ The ``omnia_startup.sh`` script performs the following tasks:
 
 	* The script prompts you to provide the path for the Omnia shared path, which can be a NFS share path or even a local filepath.
 
-	* Sets up the Omnia root password: The script prompts you to provide a combination of alphanumeric characters, which will be used as password to facilitate direct access to the Omnia container.
+	* Sets up the Omnia root password: The script prompts you to provide a combination of alphanumeric characters, which will be used as password to facilitate direct access to the ``omnia_core`` container.
 	.. caution:: Do not use ``[],\,|,&,;,`,<>,*,?!,$,(),{},[]]`` characters in your password.
 
 	* The script generates SSH key pair and stores them in the ``/root/.ssh`` folder for both OIM and the containers.
@@ -59,7 +59,7 @@ Execute the following podman command to log in to the ``omnia_core`` container: 
 
 2. **Direct SSH login**
 
-Execute the following command to log in to the ``omnia-core`` container via SSH: ::
+Execute the following command to log in to the ``omnia_core`` container via SSH: ::
 
     ssh omnia_core
 

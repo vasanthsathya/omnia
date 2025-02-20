@@ -13,9 +13,9 @@ Input files for the playbook
 
 The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the following input files:
 
-* ``network_spec.yml``: This input file is located in the ``omnia/input`` folder and contains the necessary configurations for the cluster network.
-* ``provision_config_credentials.yml``: This input file is located in the ``omnia/input`` folder and contains the necessary passwords required for provisioning the cluster.
-* ``software_config.json``: This input file is located in the ``omnia/input`` folder and contains the details about the software packages which are to be installed on the cluster.
+* ``network_spec.yml``: This input file is located in the ``/opt/omnia/input`` folder and contains the necessary configurations for the cluster network.
+* ``provision_config_credentials.yml``: This input file is located in the ``/opt/omnia/input`` folder and contains the necessary passwords required for provisioning the cluster.
+* ``software_config.json``: This input file is located in the ``/opt/omnia/input`` folder and contains the details about the software packages which are to be installed on the cluster.
 
 1. ``network_spec.yml``
 ------------------------
