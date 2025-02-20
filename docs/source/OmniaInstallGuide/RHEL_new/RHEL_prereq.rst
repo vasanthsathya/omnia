@@ -7,6 +7,8 @@ Omnia Prerequisites
 
 3. Enable the **AppStream** and **BaseOS** repositories via the RHEL subscription manager.
 
+.. caution:: Always execute Omnia playbooks from within the directory where the playbook is located.
+
 .. note:: If the OIM server has an Infiniband NIC installed, run the below command to install the hardware drivers and Infiniband-related packages:
     ::
         yum groupinstall "Infiniband Support" -y
