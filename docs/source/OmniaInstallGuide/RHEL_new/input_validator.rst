@@ -11,3 +11,7 @@ After you have executed the ``ssh omnia_core`` command, you can access the ``def
     |  ``project_name``          |  This variable captures the project name for Omnia execution. |
     |                            |  Default value: ``project_default``                           |
     +----------------------------+---------------------------------------------------------------+
+
+Here's an example of what the default ``project_default`` directory contains:
+
+.. image:: ../../images/project_default.png
