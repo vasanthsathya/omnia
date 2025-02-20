@@ -5,6 +5,7 @@
 
 Required","* The operating system running on the cluster.
 * **Value**: ``rhel``
+"
 "**cluster_os_version**
 
 ``string``
@@ -25,8 +26,7 @@ Required","* The type of offline configuration user needs.
 
 * **Accepted values**:
 
-  * ``always``
-  * ``partial`` <- Default
+  * ``always`` <- Default
   * ``never``
 	"
 "**softwares**

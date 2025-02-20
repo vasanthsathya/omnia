@@ -1,20 +1,21 @@
 Input parameters for Local Repositories
 ==========================================
 
-The ``local_repo.yml`` playbook is dependent on the inputs provided in the following input files:
+The ``local_repo_utility.yml`` playbook is dependent on the inputs provided to the following input files:
 
-* ``input/software_config.json``
-* ``local_repo_config.yml``
-* ``input/provision_config_credentials.yml``
+* ``input/project_default/local_repo_config.yml``
+* ``input/project_default/software_config.json``
 
-1. ``input/software_config.json``
+``input/project_default/software_config.json``
 ------------------------------------
+
+Based on the inputs provided to the ``input/project_default/software_config.json``, the software packages/images are accessed from the Pulp container and the desired software stack is deployed on the cluster nodes.
 
 .. csv-table:: Parameters for Software Configuration
    :file: ../../../Tables/software_config_rhel.csv
    :header-rows: 1
    :keepspace:
-   :class: longtable
+   :widths: auto
 
 A sample version for RHEL is provided below:
 
@@ -70,53 +71,17 @@ A sample version for RHEL is provided below:
 
         }
 
+.. note::
 
-For a list of accepted values in ``softwares``, go to ``input/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location (without the * .json extension) are a list of accepted software names. The repositories to be downloaded for each software are listed the corresponding JSON file. For example, for a cluster running RHEL 9.4, go to ``input/config/rhel/9.4/`` and view the file list:
-::
+    * For a list of accepted ``softwares``, go to the ``input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For example, for a cluster running RHEL 9.4, go to ``input/config/rhel/9.4/`` and view the file list for accepted softwares.
+    * Omnia supports a single version of any software packages in the ``input/project_default/software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
+    * To configure a locally available repository that does not have a pre-defined json file, `click here <../AdvancedConfigurationsRHEL/CustomLocalRepo.html>`_.
 
-    amdgpu.json
-    bcm_roce.json
-    beegfs.json
-    cuda.json
-    jupyter.json
-    k8s.json
-    kserve.json
-    kubeflow.json
-    nfs.json
-    ofed.json
-    openldap.json
-    pytorch.json
-    tensorflow.json
-    vllm.json
-
-For a list of repositories (and their types) configured for AMD GPUs, view the ``amdgpu.json`` file: ::
-
-    {
-      "amdgpu": {
-        "cluster": [
-            {"package": "linux-headers-$(uname -r)", "type": "deb", "repo_name": "jammy"},
-            {"package": "linux-modules-extra-$(uname -r)", "type": "deb", "repo_name": "jammy"},
-            {"package": "amdgpu-dkms", "type": "deb", "repo_name": "amdgpu"}
-        ]
-      },
-      "rocm": {
-        "cluster": [
-          {"package": "rocm-hip-sdk{{ rocm_version }}*", "type": "deb", "repo_name": "rocm"}
-        ]
-      }
-    }
-
-.. note:: To configure a locally available repository that does not have a pre-defined json file, `click here <../AdvancedConfigurationsRHEL/CustomLocalRepo.html>`_.
-
-2. ``input/local_repo_config.yml``
+``input/local_repo_config.yml``
 -------------------------------------
 
 .. csv-table:: Parameters for Local Repository Configuration
    :file: ../../../Tables/local_repo_config_rhel.csv
    :header-rows: 1
+   :keepspace:
    :widths: auto
-
-3. ``input/provision_config_credentials.yml``
---------------------------------------------------
-
-Provide the ``docker_username`` and ``docker_password`` in the ``input/provision_config_credentials.yml`` file to avoid docker pull-limit issues.
