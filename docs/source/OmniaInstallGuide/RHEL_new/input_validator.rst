@@ -1,17 +1,9 @@
-Step 2: Project-based inputs
-==============================
+Step 2: Provide inputs to the files in the ``project_default`` directory
+===========================================================================
 
-Omnia is now deployed from a project-based approach. This allows multiple users to have different set of configuration files for the same cluster. This is achieved using the ``default.yml`` input file present in the ``/opt/omnia/input`` directory.
-By default, the ``project_name`` variable value in ``default.yml`` will be ``project_default``. Users can create their own directory under ``opt/omnia/input`` and update the same under ``project_name``. Each directory will have its own set of configuration files.
-After you have executed the ``ssh omnia_core`` command, you can access the ``default.yml`` file which has the following parameter:
+Omnia is now deployed using a project-based approach. Once the ``omnia_core`` container is deployed, all the input files needed for the cluster will be available in the ``/opt/omnia/input/project_default`` directory on the NFS share.
+Before moving on to the next step, which is running the ``prepare_oim.yml`` playbook, you must provide inputs for all the files in this directory.
 
-    +----------------------------+---------------------------------------------------------------+
-    |  Variable Name             |  Description                                                  |
-    +============================+===============================================================+
-    |  ``project_name``          |  This variable captures the project name for Omnia execution. |
-    |                            |  Default value: ``project_default``                           |
-    +----------------------------+---------------------------------------------------------------+
-
-Here's an example of what the default ``project_default`` directory contains:
+Here's an example of the input files present in the ``project_default`` directory:
 
 .. image:: ../../images/project_default.png
