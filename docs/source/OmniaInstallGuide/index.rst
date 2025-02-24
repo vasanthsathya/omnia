@@ -16,5 +16,6 @@ Omnia Installation Guide
     :hidden:
 
     RHEL_new/index
+    AdvancedConfigurations/index
     Maintenance/index
     samplefiles
