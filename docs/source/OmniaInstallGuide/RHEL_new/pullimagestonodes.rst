@@ -46,9 +46,9 @@ Follow the steps below to download packages/images:
         ::
 
             {
-                "cluster_os_type": "ubuntu",
-                "cluster_os_version": "22.04",
-                "repo_config": "partial",
+                "cluster_os_type": "rhel",
+                "cluster_os_version": "9.4",
+                "repo_config": "always",
                 "softwares": [
                     {"name": "custom_image"},
                 ]

@@ -5,7 +5,7 @@ To install multiple packages on cluster nodes in a bulk operation, the ``softwar
 
 **Prerequisites**
 
-    * All cluster nodes should be running RHEL, Rocky Linux, or Ubuntu OS.
+    * All cluster nodes should be running RHEL OS.
     * Download the packages using ``local_repo.yml``.
     * Verify that the cluster nodes are in the ``booted`` state.
 

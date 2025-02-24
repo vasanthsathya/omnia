@@ -6,20 +6,20 @@ Use the local repository feature to create a customized set of local repositorie
 1. Ensure the ``custom`` entry is included in the ``software_config.json`` file. ::
 
     {
-        "cluster_os_type": "ubuntu",
-        "cluster_os_version": "22.04",
+        "cluster_os_type": "rhel",
+        "cluster_os_version": "8.8",
         "repo_config": "partial",
         "softwares": [
             {"name": "amdgpu", "version": "6.2.2"},
             {"name": "cuda", "version": "12.3.2"},
-            {"name": "bcm_roce", "version": "230.2.54.0"},
             {"name": "ofed", "version": "24.01-0.3.3.1"},
+            {"name": "freeipa"},
             {"name": "openldap"},
             {"name": "secure_login_node"},
             {"name": "nfs"},
             {"name": "beegfs", "version": "7.4.2"},
-            {"name": "k8s", "version":"1.29.5"},
-            {"name": "roce_plugin"},
+            {"name": "slurm"},
+            {"name": "k8s", "version":"1.31.4"},
             {"name": "jupyter"},
             {"name": "kubeflow"},
             {"name": "kserve"},
@@ -27,19 +27,15 @@ Use the local repository feature to create a customized set of local repositorie
             {"name": "tensorflow"},
             {"name": "vllm"},
             {"name": "telemetry"},
+            {"name": "intel_benchmarks", "version": "2024.1.0"},
+            {"name": "amd_benchmarks"},
+            {"name": "utils"},
             {"name": "ucx", "version": "1.15.0"},
             {"name": "openmpi", "version": "4.1.6"},
-            {"name": "intelgaudi", "version": "1.18.0-524"},
-            {"name": "csi_driver_powerscale", "version":"v2.11.0"}
-        ],
-        "bcm_roce": [
-            {"name": "bcm_roce_libraries", "version": "230.2.54.0"}
+            {"name": "csi_driver_powerscale", "version":"v2.13.0"}
         ],
         "amdgpu": [
             {"name": "rocm", "version": "6.2.2" }
-        ],
-        "intelgaudi": [
-            {"name": "intel"}
         ],
         "vllm": [
             {"name": "vllm_amd"},
@@ -48,8 +44,7 @@ Use the local repository feature to create a customized set of local repositorie
         "pytorch": [
             {"name": "pytorch_cpu"},
             {"name": "pytorch_amd"},
-            {"name": "pytorch_nvidia"},
-            {"name": "pytorch_gaudi"}
+            {"name": "pytorch_nvidia"}
         ],
         "tensorflow": [
             {"name": "tensorflow_cpu"},
@@ -58,7 +53,6 @@ Use the local repository feature to create a customized set of local repositorie
         ]
     }
 
-.. note:: For Rocky Linux OS, the ``cluster_os_type`` in the above sample will be ``rocky``.
 
 2. Create a ``custom.json`` file in the following directory: ``input/config/<cluster_os_type>/<cluster_os_version>`` to define the repositories. For example, For a cluster running RHEL 8.8, go to ``input/config/rhel/8.8/`` and create the file there. The file is a JSON list consisting of the package name, repository type, URL (optional), and version (optional). Below is a sample version of the file: ::
 

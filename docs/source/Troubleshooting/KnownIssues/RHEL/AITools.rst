@@ -8,4 +8,4 @@ AI Tools
     1. `Reference 1 <https://github.com/istio/istio/issues/31352>`_
     2. `Reference 2 <https://github.com/istio/istio/issues/22677>`_
 
-**Resolution**: Reprovision the cluster and re-deploy Kserve. The steps to deploy Kserve are located `here <../../../OmniaInstallGuide/Ubuntu/InstallAITools/kserve.html>`_.
+**Resolution**: Reprovision the cluster and re-deploy Kserve. The steps to deploy Kserve are located `here <../../../OmniaInstallGuide/RHEL_new/InstallAITools/kserve.html>`_.

@@ -32,7 +32,7 @@ Configuring specific local repositories
 
     For a list of repositories (and their types) configured for CUDA, view the ``input/config/<cluster_os_type>/<cluster_os_version>/cuda.json`` file. To customize your CUDA installation, update the file. URLs for different versions can be found `here <https://developer.nvidia.com/cuda-downloads>`_:
 
-    For RHEL or Rocky Linux: ::
+    For RHEL: ::
 
             {
               "cuda": {
@@ -53,7 +53,7 @@ Configuring specific local repositories
 
 .. note::
     * If the package version is customized, ensure that the ``version`` value is updated in ``software_config.json``.
-    * If the target cluster runs on RHEL or Rocky Linux, ensure the "dkms" package is included in ``input/config/<cluster_os_type>/8.x/cuda.json`` as illustrated above.
+    * If the target cluster runs on RHEL, ensure the "dkms" package is included in ``input/config/<cluster_os_type>/8.x/cuda.json`` as illustrated above.
 
 
 **OFED**
@@ -64,7 +64,7 @@ Configuring specific local repositories
 
     For a list of repositories (and their types) configured for OFED, view the ``input/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the file.:
 
-    For RHEL or Rocky Linux: ::
+    For RHEL: ::
 
             {
               "ofed": {

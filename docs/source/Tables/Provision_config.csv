@@ -3,7 +3,7 @@
 
 ``string``
 
-Required",Path where user has placed the iso image that needs to be provisioned on target nodes. Accepted files are Rocky8-DVD or RHEL-8.x-DVD (full OS).  ``iso_file_path``  should contain the  ``provision_os``  and  ``provision_os_version``  values in the  filename.
+Required",Path where user has placed the iso image that needs to be provisioned on target nodes. Accepted files are RHEL-9.4-DVD (full OS).  ``iso_file_path``  should contain the  ``provision_os``  and  ``provision_os_version``  values in the  filename.
 "**node_name**
 
 ``string``
@@ -75,8 +75,7 @@ Optional","* This variable is required when nodes are to be discovered via switc
 Optional","* User defined disk partition applied to remote servers.
 * The disk partition ``desired_capacity`` has to be provided in MB.
 * Valid ``mount_point`` values accepted for disk partition are /home, /var, /tmp, /usr, swap.
-* Default partition size provided for RHEL/Rocky is /boot: 1024MB, /boot/efi: 256MB and remaining space to / partition.
-* Default partition size provided for Ubuntu is /boot: 2148MB, /boot/efi: 1124MB and remaining space to / partition.
+* Default partition size provided for RHEL is /boot: 1024MB, /boot/efi: 256MB and remaining space to / partition.
 * Values are accepted in the form of JSON list such as: , - { mount_point: ""/home"", desired_capacity: ""102400"" }
  
 
@@ -109,14 +108,6 @@ Required","Language to be used during OS provisioning.
 Required","Default lease time for IPs assigned by DHCP. Range: 21600-86400
 
 **Default value**: ``86400``"
-"**ubuntu_kernel_flavor**
-
-``string``
-
-Optional","* This is a user-configured variable that is used to specify the kernel flavor on Ubuntu 22.04.
-* This variable is only supported when the cluster runs Ubuntu 22.04.
-* To specify this variable, ensure to append the string ``ubuntu_kernel_flavor: generic`` or ``ubuntu_kernel_flavor: hwe`` to the end of the ``input/provision_config.yml`` file.
-* **Accepted values**: ``generic``, ``hwe``."
 "**ntp_support**
 
 ``boolean``

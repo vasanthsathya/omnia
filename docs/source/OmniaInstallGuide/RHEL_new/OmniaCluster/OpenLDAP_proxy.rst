@@ -14,7 +14,7 @@ Perform the following steps to configure OpenLDAP as a proxy server:
 
 2. Now, locate the ``slapd.conf`` config file present in ``/usr/local/openldap/etc/openldap/`` and modify the file to add the new LDAP configurations. Add the following lines to the config file based on the operating system running on the cluster:
 
-    For RHEL/Rocky Linux: ::
+    For RHEL: ::
 
         include        /usr/local/openldap/etc/openldap/schema/core.schema
         include        /usr/local/openldap/etc/openldap/schema/cosine.schema
@@ -50,42 +50,6 @@ Perform the following steps to configure OpenLDAP as a proxy server:
         TLSCertificateFile      /etc/openldap/certs/ldapserver.crt
         TLSCertificateKeyFile   /etc/pki/tls/certs/ldapserver.key
 
-    For Ubuntu: ::
-
-        include        /usr/local/openldap/etc/openldap/schema/core.schema
-        include        /usr/local/openldap/etc/openldap/schema/cosine.schema
-        include        /usr/local/openldap/etc/openldap/schema/nis.schema
-        include        /usr/local/openldap/etc/openldap/schema/inetorgperson.schema
-
-
-        pidfile         /usr/local/openldap/var/run/slapd.pid
-        argsfile        /usr/local/openldap/var/run/slapd.args
-
-        # Load dynamic backend modules:
-        modulepath      /usr/local/openldap/libexec/openldap
-        moduleload      back_ldap.la
-        moduleload      back_meta.la
-
-        #######################################################################
-        # Meta database definitions
-        #######################################################################
-        database        meta
-        suffix          "dc=phantom,dc=test"
-        rootdn          cn=admin,dc=phantom,dc=test
-        rootpw          Dell1234
-
-        uri             "ldap://10.5.0.104:389/dc=phantom,dc=test"
-        suffixmassage   "dc=phantom,dc=test" "dc=perf,dc=test"
-        idassert-bind
-         bindmethod=simple
-         binddn="cn=admin,dc=perf,dc=test"
-         credentials="Dell1234"
-         flags=override
-         mode=none
-        TLSCACertificateFile    /etc/ssl/certs/ca-certificates.crt
-        TLSCertificateFile      /etc/ssl/certs/ssl-cert-snakeoil.pem
-        TLSCertificateKeyFile   /etc/ssl/private/ssl-cert-snakeoil.key
-
 Change the **<paramater>** values in the config file, as described below:
 
 * **database**: Database used in the ``slapd.conf`` file, that captures the details of the external LDAP server to be used. For example, ``meta``.
@@ -102,9 +66,9 @@ Change the **<paramater>** values in the config file, as described below:
 * **binddn**: Admin username and domain of the external LDAP server.
 * **credentials**: Admin password for the external LDAP server.
 
-* **TLSCACertificateFile**: Omnia, by default, creates the TLSA certificate in ``/etc/openldap/certs/ldapserver.crt`` for RHEL/Rocky Linux or in ``/etc/ssl/certs/ca-certificates.crt`` for Ubuntu.
-* **TLSCertificateFile**: Omnia, by default, creates the TLS certificate in ``/etc/openldap/certs/ldapserver.crt`` for RHEL/Rocky Linux or in ``/etc/ssl/certs/ssl-cert-snakeoil.pem`` for Ubuntu.
-* **TLSCertificateKeyFile**: Omnia, by default, creates the certificate key file in ``/etc/pki/tls/certs/ldapserver.key`` for RHEL/Rocky Linux or in ``/etc/ssl/private/ssl-cert-snakeoil.key`` for Ubuntu.
+* **TLSCACertificateFile**: Omnia, by default, creates the TLSA certificate in ``/etc/openldap/certs/ldapserver.crt``.
+* **TLSCertificateFile**: Omnia, by default, creates the TLS certificate in ``/etc/openldap/certs/ldapserver.crt``.
+* **TLSCertificateKeyFile**: Omnia, by default, creates the certificate key file in ``/etc/pki/tls/certs/ldapserver.key``.
 
 .. note::
    * The values for ``suffix`` and ``rootdn`` parameters in the ``slapd.conf`` file must be the same as those provided in the ``input/security_config.yml`` file.
@@ -120,17 +84,11 @@ Change the **<paramater>** values in the config file, as described below:
 
     Use the same certificates and keys in the ``slapd.conf`` file, as shown below:
 
-        Ubuntu: ::
+      RHEL: ::
 
-              TLSCACertificateFile    /etc/ssl/certs/omnia_ca_cert.crt
-              TLSCertificateFile      /etc/ssl/certs/omnia_cert.pem
-              TLSCertificateKeyFile   /etc/ssl/private/omnia_cert_key.key
-
-        RHEL/ROCKY LINUX: ::
-
-              TLSCACertificateFile    /etc/pki/tls/certs/omnia_ca_cert.crt
-              TLSCertificateFile      /etc/pki/tls/certs/omnia_cert.pem
-              TLSCertificateKeyFile   /etc/pki/tls/certs/omnia_cert_key.key
+         TLSCACertificateFile    /etc/pki/tls/certs/omnia_ca_cert.crt
+         TLSCertificateFile      /etc/pki/tls/certs/omnia_cert.pem
+         TLSCertificateKeyFile   /etc/pki/tls/certs/omnia_cert_key.key
 
    * Multiple external LDAP servers can also be configured on the proxy server. The OpenLDAP proxy server allows users from multiple external LDAP servers to authenticate onto the cluster. You can provide two sets of external LDAP server details as shown below: ::
 

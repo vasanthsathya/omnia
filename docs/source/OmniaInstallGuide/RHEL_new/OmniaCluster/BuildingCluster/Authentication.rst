@@ -6,10 +6,6 @@ The security feature allows cluster admin users to set up FreeIPA or OpenLDAP in
 Configuring FreeIPA/OpenLDAP security
 ______________________________________
 
-.. note:: Omnia supports OpenLDAP configuration on Ubuntu, RHEL, and Rocky Linux.
-
-.. note:: FreeIPA configuration is not supported on Ubuntu.
-
 **Prerequisites**
 
 * To set up FreeIPA, ensure that the following entry is present in the ``input/software_config.json``: ::

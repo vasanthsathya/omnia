@@ -12,7 +12,7 @@ PowerVault Storage
 | ME5          | ME5012, ME5024, ME5084    |                                                |
 +--------------+---------------------------+------------------------------------------------+
 
-.. note:: Omnia supports configuration of RAID levels, volumes, pool, and SNMP on PowerVault devices. For more information on PowerVault configuration using Omnia, `click here <../../../OmniaInstallGuide/Ubuntu/AdvancedConfigurationsUbuntu/ConfiguringStorage/index.html#configuring-storage>`_.
+.. note:: Omnia supports configuration of RAID levels, volumes, pool, and SNMP on PowerVault devices. For more information on PowerVault configuration using Omnia, `click here <../../../OmniaInstallGuide/RHEL_new/AdvancedConfigurationsRHEL/ConfiguringStorage/index.html#configuring-storage>`_.
 
 BOSS Controller Cards
 ----------------------

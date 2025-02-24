@@ -1,24 +1,15 @@
 Setting up the BeeGFS server
 -----------------------------
 
-1. Download and install the required BeeGFS version for Rocky Linux and RHEL servers using the below commands: ::
+1. Download and install the required BeeGFS version for RHEL servers using the below commands: ::
 
     wget -O /etc/yum.repos.d/beegfs_rhel8.repo https://www.beegfs.io/release/beegfs_7.3.2/dists/beegfs-rhel8.repo
 
     yum install beegfs-mgmtd -y beegfs-meta libbeegfs-ib beegfs-storage -y
 
-For an Ubuntu server, use these additional steps:
-
-    i. Configure the repo ``sources.list.d``. Ensure that the version of the repository matches the Ubuntu OS in use (Jammy or Focal). For more information, `click here <https://www.beegfs.io/release/beegfs_7.2.6/dists/>`_.
-    ii. Add `a GPG key <https://www.beegfs.io/release/beegfs_7.2.6/gpg/>`_.
-    iii. Update the apt cache. ::
-
-            apt-cache update
-
 2. Create a directory for BeeGFS storage configuration: ::
 
     mkdir /root/test_beegfs
-
 
 3. Create an authentication file used by BeeGFS versions >= 7.2.7: ::
 
