@@ -3,6 +3,8 @@ Omnia Installation Guide
 
 * `Quick installation guide for RHEL clusters <RHEL_new/index.html>`_
 
+* `AdvancedConfigurations <AdvancedConfigurations/index.html>`_
+
 * `Maintenance <Maintenance/index.html>`_
 
 * `Sample Files <samplefiles.html>`_
