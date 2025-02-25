@@ -5,7 +5,7 @@ Configuring specific local repositories
 
     To install ROCm, do the following:
 
-        * Include the following line under ``softwares`` in ``input/software_config.json``:
+        * Include the following line under ``softwares`` in ``input/project_default/software_config.json``:
 
             ::
 
@@ -25,44 +25,39 @@ Configuring specific local repositories
 
 **CUDA**
 
-    To install CUDA, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install CUDA, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "cuda", "version": "12.3.2"},
 
+    For a list of repositories (and their types) configured for CUDA, view the ``input/project_default/config/<cluster_os_type>/<cluster_os_version>/cuda.json`` file. To customize your CUDA installation, update the ``url`` parameter with your desired CUDA version URL. URLs for different versions can be found `here <https://developer.nvidia.com/cuda-downloads>`_. ::
 
-    For a list of repositories (and their types) configured for CUDA, view the ``input/config/<cluster_os_type>/<cluster_os_version>/cuda.json`` file. To customize your CUDA installation, update the file. URLs for different versions can be found `here <https://developer.nvidia.com/cuda-downloads>`_:
-
-    For RHEL: ::
-
-            {
-              "cuda": {
-                "cluster": [
-                  { "package": "cuda",
-                    "type": "iso",
-                    "url": "https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-rhel8-12-3-local-12.3.2_545.23.08-1.x86_64.rpm",
-                    "path": ""
-                  },
-                  { "package": "dkms",
-                    "type": "rpm",
-                    "repo_name": "epel"
-                  }
-                ]
+        {
+          "cuda": {
+            "cluster": [
+              { "package": "cuda",
+                "type": "iso",
+                "url": "https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-rhel8-12-3-local-12.3.2_545.23.08-1.x86_64.rpm",
+                "path": ""
+              },
+              { "package": "dkms",
+                "type": "rpm",
+                "repo_name": "epel"
               }
-            }
-
+            ]
+          }
+        }
 
 .. note::
-    * If the package version is customized, ensure that the ``version`` value is updated in ``software_config.json``.
-    * If the target cluster runs on RHEL, ensure the "dkms" package is included in ``input/config/<cluster_os_type>/8.x/cuda.json`` as illustrated above.
-
+    * If the package version is customized, ensure that the same ``version`` value is also updated in the ``input/project_default/software_config.json``.
+    * If the target cluster runs on RHEL, ensure the "dkms" package is also included in ``input/project_default/config/<cluster_os_type>/9.x/cuda.json`` as illustrated above.
 
 **OFED**
 
-    To install OFED, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install OFED, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "ofed", "version": "24.01-0.3.3.1"},
 
-    For a list of repositories (and their types) configured for OFED, view the ``input/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the file as shown below: ::
+    For a list of repositories (and their types) configured for OFED, view the ``input/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the ``url`` parameter with your desired OFED version URL. ::
 
         {
           "ofed": {
@@ -76,11 +71,11 @@ Configuring specific local repositories
           }
         }
 
-.. note:: If the package version is customized, ensure that the ``version`` value is updated correctly in ``software_config.json``.
+.. note:: If the package version is customized, ensure that the same ``version`` value is also updated in the ``input/project_default/software_config.json``.
 
 **BeeGFS**
 
-    To install BeeGFS, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install BeeGFS, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "beegfs", "version": "7.4.2"},
 
@@ -88,7 +83,7 @@ Configuring specific local repositories
 
 **NFS**
 
-    To install NFS, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install NFS, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "nfs"},
 
@@ -96,9 +91,9 @@ Configuring specific local repositories
 
 **Kubernetes**
 
-    To install Kubernetes, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install Kubernetes, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
-            {"name": "k8s", "version":"1.29.5"},
+            {"name": "k8s", "version":"1.31.4"},
 
     For more information about installing Kubernetes, `click here <../OmniaCluster/BuildingCluster/install_kubernetes.html>`_.
 
@@ -106,7 +101,7 @@ Configuring specific local repositories
 
 **Slurm**
 
-    To install Slurm, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install Slurm, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "slurm"},
 
@@ -116,7 +111,7 @@ Configuring specific local repositories
 
 **FreeIPA**
 
-    To install FreeIPA, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install FreeIPA, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "freeipa"},
 
@@ -125,7 +120,7 @@ Configuring specific local repositories
 
 **OpenLDAP**
 
-    To install OpenLDAP, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install OpenLDAP, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "openldap"},
 
@@ -134,7 +129,7 @@ Configuring specific local repositories
 
 **Secure Login Node**
 
-    To secure the login node, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To secure the login node, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "secure_login_node"},
 
@@ -143,7 +138,7 @@ Configuring specific local repositories
 
 **Telemetry**
 
-    To install Telemetry, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install Telemetry, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "telemetry"},
 
@@ -151,7 +146,7 @@ Configuring specific local repositories
 
 **PowerScale CSI driver**
 
-    To install PowerScale CSI driver, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install PowerScale CSI driver, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "csi_driver_powerscale", "version":"v2.11.0"},
 
@@ -159,7 +154,7 @@ Configuring specific local repositories
 
 **Jupyterhub**
 
-    To install Jupyterhub, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install Jupyterhub, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "jupyter"},
 
@@ -168,7 +163,7 @@ Configuring specific local repositories
 
 **Kserve**
 
-    To install Kserve, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install Kserve, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
                 {"name": "kserve"},
 
@@ -177,7 +172,7 @@ Configuring specific local repositories
 
 **Kubeflow**
 
-    To install kubeflow, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install kubeflow, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "kubeflow"},
 
@@ -188,7 +183,7 @@ Configuring specific local repositories
 
     To install PyTorch, do the following:
 
-        * Include the following line under ``softwares`` in ``input/software_config.json``:
+        * Include the following line under ``softwares`` in ``input/project_default/software_config.json``:
 
             ::
 
@@ -213,7 +208,7 @@ For information on deploying Pytorch after setting up the cluster, `click here. 
 
     To install TensorFlow, do the following:
 
-        * Include the following line under ``softwares`` in ``input/software_config.json``:
+        * Include the following line under ``softwares`` in ``input/project_default/software_config.json``:
 
             ::
 
@@ -238,7 +233,7 @@ For information on deploying TensorFlow after setting up the cluster, `click her
 
     To install vLLM, do the following:
 
-        * Include the following line under ``softwares`` in ``input/software_config.json``:
+        * Include the following line under ``softwares`` in ``input/project_default/software_config.json``:
 
             ::
 
@@ -260,53 +255,53 @@ For information on deploying vLLM after setting up the cluster, `click here <../
 
 **OpenMPI**
 
-    To install OpenMPI, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install OpenMPI, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "openmpi", "version":"4.1.6"},
 
 OpenMPI is deployed on the cluster when the above configurations are complete and `omnia.yml <../OmniaCluster/BuildingCluster/installscheduler.html>`_ playbook is executed.
 
-For more information on OpenMPI configurations, `click here <../AdvancedConfigurationsRHEL/install_ucx_openmpi.html>`_.
+For more information on OpenMPI configurations, `click here <../../AdvancedConfigurations/install_ucx_openmpi.html>`_.
 
 .. note:: The default OpenMPI version for Omnia is 4.1.6. If you change the version in the ``software.json`` file, make sure to update it in the ``openmpi.json`` file in the ``input/config`` directory as well.
 
 
 **Unified Communication X**
 
-    To install UCX, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install UCX, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "ucx", "version":"1.15.0"},
 
 UCX is deployed on the cluster when ``local_repo.yml`` playbook is executed, followed by the execution of `omnia.yml <../OmniaCluster/BuildingCluster/installscheduler.html>`_.
 
-For more information on UCX configurations, `click here <../AdvancedConfigurationsRHEL/install_ucx_openmpi.html>`_.
+For more information on UCX configurations, `click here <../../AdvancedConfigurations/install_ucx_openmpi.html>`_.
 
 
 **Intel benchmarks**
 
-    To install Intel benchmarks, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install Intel benchmarks, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "intel_benchmarks", "version": "2024.1.0"},
 
-For more information on Intel benchmarks, `click here <../AdvancedConfigurationsRHEL/AutomatingOneAPI.html>`_.
+For more information on Intel benchmarks, `click here <../../AdvancedConfigurations/AutomatingOneAPI.html>`_.
 
 
 **AMD benchmarks**
 
-    To install AMD benchmarks, include the following line under ``softwares`` in ``input/software_config.json``: ::
+    To install AMD benchmarks, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "amd_benchmarks"},
 
-For more information on AMD benchmarks, `click here <../AdvancedConfigurationsRHEL/AutomatingOpenMPI.html>`_.
+For more information on AMD benchmarks, `click here <../../AdvancedConfigurations/AutomatingOpenMPI.html>`_.
 
 
 **Custom repositories**
 
-    Include the following line under ``softwares`` in ``input/software_config.json``: ::
+    Include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
                 {"name": "custom"},
 
-    Create a ``custom.json`` file in the following directory: ``input/config/<cluster_os_type>/<cluster_os_version>`` to define the repositories. For example, For a cluster running RHEL 8.8, go to ``input/config/rhel/8.8/`` and create the file there. The file is a JSON list consisting of the package name, repository type, URL (optional), and version (optional). Below is a sample version of the file: ::
+    Create a ``custom.json`` file in the following directory: ``input/project_default/config/<cluster_os_type>/<cluster_os_version>`` to define the repositories. For example, For a cluster running RHEL 9.4, go to ``input/project_default/config/rhel/9.4/`` and create the file there. The file is a JSON list consisting of the package name, repository type, URL (optional), and version (optional). Below is a sample version of the file: ::
 
             {
               "custom": {

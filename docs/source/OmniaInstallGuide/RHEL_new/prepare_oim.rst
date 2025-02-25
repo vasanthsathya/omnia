@@ -6,6 +6,7 @@ The ``prepare_oim.yml`` playbook is the first playbook that you need to run in O
 * Sets up the PCS container: ``omnia_pcs``
 * Sets up the Kubespray container: ``omnia_kubespray_<version>``
 * Sets up the Provision container: ``omnia_provision``
+* Sets up the Pulp container: ``omnia_pulp``
 
 Input files for the playbook
 ------------------------------
