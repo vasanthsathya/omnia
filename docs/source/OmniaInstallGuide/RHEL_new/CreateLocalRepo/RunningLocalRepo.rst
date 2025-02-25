@@ -31,10 +31,12 @@ Verify the creation of the local repositories
 
 After ``local_repo_utility.yml`` has been executed, a status report is displayed containing the status for each package download and the playbook execution time. The corresponding log file for each package download can be located at ``/opt/omnia/....``. Here's an example of what that might look like:
 
-.. images:: ../../../images/local_repo_status.png
+.. image:: ../../../images/local_repo_status.png
 
 **SUCCESS**: The package have been successfully downloaded to the Pulp container.
-**SKIPPED**: Packages which are already a part of AppStream or BaseOS repositories show up as ``SKIPPED``.
+
+**SKIPPED**: Packages which are already a part of AppStream or BaseOS repositories show up as ``SKIPPED`` in the status report.
+
 **FAILED**: The package download has failed.
 
 .. note::
