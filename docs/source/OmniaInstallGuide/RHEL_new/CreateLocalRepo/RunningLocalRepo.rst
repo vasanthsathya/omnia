@@ -62,6 +62,6 @@ The ``local_repo_utility`` generates and provides two types of log files as part
 
 Here's an example of how the log files are organized in the ``opt/omnia/offline_repo/<node_group>`` directory:
 
-.. image:: ../../../local_repo_logs.png
+.. image:: ../../../images/local_repo_logs.png
 
 **[Optional]** `Update all local repositories <update_local_repo.html>`_

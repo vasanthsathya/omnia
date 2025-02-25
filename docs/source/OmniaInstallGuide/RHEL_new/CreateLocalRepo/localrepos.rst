@@ -107,7 +107,7 @@ Configuring specific local repositories
 
     For more information about installing Kubernetes, `click here <../OmniaCluster/BuildingCluster/install_slurm.html>`_.
 
-.. note:: Omnia recommends to install Slurm with ``always`` and ``partial`` scenarios of ``repo_config`` in ``input/software_config.json``. This is due to intermittent connectivity issues with the EPEL8 repositories.
+.. note:: Omnia recommends to install Slurm with ``repo_config`` variable set to ``always``  in ``input/project_default/software_config.json``. This is due to intermittent connectivity issues with the EPEL8 repositories.
 
 **FreeIPA**
 
@@ -136,21 +136,13 @@ Configuring specific local repositories
     For more information on configuring login node security, `click here <../OmniaCluster/BuildingCluster/Authentication.html#configuring-login-node-security>`_.
 
 
-**Telemetry**
-
-    To install Telemetry, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
-
-            {"name": "telemetry"},
-
-    For information on deploying Telemetry after setting up the cluster, `click here <../../../Telemetry/index.html>`_.
-
 **PowerScale CSI driver**
 
     To install PowerScale CSI driver, include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 
             {"name": "csi_driver_powerscale", "version":"v2.11.0"},
 
-    For information on PowerScale CSI driver, `click here <../AdvancedConfigurationsRHEL/PowerScale_CSI.html>`_.
+    For information on PowerScale CSI driver, `click here <../../AdvancedConfigurations/PowerScale_CSI.html>`_.
 
 **Jupyterhub**
 

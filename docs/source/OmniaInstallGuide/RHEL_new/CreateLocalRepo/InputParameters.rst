@@ -17,7 +17,7 @@ Based on the inputs provided to the ``input/project_default/software_config.json
    :keepspace:
    :widths: auto
 
-A sample version for RHEL is provided below:
+Here's a sample of the ``input/project_default/software_config.json``:
 
 ::
 
