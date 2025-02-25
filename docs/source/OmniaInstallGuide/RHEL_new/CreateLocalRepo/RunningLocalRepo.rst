@@ -1,7 +1,7 @@
 Execute local repo playbook
 =============================
 
-The local repository playbook (``local_repo_utility.yml``) downloads and saves the software packages/images to the **Pulp container**, which all the cluster nodes can access.
+The local repository playbook (``local_repo.yml``) downloads and saves the software packages/images to the **Pulp container**, which all the cluster nodes can access.
 
 Configurations made by the playbook
 --------------------------------------
@@ -20,16 +20,16 @@ Configurations made by the playbook
 Playbook execution
 ----------------------
 
-To create local repositories on the Pulp container, execute the ``local_repo_utility.yml`` playbook using the following command: ::
+To create local repositories on the Pulp container, execute the ``local_repo.yml`` playbook using the following command: ::
 
     ssh omnia_core
     cd /omnia/local_repo
-    ansible-playbook local_repo_utility.yml
+    ansible-playbook local_repo.yml
 
 Check status of the packages
 ------------------------------
 
-After ``local_repo_utility.yml`` has been executed, a status report is displayed containing the status for each package download and the complete playbook execution time. Here's an example of what that might look like:
+After ``local_repo.yml`` has been executed, a status report is displayed containing the status for each package download and the complete playbook execution time. Here's an example of what that might look like:
 
 .. image:: ../../../images/local_repo_status.png
 
@@ -41,22 +41,22 @@ After ``local_repo_utility.yml`` has been executed, a status report is displayed
 
 .. note::
 
-    * The ``local_repo_utility.yml`` playbook execution fails if any software package has a ``FAILED`` status. In such a scenario, the user needs to re-run the ``local_repo_utility.yml`` playbook.
+    * The ``local_repo.yml`` playbook execution fails if any software package has a ``FAILED`` status. In such a scenario, the user needs to re-run the ``local_repo.yml`` playbook.
 
     * If any software package fails to download during the execution of this playbook, other scripts/playbooks that rely on the package may also fail.
 
-    * To download additional software packages after the playbook has been executed, simply update the ``input/project_default/software_config.json`` with the new software information and re-run the ``local_repo_utility.yml`` playbook.
+    * To download additional software packages after the playbook has been executed, simply update the ``input/project_default/software_config.json`` with the new software information and re-run the ``local_repo.yml`` playbook.
 
-    * After ``local_repo_utility.yml`` has run, the value of ``repo_config`` in ``input/project_default/software_config.json`` cannot be updated without running the `oim_cleanup.yml <../../Maintenance/cleanup.html>`_ playbook first.
+    * After ``local_repo.yml`` has run, the value of ``repo_config`` in ``input/project_default/software_config.json`` cannot be updated without running the `oim_cleanup.yml <../../Maintenance/cleanup.html>`_ playbook first.
 
 Log files
 ----------
 
-The ``local_repo_utility`` generates and provides two types of log files as part of its execution:
+The ``local_repo`` generates and provides two types of log files as part of its execution:
 
-1. ``standard.log``: This log file is present in the ``opt/omnia/offline_repo/<node_group>`` directory, and contains the overall status of the ``local_repo_utility.yml`` playbook execution.
+1. ``standard.log``: This log file is present in the ``opt/omnia/offline_repo/<node_group>`` directory, and contains the overall status of the ``local_repo.yml`` playbook execution.
 
-2. Package based logs: Each package download initiated by the ``local_repo_utility.yml`` comes with its own log file. These log files can be accessed from the ``opt/omnia/offline_repo/<node_group>/<package_name>/logs``.
+2. Package based logs: Each package download initiated by the ``local_repo.yml`` comes with its own log file. These log files can be accessed from the ``opt/omnia/offline_repo/<node_group>/<package_name>/logs``.
 
 .. note:: To view the log files in ``.csv`` format, navigate to ``/opt/omnia/offline_repo/<node_group>/status.csv``.
 

@@ -26,7 +26,7 @@ Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``input/project_d
 
 * **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ""- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}""
 
-.. caution:: Omnia does not support adding a Red Hat subscription URL to the ``rhel_os_url`` parameter. Adding it results in an error during ``local_repo_utility.yml`` playbook execution. For more information, `click here <../../../Troubleshooting/KnownIssues/RHEL/local_repo.html>`_."
+.. caution:: Omnia does not support adding a Red Hat subscription URL to the ``rhel_os_url`` parameter. Adding it results in an error during ``local_repo.yml`` playbook execution. For more information, `click here <../../../Troubleshooting/KnownIssues/RHEL/local_repo.html>`_."
 "**omnia_repo_url_rhel**
 
 ``JSON List``

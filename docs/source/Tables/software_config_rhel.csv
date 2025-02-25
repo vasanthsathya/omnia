@@ -20,7 +20,7 @@ Required","* The type of offline configuration user needs.
 * When the value is set to ``always``, Omnia creates a local Pulp repository on the OIM hosting all the packages/images required for the cluster.
 * When the value is set to ``never``, Omnia does not create a local repository. All the packages/images are directly downloaded from the internet to the cluster.
 .. note::
-  * After the ``local_repo_utility.yml`` has been executed, the value of ``repo_config`` in ``input/project_default/software_config.json`` cannot be updated without running the `oim_cleanup.yml <../../Maintenance/cleanup.html>`_ playbook first.
+  * After the ``local_repo.yml`` has been executed, the value of ``repo_config`` in ``input/project_default/software_config.json`` cannot be updated without running the `oim_cleanup.yml <../../Maintenance/cleanup.html>`_ playbook first.
   * Irrespective of the value of ``repo_config``, all local repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``input/project_default/software_config.json``.
 
 * **Accepted values**:
@@ -34,7 +34,7 @@ Required","* The type of offline configuration user needs.
 
 Required","* A JSON list of required software and (optionally) the software version.
 * The following software should be listed with a version in the list: BeeGFS, AMD GPU, Kubernetes, CUDA, OFED, UCX, and ROCm.
-* A minimum of one software should be provided in the list for ``local_repo_utility.yml`` to execute correctly.
+* A minimum of one software should be provided in the list for ``local_repo.yml`` to execute correctly.
 * The ``<os_type>_software_config.json`` will have the basic softwares present in it. To add additional software stacks, add the software under ``input/project_default/software_config.json``.
 * For the list of all applicable softwares based on your ``<cluster_os_type>``, refer the templates at ``examples/template_<os>_software_config.json``. For example, ``examples/template_rhel_software_config.json``.
 

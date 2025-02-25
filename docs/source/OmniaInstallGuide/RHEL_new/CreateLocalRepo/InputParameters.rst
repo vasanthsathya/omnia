@@ -1,7 +1,7 @@
 Input parameters for Local Repositories
 ==========================================
 
-The ``local_repo_utility.yml`` playbook is dependent on the inputs provided to the following input files:
+The ``local_repo.yml`` playbook is dependent on the inputs provided to the following input files:
 
 * ``input/project_default/software_config.json``
 * ``input/project_default/local_repo_config.yml``
