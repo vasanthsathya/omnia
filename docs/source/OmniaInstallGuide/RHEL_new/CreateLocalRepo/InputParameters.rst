@@ -75,7 +75,7 @@ A sample version for RHEL is provided below:
 
     * For a list of accepted ``softwares``, go to the ``input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For example, for a cluster running RHEL 9.4, go to ``input/config/rhel/9.4/`` and view the file list for accepted softwares.
     * Omnia supports a single version of any software packages in the ``input/project_default/software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
-    * To configure a locally available repository that does not have a pre-defined json file, `click here <../AdvancedConfigurationsRHEL/CustomLocalRepo.html>`_.
+    * To configure a locally available repository that does not have a pre-defined json file, `click here <../../AdvancedConfigurations/CustomLocalRepo.html>`_.
 
 ``input/project_default/local_repo_config.yml``
 ------------------------------------------------------

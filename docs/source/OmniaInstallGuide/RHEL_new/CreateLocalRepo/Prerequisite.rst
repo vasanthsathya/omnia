@@ -8,4 +8,4 @@ For the ``local_repo_utility.yml`` playbook to work seamlessly, ensure that the 
 3. Ensure that all required certificates are stored using **Ansible Vault**, which ensures complete confidentiality and integrity within the cluster.
 4. Ensure that the repository URLs for the software packages is accessible. If not, download will fail for that specific package.
 
-[Optional] If you do not want to use the pulp container and you have your software packages/images stored in your local path, you can use the `user registry <user_registry.html>`_ feature provided by Omnia.
+**[Optional]** If you do not want to use the Pulp container and you have your software packages/images stored in your local path, you can use the `user registry <user_registry.html>`_ feature provided by Omnia.

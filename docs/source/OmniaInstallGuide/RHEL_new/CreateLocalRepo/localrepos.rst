@@ -62,23 +62,21 @@ Configuring specific local repositories
 
             {"name": "ofed", "version": "24.01-0.3.3.1"},
 
-    For a list of repositories (and their types) configured for OFED, view the ``input/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the file.:
+    For a list of repositories (and their types) configured for OFED, view the ``input/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the file as shown below: ::
 
-    For RHEL: ::
-
-            {
-              "ofed": {
-                "cluster": [
-                  { "package": "ofed",
-                    "type": "iso",
-                    "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.01-0.3.3.1/MLNX_OFED_LINUX-24.01-0.3.3.1-rhel8.7-x86_64.iso",
-                    "path": ""
-                  }
-                ]
+        {
+          "ofed": {
+            "cluster": [
+              { "package": "ofed",
+                "type": "iso",
+                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.01-0.3.3.1/MLNX_OFED_LINUX-24.01-0.3.3.1-rhel8.7-x86_64.iso",
+                "path": ""
               }
-            }
+            ]
+          }
+        }
 
-.. note:: If the package version is customized, ensure that the ``version`` value is updated in ``software_config.json``.
+.. note:: If the package version is customized, ensure that the ``version`` value is updated correctly in ``software_config.json``.
 
 **BeeGFS**
 
