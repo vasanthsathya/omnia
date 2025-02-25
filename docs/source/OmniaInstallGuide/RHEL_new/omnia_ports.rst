@@ -4,24 +4,21 @@ Ports used by the OIM
 Container ports
 ----------------
 
-The following ports are used by the containers present on the OIM:
+Omnia creates containers on the OIM to ensure a smooth and dependency free deployment. The following ports are used by the containers and must not be assigned for any other tasks:
 
     +-------------------------+-----------------------------------------------+
     |  Container Name         |  Port Number                                  |
     +=========================+===============================================+
     |  Core Container         |  2222                                         |
     +-------------------------+-----------------------------------------------+
-    |  PCS Container          |  NA                                           |
-    +-------------------------+-----------------------------------------------+
     |  Kubespray Container    |  2224                                         |
     +-------------------------+-----------------------------------------------+
     |  Provision Container    |  2223                                         |
     +-------------------------+-----------------------------------------------+
-    |  Pulp Container         |  NA                                           |
-    +-------------------------+-----------------------------------------------+
+
 
 xCAT ports
--------------
+------------
 
         +---------------+----------+--------------+
         | Port number   | Protocol | Service Name |

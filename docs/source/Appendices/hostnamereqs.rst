@@ -10,4 +10,4 @@ Hostname requirements
 .. note::
 
     * The **domain name** is allowed with commas and periods.
-    * Omnia appends 6 digits to the hostname to individually name each target node.
+    * Omnia appends 6 digits to the hostname to individually name each cluster node.
