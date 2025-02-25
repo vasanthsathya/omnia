@@ -29,15 +29,15 @@ To create local repositories on the Pulp container, execute the ``local_repo.yml
 Check status of the packages
 ------------------------------
 
-After ``local_repo.yml`` has been executed, a status report is displayed containing the status for each package download and the complete playbook execution time. Here's an example of what that might look like:
+After ``local_repo.yml`` has been executed, a status report is displayed containing the status for each downloaded package along with the complete playbook execution time. Here's an example of what that might look like:
 
 .. image:: ../../../images/local_repo_status.png
 
-**SUCCESS**: The package have been successfully downloaded to the Pulp container.
+**SUCCESS**: The package has been successfully downloaded to the Pulp container.
 
-**SKIPPED**: Packages which are already a part of AppStream or BaseOS repositories show up as ``SKIPPED`` in the status report.
+**SKIPPED**: Packages which are already a part of AppStream or BaseOS repositories are not downloaded, and show up as ``SKIPPED`` in the status report.
 
-**FAILED**: The package download has failed.
+**FAILED**: The package couldn't be downloaded successfully.
 
 .. note::
 
@@ -52,11 +52,11 @@ After ``local_repo.yml`` has been executed, a status report is displayed contain
 Log files
 ----------
 
-The ``local_repo`` generates and provides two types of log files as part of its execution:
+The ``local_repo.yml`` playbook generates and provides two types of log files as part of its execution:
 
 1. ``standard.log``: This log file is present in the ``opt/omnia/offline_repo/<node_group>`` directory, and contains the overall status of the ``local_repo.yml`` playbook execution.
 
-2. Package based logs: Each package download initiated by the ``local_repo.yml`` comes with its own log file. These log files can be accessed from the ``opt/omnia/offline_repo/<node_group>/<package_name>/logs``.
+2. Package based logs: Each package download initiated by the ``local_repo.yml`` playbook comes with its own log file. These log files can be accessed from ``opt/omnia/offline_repo/<node_group>/<package_name>/logs``.
 
 .. note:: To view the log files in ``.csv`` format, navigate to ``/opt/omnia/offline_repo/<node_group>/status.csv``.
 

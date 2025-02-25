@@ -56,13 +56,13 @@ Note the compatibility between cluster OS and OIM OS below:
 
              ip link show
 
-  In the event of a mismatch, edit the file ``/etc/sysconfig/network-scripts/ifcfg-<nic name>`` using the vi editor for RHEL clusters.
+  In the event of a mismatch, edit the file ``/etc/sysconfig/network-scripts/ifcfg-<nic name>`` using the vi editor.
 
-* When discovering nodes via mapping files, all target nodes should be set up in PXE mode before running the playbooks.
+* When discovering nodes via mapping files, all cluster nodes should be set up in PXE mode before running the playbooks.
 
 .. note::
 
-    * After configuration and installation of the cluster, changing the OIM is not supported. If you need to change the OIM, you must redeploy the entire cluster.
+    * After the cluster has been deployed, changing the OIM is not supported. If you need to change the OIM, you must redeploy the entire cluster.
 
     * For servers with an existing OS being discovered via BMC, ensure that the first PXE device on target nodes should be the designated active NIC for PXE booting.
 

@@ -1,12 +1,16 @@
 Input parameters for the cluster
 ===================================
 
-These parameters are located in ``input/omnia_config.yml``, ``input/security_config.yml``, and ``input/storage_config.yml``. To initiate telemetry support, fill out `these parameters <../../../Telemetry/index.html#id13>`_ in ``input/telemetry_config.yml``.
+The ``omnia.yml`` playbook is dependent on the inputs provided to the following input files:
 
-.. caution:: Do not remove or comment any lines in the ``input/omnia_config.yml``, ``input/security_config.yml``, ``input/telemetry_config.yml``, and ``input/storage_config.yml`` file.
+* ``input/project_default/omnia_config.yml``
+* ``input/project_default/security_config.yml``
+* ``input/project_default/storage_config.yml``
 
-omnia_config.yml
--------------------
+.. caution:: Do not remove, edit, or comment any lines in the above mentioned input files.
+
+``input/project_default/omnia_config.yml``
+--------------------------------------------
 
 .. csv-table:: Parameters for kubernetes setup
    :file: ../../../Tables/scheduler_k8s_rhel.csv
@@ -18,8 +22,8 @@ omnia_config.yml
    :header-rows: 1
    :keepspace:
 
-security_config.yml
----------------------
+``input/project_default/security_config.yml``
+------------------------------------------------
 
 .. csv-table:: Parameters for Authentication
    :file: ../../../Tables/security_config.csv
@@ -37,8 +41,8 @@ security_config.yml
    :keepspace:
 
 
-storage_config.yml
---------------------
+``input/project_default/storage_config.yml``
+-----------------------------------------------
 
 .. csv-table:: Parameters for Storage
    :file: ../../../Tables/storage_config.csv
@@ -50,7 +54,7 @@ Click here for more information on `OpenLDAP, FreeIPA <BuildingCluster/Authentic
 
 .. note::
 
-    * The ``input/omnia_config.yml`` and ``input/security_config.yml`` files are encrypted during the execution of ``omnia.yml`` playbook. Use the below commands to edit the encrypted input files:
+    * The ``input/project_default/omnia_config.yml`` and ``input/project_default/security_config.yml`` input files are encrypted during the execution of ``omnia.yml`` playbook. Use the below commands to edit the encrypted input files:
 
         * ``omnia_config.yml``: ::
 

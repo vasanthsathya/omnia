@@ -8,9 +8,9 @@ Via CLI
 
     ssh omnia_core
 
-* After you're in the ``omnia_core`` container, use SSH again to reach to the provision container: ::
+* After you're in the ``omnia_core`` container, use SSH again to reach the ``omnia_provision`` container: ::
 
-    ssh provision
+    ssh omnia_provision
 
 * Run ``nodels all nodelist.status`` for a list of nodes and their statuses. Here's an example of this command output: ::
 
@@ -47,6 +47,6 @@ Possible values of node status are ``powering-off``, ``powering-on``, ``bmcready
 
 .. note::
     * The ``gpu_count`` in the database is only updated every time a cluster node is PXE booted.
-    * Nodes listed as "failed" can be diagnosed using the ``/var/log/xcat/xcat.log`` file on the target node. Correct any underlying issues and `re-provision the node <../../Maintenance/reprovision.html>`_.
-    * Information on debugging nodes stuck at ``powering-on``, ``bmcready``, or ``installing`` for longer than expected is available `here. <../../../Troubleshooting/FAQ/Common/Provision.html>`_ Correct any underlying issue on the node and `re-provision the node <../../Maintenance/reprovision.html>`_.
-    * A blank node status indicates that no attempt to provision has taken place. Attempt a manual PXE boot on the node to initiate provisioning.
+    * Nodes listed as "failed" can be diagnosed using the ``/var/log/xcat/xcat.log`` file on the target node. Correct any underlying issues and `re-provision the cluster <../../Maintenance/reprovision.html>`_.
+    * Information on debugging nodes stuck at ``powering-on``, ``bmcready``, or ``installing`` for longer than expected is available `here <../../../Troubleshooting/FAQ/Common/Provision.html>`_. Correct any underlying issue on the node and `re-provision the cluster <../../Maintenance/reprovision.html>`_.
+    * A blank node status indicates that no attempt to provision it has taken place. Attempt a manual PXE boot on the node to initiate provisioning.

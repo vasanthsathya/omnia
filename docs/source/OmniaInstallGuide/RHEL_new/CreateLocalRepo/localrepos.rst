@@ -97,7 +97,7 @@ Configuring specific local repositories
 
     For more information about installing Kubernetes, `click here <../OmniaCluster/BuildingCluster/install_kubernetes.html>`_.
 
-.. note:: The version of the software provided above is the only version of the software Omnia supports.
+.. note:: The version of ``k8s`` provided above is the only version of the software Omnia supports.
 
 **Slurm**
 
@@ -150,7 +150,7 @@ Configuring specific local repositories
 
             {"name": "jupyter"},
 
-    For information on deploying Jupyterhub after setting up the cluster, `click here <../InstallAITools/InstallJupyterhub.html>`_.
+    For information on deploying Jupyterhub after setting up the cluster, `click here <../../InstallAITools/InstallJupyterhub.html>`_.
 
 
 **Kserve**
@@ -159,7 +159,7 @@ Configuring specific local repositories
 
                 {"name": "kserve"},
 
-    For information on deploying Kserve after setting up the cluster, `click here <../InstallAITools/kserve.html>`_.
+    For information on deploying Kserve after setting up the cluster, `click here <../../InstallAITools/kserve.html>`_.
 
 
 **Kubeflow**
@@ -168,7 +168,7 @@ Configuring specific local repositories
 
             {"name": "kubeflow"},
 
-    For information on deploying kubeflow after setting up the cluster, `click here <../InstallAITools/kubeflow.html>`_.
+    For information on deploying kubeflow after setting up the cluster, `click here <../../InstallAITools/kubeflow.html>`_.
 
 
 **Pytorch**
@@ -193,7 +193,7 @@ Configuring specific local repositories
 
         * A sample format is available `here. <InputParameters.html>`_
 
-For information on deploying Pytorch after setting up the cluster, `click here. <../InstallAITools/Pytorch.html>`_
+For information on deploying Pytorch after setting up the cluster, `click here. <../../InstallAITools/Pytorch.html>`_
 
 
 **TensorFlow**
@@ -218,7 +218,7 @@ For information on deploying Pytorch after setting up the cluster, `click here. 
 
         * A sample format is available `here. <InputParameters.html>`_
 
-For information on deploying TensorFlow after setting up the cluster, `click here <../InstallAITools/TensorFlow.html>`_.
+For information on deploying TensorFlow after setting up the cluster, `click here <../../InstallAITools/TensorFlow.html>`_.
 
 
 **vLLM**
@@ -242,7 +242,7 @@ For information on deploying TensorFlow after setting up the cluster, `click her
 
         * A sample format is available `here. <InputParameters.html>`_
 
-For information on deploying vLLM after setting up the cluster, `click here <../InstallAITools/vLLM/index.html>`_.
+For information on deploying vLLM after setting up the cluster, `click here <../../InstallAITools/vLLM/index.html>`_.
 
 
 **OpenMPI**
@@ -251,11 +251,11 @@ For information on deploying vLLM after setting up the cluster, `click here <../
 
             {"name": "openmpi", "version":"4.1.6"},
 
-OpenMPI is deployed on the cluster when the above configurations are complete and `omnia.yml <../OmniaCluster/BuildingCluster/installscheduler.html>`_ playbook is executed.
+    OpenMPI is deployed on the cluster when the above configurations are complete and `omnia.yml <../OmniaCluster/BuildingCluster/installscheduler.html>`_ playbook is executed.
 
-For more information on OpenMPI configurations, `click here <../../AdvancedConfigurations/install_ucx_openmpi.html>`_.
+    For more information on OpenMPI configurations, `click here <../../AdvancedConfigurations/install_ucx_openmpi.html>`_.
 
-.. note:: The default OpenMPI version for Omnia is 4.1.6. If you change the version in the ``software.json`` file, make sure to update it in the ``openmpi.json`` file in the ``input/config`` directory as well.
+.. note:: The default OpenMPI version for Omnia is 4.1.6. If you change the version in the ``input/project_default/software_config.json`` file, make sure to update it in the ``openmpi.json`` file in the ``input/project_default/config`` directory as well.
 
 
 **Unified Communication X**
@@ -264,9 +264,9 @@ For more information on OpenMPI configurations, `click here <../../AdvancedConfi
 
             {"name": "ucx", "version":"1.15.0"},
 
-UCX is deployed on the cluster when ``local_repo.yml`` playbook is executed, followed by the execution of `omnia.yml <../OmniaCluster/BuildingCluster/installscheduler.html>`_.
+    UCX is deployed on the cluster when ``local_repo.yml`` playbook is executed, followed by the execution of `omnia.yml <../OmniaCluster/BuildingCluster/installscheduler.html>`_.
 
-For more information on UCX configurations, `click here <../../AdvancedConfigurations/install_ucx_openmpi.html>`_.
+    For more information on UCX configurations, `click here <../../AdvancedConfigurations/install_ucx_openmpi.html>`_.
 
 
 **Intel benchmarks**
@@ -275,7 +275,7 @@ For more information on UCX configurations, `click here <../../AdvancedConfigura
 
             {"name": "intel_benchmarks", "version": "2024.1.0"},
 
-For more information on Intel benchmarks, `click here <../../AdvancedConfigurations/AutomatingOneAPI.html>`_.
+    For more information on Intel benchmarks, `click here <../../AdvancedConfigurations/AutomatingOneAPI.html>`_.
 
 
 **AMD benchmarks**
@@ -284,10 +284,10 @@ For more information on Intel benchmarks, `click here <../../AdvancedConfigurati
 
             {"name": "amd_benchmarks"},
 
-For more information on AMD benchmarks, `click here <../../AdvancedConfigurations/AutomatingOpenMPI.html>`_.
+    For more information on AMD benchmarks, `click here <../../AdvancedConfigurations/AutomatingOpenMPI.html>`_.
 
 
-**Custom repositories**
+**Custom packages**
 
     Include the following line under ``softwares`` in ``input/project_default/software_config.json``: ::
 

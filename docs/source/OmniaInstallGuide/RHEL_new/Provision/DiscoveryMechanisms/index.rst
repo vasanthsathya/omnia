@@ -11,8 +11,8 @@ Depending on the values provided in ``input/provision_config.yml``, target nodes
     bmc
 
 
-switch_based
-------------
+``switch_based``
+------------------
 
 Omnia can query known switches (by SNMPv3 username/password) for information on target node MAC IDs.
 
@@ -20,7 +20,7 @@ Omnia can query known switches (by SNMPv3 username/password) for information on 
 | Pros                                                    | Cons                                                 |
 +=========================================================+======================================================+
 | The entire discovery process is totally automatic.      | Users need to enable IPMI on target servers.         |
-+---------------------------------------------------------+-----------------------------------+------------------+
++---------------------------------------------------------+------------------------------------------------------+
 | Admin IP, BMC IP and Infiniband IP address configuration| Servers require a manual PXE boot after the first run|
 | is automatic on the target nodes.                       | of the provision tool.                               |
 +---------------------------------------------------------+------------------------------------------------------+
@@ -32,8 +32,8 @@ Omnia can query known switches (by SNMPv3 username/password) for information on 
 
 For more information regarding switch-based discovery, `click here <switch-based.html>`_
 
-mapping
---------
+``mapping file``
+-----------------
 
 Manually collect PXE NIC information for target servers and manually define them to Omnia using a mapping file using the below format:
 
@@ -49,30 +49,30 @@ Manually collect PXE NIC information for target servers and manually define them
 +=========================================================+======================================================+
 | Easily customizable if the user maintains a list of     | The user needs to be aware of the MAC/IP mapping     |
 | MAC addresses.                                          | required in the network.                             |
-+---------------------------------------------------------+-----------------------------------+------------------+
++---------------------------------------------------------+------------------------------------------------------+
 |                                                         | Servers require a manual PXE boot if iDRAC IPs are   |
 |                                                         | not configured.                                      |
 +---------------------------------------------------------+------------------------------------------------------+
 
 For more information regarding mapping files, `click here <mappingfile.html>`_
 
-bmc
-----
+``bmc``
+---------
 
-Omnia can also discover nodes via their iDRAC using IPMI.
+Omnia can also discover nodes via their iDRAC using IPMI (Intelligent Platform Management Interface).
 
-+---------------------------------------------------------+------------------------------------------------------+
-| Pros                                                    | Cons                                                 |
-+=========================================================+======================================================+
-| Discovery and provisioning of servers is automatic.     | For iDRACs that are not DHCP enabled (i.e., Static), |
-|                                                         | users need to enable IPMI manually.                  |
-+---------------------------------------------------------+-----------------------------------+------------------+
-| Admin, BMC and Infiniband IP address configuration is   | Servers require a manual PXE boot after the first run|
-| automatic on the OIM.                                   | of the provision tool.                               |
-+---------------------------------------------------------+------------------------------------------------------+
-| LOM architecture is supported                           |                                                      |
-| (including cloud enclosures: C6420, C6520, C6620).      |                                                      |
-+---------------------------------------------------------+------------------------------------------------------+
++---------------------------------------------------------+--------------------------------------------------------+
+| Pros                                                    | Cons                                                   |
++=========================================================+========================================================+
+| Discovery and provisioning of servers is automatic.     | For iDRACs that are not DHCP enabled (that is, Static),|
+|                                                         | users need to enable IPMI manually.                    |
++---------------------------------------------------------+--------------------------------------------------------+
+| Admin, BMC and Infiniband IP address configuration is   | Servers require a manual PXE boot after the first run  |
+| automatic on the OIM.                                   | of the provision tool.                                 |
++---------------------------------------------------------+--------------------------------------------------------+
+| LOM architecture is supported                           |                                                        |
+| (including cloud enclosures: C6420, C6520, C6620).      |                                                        |
++---------------------------------------------------------+--------------------------------------------------------+
 
 For more information regarding BMC, `click here <bmc.html>`_
 
