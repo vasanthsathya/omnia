@@ -1,7 +1,7 @@
 Configure additional NICs and specify Kernel Parameters on the nodes
 =======================================================================
 
-.. caution:: Assigning IP rules to additional NICs is not supported on RHEL or Rocky clusters.
+.. caution:: Assigning IP rules to additional NICs is not supported on RHEL clusters.
 
 Omnia provides two methods for configuring additional NICs and defining Kernel command-line parameters on the nodes:
 
@@ -36,7 +36,7 @@ The ``server_spec_update.yml`` playbook can be used to do the following tasks:
       .. note:: You can either use ``CIDR`` or ``static_range``. Simultaneous use of both parameters will result in an error message being displayed.
 
     * ``MTU``: Maximum transmission unit (MTU) is a measurement in bytes of the largest data packets that an Internet-connected device can accept. Default value of ``MTU`` is 1500. You can enter your desired value.
-    * ``VLAN``: A 12-bit field that identifies a virtual LAN (VLAN) and specifies the VLAN that an ethernet frame belongs to. This property is not supported on clusters running Ubuntu.
+    * ``VLAN``: A 12-bit field that identifies a virtual LAN (VLAN) and specifies the VLAN that an ethernet frame belongs to.
 
 * Modify the ``input/server_spec.yml`` file with the additional NIC information and/or OS command-line kernel parameters that you want to add or alter for the target nodes. Ensure the following:
 

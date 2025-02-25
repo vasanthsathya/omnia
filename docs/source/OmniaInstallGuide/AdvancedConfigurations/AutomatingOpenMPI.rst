@@ -3,8 +3,6 @@ Installing pmix and updating slurm configuration for AMD processors
 
 This topic explains how to automatically update AMD servers for MPI jobs.
 
-.. caution:: This utility is not supported on Ubuntu clusters.
-
 **Pre-requisites**
 
 * A local repository has been set up by listing ``{"name": "amd_benchmarks"},`` in ``input/software_config.json`` and running ``local_repo.yml``. For more information, `click here. <../CreateLocalRepo/index.html>`_

@@ -1,7 +1,7 @@
 Provision
 ==========
 
-⦾ **Why does the provisioning status of RHEL/Rocky Linux remote servers remain stuck at ‘installing’ in cluster.nodeinfo (omniadb)?**
+⦾ **Why does the provisioning status of RHEL remote servers remain stuck at ‘installing’ in** ``cluster.nodeinfo`` **table (omniadb)?**
 
 .. image:: ../../../images/InstallingStuckDB.png
 

@@ -82,7 +82,7 @@ Storage
 
 2. Open all ports required by BeeGFS: 8008, 8003, 8004, 8005 and 8006
 
-3. Check the `support matrix for RHEL or Rocky Linux <../../../Overview/SupportMatrix/OperatingSystems/index.html>`_ to verify your setup.
+3. Check the `support matrix <../../../Overview/SupportMatrix/OperatingSystems/index.html>`_  to ensure that a supported RHEL OS version is running on the cluster.
 
 4. For further insight into the issue, check out ``/var/log/beegfs-client.log`` on nodes where the BeeGFS client is running.
 

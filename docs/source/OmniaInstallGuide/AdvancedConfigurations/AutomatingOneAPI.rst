@@ -3,8 +3,6 @@ Automate installation oneAPI on Intel processors for MPI jobs
 
 This topic explains how to automatically update servers for MPI jobs.
 
-.. caution:: oneAPI is not supported on Ubuntu clusters.
-
 **Pre-requisites**
 
 * A local repository has been set up by listing ``{"name": "intel_benchmarks", "version": "2024.1.0"},`` in ``input/software_config.json`` and running ``local_repo.yml``. For more information, `click here. <../CreateLocalRepo/index.html>`_

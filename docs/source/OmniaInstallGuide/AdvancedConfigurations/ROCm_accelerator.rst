@@ -11,7 +11,6 @@ The accelerator role allows users to  set up the `AMD ROCm <https://rocm.docs.am
 .. note::
 	* Nodes provisioned using the Omnia provision tool do not require a RedHat subscription to run ``accelerator.yml`` on RHEL target nodes.
 	* For RHEL target nodes not provisioned by Omnia, ensure that RedHat subscription is enabled on all target nodes. Every target node will require a RedHat subscription.
-	* AMD ROCm driver installation is not supported by Omnia on Rocky Linux cluster nodes.
 
 **Playbook configurations**
 
