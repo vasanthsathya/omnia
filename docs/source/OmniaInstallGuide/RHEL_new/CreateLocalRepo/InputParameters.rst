@@ -3,11 +3,11 @@ Input parameters for Local Repositories
 
 The ``local_repo_utility.yml`` playbook is dependent on the inputs provided to the following input files:
 
-* ``input/project_default/local_repo_config.yml``
 * ``input/project_default/software_config.json``
+* ``input/project_default/local_repo_config.yml``
 
 ``input/project_default/software_config.json``
-------------------------------------
+-----------------------------------------------------
 
 Based on the inputs provided to the ``input/project_default/software_config.json``, the software packages/images are accessed from the Pulp container and the desired software stack is deployed on the cluster nodes.
 
@@ -77,8 +77,8 @@ A sample version for RHEL is provided below:
     * Omnia supports a single version of any software packages in the ``input/project_default/software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
     * To configure a locally available repository that does not have a pre-defined json file, `click here <../AdvancedConfigurationsRHEL/CustomLocalRepo.html>`_.
 
-``input/local_repo_config.yml``
--------------------------------------
+``input/project_default/local_repo_config.yml``
+------------------------------------------------------
 
 .. csv-table:: Parameters for Local Repository Configuration
    :file: ../../../Tables/local_repo_config_rhel.csv
