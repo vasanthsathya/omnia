@@ -16,18 +16,14 @@ Required","* The OS Version that will be provisoned on compute nodes.
 
 ``string``
 
-Required","* The type of offline configuration user needs.
-* When the value is set to ``always``, Omnia creates a local Pulp repository on the OIM hosting all the packages/images required for the cluster.
-* When the value is set to ``never``, Omnia does not create a local repository. All the packages/images are directly downloaded from the internet to the cluster.
+Required","* Omnia creates a local Pulp repository on the OIM and stores all the packages/images required for the cluster in that repository.
+
 .. note::
-  * After the ``local_repo.yml`` has been executed, the value of ``repo_config`` in ``input/project_default/software_config.json`` cannot be updated without running the `oim_cleanup.yml <../../Maintenance/cleanup.html>`_ playbook first.
-  * Irrespective of the value of ``repo_config``, all local repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``input/project_default/software_config.json``.
+  * All local repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``input/project_default/software_config.json``.
 
-* **Accepted values**:
+* **Accepted value**:
 
-  * ``always`` <- Default
-  * ``never``
-	"
+  * ``always``	"
 "**softwares**
 
 ``JSON list``

@@ -3,26 +3,24 @@
 
 ``JSON List``
 
-Optional","* This variable accepts the repository urls of the user which contains the packages required for the cluster.
+Optional","* This variable accepts user-defined repository urls, from which the software packages/images will be downloaded and accessed by the cluster.
 
-* When ``repo_config`` is always, the given list will be configured on the OIM and packages required for cluster will be downloaded into a local repository.
+* Omnia downloads the software packages/images the given list of URLs and stores them into a Pulp container, present on the NFS share. These packages/images are then accessed by the cluster nodes from that NFS share.
 
-* When ``repo_config`` is never, no local repository is created and packages are downloaded on all cluster nodes.
+* ``url`` defines the baseurl for the repository.
 
-* 'url' defines the baseurl for the repository.
+* ``gpgkey`` defines gpgkey for the repository. If ``gpgkey`` is omitted then ``gpgcheck=0`` is set for that repository.
 
-* 'gpgkey' defines gpgkey for the repository. If 'gpgkey' is omitted then   gpgcheck=0 is set for that repository.
-
-* **Sample value**: ``- {url: ""http://crb.com/CRB/x86_64/os/"",gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}``"
+* **Example**: ``- {url: ""http://crb.com/CRB/x86_64/os/"",gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}``"
 "**rhel_os_url**
 
 ``string``
 
 Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``input/project_default/software_config.json``.
-* User has to provide the code ready builder url in order to download the packages.
-* When ``repo_config`` is ""always"", the given ``rhel_os_url`` will be configured in the OIM and packages required for cluster will be downloaded.
-* When repo_config is ""never"", the packages required for cluster coming from ``rhel_repo_url`` will not be downloaded.
-* The ``rhel_os_url`` is configured via proxy in compute nodes.
+* Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
+* Additional packages requied for the cluster are downloaded from the provided ``rhel_os_url`` and stored in the Pulp container.
+
+.. note:: The ``rhel_os_url`` is configured via proxy in compute nodes.
 
 * **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ""- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}""
 
@@ -31,12 +29,14 @@ Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``input/project_d
 
 ``JSON List``
 
-Required","* A list of all the repo urls from where ``.rpm`` packages will be downloaded for RHEL clusters.
-* 'url' defines the baseurl for the repository where the package is hosted.
-* 'gpgkey' defines gpgkey for the repository. If 'gpgkey' is omitted, then gpgcheck=0 is set for that repository.
-* 'name' defines the name of the software ``.rpm`` package.
-* These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
-* Ensure that all URLs listed below are reachable from the OIM.
+Required","* This variable accepts a list of all the repo urls from where ``.rpm`` packages will be downloaded for RHEL clusters.
+* ``url`` defines the baseurl for the repository where the package is hosted.
+* ``gpgkey`` defines the gpgkey for the repository. If ``gpgkey`` is omitted, then ``gpgcheck=0`` is set for that repository.
+* ``name`` defines the name of the software ``.rpm`` package.
+
+.. note::
+      * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
+      * Ensure that all the listed URLs are reachable from the OIM.
 
 **Default value**: ::
 
