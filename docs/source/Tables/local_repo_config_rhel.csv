@@ -32,12 +32,7 @@ Required","* This variable accepts a list of all the repo urls from where ``.rpm
 * ``url`` defines the baseurl for the repository where the package is hosted.
 * ``gpgkey`` defines the gpgkey for the repository. If ``gpgkey`` is omitted, then ``gpgcheck=0`` is set for that repository.
 * ``name`` defines the name of the software ``.rpm`` package.
-
-.. note::
-      * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
-      * Ensure that all the listed URLs are reachable from the OIM.
-
-**Default value**: ::
+* **Default value**: ::
 
        - { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"" }
        - { url: ""https://repo.radeon.com/rocm/rhel9/{{ rocm_version }}/main"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""rocm"" }
@@ -48,4 +43,7 @@ Required","* This variable accepts a list of all the repo urls from where ``.rpm
        - { url: ""https://ltb-project.org/rpm/openldap25/9/x86_64"", gpgkey: """", name: ""ldap"" }
        - { url: ""https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"", gpgkey: ""https://nvidia.github.io/libnvidia-container/gpgkey"", name: ""nvidia-repo"" }
        - { url: ""https://a2o.github.io/snoopy-packages/repo/centos/9/stable/"", gpgkey: """", name: ""snoopy"" }
-"
+
+.. note::
+      * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
+      * Ensure that all the listed URLs are reachable from the OIM."
