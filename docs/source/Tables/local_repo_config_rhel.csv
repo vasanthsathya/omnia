@@ -19,10 +19,9 @@ Optional","* This variable accepts user-defined repository urls, from which the 
 Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``input/project_default/software_config.json``.
 * Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
 * Additional packages requied for the cluster are downloaded from the provided ``rhel_os_url`` and stored in the Pulp container.
+* **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ""- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}""
 
 .. note:: The ``rhel_os_url`` is configured via proxy in compute nodes.
-
-* **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ""- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}""
 
 .. caution:: Omnia does not support adding a Red Hat subscription URL to the ``rhel_os_url`` parameter. Adding it results in an error during ``local_repo.yml`` playbook execution. For more information, `click here <../../../Troubleshooting/KnownIssues/RHEL/local_repo.html>`_."
 "**omnia_repo_url_rhel**
