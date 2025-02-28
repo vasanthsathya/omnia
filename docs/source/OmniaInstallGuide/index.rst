@@ -1,7 +1,7 @@
-Omnia Installation Guide
+Omnia Deployment Guide
 =========================
 
-* `Quick installation guide for RHEL clusters <RHEL_new/index.html>`_
+* `Deploy Omnia container on RHEL platforms <RHEL_new/index.html>`_
 
 * `Advanced Configurations <AdvancedConfigurations/index.html>`_
 
