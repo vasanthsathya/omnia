@@ -74,5 +74,5 @@ The following are the main directories available in the ``omnia_core`` container
 
     * Do not delete any files manually from the omnia shared directory.
     * Use the ``oim_cleanup.yml`` playbook to safely remove the omnia shared directory.
-    * To re-deploy or delete the ``omnia_core`` container, you need to re-run the ``omnia_startup.sh`` script.
+    * To re-deploy or delete the ``omnia_core`` container, you need to re-run the ``omnia_startup.sh`` script. Before re-running the ``omnia_startup.sh`` script, ensure that there are no other containers on the OIM except ``omnia_core``. If you have other containers running on the OIM, run the ``oim_cleanup.yml`` playbook to delete those.
     * Provide any file paths (ISO, mapping files, etc.) that are mentioned in input files in the ``/opt/omnia`` directory.
