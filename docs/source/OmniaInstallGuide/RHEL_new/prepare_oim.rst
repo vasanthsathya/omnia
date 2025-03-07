@@ -1,4 +1,4 @@
-Step 3: Execute the ``prepare_oim.yml`` playbook
+Step 4: Execute the ``prepare_oim.yml`` playbook
 ==================================================
 
 The ``prepare_oim.yml`` playbook is the first playbook that you need to run in Omnia. This playbook accomplishes the following tasks:

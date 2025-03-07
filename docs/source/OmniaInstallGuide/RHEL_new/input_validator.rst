@@ -1,4 +1,4 @@
-Step 2: Provide inputs to the files in the ``project_default`` directory
+Step 3: Provide inputs to the files in the ``project_default`` directory
 ===========================================================================
 
 Omnia is now deployed using a project-based approach. Once the ``omnia_core`` container is deployed, all the input files needed for the cluster will be available in the ``/opt/omnia/input/project_default`` directory on the NFS share.
