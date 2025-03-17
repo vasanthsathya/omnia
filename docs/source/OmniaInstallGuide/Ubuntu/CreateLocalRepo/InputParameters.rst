@@ -9,6 +9,22 @@ Input parameters for Local Repositories
    :keepspace:
    :class: longtable
 
+
+
+Input parameters for Local Repositories
+----------------------------------------
+
+* Input all required values in ``input/software_config.json``.
+
+.. dropdown:: Click to expand Parameters for Software Configuration
+
+   .. csv-table:: Parameters for Software Configuration
+      :file: ../../../Tables/software_config_ubuntu.csv
+      :header-rows: 1
+      :keepspace:
+      :class: longtable
+
+
 * Sample version for Ubuntu:
 
 ::
