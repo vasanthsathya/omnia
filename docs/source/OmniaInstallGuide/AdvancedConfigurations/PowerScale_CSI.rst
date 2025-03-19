@@ -46,7 +46,7 @@ Prerequisites
 
    *Reference values from OneFS portal:*
 
-   .. image:: ../../../images/CSI_1.png
+   .. image:: ../../images/CSI_1.png
 
 3. Download the ``values.yaml`` files template using the following command: ::
 
