@@ -249,7 +249,7 @@ Use the following command to apply the manifest: ::
 
 * User can also verify the same information from the OneFS portal. In the sample image below, it is mapped with the ``VOLUME`` entry from the above example: ``k8s-b00f77b817``:
 
-.. image:: ../../../images/CSI_OneFS.png
+.. image:: ../../images/CSI_OneFS.png
 
 Removal
 --------
