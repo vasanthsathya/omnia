@@ -39,7 +39,7 @@ Post execution
 After the playbook has been executed, navigate to the ``omnia_credentials.yml`` input file is present in the ``/opt/omnia/input/project_default`` folder.
 Provide all required credentials for the cluster. See the table below to know more:
 
-.. csv-table:: network_spec.yml
-   :file: ../../Tables/network_spec.csv
+.. csv-table:: Omnia credentials
+   :file: ../../Tables/omnia_credentials.csv
    :header-rows: 1
    :keepspace:
