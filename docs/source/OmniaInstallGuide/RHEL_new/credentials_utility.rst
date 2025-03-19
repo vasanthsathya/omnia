@@ -40,6 +40,6 @@ After the playbook has been executed, navigate to the ``omnia_credentials.yml`` 
 Provide all required credentials for the cluster. See the table below to know more:
 
 .. csv-table:: Omnia credentials
-   :file: ../../Tables/omnia_credentials.csv
+   :file: ../../Tables/credentials_utility.csv
    :header-rows: 1
    :keepspace:
