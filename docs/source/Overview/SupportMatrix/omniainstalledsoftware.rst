@@ -5,4 +5,4 @@ Software Installed by Omnia
       :file: ../../Tables/omnia_installed_software.csv
       :header-rows: 1
       :keepspace:
-      :class: table-container
+      :class: table-responsive
