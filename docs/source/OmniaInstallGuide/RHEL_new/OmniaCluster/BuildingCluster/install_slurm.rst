@@ -19,28 +19,55 @@ Set up Slurm
 
 **Inventory details**
 
-* For Slurm, all the applicable inventory groups are ``slurm_control_node``, ``slurm_node``, and ``login``.
+.. dropdown:: Basic Inventory
 
-* The inventory file must contain:
+    * All the applicable inventory groups are ``slurm_control_node``, ``kube_node``, and ``etcd``.
 
-    1. Exactly 1 ``slurm_control_node``.
-    2. At least 1 ``slurm_node``.
-    3. At least one ``login`` node (Optional).
+    * The inventory file must contain:
+
+        1. Exactly 1 ``slurm_control_node``.
+        2. At least 1 ``slurm_node``.
+        3. At least one ``login`` node (Optional).
+
+.. dropdown:: Hiearachical Inventory
+
+    * All the applicable inventory groups are ``slurm_control_node`` and ``login``.
+
+    * The inventory file must contain:
+
+        1. Exactly 1 ``slurm_control_node``.
+        2. At least one ``login`` node (Optional).
 
 **Sample inventory**
-::
 
-    [slurm_control_node]
+.. dropdown:: Basic Inventory
 
-    10.5.1.101
+    ::
 
-    [slurm_node]
+        [slurm_control_node]
 
-    10.5.1.103
+        10.5.1.101
 
-    [login]
+        [slurm_node]
 
-    10.5.1.105
+        10.5.1.103
+
+        [login]
+
+        10.5.1.105
+
+
+.. dropdown:: Hiearachical Inventory
+
+    ::
+
+        [slurm_control_node]
+
+        10.5.1.101
+
+        [login]
+
+        10.5.1.105
 
 **To install Slurm**
 
