@@ -4,11 +4,12 @@ Set up Slurm
 **Prerequisites**
 
 * Ensure that ``slurm`` entry is present in the ``softwares`` list in ``software_config.json``, as mentioned below:
-    ::
-
-        "softwares": [
-                        {"name": "slurm" },
-                     ]
+  
+  ::
+    
+    "softwares": [
+                    {"name": "slurm" },
+                 ]
 
 * Ensure to run ``local_repo.yml`` with the ``slurm`` entry present in ``software_config.json``, to download all required slurm packages.
 
