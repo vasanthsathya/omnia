@@ -19,67 +19,44 @@ Set up Slurm
 
 **Inventory details**
 
-.. dropdown:: Basic Inventory
+* All the applicable inventory groups are ``slurm_control_node``, ``kube_node``, and ``etcd``.
 
-    * All the applicable inventory groups are ``slurm_control_node``, ``kube_node``, and ``etcd``.
+* The inventory file must contain:
 
-    * The inventory file must contain:
+    1. Exactly 1 ``slurm_control_node``.
+    2. At least 1 ``slurm_node``.
+    3. At least 1 ``login`` node (Optional).
 
-        1. Exactly 1 ``slurm_control_node``.
-        2. At least 1 ``slurm_node``.
-        3. At least one ``login`` node (Optional).
-
-.. dropdown:: Hiearachical Inventory
-
-    * All the applicable inventory groups are ``slurm_control_node`` and ``login``.
-
-    * The inventory file must contain:
-
-        1. Exactly 1 ``slurm_control_node``.
-        2. At least one ``login`` node (Optional).
 
 **Sample inventory**
+::
 
-.. dropdown:: Basic Inventory
+    [slurm_control_node]
 
-    ::
+    10.5.1.101
 
-        [slurm_control_node]
+    [slurm_node]
 
-        10.5.1.101
+    10.5.1.103
 
-        [slurm_node]
+    [login]
 
-        10.5.1.103
-
-        [login]
-
-        10.5.1.105
+    10.5.1.105
 
 
-.. dropdown:: Hiearachical Inventory
-
-    ::
-
-        [slurm_control_node]
-
-        10.5.1.101
-
-        [login]
-
-        10.5.1.105
-
-**To install Slurm**
+**Install Slurm**
 
 Run either of the following commands:
 
     1. ::
 
-            ansible-playbook omnia.yml -i inventory
+            ansible-playbook omnia/omnia.yml -i <inventory filepath>
 
     2. ::
 
-            ansible-playbook scheduler.yml -i inventory
+            ansible-playbook scheduler/scheduler.yml -i <inventory filepath>
+    
+    .. caution:: The ``scheduler.yml`` playbook can be run only after executing ``omnia.yml`` at least once.
 
 .. note:: To add new nodes to an existing cluster, click `here. <../../../Maintenance/addnode.html>`_
 
