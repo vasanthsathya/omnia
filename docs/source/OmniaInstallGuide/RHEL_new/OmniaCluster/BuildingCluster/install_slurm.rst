@@ -20,7 +20,7 @@ Set up Slurm
 
 **Inventory details**
 
-* All the applicable inventory groups are ``slurm_control_node``, ``kube_node``, and ``etcd``.
+* All the applicable inventory groups are ``slurm_control_node``, ``slurm_node``, and ``login``.
 
 * The inventory file must contain:
 
