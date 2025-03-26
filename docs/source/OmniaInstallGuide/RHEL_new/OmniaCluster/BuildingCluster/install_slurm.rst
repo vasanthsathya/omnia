@@ -11,11 +11,11 @@ Set up Slurm
                     {"name": "slurm" },
                  ]
 
-* Ensure to run ``local_repo.yml`` with the ``slurm`` entry present in ``software_config.json``, to download all required slurm packages.
+* Ensure to run ``local_repo.yml`` with the ``slurm`` entry present in ``software_config.json`` to download all required slurm packages.
 
 * Once all the required parameters in `omnia_config.yml <../schedulerinputparams.html#id13>`_ are filled in, ``omnia.yml`` can be used to set up Slurm.
 
-* When ``slurm_installation_type`` is ``nfs_share`` in ``omnia_config.yml``, ensure that ``slurm_share`` is set to ``true`` in `storage_config.yml <../schedulerinputparams.html#id17>`_, for one of the entries in ``nfs_client_params``.
+* If ``slurm_installation_type`` is ``nfs_share`` in ``omnia_config.yml``, ensure that ``slurm_share`` is set to ``true`` in `storage_config.yml <../schedulerinputparams.html#id17>`_, for one of the entries in ``nfs_client_params``.
 
 
 **Inventory details**
@@ -66,7 +66,7 @@ Run either of the following commands:
 To ensure security while running jobs on the cluster, users can be assigned permissions to access cluster  nodes only while their jobs are running. To enable the feature: ::
 
     cd scheduler
-    ansible-playbook job_based_user_access.yml -i inventory
+    ansible-playbook job_based_user_access.yml -i <inventory filepath>
 
 .. note::
 
