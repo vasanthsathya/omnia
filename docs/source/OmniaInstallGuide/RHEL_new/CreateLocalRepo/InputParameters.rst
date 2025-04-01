@@ -24,6 +24,7 @@ Here's a sample of the ``input/project_default/software_config.json``:
         {
             "cluster_os_type": "rhel",
             "cluster_os_version": "9.4",
+            "iso_file_path": "",
             "repo_config": "always",
             "softwares": [
                 {"name": "amdgpu", "version": "6.2.2"},

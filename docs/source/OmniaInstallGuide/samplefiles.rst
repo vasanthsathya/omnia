@@ -69,7 +69,8 @@ software_config.json for RHEL
         {
             "cluster_os_type": "rhel",
             "cluster_os_version": "9.4",
-            "repo_config": "partial",
+            "iso_file_path": "",
+            "repo_config": "always",
             "softwares": [
                 {"name": "amdgpu", "version": "6.2.2"},
                 {"name": "cuda", "version": "12.3.2"},
@@ -93,7 +94,7 @@ software_config.json for RHEL
                 {"name": "utils"},
                 {"name": "ucx", "version": "1.15.0"},
                 {"name": "openmpi", "version": "4.1.6"},
-                {"name": "csi_driver_powerscale", "version":"v2.11.0"}
+                {"name": "csi_driver_powerscale", "version":"v2.13.0"}
             ],
 
             "amdgpu": [
