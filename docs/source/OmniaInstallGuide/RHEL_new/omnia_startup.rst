@@ -43,7 +43,7 @@ Execute the ``omnia_startup.sh`` script
 To initiate the ``omnia_startup.sh`` script, execute the following commands:
 ::
     wget https://raw.githubusercontent.com/dell/omnia/refs/heads/pub/new_architecture/omnia_startup.sh
-    chmod +x omia_startup.sh
+    chmod +x omnia_startup.sh
     sh omnia_startup.sh
 
 Log in to the ``omnia_core`` container
