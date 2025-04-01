@@ -1,0 +1,10 @@
+﻿Role Name,Layer,Details
+Default,compute,"* Omnia assigns the default role to nodes which do not fit into any specific roles.
+* This role is useful when you only need to provision the nodes, without assigning any specific functionality to them.
+
+**Example**:
+::
+    Roles:
+  - name: ""default""
+    groups:
+      - grp0"
