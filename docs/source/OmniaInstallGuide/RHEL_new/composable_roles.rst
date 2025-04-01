@@ -12,10 +12,10 @@ Role attributes
 
 * Ensure that the ``roles_config.yml`` input file in the ``input/project_default`` directory includes all necessary attributes for the nodes, based on their role/group within the cluster. Each role/group will have following attributes as indicated in the table below:
 
-    .. csv-table:: Roles attributes
-       :file: ../../Tables/composable_roles.csv
-       :header-rows: 1
-       :keepspace:
+.. csv-table:: Roles attributes
+   :file: ../../Tables/composable_roles.csv
+   :header-rows: 1
+   :keepspace:
 
 
 Roles offered by Omnia
