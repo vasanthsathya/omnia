@@ -35,7 +35,7 @@ Here's a sample of the ``input/project_default/software_config.json``:
                 {"name": "nfs"},
                 {"name": "beegfs", "version": "7.4.2"},
                 {"name": "slurm"},
-                {"name": "k8s", "version":"1.29.5"},
+                {"name": "k8s", "version":"1.31.4"},
                 {"name": "jupyter"},
                 {"name": "kubeflow"},
                 {"name": "kserve"},
