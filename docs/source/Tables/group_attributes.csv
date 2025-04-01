@@ -2,7 +2,7 @@
 Group Name - ``grpN``,Mandatory,"* User defined name of the group.
 * Range for ``N`` is 0-99.
 
-**Example**: ``grp0``, ``grp1``, and ``grp2``."
+ **Example**: ``grp0``, ``grp1``, and ``grp2``."
 Location of the node - ``location_id``,Mandatory,"* Scalable unit and rack number range.
 * Range for ``<n>`` is 0-99.
 * **Format**: ``SU-<n>.RACK-<n>``
