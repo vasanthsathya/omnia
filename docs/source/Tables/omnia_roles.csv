@@ -38,7 +38,7 @@ Service - ``service``,Front end,"* This role is used to configure the nodes for 
     groups:
       - grp0
       - grp1"
-Authentication server - ``auth_server``,Front end,"This role is used to configure the nodes for authentication. The nodes included in this role will have the necessary tools and configurations to support authentication activities.
+Authentication server - ``auth_server``,Front end,"* This role is used to configure the nodes for authentication. The nodes included in this role will have the necessary tools and configurations to support authentication activities.
 
 **Example**:
 ::

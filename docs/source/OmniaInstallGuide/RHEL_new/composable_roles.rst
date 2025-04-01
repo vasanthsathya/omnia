@@ -7,16 +7,16 @@ In Omnia, nodes are organized based on their assigned roles. Nodes with the same
 
 * **Group**: A group is based on the physical characteristics of the nodes. It refers to nodes that are located in the same place or have similar hardware. For example, nodes in the same rack or SU (service unit) might be grouped together, with specific roles like HeadNode or ServiceNode. Groups help with physical organization and management of nodes.
 
-Role attributes
+Group attributes
 ----------------
 
-* Ensure that the ``roles_config.yml`` input file in the ``input/project_default`` directory includes all necessary attributes for the nodes, based on their role/group within the cluster. Each role/group will have following attributes as indicated in the table below:
+Ensure that the ``roles_config.yml`` input file in the ``input/project_default`` directory includes all necessary attributes for the nodes, based on their role/group within the cluster. Each role/group will have following attributes as indicated in the table below:
 
-.. csv-table:: Roles attributes
-   :file: ../../Tables/composable_roles.csv
+.. csv-table:: Group attributes
+   :file: ../../Tables/group_attributes.csv
    :header-rows: 1
    :keepspace:
-
+   
 
 Roles offered by Omnia
 -------------------------
@@ -32,3 +32,5 @@ Roles offered by Omnia
    :file: ../../Tables/omnia_roles.csv
    :header-rows: 1
    :keepspace:
+
+
