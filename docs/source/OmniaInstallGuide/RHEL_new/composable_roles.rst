@@ -32,7 +32,19 @@ Nodes with similar roles or functionalities can be grouped together. To do so, f
    :header-rows: 1
    :keepspace:
    
-
+A sample format is attached below:
+::
+    Groups:
+        grp0:
+            location_id: SU-1.RACK-1
+            resource_mgr_id: ""
+            parent: ""
+            bmc_details:
+                static_range: ""
+            switch_details:
+                ip: ""
+                ports: ""
+            architecture: "x86"
 
 
 
