@@ -7,6 +7,6 @@ Location of the node - ``location_id``,Mandatory,"* Scalable unit and rack numbe
 * Range for ``<n>`` is 0-99.
 * **Format**: ``SU-<n>.RACK-<n>``
 
-**Example**: ``SU-1.RACK-1``
+ **Example**: ``SU-1.RACK-1``
 
 .. note:: This attribute is case-sensitive. Ensure to use uppercase characters only."

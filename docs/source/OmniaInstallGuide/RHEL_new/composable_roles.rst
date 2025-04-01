@@ -1,4 +1,4 @@
-Composable roles in omnia
+Composable roles in Omnia
 ============================
 
 In Omnia, nodes are organized based on their assigned roles. Nodes with the same role can be clubbed under a group. By combining both roles and groups, Omnia offers a powerful and flexible approach to managing large-scale node infrastructures, ensuring both logical organization and physical optimization of resources.
@@ -28,7 +28,7 @@ Roles offered by Omnia
     * Atleast one role is mandatory, and you must not change the name of the roles.
     * The roles are case-sensitive in nature.
 
-.. csv-table:: roles_config.yml
+.. csv-table:: Types of Roles
    :file: ../../Tables/omnia_roles.csv
    :header-rows: 1
    :keepspace:
