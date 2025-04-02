@@ -61,15 +61,15 @@ Set up Kubernetes
 
 **To install Kubernetes**
 
-Run either of the following commands, where ``i <inventory>`` is the user specified inventory:
+Run either of the following commands, where ``i <inventory>`` denotes the file path of the user specified inventory:
 
     1. ::
 
-            ansible-playbook omnia.yml -i inventory
+            ansible-playbook omnia.yml -i <inventory>
 
     2. ::
 
-            ansible-playbook scheduler.yml -i inventory
+            ansible-playbook scheduler.yml -i <inventory>
 
 .. note:: 
     
