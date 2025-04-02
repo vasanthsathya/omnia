@@ -61,7 +61,7 @@ Set up Kubernetes
 
 **To install Kubernetes**
 
-Run either of the following commands:
+Run either of the following commands, where ``i <inventory>`` is the user specified inventory:
 
     1. ::
 
