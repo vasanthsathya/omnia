@@ -74,7 +74,7 @@ Here's a sample of the ``software_config.json`` for RHEL clusters:
 
 .. note::
 
-    * For a list of accepted ``softwares``, go to the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For example, for a cluster running RHEL 9.4, go to ``/opt/omnia/input/config/rhel/9.4/`` and view the file list for accepted softwares.
+    * For a list of accepted ``softwares``, go to the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For example, for a cluster running RHEL 9.4, go to ``/opt/omnia/input/project_default/config/rhel/9.4/`` and view the file list for accepted softwares.
     * Omnia supports a single version of any software packages in the ``software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
     * For software packages that do not have a pre-defined json file in ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>``, you need to create a ``custom.json`` file with the package details. For more information, `click here <../../AdvancedConfigurations/CustomLocalRepo.html>`_.
 
