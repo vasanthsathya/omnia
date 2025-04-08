@@ -15,8 +15,10 @@ Prerequisites
 * The OIM should have two NICs in active state. One of them is used to connect to the public network whereas the other one is used to communicate within the cluster.
 * Ensure that Podman container engine is installed on your OIM.
 * If you want to use a NFS share for the omnia shared path, ensure that ``no_root_squash`` is enabled for that mounted NFS share. Edit the ``/etc/exports`` file on the NFS server to include the ``no_root_squash`` option for the exported path.
-    ::
-        /<your_exported_path>  *(rw,sync,no_root_squash,no_subtree_check)
+
+::
+    /<your_exported_path>  *(rw,sync,no_root_squash,no_subtree_check)
+
 * Ensure that the OIM hostname prerequisites are met. Here's a list of guidelines to follow while setting up the hostname:
 
     .. include:: ../../Appendices/hostnamereqs.rst
