@@ -19,7 +19,7 @@ Required","* The OS Version that will be provisoned on compute nodes.
 Required","* Omnia creates a local Pulp repository on the OIM and stores all the packages/images required for the cluster in that repository.
 * **Accepted value**: ``always``
 
-.. note:: All local repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``input/project_default/software_config.json``.	"
+.. note:: All local repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.	"
 "**softwares**
 
 ``JSON list``
@@ -27,8 +27,8 @@ Required","* Omnia creates a local Pulp repository on the OIM and stores all the
 Required","* A JSON list of required software and (optionally) the software version.
 * The following software should be listed with a version in the list: BeeGFS, AMD GPU, Kubernetes, CUDA, OFED, UCX, and ROCm.
 * A minimum of one software should be provided in the list for ``local_repo.yml`` to execute correctly.
-* The ``<os_type>_software_config.json`` will have the basic softwares present in it. To add additional software stacks, add the software under ``input/project_default/software_config.json``.
+* The ``<os_type>_software_config.json`` will have the basic softwares present in it. To add additional software stacks, add the software under ``/opt/omnia/input/project_default/software_config.json``.
 * For the list of all applicable softwares based on your ``<cluster_os_type>``, refer the templates at ``examples/template_<os>_software_config.json``. For example, ``examples/template_rhel_software_config.json``.
 
-.. note:: The accepted names for software is taken from ``input/project_default/config/<cluster_os_type>/<cluster_os_version>``.
+.. note:: The accepted names for software is taken from ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>``.
 "
