@@ -4,7 +4,7 @@ Step 4: Execute the ``prepare_oim.yml`` playbook
 The ``prepare_oim.yml`` playbook is the first playbook that you need to run in Omnia. This playbook accomplishes the following tasks:
 
 * Sets up the PCS container: ``omnia_pcs``
-* Sets up the Kubespray container if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``: ``omnia_kubespray_<version>``
+* Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
 * Sets up the Provision container: ``omnia_provision``
 * Sets up the Pulp container: ``omnia_pulp``
 
@@ -32,15 +32,15 @@ Add necessary inputs to the ``network_spec.yml`` file to configure the network o
     * If the ``nic_name`` is identical on both the ``admin_network`` and the ``bmc_network``, it indicates a LOM setup. Otherwise, it's a dedicated setup.
     * BMC network details are not required when target nodes are discovered using a mapping file.
     * If ``bmc_network`` properties are provided, target nodes will be discovered using the BMC method in addition to the methods whose details are explicitly provided in ``provision_config.yml``.
-    * The strings ``admin_network`` and ``bmc_network`` in the ``input/network_spec.yml`` file should not be edited. Also, the properties ``nic_name``, ``static_range``, and ``dynamic_range`` cannot be edited on subsequent runs of the provision tool.
+    * The strings ``admin_network`` and ``bmc_network`` should not be edited. Also, the properties ``nic_name``, ``static_range``, and ``dynamic_range`` cannot be edited on subsequent runs of the provision tool.
     * ``netmask_bits`` are mandatory and should be same for both ``admin_network`` and ``bmc_network`` (that is, between 1 and 32; 1 and 32 are also acceptable values).
 
 .. caution::
     * Do not assign the subnet 10.4.0.0/24 to any interfaces in the network as nerdctl uses it by default.
-    * All provided network ranges and NIC IP addresses should be distinct with no overlap in the ``input/network_spec.yml``.
-    * Ensure that all the iDRACs are reachable from the OIM.
+    * All provided network ranges and NIC IP addresses should be distinct with no overlap.
+    * All iDRACs must be reachable from the OIM.
 
-A sample of the ``input/network_spec.yml`` where nodes are discovered using a **mapping file** is provided below: ::
+A sample of the ``network_spec.yml`` where nodes are discovered using a **mapping file** is provided below: ::
 
     ---
          Networks:
@@ -66,7 +66,7 @@ A sample of the ``input/network_spec.yml`` where nodes are discovered using a **
              network_gateway: ""
              MTU: "1500"
 
-A sample of the ``input/network_spec.yml`` where nodes are discovered using **BMC discovery mechanism** is provided below: ::
+A sample of the ``network_spec.yml`` where nodes are discovered using **BMC discovery mechanism** is provided below: ::
 
     ---
         Networks:
@@ -95,7 +95,7 @@ A sample of the ``input/network_spec.yml`` where nodes are discovered using **BM
 2. ``provision_config_credentials.yml``
 -----------------------------------------
 
-Add necessary inputs to the ``provision_config_credentials.yml`` file for seamless authentication during cluster provisioning. Use the below table as reference while doing so:
+Add necessary inputs to the ``/opt/omnia/input/project_default/provision_config_credentials.yml`` file for seamless authentication during cluster provisioning. Use the below table as reference while doing so:
 
 .. csv-table:: provision_config_credentials.yml
    :file: ../../Tables/Provision_creds.csv
@@ -105,7 +105,7 @@ Add necessary inputs to the ``provision_config_credentials.yml`` file for seamle
 3. ``software_config.json``
 -------------------------------
 
-The ``software_config.json`` file lists all the software packages to be installed on the OIM. Edit the ``software_config.json`` file based on the software stack you want on the OIM. Use the below table as reference while doing so:
+The ``/opt/omnia/input/project_default/software_config.json`` file lists all the software packages to be installed on the OIM. Edit the ``software_config.json`` file based on the software stack you want on the OIM. Use the below table as reference while doing so:
 
 .. csv-table:: software_config.json
    :file: ../../Tables/software_config_rhel.csv
@@ -126,7 +126,7 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
             {"name": "openldap"},
             {"name": "secure_login_node"},
             {"name": "nfs"},
-            {"name": "beegfs", "version": "7.4.2"},
+            {"name": "beegfs", "version": "7.4.5"},
             {"name": "slurm"},
             {"name": "k8s", "version":"1.31.4"},
             {"name": "jupyter"},
@@ -141,7 +141,7 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
             {"name": "utils"},
             {"name": "ucx", "version": "1.15.0"},
             {"name": "openmpi", "version": "4.1.6"},
-            {"name": "csi_driver_powerscale", "version":"v2.11.0"}
+            {"name": "csi_driver_powerscale", "version":"v2.13.0"}
         ],
 
         "amdgpu": [

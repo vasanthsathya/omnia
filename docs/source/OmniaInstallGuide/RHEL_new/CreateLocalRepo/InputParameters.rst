@@ -3,13 +3,13 @@ Input parameters for Local Repositories
 
 The ``local_repo.yml`` playbook is dependent on the inputs provided to the following input files:
 
-* ``input/project_default/software_config.json``
-* ``input/project_default/local_repo_config.yml``
+* ``/opt/omnia/input/project_default/software_config.json``
+* ``/opt/omnia/input/project_default/local_repo_config.yml``
 
-``input/project_default/software_config.json``
------------------------------------------------------
+``/opt/omnia/input/project_default/software_config.json``
+----------------------------------------------------------
 
-Based on the inputs provided to the ``input/project_default/software_config.json``, the software packages/images are accessed from the Pulp container and the desired software stack is deployed on the cluster nodes.
+Based on the inputs provided to the ``/opt/omnia/input/project_default/software_config.json``, the software packages/images are accessed from the Pulp container and the desired software stack is deployed on the cluster nodes.
 
 .. csv-table:: Parameters for Software Configuration
    :file: ../../../Tables/software_config_rhel.csv
@@ -17,7 +17,7 @@ Based on the inputs provided to the ``input/project_default/software_config.json
    :keepspace:
    :widths: auto
 
-Here's a sample of the ``input/project_default/software_config.json``:
+Here's a sample of the ``software_config.json`` for RHEL clusters:
 
 ::
 
@@ -34,7 +34,7 @@ Here's a sample of the ``input/project_default/software_config.json``:
                 {"name": "openldap"},
                 {"name": "secure_login_node"},
                 {"name": "nfs"},
-                {"name": "beegfs", "version": "7.4.2"},
+                {"name": "beegfs", "version": "7.4.5"},
                 {"name": "slurm"},
                 {"name": "k8s", "version":"1.31.4"},
                 {"name": "jupyter"},
@@ -49,7 +49,7 @@ Here's a sample of the ``input/project_default/software_config.json``:
                 {"name": "utils"},
                 {"name": "ucx", "version": "1.15.0"},
                 {"name": "openmpi", "version": "4.1.6"},
-                {"name": "csi_driver_powerscale", "version":"v2.11.0"}
+                {"name": "csi_driver_powerscale", "version":"v2.13.0"}
             ],
 
             "amdgpu": [
@@ -74,12 +74,12 @@ Here's a sample of the ``input/project_default/software_config.json``:
 
 .. note::
 
-    * For a list of accepted ``softwares``, go to the ``input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For example, for a cluster running RHEL 9.4, go to ``input/config/rhel/9.4/`` and view the file list for accepted softwares.
-    * Omnia supports a single version of any software packages in the ``input/project_default/software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
-    * For software packages that do not have a pre-defined json file in ``input/project_default/config/<cluster_os_type>/<cluster_os_version>``, you need to create a ``custom.json`` file with the package details. For more information, `click here <../../AdvancedConfigurations/CustomLocalRepo.html>`_.
+    * For a list of accepted ``softwares``, go to the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For example, for a cluster running RHEL 9.4, go to ``/opt/omnia/input/config/rhel/9.4/`` and view the file list for accepted softwares.
+    * Omnia supports a single version of any software packages in the ``software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
+    * For software packages that do not have a pre-defined json file in ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>``, you need to create a ``custom.json`` file with the package details. For more information, `click here <../../AdvancedConfigurations/CustomLocalRepo.html>`_.
 
-``input/project_default/local_repo_config.yml``
-------------------------------------------------------
+``/opt/omnia/input/project_default/local_repo_config.yml``
+-----------------------------------------------------------
 
 .. csv-table:: Parameters for Local Repository Configuration
    :file: ../../../Tables/local_repo_config_rhel.csv
