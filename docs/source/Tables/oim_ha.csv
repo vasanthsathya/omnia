@@ -12,10 +12,3 @@
         - node_service_tags:
                 - <SERVICE_TAG>``","* **Type**: string
 * Captures the service tag of the passive OIM servers/nodes."
-,
-,
-,
-,
-,
-,
-,
