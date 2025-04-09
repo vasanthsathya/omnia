@@ -8,8 +8,7 @@
 * Captures the IP address of the active OIM node."
 ``active_node_service_tag``,"* **Type**: string
 * Captures the service tag of the active OIM server/node."
-".. code-block:: yaml
-   passive_nodes:
+"`` passive_nodes:
         - node_service_tags
               - <service_tag> ``","* **Type**: string
 * Captures the service tag of the passive OIM servers/nodes."
