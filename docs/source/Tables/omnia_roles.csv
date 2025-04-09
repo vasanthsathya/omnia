@@ -109,3 +109,11 @@ Login - ``login``,Front end,"* This role is used to configure the nodes for user
     groups:
       - grp0
       - grp1"
+OIM High Availability - ``oim_ha_node``,Front end,"* This role is used to configure the OIM HA node. The nodes included in this role will have the necessary tools and configurations to support the OIM HA functionality on the passive OIM nodes.
+
+**Example**:
+::
+   Roles:
+ - name: ""oim_ha_node""
+   groups:
+     - grp0"

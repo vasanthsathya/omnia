@@ -1,0 +1,21 @@
+﻿Parameter,Details
+``enable_oim_ha``,"* **Type**: boolean
+* **Possible values**: ``true`` or ``false``
+* **Default value**: ``false``
+* Denotes if OIM HA will be created ir not. Set the value to ``true`` to create the OIM HA."
+``virtual_ip_address``,"* **Type**: string
+* This is a mandatory and user-configurable parameter.
+* Captures the IP address of the active OIM node."
+``active_node_service_tag``,"* **Type**: string
+* Captures the service tag of the active OIM server/node."
+"``passive_nodes:
+        - node_service_tags:
+                - <SERVICE_TAG>``","* **Type**: string
+* Captures the service tag of the passive OIM servers/nodes."
+,
+,
+,
+,
+,
+,
+,
