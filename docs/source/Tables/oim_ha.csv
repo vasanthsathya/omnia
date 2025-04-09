@@ -11,7 +11,9 @@
 ``<service_tag>``,"* **Type**: string
 * Captures the service tag of the passive OIM servers/nodes.
 * **Sample**:
-    ::
+ 
+ ::
+      
         passive_nodes:
              - node_service_tags:
                    - <service_tag>"
