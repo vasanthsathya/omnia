@@ -1,7 +1,7 @@
 High Availability (HA) for the OIM
 =====================================
 
-The Omnia Infrastructure Manager (OIM) noe is the most crititcal node of the High-Performance Computing (HPC) cluster set up by Omnia. It's
+The Omnia Infrastructure Manager (OIM) is the most crititcal node of the High-Performance Computing (HPC) cluster set up by Omnia. It's
 responsible for the overall creation and maintainence of the cluster, performing tasks such as node disovery and provision, telemetry
 monitoring and much more. So, enabling HA for the OIM is essential to maintain a smooth and uninterrupted cluster experience.
 
