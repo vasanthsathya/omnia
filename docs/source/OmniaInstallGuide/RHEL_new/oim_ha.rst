@@ -23,7 +23,7 @@ Prerequisites
         :header-rows: 1
         :keepspace:
 
-* Ensure that the passive OIM nodes have the ``oim_ha_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <composable roles.html>`_.
+* Ensure that the passive OIM nodes have the ``oim_ha_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <composable_roles.html>`_.
 
 Playbook execution
 --------------------

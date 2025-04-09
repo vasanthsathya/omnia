@@ -10,5 +10,6 @@
 * Captures the service tag of the active OIM server/node."
 "``passive_nodes:
         - node_service_tags:
-                - <SERVICE_TAG>``","* **Type**: string
+            - <SERVICE_TAG>``
+","* **Type**: string
 * Captures the service tag of the passive OIM servers/nodes."
