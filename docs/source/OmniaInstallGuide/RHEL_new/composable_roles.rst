@@ -14,7 +14,7 @@ Roles offered by Omnia
     
     * Nested roles and groups are not supported.
     * Maximum number of supported roles are 100.
-    * Atleast one role is mandatory, and you must not change the name of the roles.
+    * At least one role is mandatory, and you must not change the name of the roles.
     * The roles are case-sensitive in nature.
 
 .. csv-table:: Types of Roles
