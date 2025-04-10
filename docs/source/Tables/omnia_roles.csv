@@ -28,8 +28,9 @@ Kubernetes worker node - ``kube_node``,Compute,"* This role is used to configure
     groups:
       - grp0
       - grp1"
-Service - ``service``,Front end,"* This role is used to configure the nodes for service group. The nodes included in this role will have the necessary tools and configurations to configure service node.
-* The nodes in this role can be used to run service.
+Service - ``service``,Management,"* This role is used to configure the nodes for service group. The nodes included in this role will have the necessary tools and configurations to configure the service nodes.
+* The nodes in this role can be used to provision cluster nodes, similar to the OIM. This is essential for distributed management in the cluster.
+* **[Optional]** The ``service`` nodes can also be used to set up and manage a xCAT hierarchical cluster. To know more, `click here <xcat_hierarchical.html>`_.
 
 **Example**:
 ::
@@ -38,7 +39,7 @@ Service - ``service``,Front end,"* This role is used to configure the nodes for 
     groups:
       - grp0
       - grp1"
-Authentication server - ``auth_server``,Front end,"* This role is used to configure the nodes for authentication. The nodes included in this role will have the necessary tools and configurations to support authentication activities.
+Authentication server - ``auth_server``,Management,"* This role is used to configure the nodes for authentication. The nodes included in this role will have the necessary tools and configurations to support authentication activities.
 
 **Example**:
 ::
@@ -47,7 +48,7 @@ Authentication server - ``auth_server``,Front end,"* This role is used to config
     groups:
       - grp0
       - grp1"
-Compiler - ``compiler``,Front end,"* This role is used to configure the nodes for compilation. The nodes included in this role will have the necessary tools and configurations to perform compilation.
+Compiler - ``compiler``,Management,"* This role is used to configure the nodes for compilation. The nodes included in this role will have the necessary tools and configurations to perform compilation.
 * The nodes in this role can be used to compile the code.
 
 **Example**:
@@ -57,7 +58,7 @@ Compiler - ``compiler``,Front end,"* This role is used to configure the nodes fo
     groups:
       - grp0
       - grp1"
-Kubernetes control plane - ``kube_control_plane``,Front end,"* Nodes with ``kube_control_plane`` role can be added to the Kubernetes master node groups.
+Kubernetes control plane - ``kube_control_plane``,Management,"* Nodes with ``kube_control_plane`` role can be added to the Kubernetes master node groups.
 * This role is used to configure the nodes for Kubernetes master. The nodes included in this role will have the necessary tools and configurations to run Kubernetes master.
 * The nodes in this role can be used to run the Kubernetes master. 
 
@@ -68,7 +69,7 @@ Kubernetes control plane - ``kube_control_plane``,Front end,"* Nodes with ``kube
     groups:
       - grp0
       - grp1"
-Kubernetes etcd - ``etcd``,Front end,"* Nodes with ``etcd`` role can be added to the Kubernetes etcd node groups.
+Kubernetes etcd - ``etcd``,Management,"* Nodes with ``etcd`` role can be added to the Kubernetes etcd node groups.
 * This role is used to configure the nodes for Kubernetes etcd. The nodes included in this role will have the necessary tools and configurations to run Kubernetes etcd.
 * The nodes in this role can be used to run Kubernetes etcd.
 
@@ -79,7 +80,7 @@ Kubernetes etcd - ``etcd``,Front end,"* Nodes with ``etcd`` role can be added to
     groups:
       - grp0
       - grp1"
-Slurm control plane - ``slurm_control_node``,Front end,"* Nodes with ``slurm_control_node`` role can be added to the Slurm head node groups.
+Slurm control plane - ``slurm_control_node``,Management,"* Nodes with ``slurm_control_node`` role can be added to the Slurm head node groups.
 * This role is used to configure the nodes for Slurm head. The nodes included in this role will have the necessary tools and configurations to run Slurm head.
 * The nodes in this role can be used to run the Slurm head. 
 
@@ -90,7 +91,7 @@ Slurm control plane - ``slurm_control_node``,Front end,"* Nodes with ``slurm_con
     groups:
       - grp0
       - grp1"
-Slurm DB daemon role - ``slurm_dbd``,Front end,"* This role is used to configure the nodes for Slurm DB Daemon. The nodes included in this role will have the necessary tools and configurations to run Slurm DB Daemon.
+Slurm DB daemon role - ``slurm_dbd``,Management,"* This role is used to configure the nodes for Slurm DB Daemon. The nodes included in this role will have the necessary tools and configurations to run Slurm DB Daemon.
 * The nodes in this role can be used to run Slurm DB Daemon.
 
 **Example**:
@@ -100,7 +101,7 @@ Slurm DB daemon role - ``slurm_dbd``,Front end,"* This role is used to configure
     groups:
       - grp0
       - grp1"
-Login - ``login``,Front end,"* This role is used to configure the nodes for user logins. The nodes included in this role will have the necessary tools and configurations to support user login activities.
+Login - ``login``,Management,"* This role is used to configure the nodes for user logins. The nodes included in this role will have the necessary tools and configurations to support user login activities.
 
 **Example**:
 ::
@@ -109,7 +110,7 @@ Login - ``login``,Front end,"* This role is used to configure the nodes for user
     groups:
       - grp0
       - grp1"
-OIM High Availability - ``oim_ha_node``,Front end,"* This role is used to configure the OIM HA node. The nodes included in this role will have the necessary tools and configurations to support the OIM HA functionality on the passive OIM nodes.
+OIM High Availability - ``oim_ha_node``,Management,"* This role is used to configure the OIM HA node. The nodes included in this role will have the necessary tools and configurations to support the OIM HA functionality on the passive OIM nodes.
 
 **Example**:
 ::
