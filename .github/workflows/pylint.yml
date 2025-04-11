@@ -30,7 +30,7 @@ jobs:
       id: changed-files
       run: |
         git fetch origin ${{ github.base_ref }}
-        FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.py' || true)
+        FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD -- '*.py' || true)
         echo "files=$FILES" >> "$GITHUB_OUTPUT"
 
     - name: Run pylint on changed files
