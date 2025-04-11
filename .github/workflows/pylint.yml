@@ -1,9 +1,8 @@
 name: Pylint
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
       - staging
       - pub/new_architecture
 
