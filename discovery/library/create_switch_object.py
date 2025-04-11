@@ -19,8 +19,6 @@ from ansible.module_utils import omniadb_connection
 from ansible.module_utils.omniadb_connection import execute_select_query, insert_switch_info
 import subprocess
 
-
-
 # Global variables
 switch_name_prefix = "switch"
 switch_group = "switch"
