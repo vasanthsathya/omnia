@@ -16,6 +16,7 @@ Roles offered by Omnia
     * Maximum number of supported roles are 100.
     * At least one role is mandatory, and you must not change the name of the roles.
     * The roles are case-sensitive in nature.
+    * Groups assigned to the **Management** layer roles should not be assigned to **Compute** layer roles.
 
 .. csv-table:: Types of Roles
    :file: ../../Tables/omnia_roles.csv
@@ -26,6 +27,8 @@ Group attributes
 ----------------
 
 Nodes with similar roles or functionalities can be grouped together. To do so, fill up the ``roles_config.yml`` input file in the ``/opt/omnia/input/project_default`` directory which includes all necessary attributes for the nodes, based on their role/group within the cluster. Each role/group will have following attributes as indicated in the table below:
+
+.. note:: Groups associated with the ``service_node`` role should not be used to fulfill any other roles.
 
 .. csv-table:: Group attributes
    :file: ../../Tables/group_attributes.csv
