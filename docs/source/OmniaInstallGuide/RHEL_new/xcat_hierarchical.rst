@@ -1,12 +1,12 @@
-xCAT Hierarchical Cluster
-==========================
+Step 3: xCAT Hierarchical Cluster
+==================================
 
 Omnia v2.0 supports Hierarchical cluster provisioning using xCAT.
 
 What is xCAT?
 ---------------
 
-xCAT (Extreme Cloud Administration Toolkit) is an open-source tool for managing large-scale clusters, supercomputers, and data center systems. 
+xCAT (Extreme Cloud Administration Toolkit) is an open-source tool for managing large-scale clusters, supercomputers, and datacenters. 
 It automates tasks like hardware provisioning, OS deployment, and system monitoring across thousands of nodes. 
 Designed for scalability and flexibility, xCAT supports multiple operating systems and hardware platforms, making it popular in HPC and enterprise environments.
 

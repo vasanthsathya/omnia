@@ -1,5 +1,5 @@
-Composable roles in Omnia
-============================
+Step 2: Composable roles in Omnia
+==================================
 
 In Omnia, nodes are organized based on their assigned roles. Nodes with the same role can be clubbed under a group. By combining both roles and groups, Omnia offers a powerful and flexible approach to managing large-scale node infrastructures, ensuring both logical organization and physical optimization of resources.
 
