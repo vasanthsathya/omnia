@@ -13,7 +13,7 @@ Designed for scalability and flexibility, xCAT supports multiple operating syste
 Hierarchical cluster
 ----------------------
 
-In order to manage large-sized clusters, xCAT helps create a hierarchical cluster. An **xCAT hierarchical cluster** organizes nodes in layers, with a central **Management Node (MN)** overseeing multiple **Service Nodes (SN)**, each managing a group of compute nodes.
+In order to manage large-sized clusters, xCAT helps create a hierarchical cluster. An **xCAT hierarchical cluster** organizes nodes in layers, with a central **Management Node (MN)** overseeing multiple **Service Nodes (SN)**, each managing a group of compute nodes. To know more, `click here <https://xcat-docs.readthedocs.io/en/stable/advanced/hierarchy/index.html>`_.
 A hierarchical cluster consists of:
 
 * **Management Node**: The top-level node that oversees the entire cluster.
@@ -24,4 +24,3 @@ A hierarchical cluster consists of:
 
 .. image:: ../../images/xcat_hierarchical.png
     :width: 400px
-
