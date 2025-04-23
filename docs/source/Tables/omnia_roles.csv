@@ -28,7 +28,7 @@ Kubernetes worker node - ``kube_node``,Compute,"* This role is used to configure
     groups:
       - grp0
       - grp1"
-Service - ``service_node``,Management,"* This role is used to configure the nodes for ``service_node`` group. The nodes included in this role will have the necessary tools and configurations to configure the service nodes. 
+Service - ``service_node``,Management,"* This role is used to configure the service nodes. The nodes included in this role will have the necessary tools and configurations to configure the service nodes. 
 * The ``service_node`` role is used to set up and manage a hierarchical cluster. When set up, the service nodes will provision and manage a set of compute nodes assigned to them. This is essential for distributed management in large clusters. To know more, `click here <xcat_hierarchical.html>`_.
 
 **Example**:
