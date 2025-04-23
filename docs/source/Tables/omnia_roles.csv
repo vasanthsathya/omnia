@@ -28,14 +28,14 @@ Kubernetes worker node - ``kube_node``,Compute,"* This role is used to configure
     groups:
       - grp0
       - grp1"
-Service - ``service``,Management,"* This role is used to configure the nodes for service group. The nodes included in this role will have the necessary tools and configurations to configure the service nodes.
+Service - ``service_node``,Management,"* This role is used to configure the nodes for ``service_node`` group. The nodes included in this role will have the necessary tools and configurations to configure the xCAT service nodes.
 * The nodes in this role can be used to provision cluster nodes, similar to the OIM. This is essential for distributed management in the cluster.
-* **[Optional]** The ``service`` nodes can also be used to set up and manage a xCAT hierarchical cluster. To know more, `click here <xcat_hierarchical.html>`_.
+* **[Optional]** The ``service_node`` nodes can also be used to set up and manage a xCAT hierarchical cluster. To know more, `click here <xcat_hierarchical.html>`_.
 
 **Example**:
 ::
     Roles:
-  - name: ""service""
+  - name: ""service_node""
     groups:
       - grp0
       - grp1"
@@ -48,13 +48,13 @@ Authentication server - ``auth_server``,Management,"* This role is used to confi
     groups:
       - grp0
       - grp1"
-Compiler - ``compiler``,Management,"* This role is used to configure the nodes for compilation. The nodes included in this role will have the necessary tools and configurations to perform compilation.
+Compiler - ``compiler_node``,Management,"* This role is used to configure the nodes for compilation. The nodes included in this role will have the necessary tools and configurations to perform compilation.
 * The nodes in this role can be used to compile the code.
 
 **Example**:
 ::
     Roles:
-  - name: ""compiler""
+  - name: ""compiler_node""
     groups:
       - grp0
       - grp1"
@@ -101,12 +101,12 @@ Slurm DB daemon role - ``slurm_dbd``,Management,"* This role is used to configur
     groups:
       - grp0
       - grp1"
-Login - ``login``,Management,"* This role is used to configure the nodes for user logins. The nodes included in this role will have the necessary tools and configurations to support user login activities.
+Login - ``login_node``,Management,"* This role is used to configure the nodes for user logins. The nodes included in this role will have the necessary tools and configurations to support user login activities.
 
 **Example**:
 ::
     Roles:
-  - name: ""login""
+  - name: ""login_node""
     groups:
       - grp0
       - grp1"

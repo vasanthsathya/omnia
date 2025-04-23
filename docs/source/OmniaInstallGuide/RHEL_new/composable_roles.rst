@@ -38,7 +38,13 @@ Nodes with similar roles or functionalities can be grouped together. To do so, f
 Sample
 -------
 
-A sample is attached below:
+Here's a sample (using mapping file) for your reference:
+
+.. note:: 
+    
+    * If you want to use BMC discovery mechanism, ensure to provide the value for BMC ``static_range``.
+    * If you want to use switch-based discovery, ensure to provide the switch ``ip`` and ``port`` along with the BMC details.
+
 ::
     Groups:
         grp0:

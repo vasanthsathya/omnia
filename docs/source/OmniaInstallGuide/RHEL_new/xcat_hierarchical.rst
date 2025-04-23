@@ -25,3 +25,8 @@ A typical hierarchical cluster consists of:
 
 .. image:: ../../images/xcat_hierarchical.png
     :width: 300px
+
+Hierarchical cluster in Omnia
+-------------------------------
+
+Omnia provisions a hierarchical cluster based on the inputs provided in the ``roles_config.yml`` input file under the ``/opt/omnia/input/project_default/`` directory. For more information, `click here <composable_roles.html>`_.
