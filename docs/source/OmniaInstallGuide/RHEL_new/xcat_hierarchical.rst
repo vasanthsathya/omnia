@@ -1,7 +1,7 @@
 Step 3: Hierarchical Cluster
 ==================================
 
-Omnia supports Hierarchical cluster provisioning. In order to manage large-sized clusters, Omnia helps to create a hierarchical cluster. A **hierarchical cluster** organizes nodes in layers, with a central **Management Node (MN)** overseeing multiple **Service Nodes (SN)**, each managing a group of compute nodes. 
+In order to manage large-sized clusters, Omnia helps to create a hierarchical cluster based on user inputs. A **hierarchical cluster** organizes nodes in layers, with a central **Management Node (MN)** overseeing multiple **Service Nodes (SN)**, each managing a group of compute nodes. 
 To know more, `click here <https://xcat-docs.readthedocs.io/en/stable/advanced/hierarchy/index.html>`_.
 
 A typical hierarchical cluster consists of:
