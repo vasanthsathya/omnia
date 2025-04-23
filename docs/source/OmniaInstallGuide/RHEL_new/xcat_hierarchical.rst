@@ -23,4 +23,4 @@ A hierarchical cluster consists of:
 * **Compute Nodes**: The actual worker nodes of the cluster.
 
 .. image:: ../../images/xcat_hierarchical.png
-    :width: 400px
+    :width: 300px
