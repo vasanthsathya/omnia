@@ -29,8 +29,8 @@ Kubernetes worker node - ``kube_node``,Compute,"* This role is used to configure
       - grp0
       - grp1"
 Service - ``service_node``,Management,"* This role is used to configure the nodes for ``service_node`` group. The nodes included in this role will have the necessary tools and configurations to configure the xCAT service nodes.
-* The nodes in this role can be used to provision cluster nodes, similar to the OIM. This is essential for distributed management in the cluster.
-* **[Optional]** The ``service_node`` nodes can also be used to set up and manage a xCAT hierarchical cluster. To know more, `click here <xcat_hierarchical.html>`_.
+* The nodes in this role can be used to provision compute nodes, similar to the OIM. This is essential for distributed management in the cluster.
+* **[Optional]** The ``service_node`` can also be used to set up and manage a xCAT hierarchical cluster. When set up, the service nodes will manage a set of compute nodes assigned to them. To know more, `click here <xcat_hierarchical.html>`_.
 
 **Example**:
 ::
