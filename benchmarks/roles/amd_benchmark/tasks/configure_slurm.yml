@@ -57,7 +57,7 @@
   when: restart_slurm
 
 - name: Get list of slurm compute nodes
-  ansible.builtin.command: sinfo -h --format="%n"
+  ansible.builtin.command: sinfo -h -r --format="%n"
   register: sinfo_output
   delegate_to: "{{  groups['slurm_control_node'] | first }}"
   failed_when: false
