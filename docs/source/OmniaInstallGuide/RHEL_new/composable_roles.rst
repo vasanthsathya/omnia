@@ -17,6 +17,7 @@ Roles offered by Omnia
     * At least one role is mandatory, and you must not change the name of the roles.
     * The roles are case-sensitive in nature.
     * Groups assigned to the **Management** layer roles should not be assigned to **Compute** layer roles.
+    * Omnia also supports HA functionality for the ``OIM`` and the ``service_node``. For more information, click `oim_ha <oim_ha.html>`_ and `service_node_ha <service_node_ha.html>`_.
 
 .. csv-table:: Types of Roles
    :file: ../../Tables/omnia_roles.csv
