@@ -224,8 +224,8 @@ def main():
         layer = module.params["layer"]
         roles = {role.pop('name'): role for role in roles_list}
         validate_roles(roles, layer, module)
-        need_bmc, need_switch, roles_groups_data, \
-            groups_roles_info, = roles_groups_mapping(groups, roles, layer)
+        need_bmc, need_switch, roles_groups_data, groups_roles_info \
+            = roles_groups_mapping(groups, roles, layer)
         module.exit_json(
             changed=False,
             roles_data=roles,
