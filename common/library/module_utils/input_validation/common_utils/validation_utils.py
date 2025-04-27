@@ -20,6 +20,12 @@ import yaml
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
 from ansible.module_utils.input_validation.common_utils import config
 
+def get_os_type():
+    with open("/etc/os-release") as f:
+        for line in f:
+            if line.startswith("ID="):
+                return line.strip().split("=")[1].strip('"')
+
 def load_yaml_as_json(yaml_file, omnia_base_dir, project_name, logger, module):
     try:
         if is_file_encrypted(yaml_file):

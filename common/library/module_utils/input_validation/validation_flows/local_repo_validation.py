@@ -14,16 +14,16 @@
 
 import json
 import os
-import validation_utils
-import config
-import en_us_validation_msg
+from ansible.module_utils.input_validation.common_utils import validation_utils
+from ansible.module_utils.input_validation.common_utils import config
+from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
 
 file_names = config.files
 create_error_msg = validation_utils.create_error_msg
 create_file_path = validation_utils.create_file_path
 
 # Below is a validation function for each file in the input folder
-def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, project_name):
+def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     # check to make sure associated os info is filled out
     errors = []
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
@@ -32,9 +32,12 @@ def validate_local_repo_config(input_file_path, data, logger, module, omnia_base
     omnia_repo_url_rhel = data["omnia_repo_url_rhel"]
 
     rhel_os_url = data["rhel_os_url"]
-    if cluster_os_type.lower() == "rhel":
+    oim_os = validation_utils.get_os_type()
+    if cluster_os_type.lower() == "rhel" and oim_os.lower() == cluster_os_type.lower():
         if validation_utils.is_string_empty(rhel_os_url):
             errors.append(create_error_msg("rhel_os_url", rhel_os_url, en_us_validation_msg.rhel_os_url_msg))
+    elif oim_os.lower() != cluster_os_type.lower():
+        errors.append(create_error_msg(input_file_path, oim_os , "The cluster OS mentioned in software config does not match the OIM OS"))
 
     if cluster_os_type.lower() == "rhel":
     # Check that omnia_repo_url_rhel is defined, is a list, and has at least one item
