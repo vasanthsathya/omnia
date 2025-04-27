@@ -116,8 +116,8 @@ extensions = {
 
 os_version_ranges = {
     "rhel": ["9.4"],
-    "rocky": ["9.4"],
-    "ubuntu": ["20.04", "22.04", "24.04"]
+    #"rocky": ["9.4"],
+    #"ubuntu": ["20.04", "22.04", "24.04"]
 }
 
 # Dict of the file that can be encrypted and it's ansible vault key

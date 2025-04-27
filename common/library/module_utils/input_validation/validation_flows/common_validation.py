@@ -53,26 +53,6 @@ def validate_software_config(input_file_path, data, logger, module, omnia_base_d
 
     return errors
 
-# Below is a validation function for each file in the input folder
-def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
-    # check to make sure associated os info is filled out
-    errors = []
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    cluster_os_type = software_config_json["cluster_os_type"]
-
-    ubuntu_os_url = data["ubuntu_os_url"]
-    if cluster_os_type == "ubuntu":
-        if validation_utils.is_string_empty(ubuntu_os_url):
-            errors.append(create_error_msg("ubuntu_os_url", ubuntu_os_url, en_us_validation_msg.ubuntu_os_url_msg))
-
-    rhel_os_url = data["rhel_os_url"]
-    if cluster_os_type == "rhel":
-        if validation_utils.is_string_empty(rhel_os_url):
-            errors.append(create_error_msg("rhel_os_url", rhel_os_url, en_us_validation_msg.rhel_os_url_msg))
-
-    return errors
-
 def validate_security_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
     passwordless_ssh_config_file_path = create_file_path(input_file_path, file_names["passwordless_ssh_config"])
