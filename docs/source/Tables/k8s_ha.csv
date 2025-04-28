@@ -1,0 +1,16 @@
+﻿Parameter,Details
+``k8s_enable_ha``,"* **Type**: boolean
+* **Possible values**: ``true`` or ``false``
+* **Default value**: ``false``
+* Denotes if Kubernetes HA will be created ir not. Set the value to ``true`` to create the Kubernetes HA."
+``virtual_ip_address``,"* **Type**: string
+* This is a mandatory when ``k8s_enable_ha`` is true. 
+* This is an user-configurable parameter.
+* Captures the IP address of the active OIM node."
+``external_loadbalancer_ip``,"* **Type**: string
+* External loadbalancer IP (separate from ``virtual_ip_address``).
+* This parameter is mandatory if you want to use an external loadbalancer.
+* **Default value**: empty "
+``loadbalancer_port``,"* **Type**: string
+* Mandatory if ``external_loadbalancer_ip`` is specified.
+* To Avoid port conflicts , expose the load-balanced API-servers through the standard port (6443) and configure external loadbalancer to a different port."
