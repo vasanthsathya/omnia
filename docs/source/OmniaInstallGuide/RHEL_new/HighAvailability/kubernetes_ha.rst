@@ -35,7 +35,7 @@ To enable and configure the HA for OIM, fill up the necessary parameters in the 
 Playbook execution
 --------------------
 
-Once all the details are provided to the input files and the Kubespray container image is uploaded to the Dell registry, the playbook ``scheduler.yml`` can be executed to deploy the Kubernetes cluster. ::
+Once all the details are provided to the input files and the Kubespray container image is uploaded to the Dell registry, the ``scheduler.yml`` playbook can be executed to deploy the Kubernetes cluster. ::
 
     ansible-playbook scheduler.yml -i <inventory filepath>
 

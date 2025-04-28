@@ -13,4 +13,4 @@
 * **Default value**: empty "
 ``loadbalancer_port``,"* **Type**: string
 * Mandatory if ``external_loadbalancer_ip`` is specified.
-* To Avoid port conflicts , expose the load-balanced API-servers through the standard port (6443) and configure external loadbalancer to a different port."
+* To avoid port conflicts , expose the load-balanced API-servers through the standard port (6443) and configure external loadbalancer to a different port."
