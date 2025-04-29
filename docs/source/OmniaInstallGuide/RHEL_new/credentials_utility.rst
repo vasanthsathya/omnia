@@ -7,7 +7,8 @@ In this input file, you can provide all types of mandatory and optional credenti
 Prerequisite
 ---------------
 
-Ensure that the ``omnia_core`` container is up and running.
+* Ensure that the ``omnia_core`` container is up and running.
+* Ensure that the ``opt/omnia/input/project_default/software_config.json`` file is updated with the packages that you want on your cluster.
 
 Task performed by the playbook
 ---------------------------------
