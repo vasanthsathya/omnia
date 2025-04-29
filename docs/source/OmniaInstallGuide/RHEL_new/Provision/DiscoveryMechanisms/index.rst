@@ -35,9 +35,8 @@ For more information regarding switch-based discovery, `click here <switch-based
 ``mapping file``
 -----------------
 
-Manually collect PXE NIC information for target servers and manually define them to Omnia using a mapping file using the below format:
+Manually collect PXE NIC information for target servers and manually define them to Omnia using the **pxe_mapping_file.csv** file. A sample format is shown below:
 
-**pxe_mapping_file.csv**
 ::
 
     SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_IP

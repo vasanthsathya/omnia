@@ -1,9 +1,6 @@
 mapping
 --------------
-Manually collect PXE NIC information for target servers and define them to Omnia (using the ``pxe_mapping_file`` variable in ``input/project_default/provision_config.yml``) using a mapping file using the below format:
-
-**pxe_mapping_file.csv**
-
+Manually collect PXE NIC information for target servers and manually define them to Omnia using the **pxe_mapping_file.csv** file. Provide the filepath to the ``pxe_mapping_file`` variable in ``input/project_default/provision_config.yml``. A sample format of the mapping file is shown below:
 
 ::
 
