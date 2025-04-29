@@ -31,8 +31,7 @@ Follow the steps below to prepare the Kubespray container image required by Omni
 Input Parameters
 ----------------
 
-* Set the ``enable_k8s_ha`` parameter to ``true`` in the ``/opt/omnia/input/project_default/high_availability_config.yml`` file.
-* Fill up the ``virtual_ip_address`` parameter in the ``omnia_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory.
+Fill up the required parameters in the ``/opt/omnia/input/project_default/high_availability_config.yml`` file. Use the below table as reference:
 
     .. csv-table:: Parameters for Kubernetes HA
         :file: ../../../Tables/k8s_ha.csv
@@ -45,26 +44,19 @@ Sample inventory for HA
 ::
 
     [kube_control_plane]
-    10.25.0.2
-    10.25.0.4
-    10.25.0.6
+    10.11.0.1
+    10.11.0.15
+    10.11.0.9
 
     [etcd]
-    10.25.0.3
-    10.25.0.5
-    10.25.0.7
+    10.11.0.1
+    10.11.0.15
+    10.11.0.9
 
     [kube_node]
-    10.25.0.1
-    10.25.0.3
-    10.25.0.5
-
-    [k8s_cluster:children]
-    kube_control_plane
-    kube_node
-
-    [host]
-    10.25.255.254
+    10.11.0.1
+    10.11.0.15
+    10.11.0.9
 
 Playbook execution
 --------------------

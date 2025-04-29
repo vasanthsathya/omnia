@@ -1,4 +1,6 @@
 ﻿Parameter,Details
+``enable_k8s_ha``,"* **Type**: boolean
+* Set the variable to ``true`` to enable HA for the Kubernetes cluster."
 ``virtual_ip_address``,"* **Type**: string
 * This is a mandatory when ``k8s_enable_ha`` is true. 
 * This is an user-configurable parameter.

@@ -18,7 +18,7 @@ Manually collect PXE NIC information for target servers and manually define them
     * Target servers should be configured to boot in PXE mode with the appropriate NIC as the first boot device.
     * To assign IPs on the BMC network while discovering servers using a mapping file, target servers should be in DHCP mode or switch details should be provided.
 
-.. caution:: If incorrect details are provided in the mapping file and the same is passed on to the ``OmniaDB`` (this takes place when ``discovery_provision.yml`` playbook is executed), you must first delete the nodes with incorrect information using the `delete_node.yml <../../../Maintenance/deletenode.html>`_ script. After deletion, provide correct details in the mapping file and re-run the ``discovery_provision.yml`` playbook. If the ``bmc_ip`` alone is incorrect, manually PXE boot the cluster node and the database will be updated automatically with the correct information.
+.. caution:: If incorrect details are provided in the mapping file and the same is passed on to the ``OmniaDB`` (during ``discovery_provision.yml`` playbook execution), you must first delete the nodes with incorrect information using the `delete_node.yml <../../../Maintenance/deletenode.html>`_ script. After deletion, provide correct details in the mapping file and re-run the ``discovery_provision.yml`` playbook. If only the ``bmc_ip`` is incorrect, manually PXE boot the cluster node and the database will be updated automatically with the correct information.
 
 Next step:
 
