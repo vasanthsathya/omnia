@@ -4,15 +4,15 @@ Checking node status
 Via CLI
 --------
 
-* Establish a SSH connection to the ``omnia_core`` container using the following command: ::
+1. Establish a SSH connection to the ``omnia_core`` container using the following command: ::
 
     ssh omnia_core
 
-* After you're in the ``omnia_core`` container, use SSH again to reach the ``omnia_provision`` container: ::
+2. After you're in the ``omnia_core`` container, use the following command: ::
 
-    ssh omnia_provision
+    ssh localhost -p 2223
 
-* Run ``nodels all nodelist.status`` for a list of nodes and their statuses. Here's an example of this command output: ::
+3. Run ``nodels all nodelist.status`` for a list of nodes and their statuses. Here's an example of this command output: ::
 
     omnia-node00001: installing
     omnia-node00002: booted
