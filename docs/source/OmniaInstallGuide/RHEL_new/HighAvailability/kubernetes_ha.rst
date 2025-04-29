@@ -1,9 +1,11 @@
 High Availability (HA) for the Kubernetes cluster
 ======================================================
 
-Omnia deploys a highly available Kubernetes cluster using the Kubespray container image from the Dell registry. This container contains the Kubespray Ansible playbooks, which are used to deploy Kubernetes (k8s) clusters. Kubespray is an open-source tool designed for simplicity and flexibility, ensuring efficient and correct setup of Kubernetes clusters.
+Omnia deploys a highly available Kubernetes cluster using the Kubespray container image from the Dell registry. This container contains the Kubespray ansible playbooks, which are used to deploy Kubernetes (k8s) clusters. Kubespray is an open-source tool designed for simplicity and flexibility, ensuring efficient and correct setup of Kubernetes clusters.
 
 Omnia achieves Kubernetes High Availability (HA) by configuring an internal load balancer called `kube-vip <https://kube-vip.io/>`_. Kube-vip is a tool that enables the use of a Virtual IP (VIP) in Kubernetes clusters to support high availability (HA), particularly for services and load balancer setups. In `AddressResolutionProtocol (ARP) <https://wiki.wireshark.org/AddressResolutionProtocol>`_ mode, kube-vip allows Kubernetes cluster nodes to manage traffic routing directly, removing the need for external load balancers and ensuring seamless service availability.
+
+For more information on Kubernetes HA using Kubespray, `click here <https://github.com/kubernetes-sigs/kubespray/blob/master/docs/operations/ha-mode.md>`_.
 
 .. note:: A minimum of 3 provisioned nodes are required to set up Kubernetes HA.
 
@@ -15,23 +17,11 @@ Prerequisites
 * Ensure that ``prepare_oim.yml`` playbook has executed successfully and all the containers are up and running.
 * Ensure that all Kubernetes related packages are available in the Pulp local repository.
 
-.. note:: Before running ``prepare_oim.yml``, disable HTTPS by setting the ``pulp_protocol_https`` to ``false`` in the ``/omnia/prepare_oim/roles/deploy_containers/pulp/tasks/deployment_prereq.yml`` and ``/omnia/local_repo/roles/pulp_validation/vars/main.yml`` files.
-
-Preparing the Kubespray container image
------------------------------------------
-
-Follow the steps below to prepare the Kubespray container image required by Omnia:
-
-1. Build the Kubespray container from the ``kubespraycontainerfile`` using the following command: ::
-
-    podman build -f kubesprayContainerfile -t omnia-kubespray:latest
-
-2. Upload the Kubespray container image to the Dell registry.
-
 Input Parameters
 ----------------
 
-Fill up the required parameters in the ``/opt/omnia/input/project_default/high_availability_config.yml`` file. Use the below table as reference:
+* Fill up the required parameters for Kubernetes deployment in the ``/opt/omnia/input/project_default/omnia_config.yml`` file. For the complete list of parameters, `click here <../OmniaCluster/schedulerinputparams.html#id1>`_.
+* To enable HA, fill up the required parameters in the ``/opt/omnia/input/project_default/high_availability_config.yml`` file. Use the below table as reference:
 
     .. csv-table:: Parameters for Kubernetes HA
         :file: ../../../Tables/k8s_ha.csv
@@ -61,7 +51,15 @@ Sample inventory for HA
 Playbook execution
 --------------------
 
-Once all the details are provided to the input files and the Kubespray container image is uploaded to the Dell registry, the ``omnia.yml`` playbook can be executed to deploy the Kubernetes cluster. ::
+Once all the details are provided to the input files and the Kubespray container image is uploaded to the Dell registry, the ``omnia.yml`` or ``scheduler.yml`` playbook can be executed to deploy the Kubernetes cluster. 
+
+::
 
     ansible-playbook omnia.yml -i <inventory filepath>
+
+::
+
+    ansible-playbook scheduler.yml -i <inventory filepath>
+
+
 
