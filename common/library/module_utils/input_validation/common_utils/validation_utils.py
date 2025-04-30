@@ -141,7 +141,9 @@ def is_string_empty(value):
     return len(value.strip()) < 1
 
 def verify_path(file_path):
-    return os.path.exists(file_path)
+    if not os.path.exists(file_path):
+        return False
+    return os.path.isfile(file_path)
 
 def validate_default_lease_time(default_lease_time):
     return 21600 <= int(default_lease_time) <= 31536000
@@ -264,6 +266,16 @@ def validate_ipv4_range(ip_range) -> bool:
         else:
             return False
     except ValueError:
+        return False
+
+def validate_netmask_bits(bits):
+    try:
+        bits_int = int(bits)
+        if 1 <= bits_int <= 32:
+            return True
+        else:
+            return False
+    except (ValueError, TypeError):
         return False
 
 def check_bmc_static_range_overlap(static_range, static_range_group_mapping) -> list:
