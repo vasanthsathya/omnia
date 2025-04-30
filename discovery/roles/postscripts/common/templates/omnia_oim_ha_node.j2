@@ -34,32 +34,32 @@ if [ "$str_os_type" = "redhat" ]; then
 fi
 
 # Enable and start podman.socket
-sudo systemctl enable podman.socket || { echo "Error enabling podman.socket." >> "$LOGFILE"; exit 1; }
-sudo systemctl start podman.socket || { echo "Error starting podman.socket." >> "$LOGFILE"; exit 1; }
+sudo systemctl enable podman.socket || { echo "ERROR: Enabling podman.socket." >> "$LOGFILE"; exit 1; }
+sudo systemctl start podman.socket || { echo "ERROR: Starting podman.socket." >> "$LOGFILE"; exit 1; }
 
 {% if omnia_share_option == "NFS" %}
 # Create omnia_path directory if it does not exist
-echo "Creating omnia shared path directory if it does not exist" >> "$LOGFILE"
+echo "INFO: Creating omnia shared path directory if it does not exist" >> "$LOGFILE"
 mkdir -p {{ oim_shared_path }}
 
 # Validate if NFS server is reachable
-echo "Validating if NFS server is reachable." >> "$LOGFILE"
+echo "INFO: Validating if NFS server is reachable." >> "$LOGFILE"
 ping -c1 -W1 {{ nfs_server_ip }} > /dev/null
 if [ $? -ne 0 ]; then
-    echo -e "NFS server {{ nfs_server_ip }} is not reachable." >> "$LOGFILE"
+    echo -e "INFO: NFS server {{ nfs_server_ip }} is not reachable." >> "$LOGFILE"
     exit 1
 fi
 
 # Mount NFS server share path in Omnia share path
-echo "Mounting NFS server share path in Omnia share path." >> "$LOGFILE"
+echo "INFO: Mounting NFS server share path in Omnia share path." >> "$LOGFILE"
 mount -t nfs -o nosuid,rw,sync,hard,intr,timeo=30 {{ nfs_server_ip }}:{{ nfs_server_share_path }} {{ oim_shared_path }}
 
 # Validate if NFS server share path is mounted
-echo "Validating if NFS server share path is mounted." >> "$LOGFILE"
+echo "INFO: Validating if NFS server share path is mounted." >> "$LOGFILE"
 if grep -qs "{{ nfs_server_ip }}:{{ nfs_server_share_path }}" /proc/mounts; then
-    echo -e "NFS server share path is mounted." >> "$LOGFILE"
+    echo -e "INFO: NFS server share path is mounted." >> "$LOGFILE"
 else
-    echo -e "NFS server share path is not mounted. Provide valid NFS server details." >> "$LOGFILE"
+    echo -e "INFO: NFS server share path is not mounted. Provide valid NFS server details." >> "$LOGFILE"
     exit 1
 fi
 
@@ -67,8 +67,10 @@ fi
 echo "{{ nfs_server_ip }}:{{ nfs_server_share_path }} {{ oim_shared_path }} nfs nosuid,rw,sync,hard,intr" >> /etc/fstab
 {% endif %}
 
-podman load -i {{ container_images_path }} || { echo "Error loading container images." >> "$LOGFILE"; exit 1; }
+echo "INFO: Loading container images." >> "$LOGFILE"
+podman load -i {{ container_images_path }} || { echo "ERROR: Loading container images." >> "$LOGFILE"; exit 1; }
 
+echo "INFO: Re-naming admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
 # Ensure the management interface name is the same as active OIM, if not add the active OIM's interface name as an alternative name
 if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
     passive_oim_node_ips={{ hostvars['omnia_provision']['passive_oim_nodes'].query_result | map(attribute='admin_ip') | join(' ') }}
@@ -80,13 +82,25 @@ if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
     done
 
     if [ -z "$INTERFACE" ]; then
-        echo "Error: No admin interface found." >> "$LOGFILE"
+        echo "ERROR:: No admin interface found." >> "$LOGFILE"
         exit 1
     fi
-    ip link set ${INTERFACE} name {{ hostvars['omnia_provision']['admin_nic'] }} || { echo "Error: re-naming admin interface." >> "$LOGFILE"; } 
+
+    TYPE=$(cat /sys/class/net/${INTERFACE}/type)
+    MAC=$(cat /sys/class/net/${INTERFACE}/address)
+    # 70-persistent-net.rules must be used as the file for consistent interface naming
+    [ -f {{ persistent_rules_file }} ] || touch {{ persistent_rules_file }}
+    echo "SUBSYSTEM==\"net\",ACTION==\"add\",ATTR{address}==\"${MAC}\",ATTR{type}==\"${TYPE}\",NAME=\"{{ hostvars['omnia_provision']['admin_nic'] }}\"" >> {{ persistent_rules_file }}
+    CONNECTION_PROFILE=$(nmcli -f name,device connection show | grep -w ${INTERFACE} | cut -d' ' -f1)
+    nmcli connection modify ${CONNECTION_PROFILE} connection.interface-name ""
+    nmcli connection modify ${CONNECTION_PROFILE} match.interface-name {{ hostvars['omnia_provision']['admin_nic'] }} || { echo "ERROR: Using nmcli to match the interface name." >> "$LOGFILE"; exit 1; }
+
+    # Set a live configuration for the interface name as the above will only take effect after reboot
+    ip link set ${INTERFACE} name {{ hostvars['omnia_provision']['admin_nic'] }} || { echo "ERROR: Re-naming admin interface." >> "$LOGFILE"; } 
+    echo "INFO: Re-named the admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
 fi
 
 # Enable and start the pcs container
-sudo systemctl start omnia_pcs || { echo "Error starting omnia_pcs service." >> "$LOGFILE"; exit 1; }
+sudo systemctl start omnia_pcs || { echo "ERROR: Starting omnia_pcs service." >> "$LOGFILE"; exit 1; }
 echo "$(date) - INFO - Finished OIM Passive node setup." >> "$LOGFILE"
 echo "---------------------------"
