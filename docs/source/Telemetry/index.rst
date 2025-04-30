@@ -125,9 +125,11 @@ Filter logs using Loki
 
     2. In the Explore page, select **control-plane-loki**.
 
+        
         .. image:: ../images/Grafana_ControlPlaneLoki.png
             :width: 600px
 
+    
     3. The log browser allows you to filter logs by job, node, and/or user.
 
     Example: ::
