@@ -49,6 +49,7 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
     * To take a local backup of the telemetry data stored in timescaleDB, use the `timescaledb utility <../Utils/timescaledb_utility.html>`_.
 
     * After the inventory is up and running, you can use the ``add_idrac_node.yml`` playbook to add new iDRAC nodes for ``idrac_telemetry`` acquisition. To execute the playbook, execute the following command:
+        
         ::
 
             ansible-playbook add_idrac_node.yml -i <inventory_filepath>
@@ -79,43 +80,43 @@ Access the Grafana UI
 
 **Prerequisite**
 
-* ``visualisation_support`` should be set to ``true`` during ``telemetry.yml`` or ``omnia.yml`` playbook execution.
+``visualisation_support`` should be set to ``true`` during ``telemetry.yml`` or ``omnia.yml`` playbook execution.
 
 **Steps**
 
     1. Find the IP address of the Grafana service using ``kubectl get svc -n grafana``
 
 
-    .. image:: ../images/grafanaIP.png
-        :width: 300px
+        .. image:: ../images/grafanaIP.png
+                :width: 600px
 
 
     2. Login to the Grafana UI by connecting to the cluster IP of grafana service obtained above via port 5000, that's ``http://xx.xx.xx.xx:5000/login``
 
 
-    .. image:: ../images/Grafana_login.png
-        :width: 300px
+        .. image:: ../images/Grafana_login.png
+            :width: 600px
 
 
     3. Enter the ``grafana_username`` and ``grafana_password`` as mentioned in ``input/telemetry_config.yml``.
 
 
-    .. image:: ../images/Grafana_Dashboards.png
-        :width: 300px
+        .. image:: ../images/Grafana_Dashboards.png
+            :width: 600px
 
 
     4. Loki log collections can viewed on the explore section of the grafana UI.
 
 
-    .. image:: ../images/Grafana_Loki.png
-        :width: 300px
+        .. image:: ../images/Grafana_Loki.png
+            :width: 600px
 
 
-    5. Datasources configured by Omnia can be viewed as seen below.
+    5. Datasources configured by Omnia can be viewed below: 
 
 
-    .. image:: ../images/GrafanaDatasources.png
-        :width: 300px
+        .. image:: ../images/GrafanaDatasources.png
+            :width: 600px
 
 Filter logs using Loki
 -----------------------
@@ -125,7 +126,7 @@ Filter logs using Loki
     2. In the Explore page, select **control-plane-loki**.
 
         .. image:: ../images/Grafana_ControlPlaneLoki.png
-            :width: 300px
+            :width: 600px
 
     3. The log browser allows you to filter logs by job, node, and/or user.
 
@@ -143,7 +144,7 @@ View telemetry data in Grafana
     2. In the Explore page, select **telemetry-postgres**.
 
     .. image:: ../images/Grafana_Telemetry_PostGRES.png
-        :width: 300px
+        :width: 600px
 
     3. The query builder allows you to create SQL commands that can be used to query the ``omnia_telemetry.metrics`` table. Filter the data required using the following fields:
 
@@ -159,7 +160,7 @@ View telemetry data in Grafana
     The below image shows a sample of **iDRAC telemetry data in Grafana**
 
     .. image:: ../images/idractelemetry.png
-        :width: 300px
+        :width: 600px
 
 .. note:: If you are more comfortable using SQL queries over the query builder, click on **Edit SQL** to directly provide your query. Optionally, the data returned from a query can be viewed as a graph.
 
