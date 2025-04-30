@@ -125,11 +125,9 @@ Filter logs using Loki
 
     2. In the Explore page, select **control-plane-loki**.
 
-        
         .. image:: ../images/Grafana_ControlPlaneLoki.png
             :width: 600px
 
-    
     3. The log browser allows you to filter logs by job, node, and/or user.
 
     Example: ::
@@ -145,8 +143,8 @@ View telemetry data in Grafana
 
     2. In the Explore page, select **telemetry-postgres**.
 
-    .. image:: ../images/Grafana_Telemetry_PostGRES.png
-        :width: 600px
+        .. image:: ../images/Grafana_Telemetry_PostGRES.png
+            :width: 600px
 
     3. The query builder allows you to create SQL commands that can be used to query the ``omnia_telemetry.metrics`` table. Filter the data required using the following fields:
 
@@ -159,7 +157,7 @@ View telemetry data in Grafana
         * **hostname**: The hostname of the cluster node.
         * **time**: The timestamp at which the metric was polled from the cluster node.
 
-    The below image shows a sample of **iDRAC telemetry data in Grafana**
+    The below image shows a sample of **iDRAC telemetry data in Grafana**:
 
     .. image:: ../images/idractelemetry.png
         :width: 600px
