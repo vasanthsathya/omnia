@@ -58,6 +58,7 @@ warning_time: 30
 async_time: 300
 poll_time: 15
 supported_roles:
+  - oim_ha_node
   - service_node
   - slurm_control_node
   - slurm_dbd

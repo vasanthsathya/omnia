@@ -20,7 +20,7 @@ if [ ! -f "$LOGFILE" ]; then
 fi
 
 echo "--------------------------" >> "$LOGFILE"
-echo "$(date) - INFO - Starting OIM Passive node setup." >> "$LOGFILE"
+echo "$(date) - INFO - Starting OIM HA Node Post Script." >> "$LOGFILE"
 
 if [ -f "/etc/debian_version" ];then
   str_os_type="debian"
@@ -32,10 +32,6 @@ fi
 if [ "$str_os_type" = "redhat" ]; then
     sudo dnf install -y podman
 fi
-
-# Enable and start podman.socket
-sudo systemctl enable podman.socket || { echo "ERROR: Enabling podman.socket." >> "$LOGFILE"; exit 1; }
-sudo systemctl start podman.socket || { echo "ERROR: Starting podman.socket." >> "$LOGFILE"; exit 1; }
 
 {% if omnia_share_option == "NFS" %}
 # Create omnia_path directory if it does not exist
@@ -100,7 +96,5 @@ if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
     echo "INFO: Re-named the admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
 fi
 
-# Enable and start the pcs container
-sudo systemctl start omnia_pcs || { echo "ERROR: Starting omnia_pcs service." >> "$LOGFILE"; exit 1; }
-echo "$(date) - INFO - Finished OIM Passive node setup." >> "$LOGFILE"
+echo "$(date) - INFO - Finished OIM HA Post Script." >> "$LOGFILE"
 echo "---------------------------"
