@@ -66,7 +66,7 @@ echo "{{ nfs_server_ip }}:{{ nfs_server_share_path }} {{ oim_shared_path }} nfs 
 echo "INFO: Loading container images." >> "$LOGFILE"
 podman load -i {{ container_images_path }} || { echo "ERROR: Loading container images." >> "$LOGFILE"; exit 1; }
 
-echo "INFO: Re-naming admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
+echo "INFO: Renaming admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
 # Ensure the management interface name is the same as active OIM, if not add the active OIM's interface name as an alternative name
 if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
     passive_oim_node_ips={{ hostvars['omnia_provision']['passive_oim_nodes'].query_result | map(attribute='admin_ip') | join(' ') }}
