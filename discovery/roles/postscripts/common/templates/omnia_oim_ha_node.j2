@@ -91,9 +91,7 @@ if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
     nmcli connection modify ${CONNECTION_PROFILE} connection.interface-name ""
     nmcli connection modify ${CONNECTION_PROFILE} match.interface-name {{ hostvars['omnia_provision']['admin_nic'] }} || { echo "ERROR: Using nmcli to match the interface name." >> "$LOGFILE"; exit 1; }
 
-    # Set a live configuration for the interface name as the above will only take effect after reboot
-    ip link set ${INTERFACE} name {{ hostvars['omnia_provision']['admin_nic'] }} || { echo "ERROR: Re-naming admin interface." >> "$LOGFILE"; } 
-    echo "INFO: Re-named the admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
+    echo "INFO: Renamed the admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}." >> "$LOGFILE"
 fi
 
 echo "$(date) - INFO - Finished OIM HA Post Script." >> "$LOGFILE"
