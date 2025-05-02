@@ -39,8 +39,4 @@
   register: exports_result
   with_items: "{{ hostvars['127.0.0.1']['nfs_client_params'] }}"
   when: item.server_ip == ansible_host or hostvars['127.0.0.1']['admin_nic_ip'] in ansible_host
-
-- name: Exporting the shared directories
-  ansible.builtin.command: exportfs -rav # -r: Reloads the export table from /etc/exports. -a: Applies all changes (exports and unexports).
-  changed_when: true
-  when: exports_result.changed
+  notify: Relaoading NFS export table
