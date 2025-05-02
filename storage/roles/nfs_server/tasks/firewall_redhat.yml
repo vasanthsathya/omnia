@@ -29,7 +29,7 @@
     state: enabled
     permanent: true
     immediate: true
-  with_items: "{{ nfs_ports }}"  
+  with_items: "{{ nfs_ports }}"
 
 - name: Enable nfs services
   ansible.posix.firewalld:

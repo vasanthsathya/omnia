@@ -22,7 +22,7 @@ default_client_mount_options: "nosuid,rw,sync,hard,intr"
 nfs_packages:
   RedHat:
     - nfs-utils
-    - nfs4-acl-tools    
+    - nfs4-acl-tools
   Debian:
     - nfs-common
     - nfs4-acl-tools
