@@ -57,6 +57,6 @@ The ``local_repo.yml`` playbook generates and provides two types of log files as
 
 Here's an example of how the log files are organized in the ``/opt/omnia/offline_repo/<group>`` directory:
 
-.. image:: ../../../images/local_repo_logs.png
+.. image:: ../../../images/local_repo_log.png
 
 **[Optional]** `Update all local repositories <update_local_repo.html>`_
