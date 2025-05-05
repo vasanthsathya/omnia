@@ -12,7 +12,7 @@ Optional","* This variable accepts user-defined repository urls, from which the 
 
 * **Example**: ``- { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", sslcacert: """", sslclientkey: """", sslclientcert: """" }``
 
-.. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<repo_name>``. The certificate files are encypted post ``local_repo.yml`` playbook execution. Execute the ```` command to decrypt the files. "
+.. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<user_repo_name>``. The certificate files are encypted post ``local_repo.yml`` playbook execution. Execute the ```` command to decrypt the files. "
 "**rhel_os_url**
 
 ``string``
