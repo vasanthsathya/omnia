@@ -4,14 +4,15 @@
 ``JSON List``
 
 Optional","* This variable accepts user-defined repository urls, from which the software packages/images will be downloaded and accessed by the cluster.
-
 * Omnia downloads the software packages/images the given list of URLs and stores them into a Pulp container, present on the NFS share. These packages/images are then accessed by the cluster nodes from that NFS share.
-
 * ``url`` defines the baseurl for the repository.
-
 * ``gpgkey`` defines gpgkey for the repository. If ``gpgkey`` is omitted then ``gpgcheck=0`` is set for that repository.
+* ``name`` defines the name of the software ``.rpm`` package.
+* If you are using SSL certificates for encryption, include the ``sslcacert``, ``sslclientkey``, and ``sslclientcert`` fields, and ensure each is populated with the correct certificate or key data. Omit these fields entirely if SSL is not in use.
 
-* **Example**: ``- {url: ""http://crb.com/CRB/x86_64/os/"",gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}``"
+* **Example**: ``- { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", sslcacert: """", sslclientkey: """", sslclientcert: """" }``
+
+.. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<repo_name>``. The certificate files are encypted post ``local_repo.yml`` playbook execution. Execute the ```` command to decrypt the files. "
 "**rhel_os_url**
 
 ``string``
@@ -19,7 +20,10 @@ Optional","* This variable accepts user-defined repository urls, from which the 
 Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``input/project_default/software_config.json``.
 * Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
 * Additional packages requied for the cluster are downloaded from the provided ``rhel_os_url`` and stored in the Pulp container.
-* **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ""- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY""}""
+* ``url`` defines the baseurl for the repository where the OS package is hosted.
+* ``gpgkey`` defines the gpgkey for the repository. If ``gpgkey`` is omitted, then ``gpgcheck=0`` is set for that repository.
+* ``name`` defines the name of the OS package.
+* **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ``- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY"", name: """"}``
 
 .. note:: The ``rhel_os_url`` is configured via proxy in compute nodes.
 
