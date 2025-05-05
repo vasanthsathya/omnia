@@ -193,7 +193,7 @@ Configuring specific local repositories
 
         * A sample format is available `here. <InputParameters.html>`_
 
-For information on deploying Pytorch after setting up the cluster, `click here. <../../InstallAITools/Pytorch.html>`_
+    For information on deploying Pytorch after setting up the cluster, `click here. <../../InstallAITools/Pytorch.html>`_
 
 
 **TensorFlow**
@@ -218,7 +218,7 @@ For information on deploying Pytorch after setting up the cluster, `click here. 
 
         * A sample format is available `here. <InputParameters.html>`_
 
-For information on deploying TensorFlow after setting up the cluster, `click here <../../InstallAITools/TensorFlow.html>`_.
+    For information on deploying TensorFlow after setting up the cluster, `click here <../../InstallAITools/TensorFlow.html>`_.
 
 
 **vLLM**
@@ -242,7 +242,7 @@ For information on deploying TensorFlow after setting up the cluster, `click her
 
         * A sample format is available `here. <InputParameters.html>`_
 
-For information on deploying vLLM after setting up the cluster, `click here <../../InstallAITools/vLLM/index.html>`_.
+    For information on deploying vLLM after setting up the cluster, `click here <../../InstallAITools/vLLM/index.html>`_.
 
 
 **OpenMPI**
