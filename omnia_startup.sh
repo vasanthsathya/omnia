@@ -627,7 +627,7 @@ main() {
 
     # If there are any, exit
     if [ -n "$other_containers" ]; then
-        echo -e "${RED} There are other omnia container running.${NC}"
+        echo -e "${RED} Failed to intiatiate Omnia core cleanup. There are other omnia container running.${NC}"
         echo -e "${GREEN} Execute oim_cleanup.yml first to cleanup all containers.${NC}"
         ssh omnia_core
     fi
