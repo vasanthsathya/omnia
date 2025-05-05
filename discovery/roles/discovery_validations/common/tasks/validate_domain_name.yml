@@ -84,8 +84,11 @@
     state: absent
 
 - name: Add hosts file entry for Omnia Infrastructure Manager
-  ansible.builtin.command: |
+  ansible.builtin.shell: |
+    set -o pipefail
     grep -qF '{{ oim_hostname }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} {{ oim_hostname }}' >> {{ hosts_file_path }}
 
 - name: Ensure 127.0.0.1 localhost entry exists uniquely using echo
-  ansible.builtin.command: grep -qxF '127.0.0.1 localhost' {{ hosts_file_path }} || echo '127.0.0.1 localhost' >> {{ hosts_file_path }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -qxF '127.0.0.1 localhost' {{ hosts_file_path }} || echo '127.0.0.1 localhost' >> {{ hosts_file_path }}
