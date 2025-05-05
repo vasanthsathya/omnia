@@ -629,7 +629,7 @@ main() {
     if [ -n "$other_containers" ]; then
         echo -e "${RED} There are other omnia container running.${NC}"
         echo -e "${GREEN} Execute oim_cleanup.yml first to cleanup all containers.${NC}"
-        exit 1
+        ssh omnia_core
     fi
 
     # Check if the omnia_core container is already running
