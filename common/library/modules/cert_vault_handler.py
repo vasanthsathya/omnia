@@ -24,7 +24,7 @@ from ansible.module_utils.local_repo.common_functions import process_file, load_
 from ansible.module_utils.local_repo.config import (
     USER_REPO_URL,
     LOCAL_REPO_CONFIG_PATH_DEFAULT,
-    VAULT_KEY_PATH
+    CERT_KEYS
 )
 
 def extract_repos_with_certs(repo_entries, log):
@@ -54,34 +54,35 @@ def extract_repos_with_certs(repo_entries, log):
 
 def generate_vault_key(module, key_path, log):
     """
-    Generate a secure Ansible Vault key only if the file does not exist
+    Generate a secure Ansible Vault key
+    only if the file does not already exist.
 
     Args:
         module (AnsibleModule): The active Ansible module object.
-        key_path (str): The path where the Vault key file should be saved.
+        key_path (str): The directory where the Vault key file should be saved.
+        log (Logger): Logger for logging messages.
 
     Returns:
-        bool: True if key was created, False otherwise.
+        str: The full path to the key file, or None if failed.
     """
     if os.path.isfile(key_path):
-        log.info("Ansible Vault key for user repo already exist")
-        return True
+        log.info(f"Ansible Vault key already exists: {key_path}")
+        return key_path
 
     try:
-        os.makedirs(os.path.dirname(key_path), exist_ok=True)
-
         alphabet = string.ascii_letters + string.digits
         key = ''.join(secrets.choice(alphabet) for _ in range(32))
 
-        with open(key_path, "w", encoding = "utf-8") as f:
+        with open(key_path, "w", encoding="utf-8") as f:
             f.write(key + "\n")
 
         os.chmod(key_path, stat.S_IRUSR | stat.S_IWUSR)
-        log.info("Ansible Vault key for user repo created")
-        return True
-    except Exception as e:
-        module.fail_json(msg=f"Failed to generate vault key: {str(e)}")
-        return False
+        log.info(f"Ansible Vault key created at: {key_path}")
+        return key_path
+
+    except (OSError, IOError) as e:
+        module.fail_json(msg=f"Failed to write vault key to '{key_path}': {e}")
+        return None
 
 def main():
     """
@@ -90,7 +91,7 @@ def main():
     The module takes in the following parameters:
         * file_path: The path to the file to encrypt or decrypt.
         * dir_path: The path to the directory containing files to encrypt or decrypt.
-        * vault_key: The path to the Ansible Vault key.
+        * key_path: The path to the Ansible Vault key.
         * mode: The mode of operation, either 'encrypt' or 'decrypt'.
 
     The module is mutually exclusive for file_path and dir_path.
@@ -100,13 +101,14 @@ def main():
     module = AnsibleModule(
     argument_spec={
         'mode': {'type': 'str', 'required': True, 'choices': ['encrypt', 'decrypt']},
-        'log_dir': {'type': 'str', 'required': False, 'default': '/tmp/thread_logs'}
+        'log_dir': {'type': 'str', 'required': False, 'default': '/tmp/thread_logs'},
+        'key_path': {'type': 'str', 'required': True}
     },
     supports_check_mode=False
     )
     mode = module.params['mode']
     log_dir = module.params["log_dir"]
-
+    vault_key_path = module.params["key_path"]
     log = setup_standard_logger(log_dir)
 
     start_time = datetime.now().strftime("%I:%M:%S %p")
@@ -117,12 +119,12 @@ def main():
     local_repo_config = load_yaml_file(LOCAL_REPO_CONFIG_PATH_DEFAULT)
     user_repos = local_repo_config.get(USER_REPO_URL, [])
     if not user_repos:
-        log.info(f"No user repo found, proceeding without encryption")
+        log.info("No user repo found, proceeding without encryption")
         module.exit_json()
 
     cert_entries = extract_repos_with_certs(user_repos, log)
     for entry in cert_entries:
-        for key in ["sslcacert", "sslclientkey", "sslclientcert"]:
+        for key in CERT_KEYS:
             path = entry.get(key)
             if path and not os.path.isfile(path):
                 module.fail_json(msg=f"Missing {key} for repo '{entry['name']}': {path}")
@@ -131,13 +133,14 @@ def main():
     changed = False
 
     if cert_entries:
-        generate_vault_key(module, VAULT_KEY_PATH, log)
-        log.info(f"User repo found, proceeding to encrypt")
+        vault_key_path = os.path.join(vault_key_path, ".local_repo_credentials_key")
+        generate_vault_key(module, vault_key_path, log)
+        log.info("User repo found, proceeding to encrypt")
         for entry in cert_entries:
-            for key in ["sslcacert", "sslclientkey", "sslclientcert"]:
+            for key in CERT_KEYS:
                 path = entry.get(key)
                 if path:
-                    result, msg = process_file(path, VAULT_KEY_PATH, mode)
+                    result, msg = process_file(path, vault_key_path, mode)
                     if result is False:
                         module.fail_json(msg=f"Failed to {mode} {key} for '{entry['name']}': {msg}")
                     else:

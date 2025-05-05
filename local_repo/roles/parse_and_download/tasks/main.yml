@@ -24,6 +24,7 @@
   cert_vault_handler:
     mode: encrypt
     log_dir: "{{ base_path }}"
+    key_path: "{{ project_input_path }}"
   register: vault_result
 
 - name: Execute tasks for each group
