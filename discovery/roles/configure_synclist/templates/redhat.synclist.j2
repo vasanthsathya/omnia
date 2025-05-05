@@ -8,4 +8,6 @@
  
 {% if enable_oim_ha %}
 {{ syncfiles_share_path }}/pcs/{{ pcs_container_name }}.container -> {{ container_systemd_dir }}/{{ pcs_container_name }}.container
+{{ provision_shared_path }}/../ssh_config/.ssh/oim_rsa -> /root/.ssh/oim_rsa
+{{ provision_shared_path }}/../ssh_config/.ssh/config -> /root/.ssh/config
 {% endif %}

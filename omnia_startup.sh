@@ -332,6 +332,14 @@ init_container_config() {
     echo -e "${GREEN} Creating the ssh configuration directory if it does not exist.${NC}"
     mkdir -p "$omnia_path/omnia/ssh_config/.ssh"
 
+    # Copy the omnia_core ssh config to the shared path. 
+    echo -e "${GREEN} Copying the omnia_core ssh config to the omnia shared path.${NC}"
+    cp "$HOME/.ssh/config" "$omnia_path/omnia/ssh_config/.ssh/config"
+
+    # Copy the oim_rsa ssh key to the shared path.
+    echo -e "${GREEN} Copying the oim_rsa ssh key to the omnia shared path.${NC}"
+    cp "$HOME/.ssh/oim_rsa" "$omnia_path/omnia/ssh_config/.ssh/oim_rsa"
+
     # Copy the ssh private key to the omnia shared path.
     echo -e "${GREEN} Copying the ssh private key to the omnia shared path.${NC}"
     cp $ssh_key_file "$omnia_path/omnia/ssh_config/.ssh/id_rsa"
