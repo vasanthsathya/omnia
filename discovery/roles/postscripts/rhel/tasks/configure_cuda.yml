@@ -78,6 +78,14 @@
     mode: "{{ item.mode }}"
   with_items: "{{ cuda_postscripts_path }}"
 
+- name: Delete cuda repo folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ cuda_tmp_path }}"
+    - "{{ cuda_core_path }}"
+
 - name: Add cuda path in enviornment variable in postscripts
   ansible.builtin.lineinfile:
     path: "{{ xcat_rhel8_post_script }}"
