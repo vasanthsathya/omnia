@@ -12,7 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-- name: Relaoading NFS export table
+- name: Restart NFS services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  with_items: "{{ nfs_restart_services[ansible_os_family] }}"
+
+- name: Reloading NFS export table
   ansible.builtin.command: exportfs -rav # -r: Reloads the export table from /etc/exports. -a: Applies all changes (exports and unexports).
   changed_when: true
   when: exports_result.changed
