@@ -21,7 +21,7 @@ This module provides functions for fetching roles from an OmniDB database.
 from ansible.module_utils.basic import AnsibleModule
 
 MANAGEMENT_LAYER_ROLES = {
-    "oim_ha_node", "service_node", "login", "compiler", "kube_control_plane", "etcd",
+    "oim_ha_node", "service_node", "login", "compiler_node", "kube_control_plane", "etcd",
     "slurm_control_node", "slurm_dbd", "auth_server"
     }
 SECOND_LAYER_ROLES = {"default", "kube_node", "slurm_node"}
@@ -118,7 +118,7 @@ def check_bmc_required(group_data):
     else:
         return False
 
-def filter_roles(groups_data, roles_data, layer):
+def filter_roles(roles_data, layer):
     """Filter the roles based on the layer and the roles data."""
 
     if layer == "first":
@@ -148,15 +148,13 @@ def roles_groups_mapping(groups_data, roles_data, layer):
                                                     provisioning is required.
             - roles_groups_data (dict): A dictionary containing the roles and groups data.
             - groups_roles_info (dict): A dictionary containing the groups and roles information.
-            - hierarchical_service_data (dict): A dictionary containing the hierarchical
-                                                service node data.
 
     Raises:
         Exception: If a group doesn't exist in the roles_config.yml Groups dict.
     """
 
 
-    valid_roles = filter_roles(groups_data, roles_data, layer)
+    valid_roles = filter_roles(roles_data, layer)
 
     bmc_check = False
     switch_check = False
@@ -224,8 +222,8 @@ def main():
         layer = module.params["layer"]
         roles = {role.pop('name'): role for role in roles_list}
         validate_roles(roles, layer, module)
-        need_bmc, need_switch, roles_groups_data, groups_roles_info \
-            = roles_groups_mapping(groups, roles, layer)
+        need_bmc, need_switch, roles_groups_data, groups_roles_info = \
+            roles_groups_mapping(groups, roles, layer)
         module.exit_json(
             changed=False,
             roles_data=roles,
@@ -233,7 +231,7 @@ def main():
             groups_roles_info=groups_roles_info,
             roles_groups_data=roles_groups_data,
             bmc_static_status=need_bmc,
-            switch_status=need_switch
+            switch_status=need_switch,
         )
     except ValueError as e:
         module.fail_json(msg=str(e))

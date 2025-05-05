@@ -13,28 +13,40 @@
 #  limitations under the License.
 ---
 
-- name: Create mapping of service_tag to key in hierarchical_service_node_data
-  ansible.builtin.set_fact:
-    service_tag_map: >-
-      {{
-        service_tag_map | default({}) | combine({
-          value.service_tag: {"admin_ip": value.admin_ip, "node": key}
-        })
-      }}
-  with_dict: "{{ hierarchical_service_node_data }}"
-  loop_control:
-    label: "{{ item.key }}"
-  vars:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
+- name: Gathering service facts
+  ansible.builtin.service_facts:
 
-- name: Configure child groups with xcatmaster and servicenode
+- name: Try restart xcatd service if not running
+  block:
+    - name: Try restart xcatd service if not running
+      ansible.builtin.systemd:
+        name: xcatd
+        state: restarted
+      register: xcatd_restart
+      until: xcatd_restart is not failed
+      retries: "{{ service_retries }}"
+      when:
+        - xcatd_service in ansible_facts.services
+        - "'running' not in ansible_facts.services[xcatd_service].state"
+  rescue:
+    - name: Unable to start xcatd services
+      ansible.builtin.debug:
+        msg: "{{ xcat_start_fail_msg }}"
+
+- name: Configure compute nodes with xcatmaster and servicenode
   ansible.builtin.command: >
     {{ xcat_bin_path }}/chdef {{ item.node }}
-    servicenode={{ service_tag_map[item.parent]['admin_ip'] }}
-    xcatmaster={{ service_tag_map[item.parent]['admin_ip'] }}
-    conserver={{ service_tag_map[item.parent]['admin_ip'] }}
-    monserver={{ service_tag_map[item.parent]['admin_ip'] }}
+    servicenode={{ sn_ip }}
+    xcatmaster={{ sn_ip }}
+    conserver={{ sn_ip }}
+    monserver={{ sn_ip }}
+  vars:
+    sn_ip: >-
+      {{
+        booted_service_nodes_data[item.parent].virtual_ip_address
+        if booted_service_nodes_data[item.parent].enable_service_ha
+        else booted_service_nodes_data[item.parent].admin_ip
+      }}
   loop: "{{ hostvars['omnia_provision']['discovered_nodes'] }}"
   loop_control:
     loop_var: item
@@ -56,7 +68,7 @@
 - name: Task for creating DHCP configuration
   block:
     - name: Create DHCP configuration
-      ansible.builtin.command: "{{ xcat_sbin_path }}/makedhcp -n"
+      ansible.builtin.command: "{{ xcat_sbin_path }}/makedhcp -nl"
       changed_when: true
       register: create_dhcp_config
   rescue:
