@@ -174,10 +174,12 @@ def roles_groups_mapping(groups_data, roles_data, layer):
                 grp_bmc_check = False if grp_switch_check else grp_bmc_check
                 switch_check = switch_check or grp_switch_check
                 bmc_check = bmc_check or grp_bmc_check
+
                 roles_groups_data[role] = {}
                 roles_groups_data[role][group] = groups_data[group]
                 groups_roles_info[group]['switch_status'] = grp_switch_check
                 groups_roles_info[group]['bmc_static_status'] = grp_bmc_check
+
             else:
                 raise ValueError(
                     f"Group '{group}' doesn't exist in roles_config.yml Groups dict"
