@@ -77,10 +77,11 @@
     oim_domain_name: "{{ domain_name }}"
     oim_hostname: "{{ hostname_result.stdout }}"
 
-- name: Remove hosts file entry of Omnia Infrastructure Manager
-  ansible.builtin.shell: |
-    set -o pipefail
-    sed -i '/{{ oim_hostname }}/d' {{ hosts_file_path }}
+# - name: Remove hosts file entry of Omnia Infrastructure Manager
+#   ansible.builtin.lineinfile:
+#     path: "{{ hosts_file_path }}"
+#     regexp: "^(.*){{ oim_hostname }}"
+#     state: absent
 
 - name: Add hosts file entry for Omnia Infrastructure Manager
   ansible.builtin.shell: |
