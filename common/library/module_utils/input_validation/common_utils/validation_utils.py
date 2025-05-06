@@ -341,3 +341,74 @@ def check_port_ranges(port_ranges) -> bool:
                 return False
 
     return True
+
+def validate_cluster_items(cluster_items, json_file_path):
+    failures = []
+    successes = []
+    for item in cluster_items:
+        item_type = item.get('type')
+        if item_type == 'rpm':
+            if 'package' not in item or 'repo_name' not in item:
+                failures.append(f"Failed. Missing required properties for 'rpm' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'rpm' item in file '{json_file_path}'.")
+        elif item_type == 'ansible_galaxy_collection':
+            if 'package' not in item or 'version' not in item:
+                failures.append(f"Failed. Missing required properties for 'ansible_galaxy_collection' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'ansible_galaxy_collection' item in file '{json_file_path}'.")
+        elif item_type == 'git':
+            if 'package' not in item or 'version' not in item or 'url' not in item:
+                failures.append(f"Failed. Missing required properties for 'git' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'git' item in file '{json_file_path}'.")
+        elif item_type == 'image':
+            if 'package' not in item or ('tag' not in item and 'digest' not in item):
+                failures.append(f"Failed. Missing required properties for 'image' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'image' item in file '{json_file_path}'.")
+        elif item_type == 'tarball':
+            if 'package' not in item or 'url' not in item:
+                failures.append(f"Failed. Missing required properties for 'tarball' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'tarball' item in file '{json_file_path}'.")
+        elif item_type == 'shell':
+            if 'package' not in item or 'url' not in item:
+                failures.append(f"Failed. Missing required properties for 'shell' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'shell' item in file '{json_file_path}'.")
+        elif item_type == 'iso':
+            if 'package' not in item or 'url' not in item:
+                failures.append(f"Failed. Missing required properties for 'iso' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'iso' item in file '{json_file_path}'.")
+        elif item_type == 'manifest':
+            if 'package' not in item or 'url' not in item:
+                failures.append(f"Failed. Missing required properties for 'manifest' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid 'manifest' item in file '{json_file_path}'.")
+    return successes, failures
+
+
+def validate_softwaresubgroup_entries(software_name, json_path, json_data,validation_results,failures):
+    try:
+        #check for the key in software.json
+        if software_name in json_data:
+            validation_results.append((json_path, True))
+            if 'cluster' in json_data[software_name]:
+                cluster_items = json_data[software_name]['cluster']
+                item_successes, item_failures = validate_cluster_items(cluster_items, json_path)
+                if item_failures:
+                    failures.append(f"{item_failures}")
+            else:
+                failures.append(f"Failed. Invalid JSON format for: '{software_name}' in file '{json_path}'. Cluster property is missing")    
+        else:
+            validation_results.append((json_path, False))
+            failures.append(f"Failed. Invalid software name: '{software_name}' in file '{json_path}'.")
+
+    except json.JSONDecodeError:
+            failures.append(f"Failed. JSON syntax error in file '{json_path}'.")
+
+    return validation_results, failures
+
+            
