@@ -130,7 +130,7 @@
         name: os_update                   # noqa: role-name[path]
         tasks_from: update_kernel_parameters.yml
 
-- name: Discovery roles of Omnia Infrastructure Manager for provisioning
+- name: Configure postscripts
   hosts: omnia_provision
   connection: ssh
   tags: management_layer
@@ -148,7 +148,7 @@
       when:
         - hostvars['omnia_provision']['hierarchical_provision_status'] | default(false)
 
-- name: Discovery roles of Omnia Infrastructure Manager for provisioning
+- name: Configure os image and monitor service
   hosts: omnia_provision
   connection: ssh
   tags: management_layer
