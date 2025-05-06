@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: Restart NFS services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  with_items: "{{ nfs_restart_services[ansible_os_family] }}"
 
-- name: Setup nfs server
-  ansible.builtin.include_tasks: "nfs_server_setup.yml"
-
-- name: Configure firewall
-  ansible.builtin.include_tasks: "firewall_{{ ansible_os_family | lower }}.yml" # TODO: firewall for debian
-  when: use_firewall
+- name: Reloading NFS export table
+  ansible.builtin.command: exportfs -rav # -r: Reloads the export table from /etc/exports. -a: Applies all changes (exports and unexports).
+  changed_when: true
