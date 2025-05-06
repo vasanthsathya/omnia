@@ -39,13 +39,4 @@ def validate_local_repo_config(input_file_path, data, logger, module, omnia_base
     elif oim_os.lower() != cluster_os_type.lower():
         errors.append(create_error_msg(input_file_path, oim_os , "The cluster OS mentioned in software config does not match the OIM OS"))
 
-    if cluster_os_type.lower() == "rhel":
-    # Check that omnia_repo_url_rhel is defined, is a list, and has at least one item
-        if omnia_repo_url_rhel is None:
-            errors.append(create_error_msg("omnia_repo_url_rhel", omnia_repo_url_rhel, "omnia_repo_url_rhel is not defined"))
-        if not isinstance(omnia_repo_url_rhel, list):
-            errors.append(create_error_msg("omnia_repo_url_rhel", omnia_repo_url_rhel, "omnia_repo_url_rhel should be a list."))
-        if len(omnia_repo_url_rhel) == 0:
-            errors.append(create_error_msg("omnia_repo_url_rhel", omnia_repo_url_rhel, "omnia_repo_url_rhel should have at least one item."))
-
     return errors
