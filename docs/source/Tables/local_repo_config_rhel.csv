@@ -17,7 +17,7 @@ Optional","* This variable accepts user-defined repository urls, from which the 
 
 ``string``
 
-Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``input/project_default/software_config.json``.
+Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``/opt/omnia/input/project_default/software_config.json``.
 * Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
 * Additional packages requied for the cluster are downloaded from the provided ``rhel_os_url`` and stored in the Pulp container.
 * ``url`` defines the baseurl for the repository where the OS package is hosted.

@@ -29,7 +29,7 @@ Configuring specific local repositories
 
             {"name": "cuda", "version": "12.3.2"},
 
-    For a list of repositories (and their types) configured for CUDA, view the ``/opt/omnia/config/<cluster_os_type>/<cluster_os_version>/cuda.json`` file. To customize your CUDA installation, update the ``url`` parameter with your desired CUDA version URL. URLs for different versions can be found `here <https://developer.nvidia.com/cuda-downloads>`_. ::
+    For a list of repositories (and their types) configured for CUDA, view the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>/cuda.json`` file. To customize your CUDA installation, update the ``url`` parameter with your desired CUDA version URL. URLs for different versions can be found `here <https://developer.nvidia.com/cuda-downloads>`_. ::
 
         {
           "cuda": {
@@ -49,7 +49,7 @@ Configuring specific local repositories
 
 .. note::
     * If the package version is customized, ensure that the same ``version`` value is also updated in the ``software_config.json``.
-    * If the target cluster runs on RHEL, ensure that the "dkms" package is also included in ``/opt/omnia/config/<cluster_os_type>/9.x/cuda.json`` as illustrated above.
+    * If the target cluster runs on RHEL, ensure that the "dkms" package is also included in ``/opt/omnia/input/project_default/config/<cluster_os_type>/9.x/cuda.json`` as illustrated above.
 
 **OFED**
 
@@ -57,7 +57,7 @@ Configuring specific local repositories
 
             {"name": "ofed", "version": "24.01-0.3.3.1"},
 
-    For a list of repositories (and their types) configured for OFED, view the ``/opt/omnia/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the ``url`` parameter with your desired OFED version URL. ::
+    For a list of repositories (and their types) configured for OFED, view the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the ``url`` parameter with your desired OFED version URL. ::
 
         {
           "ofed": {
