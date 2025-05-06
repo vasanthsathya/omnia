@@ -58,7 +58,7 @@ omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
 omnia_images_path: "/opt/omnia/images/omnia_images.tar"
 omnia_images_path_fail_msg: |
   "Images tarball does not exist. To support either OIM HA or heirarchical provisioning, input must be provided in
-  the high_availability_config.yml or roles_config.yml before running the prepare_oim playbook.
+  the high_availability_config.yml or roles_config.yml before running the prepare_oim.yml playbook.
   For a Hierarchical Cluster, service node role should be defined in the roles_config.yml.
   Please run oim_cleanup.yml and then re-run prepare_oim.yml with the appropriate inputs."
 
