@@ -230,9 +230,9 @@ init_container_config() {
             echo -e "${BLUE} Please provide Omnia shared path:${NC}"
             read -p "Omnia shared path: " omnia_path
 
-            # Check if the Omnia shared path exists.
-            if [ ! -d "$omnia_path" ]; then
-                echo -e "${RED} Omnia shared path does not exist!${NC}"
+            # Check if the Omnia shared path is absolute path and path exists.
+            if [[ "$omnia_path" != /* ]] || [ ! -d "$omnia_path" ]; then
+                echo -e "${RED} Omnia shared path is not an absolute path or does not exist! Please re-run omnia_startup.sh with valid Omnia shared path${NC}"
                 exit
             fi
             ;;
