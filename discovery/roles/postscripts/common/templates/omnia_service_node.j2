@@ -8,6 +8,10 @@
 # Define log file
 LOGFILE="/var/log/xcat/xcat.log"
 
+log() {
+  echo "$1" >> "$LOGFILE"
+}
+
 echo "--------------------------" >> "$LOGFILE"
 echo "Starting service node setup" >> "$LOGFILE"
 
@@ -67,8 +71,8 @@ if [ "$str_os_type" = "redhat" ]; then
     sudo dnf install -y podman
 fi
 
-sudo systemctl enable podman.socket || { echo "Error enabling podman.socket." >> "$LOGFILE"; exit 1; }
-sudo systemctl start podman.socket || { echo "Error starting podman.socket." >> "$LOGFILE"; exit 1; }
+# sudo systemctl enable podman.socket || { echo "Error enabling podman.socket." >> "$LOGFILE"; exit 1; }
+# sudo systemctl start podman.socket || { echo "Error starting podman.socket." >> "$LOGFILE"; exit 1; }
 
 
 {% if omnia_share_option == "NFS" %}
@@ -126,5 +130,32 @@ else
     echo "Container image file not found at {{ container_images_path }}" >> "$LOGFILE"
 fi
 
-echo "--------------------------" >> "$LOGFILE"
-echo "Service node setup completed successfully." >> "$LOGFILE"
+log "INFO: Renaming admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}."
+# Ensure the management interface name is the same as active OIM, if not add the active OIM's interface name as an alternative name
+if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
+
+    passive_oim_node_ips="{{ hostvars['omnia_provision']['discovered_service_nodes'] | map(attribute='admin_ip') | join(' ') }}"
+    for admin_ip in ${passive_oim_node_ips};do
+        INTERFACE=$(ip addr show | awk "/${admin_ip}/{print \$NF; exit}")
+        if [ -n "$INTERFACE" ]; then
+            break
+        fi
+    done
+
+    if [ -z "$INTERFACE" ]; then
+        log "ERROR:: No admin interface found."
+        exit 1
+    fi
+
+    TYPE=$(cat /sys/class/net/${INTERFACE}/type)
+    MAC=$(cat /sys/class/net/${INTERFACE}/address)
+    # 70-persistent-net.rules must be used as the file for consistent interface naming
+    [ -f {{ persistent_rules_file }} ] || touch {{ persistent_rules_file }}
+    echo "SUBSYSTEM==\"net\",ACTION==\"add\",ATTR{address}==\"${MAC}\",ATTR{type}==\"${TYPE}\",NAME=\"{{ hostvars['omnia_provision']['admin_nic'] }}\"" >> {{ persistent_rules_file }}
+
+    log "INFO: Renamed the admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}."
+fi
+
+
+log "--------------------------"
+log "Service node setup completed successfully."
