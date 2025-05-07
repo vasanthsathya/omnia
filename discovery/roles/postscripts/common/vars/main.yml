@@ -72,3 +72,6 @@ genesis_package_path:
 container_tar_file: "omnia_images.tar"
 container_images_path: "{{ oim_shared_path }}/omnia/images/{{ container_tar_file }}"
 persistent_rules_file: "/etc/udev/rules.d/70-persistent-net.rules"
+
+# Usage: omnia_hostname.j2
+sshd_config_file: "/etc/ssh/sshd_config"
