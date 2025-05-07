@@ -18,7 +18,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.discovery.omniadb_connection import get_data_from_db # type: ignore
 
 invalid_tags_msg = "These tags are not of a service node. \
-    Please give correct input in parent filed in roles_config.yml, \
+    Please give correct input in parent field in roles_config.yml, \
     or for service node HA in high_availability_config.yml"
 
 def get_booted_service_nodes_data():
