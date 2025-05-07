@@ -37,7 +37,7 @@ run_or_fail sudo /opt/xcat/sbin/restartxcatd -v
 
 # Check if the container file exists
 if [ -f "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/{{ pcs_container_name }}.container" ]; then
-    log "INFO:--- Copying omnia_pcs congtainer file to container_systemd_dir ---"
+    log "INFO:--- Copying omnia_pcs container file to /etc/containers/systemd/ ---"
     cp "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/{{ pcs_container_name }}.container" \
            "{{ container_systemd_dir }}/{{ pcs_container_name }}.container"
 
