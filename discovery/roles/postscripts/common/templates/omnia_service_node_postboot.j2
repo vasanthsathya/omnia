@@ -54,6 +54,8 @@ fi
 run_or_fail mount -a
 
 # Making enty in /etc/exports
+mkdir -p /install
+mkdir -p /tftpboot
 INSTALL_EXPORT="/install *(rw,no_root_squash,sync,no_subtree_check,fsid=1)"
 TFTPBOOT_EXPORT="/tftpboot *(rw,no_root_squash,sync,no_subtree_check,fsid=1)"
 
