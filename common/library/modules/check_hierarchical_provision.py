@@ -17,8 +17,9 @@
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.discovery.omniadb_connection import get_data_from_db # type: ignore
 
-invalid_tags_msg = "These tags are either not a service node or not in booted state. \
-    Please check in omniadb for the state of nodes."
+invalid_tags_msg = "These tags are not of a service node. \
+    Please give correct input in parent filed in roles_config.yml, \
+    or for service node HA in high_availability_config.yml"
 
 def get_booted_service_nodes_data():
     """
@@ -56,7 +57,6 @@ def get_booted_service_nodes_data():
             Either wait till all the service nodes are booted or remove these nodes using utility playbook delete_node.yml")
 
     return data
-
 
 def get_service_node_ha_dict(service_node_ha_data, booted_service_nodes_data):
     """
