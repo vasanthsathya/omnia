@@ -119,8 +119,8 @@ run_or_fail sudo /opt/xcat/sbin/restartxcatd -v
 
 # Check if the container file exists
 if [ -f "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/{{ pcs_container_name }}.container" ]; then
-    # Create symlink if the file exists
-    ln -sf "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/{{ pcs_container_name }}.container" \
+    log "INFO:--- Copying omnia_pcs container file to /etc/containers/systemd/ ---"
+    cp "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/{{ pcs_container_name }}.container" \
            "{{ container_systemd_dir }}/{{ pcs_container_name }}.container"
 
     log "INFO:--- Reloading systemd ---"
