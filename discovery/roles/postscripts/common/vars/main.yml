@@ -20,8 +20,7 @@ xcat_manpath_env: "/opt/xcat/share/man:$MANPATH"
 perl_badlang_env: 0
 xcat_path: /opt/xcat/bin
 omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
-pcs_vars: "{{ role_path }}/../../../prepare_oim/roles/deploy_containers/pcs/vars/main.yml"
-
+pcs_vars: "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/pcs/vars/main.yml"
 # Usage: check_nodes_all.yml
 all_nodes_warning_msg: "[WARNING] Not found any nodes using the given discovery mechanism.
 Verify all the input parameters are valid and re-run discovery_provision.yml"
