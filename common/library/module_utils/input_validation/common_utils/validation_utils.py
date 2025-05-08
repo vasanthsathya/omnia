@@ -345,50 +345,36 @@ def check_port_ranges(port_ranges) -> bool:
 def validate_cluster_items(cluster_items, json_file_path):
     failures = []
     successes = []
+
     for item in cluster_items:
         item_type = item.get('type')
-        if item_type == 'rpm':
-            if 'package' not in item or 'repo_name' not in item:
-                failures.append(f"Failed. Missing required properties for 'rpm' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'rpm' item in file '{json_file_path}'.")
-        elif item_type == 'ansible_galaxy_collection':
-            if 'package' not in item or 'version' not in item:
-                failures.append(f"Failed. Missing required properties for 'ansible_galaxy_collection' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'ansible_galaxy_collection' item in file '{json_file_path}'.")
-        elif item_type == 'git':
-            if 'package' not in item or 'version' not in item or 'url' not in item:
-                failures.append(f"Failed. Missing required properties for 'git' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'git' item in file '{json_file_path}'.")
-        elif item_type == 'image':
-            if 'package' not in item or ('tag' not in item and 'digest' not in item):
-                failures.append(f"Failed. Missing required properties for 'image' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'image' item in file '{json_file_path}'.")
-        elif item_type == 'tarball':
-            if 'package' not in item or 'url' not in item:
-                failures.append(f"Failed. Missing required properties for 'tarball' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'tarball' item in file '{json_file_path}'.")
-        elif item_type == 'shell':
-            if 'package' not in item or 'url' not in item:
-                failures.append(f"Failed. Missing required properties for 'shell' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'shell' item in file '{json_file_path}'.")
-        elif item_type == 'iso':
-            if 'package' not in item or 'url' not in item:
-                failures.append(f"Failed. Missing required properties for 'iso' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'iso' item in file '{json_file_path}'.")
-        elif item_type == 'manifest':
-            if 'package' not in item or 'url' not in item:
-                failures.append(f"Failed. Missing required properties for 'manifest' in file '{json_file_path}'.")
-            else:
-                successes.append(f"Success. Valid 'manifest' item in file '{json_file_path}'.")
-    return successes, failures
+        required_fields = config.TYPE_REQUIREMENTS.get(item_type)
 
+        if not required_fields:
+            failures.append(f"Failed. Unknown type '{item_type}' in file '{json_file_path}'.")
+            continue
+
+        # Handle types with either/or fields (like tag/digest for image)
+        if any(isinstance(field, list) for field in required_fields):
+            # Separate flat and alternative fields
+            flat_fields = [f for f in required_fields if isinstance(f, str)]
+            alt_fields_groups = [f for f in required_fields if isinstance(f, list)]
+
+            missing_flat = [f for f in flat_fields if f not in item]
+            has_one_alt = any(any(alt in item for alt in group) for group in alt_fields_groups)
+
+            if missing_flat or not has_one_alt:
+                failures.append(f"Failed. Missing required properties for '{item_type}' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid '{item_type}' item in file '{json_file_path}'.")
+        else:
+            missing_fields = [field for field in required_fields if field not in item]
+            if missing_fields:
+                failures.append(f"Failed. Missing {missing_fields} for '{item_type}' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid '{item_type}' item in file '{json_file_path}'.")
+
+    return successes, failures
 
 def validate_softwaresubgroup_entries(software_name, json_path, json_data,validation_results,failures):
     try:

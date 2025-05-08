@@ -120,6 +120,19 @@ os_version_ranges = {
     #"ubuntu": ["20.04", "22.04", "24.04"]
 }
 
+
+#dictionary used for local repo package type mapping
+TYPE_REQUIREMENTS = {
+    "rpm": ["package", "repo_name"],
+    "ansible_galaxy_collection": ["package", "version"],
+    "git": ["package", "version", "url"],
+    "image": ["package", ["tag", "digest"]],  # Special: one of tag or digest
+    "tarball": ["package", "url"],
+    "shell": ["package", "url"],
+    "iso": ["package", "url"],
+    "manifest": ["package", "url"]
+}
+
 # Dict of the file that can be encrypted and it's ansible vault key
 def get_vault_password(yaml_file):
     vault_passwords = {
