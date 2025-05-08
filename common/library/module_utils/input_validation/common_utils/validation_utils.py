@@ -392,8 +392,12 @@ def validate_softwaresubgroup_entries(software_name, json_path, json_data,valida
             validation_results.append((json_path, False))
             failures.append(f"Failed. Invalid software name: '{software_name}' in file '{json_path}'.")
 
-    except json.JSONDecodeError:
-            failures.append(f"Failed. JSON syntax error in file '{json_path}'.")
+    except KeyError as e:
+        failures.append(f"Failed. Missing key {str(e)} in file '{json_path}'.")
+    except TypeError as e:
+        failures.append(f"Failed. Type error in file '{json_path}': {str(e)}")
+    except Exception as e:
+        failures.append(f"Failed. Unexpected error in file '{json_path}': {str(e)}")
 
     return validation_results, failures
 
