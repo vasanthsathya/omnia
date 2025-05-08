@@ -512,6 +512,10 @@ setup_container() {
         echo -e "${RED} Make sure the Omnia core image is present.${NC}"
         exit 1
     fi
+
+    # Waiting for container to be ready
+    sleep 2
+
 }
 
 # This function sets up the configuration for the Omnia core.
@@ -611,9 +615,6 @@ start_container_session() {
 
     --------------------------------------------------------------------------------------------------------------------------------------------------
     ${NC}"
-
-    # Waiting for container to be ready
-    sleep 2
 
     # Entering Omnia-core container
     ssh omnia_core
