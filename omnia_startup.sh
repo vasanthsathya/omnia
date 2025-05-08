@@ -675,9 +675,10 @@ main() {
                 esac
             done
 
-            # If the user wants to en
+            # If the user wants to enter omnia_core container
             if [ "$choice" = "1" ]; then
                 start_container_session
+            fi
             # If the user wants to reinstall, call the remove_container function, and then call the setup_omnia_core function
             if [ "$choice" = "2" ]; then
                 echo -e "${GREEN} What configuration do you want to use for reinstallation:${NC}"
