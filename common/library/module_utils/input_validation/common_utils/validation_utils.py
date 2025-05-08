@@ -376,7 +376,7 @@ def validate_cluster_items(cluster_items, json_file_path):
 
     return successes, failures
 
-def validate_softwaresubgroup_entries(software_name, json_path, json_data,validation_results,failures):
+def validate_softwaresubgroup_entries(software_name, json_path, json_data, validation_results, failures):
     try:
         #check for the key in software.json
         if software_name in json_data:

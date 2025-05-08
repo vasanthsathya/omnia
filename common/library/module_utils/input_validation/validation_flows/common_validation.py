@@ -69,16 +69,20 @@ def validate_software_config(input_file_path, data, logger, module, omnia_base_d
     for software in software_list:
         json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
         # Check if json_path is None or if the JSON syntax is invalid
-        if json_path is None or not (lambda: json.load(open(json_path, 'r'))):
+        if json_path is None:
             errors.append(create_error_msg("Validation Error: ", None ,en_us_validation_msg.json_file_mandatory(json_path)))
         else:
-            subgroup_softwares = subgroup_dict.get(software, None)
-            #for each subgroup for a software check for corresponding entry in software.json
-            #eg: for amd the amd.json should contain both amd and rocm entries
-            with open(json_path, 'r') as file:
-                json_data = json.load(file)
-            for subgroup_software in subgroup_softwares:
-                result, fail_data = validation_utils.validate_softwaresubgroup_entries(subgroup_software,json_path,json_data,validation_results,failures)
+            try: 
+                subgroup_softwares = subgroup_dict.get(software, None)
+                #for each subgroup for a software check for corresponding entry in software.json
+                #eg: for amd the amd.json should contain both amd and rocm entries
+                with open(json_path, 'r') as file:
+                    json_data = json.load(file)
+                for subgroup_software in subgroup_softwares:
+                    result, fail_data = validation_utils.validate_softwaresubgroup_entries(subgroup_software,json_path,json_data,validation_results,failures)
+            
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                errors.append(create_error_msg("Error opening or reading JSON file:", json_path, str(e)))
 
     if fail_data:
         errors.append(create_error_msg("Software config subgroup validation failed for",fail_data,"Please resolve the issues first before proceeding."))
