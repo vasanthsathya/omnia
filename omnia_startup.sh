@@ -650,7 +650,7 @@ main() {
             echo -e "${GREEN} Do you want to:${NC}"
             PS3="Select the option number: "
 
-            select opt in "Reinstall the container" "Delete the container and configurations" "Exit"; do
+            select opt in "Enter omnia_core container" "Reinstall the container" "Delete the container and configurations" "Exit"; do
                 case $opt in
                     "Enter omnia_core container")
                         choice=1
