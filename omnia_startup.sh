@@ -652,12 +652,16 @@ main() {
 
             select opt in "Reinstall the container" "Delete the container and configurations" "Exit"; do
                 case $opt in
-                    "Reinstall the container")
+                    "Enter omnia_core container")
                         choice=1
                         break
                         ;;
-                    "Delete the container and configurations")
+                    "Reinstall the container")
                         choice=2
+                        break
+                        ;;
+                    "Delete the container and configurations")
+                        choice=3
                         break
                         ;;
                     "Exit")
@@ -671,8 +675,11 @@ main() {
                 esac
             done
 
-            # If the user wants to reinstall, call the remove_container function, and then call the setup_omnia_core function
+            # If the user wants to en
             if [ "$choice" = "1" ]; then
+                start_container_session
+            # If the user wants to reinstall, call the remove_container function, and then call the setup_omnia_core function
+            if [ "$choice" = "2" ]; then
                 echo -e "${GREEN} What configuration do you want to use for reinstallation:${NC}"
 
                 PS3="Select the option number: "
@@ -711,7 +718,7 @@ main() {
                 fi
 
             # If the user wants to cleanup, call the cleanup function
-            elif [ "$choice" = "2" ]; then
+            elif [ "$choice" = "3" ]; then
                 cleanup_omnia_core
             fi
         else
