@@ -20,7 +20,7 @@ from collections import defaultdict
 import re
 from jinja2 import Template
 import requests
-
+from ansible.module_utils.local_repo.common_functions import is_encrypted, process_file
 # Import default variables from config.py
 from ansible.module_utils.local_repo.config import (
     PACKAGE_TYPES,
@@ -31,7 +31,9 @@ from ansible.module_utils.local_repo.config import (
     OMNIA_REPO_KEY,
     RHEL_OS_URL,
     SOFTWARES_KEY,
-    USER_REPO_URL
+    USER_REPO_URL,
+    VAULT_KEY_PATH,
+    REPO_CONFIG
 )
 
 def load_json(file_path):
@@ -204,7 +206,7 @@ def transform_package_dict(data):
 
     return result
 
-def parse_repo_urls(local_repo_config_path, version_variables):
+def parse_repo_urls(repo_config, local_repo_config_path, version_variables):
     """
     Parses the repository URLs from the given local repository configuration file.
     Args:
@@ -220,6 +222,7 @@ def parse_repo_urls(local_repo_config_path, version_variables):
     repo_entries = local_yaml.get(OMNIA_REPO_KEY, [])
     rhel_repo_entry = local_yaml.get(RHEL_OS_URL,[])
     user_repo_entry = local_yaml.get(USER_REPO_URL,[])
+    policy = REPO_CONFIG.get(repo_config)    
     parsed_repos = []
 
     if user_repo_entry:
@@ -230,6 +233,12 @@ def parse_repo_urls(local_repo_config_path, version_variables):
             ca_cert = url_.get("sslcacert", "")
             client_key = url_.get("sslclientkey", "")
             client_cert = url_.get("sslclientcert", "")
+            for path in [ca_cert, client_key, client_cert]:
+                mode = "decrypt"
+                if path and is_encrypted(path):
+                    result, message = process_file(path, VAULT_KEY_PATH, mode)
+                    if result is False:
+                        return f"Error during decrypt for user repository path:{path}", False
 
             if not is_remote_url_reachable(url, client_cert=client_cert, client_key=client_key, ca_cert=ca_cert):
                 return url, False
@@ -241,7 +250,8 @@ def parse_repo_urls(local_repo_config_path, version_variables):
                 "version": "null",
                 "ca_cert": ca_cert,
                 "client_key": client_key,
-                "client_cert": client_cert
+                "client_cert": client_cert,
+                "policy": policy
             })
 
     for url_ in rhel_repo_entry:
@@ -255,7 +265,8 @@ def parse_repo_urls(local_repo_config_path, version_variables):
             "package": name,
             "url": url,
             "gpgkey": gpgkey if gpgkey else "null",
-            "version": "null"
+            "version": "null",
+            "policy": "on_demand"
         })
 
     for repo in repo_entries:
@@ -281,7 +292,8 @@ def parse_repo_urls(local_repo_config_path, version_variables):
             "package": name,
             "url": rendered_url,
             "gpgkey": gpgkey if gpgkey else "null",
-            "version": version if version else "null"
+            "version": version if version else "null",
+            "policy": "on_demand"
         })
 
     return json.dumps(parsed_repos), True
@@ -457,3 +469,4 @@ def get_software_names(data_path):
     """
     data = load_json(data_path)
     return [software['name'] for software in data.get(SOFTWARES_KEY, [])]
+
