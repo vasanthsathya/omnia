@@ -30,7 +30,7 @@
   when: '"management_layer" in ansible_run_tags'
 
 - name: Get nodes with all statuses as false
-  set_fact:
+  ansible.builtin.set_fact:
     failed_groups: >-
       {{
         groups_roles_info | dict2items
