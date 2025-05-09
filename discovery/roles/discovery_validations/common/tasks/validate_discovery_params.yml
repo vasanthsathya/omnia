@@ -42,5 +42,5 @@
   ansible.builtin.assert:
     that:
       - bmc_static_status or discovery_mech_mapping or discovery_mech_switch_based or discovery_mech_dynamic_bmc
-    fail_msg: "{{ default_layer_discovery_mechanism_fail_msg }}"
+    fail_msg: "{{ default_layer_discovery_mechanism_fail_msg | replace('\n',''))}}"
   when: '"management_layer" not in ansible_run_tags'
