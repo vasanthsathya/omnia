@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import collections
 import json
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
@@ -129,6 +130,11 @@ def validate_storage_config(input_file_path, data, logger, module, omnia_base_di
     return errors
 
 def validate_high_availability_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+    network_spec_file_path = create_file_path(input_file_path, file_names["network_spec"])
+    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, project_name, logger, module)
+    
+    roles_config_file_path = create_file_path(input_file_path, file_names["roles_config"])
+    roles_config_json = validation_utils.load_yaml_as_json(roles_config_file_path, omnia_base_dir, project_name, logger, module)
     errors = []
 
     def validate_ha_config(ha_data, mandatory_fields, errors, config_type=None):
@@ -150,19 +156,55 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
             logger.error(f"Missing key in HA data: {e}")
             errors.append(f"Missing key in HA data: {e}")
 
-    ha_configs = [
-        ("oim_ha", ["virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
-        ("service_node_ha", ["service_nodes"]),
-        ("slurm_head_node_ha", ["virtual_ip_address", "active_node_service_tags", "passive_nodes"]),
-        ("k8s_head_node_ha", ["virtual_ip_address", "active_node_service_tags"])
-    ]
+    ha_configs = {
+        "oim_ha": ["admin_virtual_ip_address", "active_node_service_tag", "passive_nodes"],
+        "service_node_ha": ["service_nodes"],
+        "slurm_head_node_ha": ["virtual_ip_address", "active_node_service_tags", "passive_nodes"],
+        "k8s_head_node_ha": ["virtual_ip_address", "active_node_service_tags"]
+    }
 
-    for config_name, mandatory_fields in ha_configs:
+    admin_nic_name = ""
+    bmc_nic_name = ""
+    ip_ranges = collections.defaultdict(list)
+    for nic in network_spec_json.get("Networks", []):
+        for key, value in nic.items():
+            for nic_key, nic_value in value.items():
+                if "ip" in nic_key or "range" in nic_key:
+                    ip_ranges["network_spec"].append(nic_value)
+            if key == "admin_network":
+                admin_nic_name = value.get("oim_nic_name", "")
+            elif key == "bmc_network":
+                bmc_nic_name = value.get("oim_nic_name", "")
+            
+    for config_name, mandatory_fields in ha_configs.items():
         ha_data = data.get(config_name)
         if ha_data:
             ha_data = ha_data[0] if isinstance(ha_data, list) else ha_data
             enable_key = f'enable_{config_name.split("_")[0]}_ha'
             if ha_data.get(enable_key):
+                ip_ranges["admin_virtual_ip_address"].append(ha_data.get("admin_virtual_ip_address", ""))
+
+                roles_groups = roles_config_json.get("Groups", [])
+                for _, group_data in roles_groups.items():
+                    static_range = group_data.get("bmc_details", {}).get("static_range", '')
+                    if static_range:
+                        ip_ranges["roles_config"].append(static_range)
+
+                if config_name == "oim_ha":
+                    if admin_nic_name and bmc_nic_name and admin_nic_name == bmc_nic_name:
+                        ha_configs["oim_ha"].append("bmc_virtual_ip_address")
+                        ip_ranges["bmc_virtual_ip_address"].append(ha_data.get("bmc_virtual_ip_address", ""))
+                        overlap_source, overlap_list = validation_utils.check_vip_collisions("bmc_virtual_ip_address", ip_ranges)
+                        if len(overlap_list) > 0:
+                            errors.append(validation_utils.create_error_msg(str(overlap_list), f'IP Collision detected between {overlap_source} and the bmc_virtual_ip_address', en_us_validation_msg.vip_collision))
+
+                    elif not validation_utils.is_string_empty(ha_data.get("oim_ha", {}).get("bmc_virtual_ip_address", "")):
+                        errors.append(create_error_msg("bmc_virtual_ip_address", ha_data.get("bmc_virtual_ip_address"), "For use only with a LOM configuration. " + en_us_validation_msg.feild_must_be_empty))
+    
+                    overlap_source, overlap_list = validation_utils.check_vip_collisions("admin_virtual_ip_address", ip_ranges)
+                    if len(overlap_list) > 0:
+                        errors.append(validation_utils.create_error_msg(str(overlap_list), f'IP Collision detected between {overlap_source} and the admin_virtual_ip_address', en_us_validation_msg.vip_collision))
+
                 if config_name == "service_node_ha":
                     for service_node in ha_data['service_nodes']:
                         validate_ha_config(service_node, ["virtual_ip_address", "active_node_service_tag", "passive_nodes"], errors)

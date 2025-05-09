@@ -145,6 +145,10 @@ def server_spec_network_key_fail_msg(nic_device):
 ip_overlap_fail_msg = "admin network, bmc network and k8 network and IP ranges should not have any IP overlap. Check omnia_config.yml and network_spec.yml"
 telemetry_ip_overlap_fail_msg = "admin network, telemetry network and IP ranges should not have any IP overlap. Check telemetry_config.yml and network_spec.yml"
 
+# High Availability
+feild_must_be_empty = "Feild must be empty."
+vip_collision = "High availability, network spec, and roles config IPs/IP ranges should not have any IP overlap. Please check and update IPs and ranges in the respective input files for IP collsions."
+
 def user_name_duplicate(duplicate_usernames):
     return f'duplicate username detected {duplicate_usernames}. Check that usernames are unique in k8s_access_config.yml and passwordless_ssh_config.yml'
 
