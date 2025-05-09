@@ -455,6 +455,9 @@ validate_oim() {
     current_hostname=$(hostname)
     if [[ "$static_hostname" != "$current_hostname" ]]; then
         echo -e "${RED}Static Hostname is unset. Current: '$current_hostname', Static: '$static_hostname'${NC}"
+        echo -e "${RED}Please set the static hostname and try again.${NC}"
+        echo -e "${BLUE}Command to set hostname: hostnamectl set-hostname <hostname>${NC}"
+        echo -e "${RED}Exiting...${NC}"
         exit 1
     fi
 
