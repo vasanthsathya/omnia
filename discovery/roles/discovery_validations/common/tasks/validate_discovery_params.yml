@@ -33,7 +33,7 @@
   ansible.builtin.assert:
     that:
       - (group_info['bmc_static_status'] or group_info['switch_status'] or group_info['mapping_status']) | bool
-    fail_msg: "{{ group_info.key() }}"
+    fail_msg: "{{ group_info.key }}"
   loop: "{{ groups_roles_info | dict2items }}"
   loop_control:
     loop_var: group_info
