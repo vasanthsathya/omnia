@@ -40,17 +40,11 @@
       loop_control:
         loop_var: group_info
       register: failed_assertions
-      ignore_errors: true
 
   rescue:
     - name: Rescue failed assertions
       debug:
         msg: "Failed assertions: {{ failed_assertions }}"
-# for gro in groups_roles_info:
-#   if b_s or s_s or m_s:
-#     true
-#   else:
-#     fail for correspening grp
 
 - name: Validate if all discovery mechanisms valid for default execution
   ansible.builtin.assert:
