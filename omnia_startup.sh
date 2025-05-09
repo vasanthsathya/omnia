@@ -40,12 +40,11 @@ hashed_passwd=""
 # It prompts the user for the Omnia shared path and the root password.
 # It checks if the Omnia shared path exists.
 setup_omnia_core() {
+    # Validate the system environment
+    validate_oim
 
     # Initialize the container configuration
     init_container_config
-
-    # Validate the system environment
-    validate_oim
 
     # Setup the container
     setup_container
@@ -197,6 +196,7 @@ init_container_config() {
     share_option=""
 
     # Prompt the user to choose the type of Omnia shared path
+    echo -e "${BLUE} ----------------- Omnia shared path configuration ----------------${NC}"
     echo -e "${BLUE} Please choose the type of Omnia shared path in Omnia Infrastructure Manager (OIM) :${NC}"
     echo -e "${BLUE} It is recommended to use a NFS share for Omnia shared path. ${NC}"
     echo -e "${BLUE} If you are not using NFS, make sure enough space is available on the disk. ${NC}"
@@ -334,7 +334,7 @@ init_container_config() {
     echo -e "${GREEN} Creating the ssh configuration directory if it does not exist.${NC}"
     mkdir -p "$omnia_path/omnia/ssh_config/.ssh"
 
-    # Copy the omnia_core ssh config to the shared path. 
+    # Copy the omnia_core ssh config to the shared path.
     echo -e "${GREEN} Copying the omnia_core ssh config to the omnia shared path.${NC}"
     cp "$HOME/.ssh/config" "$omnia_path/omnia/ssh_config/.ssh/config"
 
@@ -443,6 +443,21 @@ fetch_config() {
 # configured with a domain name, checking if Podman is installed, enabling and
 # starting the Podman socket.
 validate_oim() {
+    # Check if the hostname is set
+    hostname_value=$(hostname)
+    if [[ -z "$hostname_value" ]]; then
+        echo -e "${RED}Hostname is not set!${NC}"
+        exit 1
+    fi
+
+    # Check if the hostname is static
+    static_hostname=$(hostnamectl --static)
+    current_hostname=$(hostname)
+    if [[ "$static_hostname" != "$current_hostname" ]]; then
+        echo -e "${RED}Hostname is not static. Current: '$current_hostname', Static: '$static_hostname'${NC}"
+        exit 1
+    fi
+
     # Check if the hostname is configured with a domain name.
     domain_name=$(hostname -d)
     if [[ -n "$domain_name" ]]; then
