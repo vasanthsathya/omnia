@@ -29,6 +29,21 @@
     fail_msg: "{{ management_layer_discovery_mechanism_fail_msg }}"
   when: '"management_layer" in ansible_run_tags'
 
+- name: Validate if all discovery mechanisms valid
+  ansible.builtin.assert:
+    that:
+      - (group_info['bmc_static_status'] or group_info['switch_status'] or group_info['mapping_status']) | bool
+    fail_msg: "{{ group_info.key() }}"
+  loop: "{{ groups_roles_info | dict2items }}"
+  loop_control:
+    loop_var: group_info
+
+# for gro in groups_roles_info:
+#   if b_s or s_s or m_s:
+#     true
+#   else:
+#     fail for correspening grp
+
 - name: Validate if all discovery mechanisms valid for default execution
   ansible.builtin.assert:
     that:
