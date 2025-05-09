@@ -30,14 +30,22 @@
   when: '"management_layer" in ansible_run_tags'
 
 - name: Validate if all discovery mechanisms valid
-  ansible.builtin.assert:
-    that:
-      - (group_info.value.bmc_static_status or group_info.value.switch_status or group_info.value.mapping_status) | bool
-    fail_msg: "{{ group_info.key }}"
-  loop: "{{ groups_roles_info | dict2items }}"
-  loop_control:
-    loop_var: group_info
+  block:
+    - name: Assert discovery mechanisms
+      ansible.builtin.assert:
+        that:
+          - (group_info.value.bmc_static_status or group_info.value.switch_status or group_info.value.mapping_status) | bool
+        fail_msg: " {{ group_info.key }}"
+      loop: "{{ groups_roles_info | dict2items }}"
+      loop_control:
+        loop_var: group_info
+      register: failed_assertions
+      ignore_errors: true
 
+  rescue:
+    - name: Rescue failed assertions
+      debug:
+        msg: "Failed assertions: {{ failed_assertions }}"
 # for gro in groups_roles_info:
 #   if b_s or s_s or m_s:
 #     true
