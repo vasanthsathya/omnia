@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS telemetrydb;
+
+CREATE TABLE IF NOT EXISTS telemetrydb.services (
+    ip VARCHAR(255) PRIMARY KEY,
+    serviceType INT,
+    authType INT,
+    auth VARCHAR(4096)
+);
