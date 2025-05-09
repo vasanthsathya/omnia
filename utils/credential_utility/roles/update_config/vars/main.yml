@@ -23,12 +23,11 @@ optional_warning_msg: "WARNING: The following are optional credentials. If left 
 mandatory_warning_msg: "WARNING: The following are mandatory credentials and cannot be left them empty. Please enter valid inputs."
 mandatory_input: "is a [MANDATORY] credential and cannot be left empty."
 optional_input: "is an [OPTIONAL] credential and can be left empty to skip."
-# Usage: fetch_password.yml
-mandatory_password_fail_msg: "Failed. Please provide valid password for mandatory credential."
+
+# Usage: prompt_credentials.yml
+mandatory_password_fail_msg: "Failed. Password is required for mandatory credential or any username input. Please provide valid password."
 password_match_fail_msg: "Failed. Passwords do not match. Please try again."
 password_fail_msg: "Failed. Please provide valid password."
-
-# Usage: fetch_username.yml
 mandatory_credentials_msg: "Failed. Please provide valid username for mandatory credential."
 username_fail_msg: "Failed. Please provide valid username."
 
