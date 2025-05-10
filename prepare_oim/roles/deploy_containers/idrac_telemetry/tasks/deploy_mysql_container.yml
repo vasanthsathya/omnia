@@ -84,19 +84,29 @@
         - mysql_container_status.containers | length > 0
         - mysql_container_status.containers[0].State.Status == 'running'
 
-    # - name: Render SQL template to temporary file
-    #   ansible.builtin.template:
-    #     src: init_telemetrydb.sql.j2
-    #     dest: /tmp/init_telemetrydb.sql
+    - name: Render SQL template to temporary file
+      ansible.builtin.template:
+        src: init_telemetrydb.sql.j2
+        dest: /tmp/init_telemetrydb.sql
 
-    # - name: Execute SQL script inside the MySQL container
-    #   ansible.builtin.shell: >
-    #     podman exec -i {{ mysql_container_name }} mysql -u root -p'{{ mysqldb_root_password }}' < /tmp/init_telemetrydb.sql
+    - name: Execute SQL in MySQL container using podman_container_exec
+      containers.podman.podman_container_exec:
+        name: "{{ mysql_container_name }}"
+        command:
+          - sh
+          - -c
+          - |
+            mysql -u root -p'{{ mysqldb_root_password }}' < /tmp/init_telemetrydb.sql
+      register: sql_exec_result
 
-    # # - name: Remove the temporary SQL file
-    # #   ansible.builtin.file:
-    # #     path: /tmp/init_telemetrydb.sql
-    # #     state: absent
+    - name: Show SQL execution result
+      debug:
+        var: sql_exec_result.stdout
+
+    - name: Remove the temporary SQL file
+      ansible.builtin.file:
+        path: /tmp/init_telemetrydb.sql
+        state: absent
 
   rescue:
     - name: Mysql container deployment failed
