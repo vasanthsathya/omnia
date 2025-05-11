@@ -63,6 +63,9 @@ pcs_firewall_services:
   - "http"
   - "https"
 
+squid_firewall_ports:
+  - "3128/tcp"
+
 # Usage:
 prepare_oim_completion_msg: |
   The playbook prepare_oim.yml has completed successfully. To create the offline repositories and
