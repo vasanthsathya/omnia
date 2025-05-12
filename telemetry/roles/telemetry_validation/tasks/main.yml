@@ -38,8 +38,8 @@
         # - name: Validate provision_config_credentials.yml
         #   ansible.builtin.include_tasks: validate_provision_config_credentials.yml
 
-        # - name: Check pre-requisites for telemetry and visualizations
-        #   ansible.builtin.include_tasks: pre-requisites.yml
+    - name: Check pre-requisites for telemetry and visualizations
+      ansible.builtin.include_tasks: pre-requisites.yml
 
     # - name: Validate iDRAC inventory
     #   ansible.builtin.include_tasks: validate_idrac_inventory.yml
