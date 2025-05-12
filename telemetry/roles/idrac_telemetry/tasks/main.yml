@@ -19,7 +19,7 @@
   # when: telemetry_entry_present
   block:
     - name: Deploy idrac-telemetry
-      when: idrac_telemetry_support
+      when: hostvars['localhost']['idrac_telemetry_support']
       block:
         - name: Collect iDRAC IP from AWX and initiate telemetry collection
           ansible.builtin.include_tasks: initiate_telemetry.yml
