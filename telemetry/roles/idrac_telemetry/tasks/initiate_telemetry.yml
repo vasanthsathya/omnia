@@ -65,7 +65,6 @@
 
     - name: Add iDRAC nodes and initiate telemetry
       ansible.builtin.include_tasks: filter_idrac.yml
-      delegate_to: localhost
       with_items: "{{ bmc_ips }}"
       loop_control:
         index_var: idrac_index
