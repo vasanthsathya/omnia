@@ -37,10 +37,8 @@
 
 - name: Create provision container group
   ansible.builtin.import_playbook: utils/create_container_group.yml
-  tags: management_layer
   vars:
-    omnia_provision_group: true
-    omnia_provision_validation: true
+    oim_group: true
 
 # - name: Update Repositories/Registries on nodes
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
