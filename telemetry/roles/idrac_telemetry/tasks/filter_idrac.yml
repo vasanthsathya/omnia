@@ -28,8 +28,8 @@
     - name: Get system inventory
       dellemc.openmanage.idrac_system_info:
         idrac_ip: "{{ item }}"
-        idrac_user: "{{ bmc_username }}"
-        idrac_password: "{{ bmc_password }}"
+        idrac_user: "{{ hostvars['localhost']['bmc_username'] }}"
+        idrac_password: "{{ hostvars['localhost']['bmc_password'] }}"
         validate_certs: false
       register: idrac_system_info_cli
 
@@ -52,8 +52,8 @@
     - name: Get firmware version
       dellemc.openmanage.idrac_firmware_info:
         idrac_ip: "{{ item }}"
-        idrac_user: "{{ bmc_username }}"
-        idrac_password: "{{ bmc_password }}"
+        idrac_user: "{{ hostvars['localhost']['bmc_username'] }}"
+        idrac_password: "{{ hostvars['localhost']['bmc_password'] }}"
         validate_certs: false
       register: idrac_firmware_info_cli
 
