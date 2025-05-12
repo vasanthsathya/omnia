@@ -61,4 +61,4 @@ omnia_credentials:
   telemetry:
     mandatory:
       - { username: bmc_username, password: bmc_password }
-
+      - { username: mysqldb_user, password: mysqldb_password}
