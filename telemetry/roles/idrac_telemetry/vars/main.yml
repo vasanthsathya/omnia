@@ -15,7 +15,7 @@
 
 # Usage: initiate_telemetry.yml
 python_version: "{{ ansible_python_interpreter }}"
-mysqldb_name: "idrac_telemetrysource_services_db"
+mysqldb_name: "telemetrydb"
 timescaledb_name: "telemetry_metrics"
 mysqldb_insert_fail_msg: "Failed to add iDRAC credential details to the mysql database.
 This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
