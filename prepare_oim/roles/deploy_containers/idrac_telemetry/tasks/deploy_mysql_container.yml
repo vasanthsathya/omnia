@@ -1,0 +1,111 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+---
+
+- name: Create mysql directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ root_read_write }}"
+  loop: "{{ mysql_dirs }}"
+
+- name: Check if mysql container is present # noqa: name[template]
+  containers.podman.podman_container_info:
+    name: "{{ mysql_container_name }}"
+  register: mysql_container_info
+  failed_when: false
+
+- name: Pull Podman image
+  containers.podman.podman_image:
+    name: "{{ mysql_docker_image }}"
+    tag: "{{ mysql_image_tag }}"
+    state: present
+  register: image_pull_result
+
+- name: Fail if the mysql container image pull fails
+  ansible.builtin.fail:
+    msg: "{{ mysql_image_pull_fail_msg }}"
+  when: image_pull_result.failed
+
+- name: Verify if the mysql image exists
+  containers.podman.podman_image_info:
+    name: "{{ mysql_docker_image }}:{{ mysql_image_tag }}"
+  register: image_facts
+
+- name: Fail if the mysql image is not found
+  ansible.builtin.fail:
+    msg: "{{ mysql_image_not_found_msg }}"
+  when: not image_facts.images
+
+- name: Deploy mysql container and check deployment status
+  block:
+    - name: Deploy the mysql container
+      containers.podman.podman_container:
+        name: "{{ mysql_container_name }}"
+        image: "{{ mysql_docker_image }}:{{ mysql_image_tag }}"
+        state: present
+        restart_policy: "no"
+        network_mode: host
+        volumes: "{{ mysql_volumes }}"
+        env:
+          MYSQL_ROOT_PASSWORD: "{{ hostvars['localhost']['mysqldb_root_password'] }}"
+          MYSQL_DATABASE: "{{ mysql_database }}"
+          MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
+          MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
+
+    - name: Start the mysql container
+      containers.podman.podman_container:
+        name: "{{ mysql_container_name }}"
+        state: "started"
+
+    - name: Check if mysql container is running after deployment
+      containers.podman.podman_container_info:
+        name: "{{ mysql_container_name }}"
+      register: mysql_container_status
+
+    - name: Notify user of mysql deployment status
+      ansible.builtin.debug:
+        msg: "{{ mysql_container_success_msg }}"
+      when:
+        - mysql_container_status.containers | length > 0
+        - mysql_container_status.containers[0].State.Status == 'running'
+
+    # - name: Render mysql template to temporary file
+    #   ansible.builtin.template:
+    #     src: init_telemetrydb.sql.j2
+    #     dest: /tmp/init_telemetrydb.sql
+
+    # - name: Copy file "/tmp/init_telemetrydb.sql" on the host to the "mysqldb" container's root folder
+    #   containers.podman.podman_container_copy:
+    #     src: /tmp/init_telemetrydb.sql
+    #     dest: /
+    #     container: "{{ mysql_container_name }}"
+
+    # - name: Execute SQL in mysql container using podman_container_exec
+    #   containers.podman.podman_container_exec:
+    #     name: "{{ mysql_container_name }}"
+    #     command: "/bin/sh -c 'mysql -u root -p{{ hostvars['localhost']['mysqldb_root_password'] }} < /init_telemetrydb.sql'"
+    #   register: sql_exec_result
+    #   #no_log: true
+
+    # - name: Remove the temporary mysql file
+    #   ansible.builtin.file:
+    #     path: /tmp/init_telemetrydb.sql
+    #     state: absent
+
+  rescue:
+    - name: Container mysql deployment failed
+      ansible.builtin.fail:
+        msg: "{{ mysql_container_failure_msg }}"
