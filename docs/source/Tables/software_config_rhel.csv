@@ -12,6 +12,11 @@ Required","* The operating system running on the cluster.
 
 Required","* The OS Version that will be provisoned on compute nodes.
 * For RHEL, the accepted ``value`` is ``9.4``."
+"**iso_file_path**
+
+``string``
+
+Required",* The filepath of the ``<OS>.iso`` file.
 "**repo_config**
 
 ``string``
