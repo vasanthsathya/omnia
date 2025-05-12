@@ -22,7 +22,6 @@
     oim_os: "{{ ansible_distribution | lower }}"
 
 - name: Proceed with telemetry validation if telemetry entry present in software_config.json
-  when: telemetry_entry_present
   block:
     - name: Validate telemetry_config.yml
       ansible.builtin.include_tasks: validate_telemetry_config.yml
