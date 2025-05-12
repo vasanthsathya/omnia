@@ -14,7 +14,7 @@
 ---
 
 - name: Determine xCAT group string for postscript modification
-  set_fact:
+  ansible.builtin.set_fact:
     sn_oim_group_list: >-
       {{
         [ 'oim_ha_node' if omnia_oim_status | bool else '',
