@@ -400,3 +400,14 @@ def check_vip_collisions(vip_name, ip_range_mapping) -> tuple[str, list]:
                 if overlap: return key, overlap_list
         
     return "", []
+
+def is_ip_within_range(ip_range, ip):
+    start_ip, end_ip = [ipaddress.IPv4Address(part.strip()) for part in ip_range.split('-')]
+    target_ip = ipaddress.IPv4Address(ip)
+    return (start_ip <= target_ip <= end_ip)
+
+def is_ip_in_subnet(admin_oim_ip, netmask_bits, vip_address):
+    # Create the subnet from the reference IP and netmask bits
+    subnet = ipaddress.IPv4Network(f"{admin_oim_ip}/{netmask_bits}", strict=False)
+    ip = ipaddress.IPv4Address(vip_address)
+    return ip in subnet
