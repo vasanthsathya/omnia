@@ -16,7 +16,9 @@ Required","* The OS Version that will be provisoned on compute nodes.
 
 ``string``
 
-Required",* The filepath of the ``<OS>.iso`` file.
+Required","* Path where the user has placed the ``<OS>.iso`` image that needs to be provisioned on target nodes. 
+* ``iso_file_path`` should contain the ``provision_os`` and ``provision_os_version`` values mentioned in the filename.
+* **Example**: ``/opt/omnia/input/project_default/RHEL-9.4.0-20240419.25-x86_64-dvd1.iso``"
 "**repo_config**
 
 ``string``
