@@ -64,7 +64,6 @@
           MYSQL_DATABASE: "{{ mysql_database }}"
           MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
           MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
-        privileged: true
 
     - name: Start the mysql container
       containers.podman.podman_container:
