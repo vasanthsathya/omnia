@@ -72,73 +72,73 @@
 
 # Add iDRAC Credentials in DB and enable telemetry fetching
 
-    # - name: Enable telemetry collection on iDRAC
-    #   when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
-    #   block:
-    #     - name: Git clone telemetry initialization repo
-    #       ansible.builtin.git:
-    #         repo: "{{ idrac_telemetry_scripting_repo }}"
-    #         dest: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
-    #         version: "{{ idrac_telemetry_scripting_stable_commit }}"
-    #       register: telemetry_collection
+    - name: Enable telemetry collection on iDRAC
+      when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
+      block:
+        - name: Git clone telemetry initialization repo
+          ansible.builtin.git:
+            repo: "{{ idrac_telemetry_scripting_repo }}"
+            dest: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+            version: "{{ idrac_telemetry_scripting_stable_commit }}"
+          register: telemetry_collection
 
-    #     - name: Enable telemetry collection on iDRACs
-    #       ansible.builtin.command: >-
-    #         "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
-    #         -u "{{ idrac_username }}" -p "{{ idrac_password }}" -s Enabled
-    #       args:
-    #         chdir: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
-    #       with_items: "{{ telemetry_idrac }}"
-    #       changed_when: false
-    #       no_log: true
+        - name: Enable telemetry collection on iDRACs
+          ansible.builtin.command: >-
+            "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
+            -u "{{ idrac_username }}" -p "{{ idrac_password }}" -s Enabled
+          args:
+            chdir: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+          with_items: "{{ telemetry_idrac }}"
+          changed_when: false
+          no_log: true
 
-#       rescue:
-#         - name: Show failure msg
-#           ansible.builtin.debug:
-#             msg: "Enabling telemetry on an iDRAC failed"
+      rescue:
+        - name: Show failure msg
+          ansible.builtin.debug:
+            msg: "Enabling telemetry on an iDRAC failed"
 
-#     - name: Add iDRAC details in mysqldb
-#       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
-#       block:
+    - name: Add iDRAC details in mysqldb
+      when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
+      block:
 
-#         - name: Add iDRAC host in mysqlDB
-#           block:
-#             - name: Check if services table exists
-#               community.mysql.mysql_query:
-#                 login_host: "localhost"
-#                 login_port: "3306"
-#                 login_user: "{{ mysqldb_user }}"
-#                 login_password: "{{ mysqldb_password }}"
-#                 query: "SHOW TABLES FROM {{ mysqldb_name }}"
-#               register: services_table_exists
-#               until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
-#               retries: "{{ db_retries }}"
-#               delay: "{{ db_delay }}"
-#               no_log: true
+        - name: Add iDRAC host in mysqlDB
+          block:
+            - name: Check if services table exists
+              community.mysql.mysql_query:
+                login_host: "localhost"
+                login_port: "3306"
+                login_user: "{{ mysqldb_user }}"
+                login_password: "{{ mysqldb_password }}"
+                query: "SHOW TABLES FROM {{ mysqldb_name }}"
+              register: services_table_exists
+              until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
+              retries: "{{ db_retries }}"
+              delay: "{{ db_delay }}"
+              no_log: true
 
-#             - name: Add iDRAC host in mysqlDB
-#               community.mysql.mysql_query:
-#                 login_host: "localhost"
-#                 login_port: "3306"
-#                 login_user: "{{ mysqldb_user }}"
-#                 login_password: "{{ mysqldb_password }}"
-#                 login_db: "{{ mysqldb_name }}"
-#                 query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
-#                       VALUES (%s, %s, %s ,'{"password":"{{ idrac_password | quote }}","username":"{{ idrac_username | quote }}"}')
-#                 positional_args:
-#                   - "{{ item }}"
-#                   - "{{ service_type }}"
-#                   - "{{ auth_type }}"
-#               with_items: "{{ telemetry_idrac }}"
-#               register: add_idrac_to_db
-#               until: add_idrac_to_db is not failed
-#               retries: "{{ db_retries }}"
-#               delay: "{{ db_delay }}"
-#               no_log: true
-#       rescue:
-#         - name: Show failure msg
-#           ansible.builtin.fail:
-#             msg: "{{ mysqldb_insert_fail_msg }}"
+            - name: Add iDRAC host in mysqlDB
+              community.mysql.mysql_query:
+                login_host: "localhost"
+                login_port: "3306"
+                login_user: "{{ mysqldb_user }}"
+                login_password: "{{ mysqldb_password }}"
+                login_db: "{{ mysqldb_name }}"
+                query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
+                      VALUES (%s, %s, %s ,'{"password":"{{ idrac_password | quote }}","username":"{{ idrac_username | quote }}"}')
+                positional_args:
+                  - "{{ item }}"
+                  - "{{ service_type }}"
+                  - "{{ auth_type }}"
+              with_items: "{{ telemetry_idrac }}"
+              register: add_idrac_to_db
+              until: add_idrac_to_db is not failed
+              retries: "{{ db_retries }}"
+              delay: "{{ db_delay }}"
+              no_log: true
+      rescue:
+        - name: Show failure msg
+          ansible.builtin.fail:
+            msg: "{{ mysqldb_insert_fail_msg }}"
 
 # # Initiate iDRAC collection
 #     - name: Initiate telemetry collection
@@ -151,10 +151,10 @@
 #             tty: true
 #           changed_when: false
 
-#     - name: Telemetry report
-#       ansible.builtin.debug:
-#         msg:
-#           - "Count of iDRAC IPs found: {{ idrac_awx_count }}"
-#           - "List of iDRAC IPs found: {{ awx_idrac }}"
-#           - "Count of iDRAC IPs where telemetry is initiated: {{ filtered_idrac_count }}"
-#           - "List of iDRAC IPs where telemetry is initiated: {{ telemetry_idrac }}"
+    - name: Telemetry report
+      ansible.builtin.debug:
+        msg:
+          - "Count of iDRAC IPs found: {{ idrac_awx_count }}"
+          - "List of iDRAC IPs found: {{ awx_idrac }}"
+          - "Count of iDRAC IPs where telemetry is initiated: {{ filtered_idrac_count }}"
+          - "List of iDRAC IPs where telemetry is initiated: {{ telemetry_idrac }}"
