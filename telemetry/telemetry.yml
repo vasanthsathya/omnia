@@ -21,6 +21,18 @@
 #   ansible.builtin.import_playbook: ../utils/check_package_lock.yml
 #   when: not ( hostvars['127.0.0.1']['apt_lock_status'] | default(false) | bool )
 
+- name: Set_fact for fetch omnia config credentials
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Set dynamic run tags including 'telemetry'
+      ansible.builtin.set_fact:
+        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['telemetry']) | unique }}"
+        cacheable: true
+
+- name: Invoke get_config_credentials.yml
+  ansible.builtin.import_playbook: ../utils/credential_utility/get_config_credentials.yml
+
 - name: Include input project directory
   when: not project_dir_status | default(false) | bool
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml

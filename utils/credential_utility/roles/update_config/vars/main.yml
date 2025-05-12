@@ -58,3 +58,7 @@ omnia_credentials:
     mandatory:
       - { password: kerberos_admin_password }
       - { password: directory_manager_password }
+  telemetry:
+    mandatory:
+      - { username: bmc_username, password: bmc_password }
+
