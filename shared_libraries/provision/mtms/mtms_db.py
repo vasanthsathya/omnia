@@ -45,7 +45,7 @@ bmc_mode = "static"
 admin_static_start_range = ipaddress.IPv4Address(admin_static_range.split('-')[0])
 admin_static_end_range = ipaddress.IPv4Address(admin_static_range.split('-')[1])
 
-def get_next_node_name(cursor, group_name):
+def get_next_node_name_s(cursor):
     """Fetch the next available node name based on the last valid node pattern."""
     query = """
         SELECT node
@@ -54,12 +54,11 @@ def get_next_node_name(cursor, group_name):
         ORDER BY node DESC;
     """
     result = cursor.execute(query, (group_name,))
-
+    result = cursor.fetchall()
     # Regular expression pattern: e.g., "grp0node001"
     pattern = re.compile(rf"^{re.escape(group_name)}node(\d{{3}})$")
-
     for row in result:
-        node_name = row['node']
+        node_name = row[0]
         match = pattern.match(node_name)
         if match:
             last_number = int(match.group(1))
@@ -108,7 +107,7 @@ def update_db():
             output = cursor.fetchone()[0]
             bmc_output = modify_network_details.check_presence_bmc_ip(cursor, bmc[key])
             if not bmc_output and not output:
-                node = get_next_node_name(cursor, group_name)
+                node = get_next_node_name(cursor)
                 host_name = node + "." + domain_name
 
                 modify_network_details.update_stanza_file(serial[key].lower(), node, static_stanza_path)
