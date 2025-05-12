@@ -40,7 +40,7 @@
         idrac_file_existence: "iDRAC inventory file does not exist. Check /opt/omnia/idrac_inventory."
         monitor_config_file: "{{ playbook_dir }}/../input/monitor_config.yml"
         monitor_config_vault_filename: "{{ playbook_dir }}/../input/.monitor_vault_key"
-        bmc_group_data_filename: "{{ input_dir }}/telemetry/bmc_group_data.csv"
+        bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
         min_firmware_version_reqd: 4
         datacenter_license: false
         firmware_version: false

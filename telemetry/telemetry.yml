@@ -45,8 +45,8 @@
 #   when: not ( hostvars['127.0.0.1']['update_user_repo_executed'] | default(false) | bool )
 
 - name: Telemetry for omnia
-  hosts: localhost
-  connection: local
-  gather_facts: true
+  hosts: oim
+  connection: ssh
+  gather_facts: false
   roles:
     - idrac_telemetry

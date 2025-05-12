@@ -14,9 +14,9 @@
 ---
 
 - name: Check if telemetry entry is present in software_config.json
-  environment:
-    no_proxy: "{{ groups['idrac'] | join(',') }}"
-  when: telemetry_entry_present
+  # environment:
+  #   no_proxy: "{{ groups['idrac'] | join(',') }}"
+  # when: telemetry_entry_present
   block:
     - name: Deploy idrac-telemetry
       when: idrac_telemetry_support
