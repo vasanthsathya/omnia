@@ -105,7 +105,7 @@
           block:
             - name: Check if services table exists
               community.mysql.mysql_query:
-                login_host: "localhost"
+                login_host: "127.0.0.1"
                 login_port: "3306"
                 login_user: "{{ mysqldb_user }}"
                 login_password: "{{ mysqldb_password }}"
@@ -118,7 +118,7 @@
 
             - name: Add iDRAC host in mysqlDB
               community.mysql.mysql_query:
-                login_host: "localhost"
+                login_host: "127.0.0.1"
                 login_port: "3306"
                 login_user: "{{ mysqldb_user }}"
                 login_password: "{{ mysqldb_password }}"
