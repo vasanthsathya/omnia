@@ -79,6 +79,7 @@ software_config.json for RHEL
                 {"name": "openldap"},
                 {"name": "secure_login_node"},
                 {"name": "nfs"},
+                {"name": "racadm"},
                 {"name": "beegfs", "version": "7.4.2"},
                 {"name": "slurm"},
                 {"name": "k8s", "version":"1.31.4"},

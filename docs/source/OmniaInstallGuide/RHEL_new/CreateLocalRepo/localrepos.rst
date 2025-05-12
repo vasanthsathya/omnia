@@ -286,6 +286,13 @@ Configuring specific local repositories
 
     For more information on AMD benchmarks, `click here <../../AdvancedConfigurations/AutomatingOpenMPI.html>`_.
 
+**Racadm**
+
+    To install Racadm, include the following line under ``softwares`` in ``software_config.json``: ::
+
+            {"name": "racadm"},
+
+    A sample format is available `here. <InputParameters.html>`_
 
 **Custom packages**
 

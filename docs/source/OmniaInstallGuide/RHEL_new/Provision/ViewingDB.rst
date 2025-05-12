@@ -46,7 +46,7 @@ Via Omnia database [omniadb]
 Possible values of node status are ``powering-off``, ``powering-on``, ``bmcready``, ``installing``, ``booting``, ``post-booting``, ``booted``, ``failed``, ``ping``, ``noping``, and ``standingby``.
 
 .. note::
-    * The ``gpu_count`` in the database is only updated every time a cluster node is PXE booted.
-    * Nodes listed as "failed" can be diagnosed using the ``/var/log/xcat/xcat.log`` file on the target node. Correct any underlying issues and `re-provision the cluster <../../Maintenance/reprovision.html>`_.
+    * The ``gpu_count`` and ``cpu_count`` values in the Omnia database are only updated when a cluster node is PXE booted.
+    * Nodes listed as ``failed`` can be diagnosed using the ``/var/log/xcat/xcat.log`` file on the target node. Correct any underlying issues and `re-provision the cluster <../../Maintenance/reprovision.html>`_.
     * Information on debugging nodes stuck at ``powering-on``, ``bmcready``, or ``installing`` for longer than expected is available `here <../../../Troubleshooting/FAQ/Common/Provision.html>`_. Correct any underlying issue on the node and `re-provision the cluster <../../Maintenance/reprovision.html>`_.
     * A blank node status indicates that no attempt to provision it has taken place. Attempt a manual PXE boot on the node to initiate provisioning.
