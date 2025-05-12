@@ -36,7 +36,7 @@
 #         tasks_from: validation_status_check.yml
 
 - name: Create provision container group
-  ansible.builtin.import_playbook: utils/create_container_group.yml
+  ansible.builtin.import_playbook: ../utils/create_container_group.yml
   vars:
     oim_group: true
 
