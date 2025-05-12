@@ -381,26 +381,6 @@ def is_range_within_netmask(ip_range, netmask_bits):
     except (ValueError, TypeError):
         return False
 
-def check_vip_collisions(vip_name, ip_range_mapping) -> tuple[str, list]:
-    """
-    This function checks for VIP collisions across different sources and their IP ranges.
- 
-    Args:
-        vip_name (str): The VIP name.
-        ip_range_mapping (dict): A dictionary containing IP range mappings.
- 
-    Returns:
-        tuple[str, str, list]: A tuple containing the key and list for the overlapping IP ranges, or an empty string and an empty list if no overlap is found.
-    """
-    keys = list(ip_range_mapping.keys())
-    for key in keys:
-        if key != vip_name:
-            for ip_range in ip_range_mapping[key]:
-                overlap, overlap_list = check_overlap(ip_range_mapping[vip_name] + [ip_range])
-                if overlap: return key, overlap_list
-        
-    return "", []
-
 def is_ip_within_range(ip_range, ip):
     start_ip, end_ip = [ipaddress.IPv4Address(part.strip()) for part in ip_range.split('-')]
     target_ip = ipaddress.IPv4Address(ip)
