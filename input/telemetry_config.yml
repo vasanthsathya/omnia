@@ -97,26 +97,6 @@ idrac_username: ""
 # Required only if idrac_telemetry_support is true
 idrac_password: ""
 
-### ADVANCE CONFIGURATIONS FOR IDRAC TELEMETRY ###
-# Username used for connecting to mysql db
-# The username must not contain -,\, ',"
-# The Length of the username should be at least 2 characters.
-# The username should not be kept 'root'.
-# Mandatory field when idrac_telemetry_support is true
-mysqldb_user: ""
-
-# Password used for connecting to mysql db
-# The password must not contain -,\, ',"
-# The Length of the password should be at least 2 characters.
-# Mandatory field when idrac_telemetry_support is true
-mysqldb_password: ""
-
-# Password used for connecting to timescale db for root user
-# The password must not contain -,\, ',"
-# The Length of the password should be at least 2 characters.
-# Mandatory field when idrac_telemetry_support is true
-mysqldb_root_password: ""
-
 ##### BELOW VARIABLES ARE MANDATORY WHEN omnia_telemetry_support IS SET TO true
 # This variable denotes the time interval of telemetry data collection from required computue nodes
 # This variable accepts input in seconds
