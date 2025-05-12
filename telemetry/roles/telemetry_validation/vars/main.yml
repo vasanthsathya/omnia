@@ -27,7 +27,7 @@ fail_msg_provision_config_file: "provision_config.yml file doesn't exist."
 # Usage: pre-requisites.yml
 os_supported_ubuntu: "ubuntu"
 selinux_warning: "Warning! SELinux status is disabled by user. No SELinux policy is loaded"
-telemetry_config_file: "{{ role_path }}/../../../input/telemetry_config.yml"
+telemetry_config_file: "{{ input_project_dir }}/telemetry_config.yml"
 fail_msg_telemetry_config_file: "telemetry_config.yml file doesn't exist."
 pip_packages:
   - omsdk==1.2.513
