@@ -205,13 +205,3 @@ NFS Server inventory file
     #node10
 
 
-Inventory for iDRAC telemetry
-------------------------------
-
-::
-
-    [idrac]
-    10.10.0.1
-
-.. note:: Only iDRAC/BMC IPs should be provided.
-
