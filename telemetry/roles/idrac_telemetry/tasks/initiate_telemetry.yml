@@ -61,36 +61,36 @@
       set_fact:
         bmc_ips: "{{ bmc_group_data[1:] | map('split', ',') | map('first') | list }}"
 
-# # Filter iDRACs matching telemetry pre-requisites
+# Filter iDRACs matching telemetry pre-requisites
 
-#     - name: Add iDRAC nodes and initiate telemetry
-#       ansible.builtin.include_tasks: filter_idrac.yml
-#       with_items: "{{ bmc_ips }}"
-#       loop_control:
-#         index_var: idrac_index
-#  #     no_log: true
+    - name: Add iDRAC nodes and initiate telemetry
+      ansible.builtin.include_tasks: filter_idrac.yml
+      with_items: "{{ bmc_ips }}"
+      loop_control:
+        index_var: idrac_index
+ #     no_log: true
 
-# # Add iDRAC Credentials in DB and enable telemetry fetching
+# Add iDRAC Credentials in DB and enable telemetry fetching
 
-#     - name: Enable telemetry collection on iDRAC
-#       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
-#       block:
-#         - name: Git clone telemetry initialization repo
-#           ansible.builtin.git:
-#             repo: "{{ idrac_telemetry_scripting_repo }}"
-#             dest: "{{ mount_location + idrac_telemetry_scripting_folder }}"
-#             version: "{{ idrac_telemetry_scripting_stable_commit }}"
-#           register: telemetry_collection
+    # - name: Enable telemetry collection on iDRAC
+    #   when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
+    #   block:
+    #     - name: Git clone telemetry initialization repo
+    #       ansible.builtin.git:
+    #         repo: "{{ idrac_telemetry_scripting_repo }}"
+    #         dest: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+    #         version: "{{ idrac_telemetry_scripting_stable_commit }}"
+    #       register: telemetry_collection
 
-#         - name: Enable telemetry collection on iDRACs
-#           ansible.builtin.command: >-
-#             "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
-#             -u "{{ idrac_username }}" -p "{{ idrac_password }}" -s Enabled
-#           args:
-#             chdir: "{{ mount_location + idrac_telemetry_scripting_folder }}"
-#           with_items: "{{ telemetry_idrac }}"
-#           changed_when: false
-#           no_log: true
+    #     - name: Enable telemetry collection on iDRACs
+    #       ansible.builtin.command: >-
+    #         "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
+    #         -u "{{ idrac_username }}" -p "{{ idrac_password }}" -s Enabled
+    #       args:
+    #         chdir: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+    #       with_items: "{{ telemetry_idrac }}"
+    #       changed_when: false
+    #       no_log: true
 
 #       rescue:
 #         - name: Show failure msg
