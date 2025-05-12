@@ -55,11 +55,11 @@
 
     - name: Read bmc_group_data
       set_fact:
-        csv_lines: "{{ lookup('file', csv_path).splitlines() }}"
+        bmc_group_data: "{{ lookup('file', bmc_group_data_filename).splitlines() }}"
 
     - name: Extract BMC_IP values
       set_fact:
-        bmc_ips: "{{ csv_lines[1:] | map('split', ',') | map('first') | list }}"
+        bmc_ips: "{{ bmc_group_data[1:] | map('split', ',') | map('first') | list }}"
 
 # # Filter iDRACs matching telemetry pre-requisites
 
