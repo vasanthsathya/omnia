@@ -14,7 +14,7 @@
 ---
 
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
-idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry and all those logs
+idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry
 root_read_write: "0644"
 mysql_docker_image: "docker.io/library/mysql"
 mysql_container_name: "mysqldb"
@@ -23,8 +23,7 @@ mysql_image_pull_fail_msg: |
   The pull of the mysql image {{ mysql_container_name }}:{{ mysql_image_tag }} has failed.
   To resolve this issue, please address the following error message: {{ image_pull_result.msg }}.
   After rectifying the issues, you can re-run the playbook to successfully pull the mysqldb image.
-mysql_volume: "mysql_data:{{ idrac_telemetry_dir }}/var/lib/mysql:Z"
-mysql_database: "telemetrydb"
+mysql_database: "idrac_telemetrydb"
 mysql_container_success_msg: "The mysql container {{ mysql_container_name }} has been successfully created and is running."
 mysql_container_failure_msg: |
   The deployment of the {{ mysql_container_name }} container has failed. To resolve this issue,
@@ -33,3 +32,13 @@ mysql_container_failure_msg: |
 mysql_image_not_found_msg: |
   mysql image {{ mysql_container_name }}:{{ mysql_image_tag }} not found.
   Please check if image is available and re-run the playbook.
+mysql_dir: "{{ idrac_telemetry_dir }}/mysql"
+mysql_data_volume: "{{ mysql_dir }}/mysql_data"
+mysql_log_volume: "{{ mysql_dir }}/log"
+mysql_volumes:
+ - "{{ mysql_data_volume }}:/opt/omnia:z"
+ - "{{ mysql_log_volume }}:/opt/omnia/log:z"
+mysql_dirs:
+  - "{{ mysql_data_volume }}"
+  - "{{ mysql_log_volume }}"
+

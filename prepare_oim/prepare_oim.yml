@@ -89,7 +89,6 @@
     - role: deploy_containers/pulp  # noqa:role-name[path]
     - role: deploy_containers/kubespray  # noqa:role-name[path]
     - role: deploy_containers/idrac_telemetry
-      when: hostvars['localhost']['idrac_telemetry_support'] | default(false)
 
 - name: Add all containers to known hosts on omnia core
   hosts: localhost

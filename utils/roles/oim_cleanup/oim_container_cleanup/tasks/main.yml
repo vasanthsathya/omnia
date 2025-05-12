@@ -37,10 +37,12 @@
   ansible.builtin.import_tasks: cleanup_kubespray.yml
   when: hostvars['localhost']['k8s_support']
 
-- name: Cleanup idrac telemetry mysql container
-  ansible.builtin.import_tasks: cleanup_mysql.yml
+- name: Cleanup idrac telemetry containers
   when: hostvars['localhost']['idrac_telemetry_support']
-
+  block:
+    - name: cleanup the mysql container
+      ansible.builtin.import_tasks: cleanup_mysql.yml
+ 
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true
