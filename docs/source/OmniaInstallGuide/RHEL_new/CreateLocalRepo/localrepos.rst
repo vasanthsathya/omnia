@@ -105,7 +105,7 @@ Configuring specific local repositories
 
             {"name": "slurm"},
 
-    For more information about installing Kubernetes, `click here <../OmniaCluster/BuildingCluster/install_slurm.html>`_.
+    For more information about installing Slurm, `click here <../OmniaCluster/BuildingCluster/install_slurm.html>`_.
 
 .. note:: Omnia recommends to install Slurm with ``repo_config`` variable set to ``always``  in ``software_config.json``. This is due to intermittent connectivity issues with the EPEL8 repositories.
 
