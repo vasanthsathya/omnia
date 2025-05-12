@@ -25,15 +25,15 @@
   when: not project_dir_status | default(false) | bool
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
 
-# - name: Validate telemetry input parameters
-#   hosts: localhost
-#   connection: local
-#   any_errors_fatal: true
-#   tasks:
-#     - name: Validate telemetry input parameters
-#       ansible.builtin.include_role:
-#         name: telemetry_validation
-#         tasks_from: validation_status_check.yml
+- name: Validate telemetry input parameters
+  hosts: localhost
+  connection: local
+  any_errors_fatal: true
+  tasks:
+    - name: Validate telemetry input parameters
+      ansible.builtin.include_role:
+        name: telemetry_validation
+        tasks_from: validation_status_check.yml
 
 - name: Create provision container group
   ansible.builtin.import_playbook: ../utils/create_container_group.yml
