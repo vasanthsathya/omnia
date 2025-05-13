@@ -1,0 +1,18 @@
+﻿Parameter,Details
+``enable_servicenode_ha``,"* **Type**: boolean
+* **Possible values**: ``true`` or ``false``
+* **Default value**: ``false``
+* Denotes if service node HA will be created or not. Set the value to ``true`` to create the OIM HA."
+``virtual_ip_address``,"* **Type**: string
+* This is a mandatory and user-configurable parameter.
+* Captures the IP address of the active Service node."
+``Active_node``,"* **Type**: string
+* Captures the service tag of the active Service node."
+"`` - Node_details: ""<service_tag>""``","* **Type**: string
+* Captures the service tag of the passive OIM nodes.
+* **Sample**:
+ 
+ ::
+      
+        passive_nodes:
+             - Node_details: ""<service_tag>"""

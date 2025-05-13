@@ -2,7 +2,7 @@
 ``enable_oim_ha``,"* **Type**: boolean
 * **Possible values**: ``true`` or ``false``
 * **Default value**: ``false``
-* Denotes if OIM HA will be created ir not. Set the value to ``true`` to create the OIM HA."
+* Denotes if OIM HA will be created or not. Set the value to ``true`` to create the OIM HA."
 ``virtual_ip_address``,"* **Type**: string
 * This is a mandatory and user-configurable parameter.
 * Captures the IP address of the active OIM node."
