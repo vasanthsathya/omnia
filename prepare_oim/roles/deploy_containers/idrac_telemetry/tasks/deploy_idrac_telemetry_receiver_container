@@ -57,7 +57,7 @@
         volumes: "{{ idrac_telemetry_receiver_volumes }}"
         working_dir: "/go/src/github.com/telemetry-reference-tools"
         privileged: false
-        env: "{{ idrac_receiver_env }}"
+        env: "{{ idrac_telemetry_receiver_env }}"
         command: /bin/sh -c "./scripts/example/idrac-telemetry-receiver.sh"
 
     - name: Start the iDRAC Telemtery Receiver container
