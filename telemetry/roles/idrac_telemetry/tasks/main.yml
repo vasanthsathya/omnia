@@ -14,12 +14,7 @@
 ---
 
 - name: Check if telemetry entry is present in software_config.json
-  # environment:
-  #   no_proxy: "{{ groups['idrac'] | join(',') }}"
-  # when: telemetry_entry_present
+  when: hostvars['localhost']['idrac_telemetry_support']
   block:
-    - name: Deploy idrac-telemetry
-      when: hostvars['localhost']['idrac_telemetry_support']
-      block:
-        - name: Collect iDRAC IP from AWX and initiate telemetry collection
-          ansible.builtin.include_tasks: initiate_telemetry.yml
+    - name: Collect iDRAC IP and initiate telemetry collection
+      ansible.builtin.include_tasks: initiate_telemetry.yml
