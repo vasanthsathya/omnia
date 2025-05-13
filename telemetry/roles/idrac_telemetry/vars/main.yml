@@ -28,7 +28,7 @@ db_delay: 10
 mysqldb_container_port: 3306
 mysqldb_host: "127.0.0.1"
 telemetry_report: |
-  "===== Telemetry Summary Report =====
+  ===== Telemetry Summary Report =====
 
   Total IPs Found: {{ idrac_ip_count }}
   IPs List:
@@ -42,4 +42,4 @@ telemetry_report: |
     - {{ item }}
     {% endfor %}
 
-  ====================================="
+  =====================================

@@ -159,4 +159,4 @@
 
     - name: Telemetry Report
       ansible.builtin.debug:
-        msg: "{{ telemetry_report.splitlines() | join(' ') }}"
+        msg: "{{ telemetry_report.splitlines() }}"
