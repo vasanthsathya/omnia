@@ -29,7 +29,6 @@ CSV_FILE_PATH_DEFAULT = "/tmp/status_results_table.csv"
 DEFAULT_REPO_STORE_PATH = "/tmp/offline_repo"
 USER_JSON_FILE_DEFAULT = ""
 DEFAULT_STATUS_FILENAME = "status.csv"
-
 STATUS_CSV_HEADER = 'name,type,status\n'
 SOFTWARE_CSV_HEADER = "name,status"
 
@@ -37,7 +36,7 @@ SOFTWARE_CSV_HEADER = "name,status"
 # Software tasklist Defaults
 # Used by prepare_tasklist.py
 # ----------------------------
-LOCAL_REPO_CONFIG_PATH_DEFAULT = ""
+LOCAL_REPO_CONFIG_PATH_DEFAULT = "/opt/omnia/input/project_default/local_repo_config.yml"
 SOFTWARE_CSV_FILENAME = "software.csv"
 FRESH_INSTALLATION_STATUS = True
 
@@ -111,3 +110,8 @@ pulp_rpm_commands = {
     "check_distribution": "pulp rpm distribution show --name %s"
 }
 STANDARD_LOG_FILE_PATH = "/opt/omnia/log/local_repo/standard.log"
+
+# ----------------------------
+# Used by cert_vault_handle.py
+# ----------------------------
+CERT_KEYS = ["sslcacert", "sslclientkey", "sslclientcert"]

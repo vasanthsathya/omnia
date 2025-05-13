@@ -20,7 +20,7 @@ from collections import defaultdict
 import re
 from jinja2 import Template
 import requests
-
+from ansible.module_utils.local_repo.common_functions import is_encrypted, process_file
 # Import default variables from config.py
 from ansible.module_utils.local_repo.config import (
     PACKAGE_TYPES,
@@ -205,12 +205,14 @@ def transform_package_dict(data):
 
     return result
 
-def parse_repo_urls(repo_config, local_repo_config_path, version_variables):
+def parse_repo_urls(repo_config, local_repo_config_path, version_variables, vault_key_path):
     """
     Parses the repository URLs from the given local repository configuration file.
     Args:
+        repo_config (str): Repo configuration
         local_repo_config_path (str): The path to the local repository configuration file.
         version_variables (dict): A dictionary of version variables.
+        vault_key_path: Ansible vault key path
     Returns:
         tuple: A tuple where the first element is either the parsed repository URLs as a JSON string
                (on success) or the rendered URL (if unreachable), and the second element is a boolean
@@ -221,9 +223,9 @@ def parse_repo_urls(repo_config, local_repo_config_path, version_variables):
     repo_entries = local_yaml.get(OMNIA_REPO_KEY, [])
     rhel_repo_entry = local_yaml.get(RHEL_OS_URL,[])
     user_repo_entry = local_yaml.get(USER_REPO_URL,[])
-    policy = REPO_CONFIG.get(repo_config)    
+    policy = REPO_CONFIG.get(repo_config)
     parsed_repos = []
-
+    vault_key_path = os.path.join(vault_key_path, ".local_repo_credentials_key")
     if user_repo_entry:
         for url_ in user_repo_entry:
             name = url_.get("name","unknown")
@@ -232,6 +234,12 @@ def parse_repo_urls(repo_config, local_repo_config_path, version_variables):
             ca_cert = url_.get("sslcacert", "")
             client_key = url_.get("sslclientkey", "")
             client_cert = url_.get("sslclientcert", "")
+            for path in [ca_cert, client_key, client_cert]:
+                mode = "decrypt"
+                if path and is_encrypted(path):
+                    result, message = process_file(path, vault_key_path, mode)
+                    if result is False:
+                        return f"Error during decrypt for user repository path:{path}", False
 
             if not is_remote_url_reachable(url, client_cert=client_cert, client_key=client_key, ca_cert=ca_cert):
                 return url, False
