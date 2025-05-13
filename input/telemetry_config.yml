@@ -86,17 +86,6 @@ timescaledb_user: "omnia"
 # Mandatory field
 timescaledb_password: ""
 
-##### BELOW VARIABLES ARE MANDATORY WHEN idrac_telemetry_support IS SET TO true
-# The username for idrac
-# The username must not contain -,\, ',"
-# Required only if idrac_telemetry_support is true
-idrac_username: ""
-
-# Password used for idrac
-# The password must not contain -,\, ',"
-# Required only if idrac_telemetry_support is true
-idrac_password: ""
-
 ##### BELOW VARIABLES ARE MANDATORY WHEN omnia_telemetry_support IS SET TO true
 # This variable denotes the time interval of telemetry data collection from required computue nodes
 # This variable accepts input in seconds
