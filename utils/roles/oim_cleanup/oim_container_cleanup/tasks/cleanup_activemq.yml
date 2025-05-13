@@ -13,28 +13,28 @@
 #  limitations under the License.
 ---
 
-- name: Check if Activemq container is running after deployment
+- name: Check if ActiveMQ container is running after deployment
   containers.podman.podman_container_info:
     name: "{{ activemq_container_name }}"
   register: activemq_container_status
   failed_when: false
 
-- name: Stop and Remove Activemq container
+- name: Stop and Remove ActiveMQ container
   when: activemq_container_status.containers | length != 0
   block:
-    - name: Stop the Activemq container
+    - name: Stop the ActiveMQ container
       containers.podman.podman_container:
         name: "{{ activemq_container_name }}"
         state: stopped
       failed_when: false
 
-    - name: Remove Activemq container
+    - name: Remove ActiveMQ container
       containers.podman.podman_container:
         name: "{{ activemq_container_name }}"
         state: absent
         force_delete: true
 
-    - name: Remove Activemq and Offline repo Directory
+    - name: Remove ActiveMQ and Offline repo Directory
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
@@ -42,6 +42,6 @@
         - "{{ activemq_cleanup_directory }}"
 
   rescue:
-    - name: Activemq container removal failed
+    - name: ActiveMQ container removal failed
       ansible.builtin.fail:
         msg: "{{ activemq_container_name }} {{ container_removal_failure_msg }}"
