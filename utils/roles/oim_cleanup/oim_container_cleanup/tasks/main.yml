@@ -42,7 +42,13 @@
   block:
     - name: cleanup the mysql container
       ansible.builtin.import_tasks: cleanup_mysql.yml
- 
+  
+    - name: Cleanup idrac telemetry containers
+      ansible.builtin.import_tasks: cleanup_activemq.yml
+
+    - name: Cleanup idrac receiver container
+      ansible.builtin.import_tasks: cleanup_idrac_receiver.yml
+
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true
