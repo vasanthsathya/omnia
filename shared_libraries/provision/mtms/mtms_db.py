@@ -45,7 +45,7 @@ bmc_mode = "static"
 admin_static_start_range = ipaddress.IPv4Address(admin_static_range.split('-')[0])
 admin_static_end_range = ipaddress.IPv4Address(admin_static_range.split('-')[1])
 
-def get_next_node_name_s(cursor):
+def get_next_node_name(cursor):
     """Fetch the next available node name based on the last valid node pattern."""
     query = """
         SELECT node
