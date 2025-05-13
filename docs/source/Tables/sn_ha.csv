@@ -5,7 +5,7 @@
 * Denotes if service node HA will be created or not. Set the value to ``true`` to create the OIM HA."
 ``virtual_ip_address``,"* **Type**: string
 * This is a mandatory and user-configurable parameter.
-* Captures the IP address of the active Service node."
+* Captures the IP address of the active Service node. Ensure that the ``virtual_ip_address`` does not belong to the ``dynamic_range`` or ``static_range`` mentioned in the `network_spec.yml <../Provision/provisionparams.html#id6>`_."
 ``Active_node``,"* **Type**: string
 * Captures the service tag of the active Service node."
 "``- Node_details: ""<service_tag>""``","* **Type**: string
