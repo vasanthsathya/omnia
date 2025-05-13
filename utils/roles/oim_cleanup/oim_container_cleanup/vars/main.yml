@@ -95,6 +95,6 @@ activemq_cleanup_directory:
 
 # Usage: cleanup_idrac_receiver.yml
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
-idrac_receiver_cleanup_directory:
+idrac_telemetry_receiver_cleanup_directory:
   - "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
   - "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
