@@ -51,6 +51,24 @@
 
 - name: Deploy mysql container and check deployment status
   block:
+    - name: Create mysql_root_password secret
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo -n '{{ hostvars['localhost']['mysqldb_root_password'] }}' | podman secret create '{{ mysql_root_password }}' -
+      changed_when: false
+
+    - name: Create mysqldb_password secret
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo -n '{{ hostvars['localhost']['mysqldb_password'] }}' | podman secret create '{{ mysql_user_password }}'  -
+      changed_when: false
+
+    - name: Create mysqldb_user secret
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo -n '{{ hostvars['localhost']['mysqldb_user'] }}' | podman secret create '{{ mysql_user }}' -
+      changed_when: false
+
     - name: Deploy the mysql container
       containers.podman.podman_container:
         name: "{{ mysql_container_name }}"
@@ -59,12 +77,21 @@
         restart_policy: "no"
         network_mode: host
         volumes: "{{ mysql_volumes }}"
+        secrets:
+          - "{{ mysql_root_password }}"
+          - "{{ mysql_user }}"
+          - "{{ mysql_user_password }}"
         env:
-          MYSQL_ROOT_PASSWORD: "{{ hostvars['localhost']['mysqldb_root_password'] }}"
           MYSQL_DATABASE: "{{ mysql_database }}"
-          MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
-          MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
-      no_log: true
+        entrypoint: "{{ bin_sh }}"
+        command:
+          - -c
+          - >
+            export MYSQL_ROOT_PASSWORD=$(cat {{ mysql_container_root_password_secret_path }}) &&
+            export MYSQL_USER=$(cat {{ mysql_container_user_secret_path }}) &&
+            export MYSQL_PASSWORD=$(cat {{ mysql_container_user_password_secret_path }}) &&
+            exec /usr/local/bin/docker-entrypoint.sh mysqld
+      #no_log: true
 
     - name: Start the mysql container
       containers.podman.podman_container:
@@ -92,28 +119,32 @@
       failed_when: false
       when: mysql_container_status.containers | length > 0
 
-    - name: Render mysql template to temporary file
-      ansible.builtin.template:
-        src: init_telemetrydb.sql.j2
-        dest: /tmp/init_telemetrydb.sql
+    - name: Set fact for temporary file
+      ansible.builtin.set_fact:
+        tmp_file_path: "{{ tmp_path }}{{ init_sql_file }}"
+
+    - name: Copy static SQL file to host
+      ansible.builtin.copy:
+        src: "{{ init_sql_file }}"
+        dest: "{{ tmp_file_path }}"
         mode: "{{ root_read_write }}"
 
     - name: Copy file "/tmp/init_telemetrydb.sql" on the host to the "mysqldb" container's root folder
       containers.podman.podman_container_copy:
-        src: /tmp/init_telemetrydb.sql
-        dest: /
+        src: "{{ tmp_file_path }}"
+        dest: "{{ tmp_file_path }}"
         container: "{{ mysql_container_name }}"
 
     - name: Execute SQL in mysql container using podman_container_exec
       containers.podman.podman_container_exec:
         name: "{{ mysql_container_name }}"
-        command: "/bin/sh -c 'mysql -u root -p'{{ hostvars['localhost']['mysqldb_root_password'] }}' < /init_telemetrydb.sql'"
+        command: "/bin/sh -c 'mysql -u root -p'{{ hostvars['localhost']['mysqldb_root_password'] }}' < '{{ tmp_file_path }}''"
       register: sql_exec_result
       no_log: true
 
     - name: Remove the temporary mysql file
       ansible.builtin.file:
-        path: /tmp/init_telemetrydb.sql
+        path: "{{ tmp_file_path }}"
         state: absent
 
   rescue:

@@ -43,3 +43,17 @@ mysql_dirs:
  - "{{ mysql_log_volume }}"
 mysql_port: 3306
 wait_time: 10
+init_sql_file: "init_telemetrydb.sql"
+tmp_path: "/tmp/"
+mysql_root_password: "mysql_root_password"
+mysql_user_password: "mysql_user_password"
+mysql_user: "mysql_user"
+secrets:
+ - "{{ mysql_root_password }}"
+ - "{{ mysql_user }}"
+ - "{{ mysql_user_password }}"
+container_secret_path: "/run/secrets/"
+bin_sh: "/bin/sh"
+mysql_container_root_password_secret_path: "{{ container_secret_path }}/{{ mysql_root_password }}"
+mysql_container_user_secret_path: "{{ container_secret_path }}/{{ mysql_user }}"
+mysql_container_user_password_secret_path: "{{ container_secret_path }}/{{ mysql_user_password }}"

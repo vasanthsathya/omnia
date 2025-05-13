@@ -86,3 +86,7 @@ kubespray_cleanup_directory:
 # Usage: cleanup_mysql.yml
 idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry and all those logs
 mysql_container_name: "mysqldb"
+secrets:
+  - "{{ mysql_root_password }}"
+  - "{{ mysql_user }}"
+  - "{{ mysql_user_password }}"
