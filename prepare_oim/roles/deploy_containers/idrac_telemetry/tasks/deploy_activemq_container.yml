@@ -20,7 +20,7 @@
     state: directory
     mode: "{{ item.mode }}"
   loop: "{{ activemq_directories }}"
-    
+
 - name: Check if {{ activemq_container_name }} is already running and port is occupied # noqa: name[template]
   containers.podman.podman_container_info:
     name: "{{ activemq_container_name }}"
