@@ -161,8 +161,8 @@ bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
 bmc_group_data_file_not_found_msg: "Failed. The file BMC group data file does not exist."
 
 # Usage: validate_telemetry_container.yml
-telemetry_container_status_msg: "Telemetry container Status: {{ container_result.containers[0].State.Status }}"
-telemetry_container_fail_msg: "Telemetry containers are not running. Current Status: {{ container_result.containers[0].State.Status }}"
+telemetry_container_status_msg: "Telemetry container Status: {{ telemetry_container_status.containers[0].State.Status }}"
+telemetry_container_fail_msg: "Telemetry containers are not running. Current Status: {{ telemetry_container_status.containers[0].State.Status }}"
 prepare_oim_telemetry_not_executed_msg: "Telemetry containers not found. Please execute prepare_oim.yml to deploy all required containers."
 # telemetry_container_name:
 #   - "activemq"
