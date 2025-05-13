@@ -82,13 +82,13 @@ idrac_receiver_directories:
   - { path: "{{ idrac_telemetry_receiver_logs_dir }}", mode: "0744" }
   - { path: "{{ idrac_telemetry_receiver_dir }}", mode: "0744" }
   - { path: "{{ idrac_telemetry_reference_path }}", mode: "0744" }
-idrac_receiver_container_name: "idrac_telemetry_receiver"
-idrac_receiver_go_image: "docker.io/library/golang:1.17"
-idrac_receiver_volumes:
+idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
+idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
+idrac_telemetry_receiver_volumes:
   # - "{{ omnia_nfs_share }}/ssh_config/.ssh:/root/.ssh{{ selinux_option }}"
   - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
   - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
-idrac_receiver_env:
+idrac_telemetry_receiver_env:
   MESSAGEBUS_HOST: "127.0.0.1"
   MESSAGEBUS_PORT: "61613"
   CONFIGUI_HTTP_PORT: "3000"
@@ -99,8 +99,8 @@ idrac_receiver_env:
   MYSQL_HOST_PORT: "3306"
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
-idrac_receiver_container_success_msg: "The {{ idrac_receiver_container_name }} container has been successfully deployed."
-idrac_receiver_container_failure_msg: |
+idrac_telemetry_receiver_container_success_msg: "The {{ idrac_receiver_container_name }} container has been successfully deployed."
+idrac_telemetry_receiver_container_failure_msg: |
   The deployment of the {{ idrac_receiver_container_name }} container has failed. To resolve this issue,
   please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
   After the cleanup, you can re-run the original playbook to deploy the {{ idrac_receiver_container_name }} container successfully.
