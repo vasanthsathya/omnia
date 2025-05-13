@@ -17,7 +17,7 @@ omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry
 root_read_write: "0644"
 mysql_docker_image: "docker.io/library/mysql"
-mysql_container_name: "omnia_mysqldb"
+mysql_container_name: "mysqldb"
 mysql_image_tag: "8.0"
 mysql_image_pull_fail_msg: |
   The pull of the mysql image {{ mysql_container_name }}:{{ mysql_image_tag }} has failed.
@@ -54,7 +54,7 @@ activemq_directories:
   - { path: "{{ activemq_logs_dir }}", mode: "0744" }
   - { path: "{{ activemq_dir }}", mode: "0744" }
 
-activemq_container_name: "omnia_activemq"
+activemq_container_name: "activemq"
 activemq_image: "docker.io/rmohr/activemq:5.14.3"
 wait_time: 10
 activemq_volumes:
@@ -67,10 +67,10 @@ activemq_container_failure_msg: |
   After the cleanup, you can re-run the original playbook to deploy the {{ activemq_container_name }} container successfully.
 
 # deploy_idrac_receiver_container.yml
-idrac_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_receiver"
-idrac_receiver_dir: "{{ idrac_telemetry_dir }}/idrac_receiver"
+idrac_telemetry_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
+idrac_telemetry_receiver_dir: "{{ idrac_telemetry_receiver_dir }}/idrac_telemetry_receiver"
 idrac_telemetry_github: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git
-idrac_telemetry_reference_path: "{{ idrac_receiver_dir }}/iDRAC-Telemetry-Reference-Tools"
+idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir }}/iDRAC-Telemetry-Reference-Tools"
 # reference_tools_stable_commit: "9f9c5ef"
 max_retries: 10
 delay_count: 5
@@ -79,10 +79,10 @@ idrac_git_clone_error_msg: |
   to {{ idrac_telemetry_reference_path }}.
   Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
 idrac_receiver_directories:
-  - { path: "{{ idrac_receiver_logs_dir }}", mode: "0744" }
-  - { path: "{{ idrac_receiver_dir }}", mode: "0744" }
+  - { path: "{{ idrac_telemetry_receiver_logs_dir }}", mode: "0744" }
+  - { path: "{{ idrac_telemetry_receiver_dir }}", mode: "0744" }
   - { path: "{{ idrac_telemetry_reference_path }}", mode: "0744" }
-idrac_receiver_container_name: "omnia_idrac_receiver"
+idrac_receiver_container_name: "idrac_telemetry_receiver"
 idrac_receiver_go_image: "docker.io/library/golang:1.17"
 idrac_receiver_volumes:
   # - "{{ omnia_nfs_share }}/ssh_config/.ssh:/root/.ssh{{ selinux_option }}"
