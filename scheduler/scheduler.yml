@@ -61,7 +61,7 @@
         tasks_from: validation_status_check.yml
 
 - name: Invoke validate_config.yml to perform L1 and L2 validations for k8s 
-  ansible.builtin.import_playbook: input_validation/validate_config.yml
+  ansible.builtin.import_playbook: ../input_validation/validate_config.yml
   when:
     - hostvars['127.0.0.1']['k8s_support']
 
