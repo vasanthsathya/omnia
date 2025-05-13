@@ -25,7 +25,7 @@ kubespray_container_name: "omnia_kubespray_v2.27.0"
 telemetry_container_name:
   - "activemq"
   - "idrac_receiver"
-  - "mysql"
+  - "mysqldb"
   
 # Usage: validate_provision_container.yml
 provision_container_status_msg: "Provision container Status: {{ provision_container_status.containers[0].State.Status }}"
