@@ -50,6 +50,12 @@
       ansible.builtin.include_role:
         name: telemetry_validation
         tasks_from: validate_telemetry_container.yml
+      loop:
+        - "activemq"
+        - "idrac_receiver"
+        - "mysqldb"
+      loop_control:
+        loop_var: telemetry_container
 
 - name: Validate telemetry input parameters
   hosts: localhost
