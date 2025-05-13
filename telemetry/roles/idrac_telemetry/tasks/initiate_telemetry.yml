@@ -43,6 +43,7 @@
         auth_type: 1
         idrac_ip_count: 0
         filtered_idrac_count: 0
+        failed_idrac_count: 0
         failed_idrac: []
         idrac_ip: []
 
@@ -52,7 +53,7 @@
           block:
             - name: Check if services table exists
               community.mysql.mysql_query:
-                login_host: "{{ mysqldb_host}}"
+                login_host: "{{ mysqldb_host }}"
                 login_port: "{{ mysqldb_container_port }}"
                 login_user: "{{ mysqldb_user }}"
                 login_password: "{{ mysqldb_password }}"
@@ -65,7 +66,7 @@
 
             - name: Fetch iDRAC details of telemetry configured iDRACs
               community.mysql.mysql_query:
-                login_host: "{{ mysqldb_host}}"
+                login_host: "{{ mysqldb_host }}"
                 login_port: "{{ mysqldb_container_port }}"
                 login_user: "{{ mysqldb_user }}"
                 login_password: "{{ mysqldb_password }}"
@@ -77,11 +78,11 @@
               no_log: true
 
             - name: Extract list of IPs from query_result
-              set_fact:
+              ansible.builtin.set_fact:
                 db_idrac_ips: "{{ db_idrac_ip.query_result[0] | map(attribute='ip') | list }}"
 
             - name: Generate filtered iDRAC IP list
-              set_fact:
+              ansible.builtin.set_fact:
                 filtered_bmc_ips: "{{ bmc_ips | difference(db_idrac_ips) }}"
       rescue:
         - name: Show failure msg
@@ -127,55 +128,25 @@
     - name: Add iDRAC details in mysqldb
       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
       block:
-
-        # - name: Add iDRAC host in mysqlDB
-        #   block:
-        #     - name: Check if services table exists
-        #       community.mysql.mysql_query:
-        #         login_host: "{{ mysqldb_host}}"
-        #         login_port: "{{ mysqldb_container_port }}"
-        #         login_user: "{{ mysqldb_user }}"
-        #         login_password: "{{ mysqldb_password }}"
-        #         query: "SHOW TABLES FROM {{ mysqldb_name }}"
-        #       register: services_table_exists
-        #       until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
-        #       retries: "{{ db_retries }}"
-        #       delay: "{{ db_delay }}"
-        #       no_log: true
-
-        #     - name: Fetch iDRAC details of telemetry configured iDRACs
-        #       community.mysql.mysql_query:
-        #         login_host: "{{ mysqldb_host}}"
-        #         login_port: "{{ mysqldb_container_port }}"
-        #         login_user: "{{ mysqldb_user }}"
-        #         login_password: "{{ mysqldb_password }}"
-        #         query: "SELECT ip from {{ mysqldb_name + '.services' }}"
-        #       register: db_idrac_ip
-        #       until: db_idrac_ip is not failed
-        #       retries: "{{ db_retries }}"
-        #       delay: "{{ db_delay }}"
-        #       no_log: true
-
-
-            - name: Add iDRAC host in mysqlDB
-              community.mysql.mysql_query:
-                login_host: "{{ mysqldb_host }}"
-                login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
-                login_db: "{{ mysqldb_name }}"
-                query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
-                      VALUES (%s, %s, %s ,'{"password":"{{ bmc_password | quote }}","username":"{{ bmc_username | quote }}"}')
-                positional_args:
-                  - "{{ item }}"
-                  - "{{ service_type }}"
-                  - "{{ auth_type }}"
-              with_items: "{{ telemetry_idrac }}"
-              register: add_idrac_to_db
-              until: add_idrac_to_db is not failed
-              retries: "{{ db_retries }}"
-              delay: "{{ db_delay }}"
-              no_log: true
+        - name: Add iDRAC host in mysqlDB
+          community.mysql.mysql_query:
+            login_host: "{{ mysqldb_host }}"
+            login_port: "{{ mysqldb_container_port }}"
+            login_user: "{{ mysqldb_user }}"
+            login_password: "{{ mysqldb_password }}"
+            login_db: "{{ mysqldb_name }}"
+            query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
+                  VALUES (%s, %s, %s ,'{"password":"{{ bmc_password | quote }}","username":"{{ bmc_username | quote }}"}')
+            positional_args:
+              - "{{ item }}"
+              - "{{ service_type }}"
+              - "{{ auth_type }}"
+          with_items: "{{ telemetry_idrac }}"
+          register: add_idrac_to_db
+          until: add_idrac_to_db is not failed
+          retries: "{{ db_retries }}"
+          delay: "{{ db_delay }}"
+          no_log: true
       rescue:
         - name: Show failure msg
           ansible.builtin.fail:
