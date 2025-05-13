@@ -34,9 +34,3 @@
         name: create_container_group
         tasks_from: validate_kubespray_container.yml
       when: omnia_kubespray_validation | default(false) | bool
-    
-    - name: Validate telemetry container is running
-      ansible.builtin.include_role:
-        name: create_container_group
-        tasks_from: validate_telemetry_container.yml
-      when: omnia_telemetry_validation | default(false) | bool

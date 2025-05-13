@@ -21,6 +21,10 @@
   ansible.builtin.set_fact:
     oim_os: "{{ ansible_distribution | lower }}"
 
+- name: Validate telemetry container is running
+  ansible.builtin.include_tasks: validate_telemetry_container.yml
+  delegate_to: oim
+
 - name: Proceed with telemetry validation if telemetry entry present in software_config.json
   block:
     - name: Validate telemetry_config.yml
