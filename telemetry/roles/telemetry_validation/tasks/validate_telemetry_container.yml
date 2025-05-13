@@ -29,7 +29,7 @@
   # loop_control:
   #   loop_var: container_result
 
-- name: telemetry container status
+- name: Telemetry container status
   ansible.builtin.debug:
     msg: "{{ telemetry_container_status_msg }}"
     verbosity: 2

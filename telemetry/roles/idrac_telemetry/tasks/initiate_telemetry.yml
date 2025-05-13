@@ -43,8 +43,6 @@
         auth_type: 1
         idrac_ip_count: 0
         filtered_idrac_count: 0
-        failed_idrac_count: 0
-        failed_idrac: []
         idrac_ip: []
 
     - name: Fetch and filter iDRAC details from mysqlDB
