@@ -14,7 +14,7 @@
 
 ---
 
-- name: Prepare iDRAC telemtery receiver directories
+- name: Prepare iDRAC Telemtery Receiver directories
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
@@ -27,7 +27,7 @@
   register: idrac_receiver_container_info
   failed_when: false
 
-- name: Checkout iDRAC telemetry GitHub repo
+- name: Checkout iDRAC Telemetry GitHub repo
   ansible.builtin.git:
     repo: "{{ idrac_telemetry_github }}"
     dest: "{{ idrac_telemetry_reference_path }}"
@@ -44,7 +44,7 @@
     msg: "{{ idrac_git_clone_error_msg }}"
   when: clone_idrac_telemetry is failed
 
-- name: Deploy iDRAC telemtery receiver container and check deployment status
+- name: Deploy iDRAC Telemtery Receiver container and check deployment status
   block:
     - name: Deploy the iDRAC telemetry receiver container
       containers.podman.podman_container:
@@ -60,17 +60,17 @@
         env: "{{ idrac_receiver_env }}"
         command: /bin/sh -c "./scripts/example/idrac-telemetry-receiver.sh"
 
-    - name: Start the iDRAC telemtery receiver container
+    - name: Start the iDRAC Telemtery Receiver container
       containers.podman.podman_container:
         name: "{{ idrac_receiver_container_name }}"
         state: started
 
-    - name: Check if iDRAC telemtery receiver container is running after deployment
+    - name: Check if iDRAC Telemtery Receiver container is running after deployment
       containers.podman.podman_container_info:
         name: "{{ idrac_receiver_container_name }}"
       register: idrac_receiver_container_status
 
-    - name: Notify user of iDRAC telemtery receiver container deployment status
+    - name: Notify user of iDRAC Telemtery Receiver container deployment status
       ansible.builtin.debug:
         msg: "{{ idrac_receiver_container_success_msg }}"
       when:
@@ -78,6 +78,6 @@
         - idrac_receiver_container_status.containers[0].State.Status == 'running'
 
   rescue:
-    - name: iDRAC telemtery receiver container deployment failed
+    - name: iDRAC Telemtery Receiver container deployment failed
       ansible.builtin.fail:
         msg: "{{ idrac_receiver_container_failure_msg }}"
