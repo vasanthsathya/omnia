@@ -37,6 +37,15 @@
   when: not project_dir_status | default(false) | bool
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
 
+- name: Validate containers are running
+  hosts: oim
+  connection: ssh
+  tasks:
+    - name: Validate telemetry container is running
+      ansible.builtin.include_role:
+        name: telemetry_validation
+        tasks_from: validate_telemetry_container.yml
+
 - name: Validate telemetry input parameters
   hosts: localhost
   connection: local
