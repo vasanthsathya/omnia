@@ -17,7 +17,7 @@ omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry
 root_read_write: "0644"
 mysql_docker_image: "docker.io/library/mysql"
-mysql_container_name: "mysqldb"
+mysql_container_name: "omnia_mysqldb"
 mysql_image_tag: "8.0"
 mysql_image_pull_fail_msg: |
   The pull of the mysql image {{ mysql_container_name }}:{{ mysql_image_tag }} has failed.
