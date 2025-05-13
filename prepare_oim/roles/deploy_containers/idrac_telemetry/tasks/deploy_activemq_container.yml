@@ -14,7 +14,7 @@
 
 ---
 
-- name: Prepare Activemq directories
+- name: Prepare ActiveMQ directories
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
@@ -27,7 +27,7 @@
   register: activemq_container_info
   failed_when: false
 
-- name: Deploy Activemq container and check deployment status
+- name: Deploy ActiveMQ container and check deployment status
   block:
     - name: Deploy the Activemq container
       containers.podman.podman_container:
@@ -39,7 +39,7 @@
         network_mode: host
         volumes: "{{ activemq_volumes }}"
 
-    - name: Start the Activemq container
+    - name: Start the ActiveMQ container
       containers.podman.podman_container:
         name: "{{ activemq_container_name }}"
         state: "started"
@@ -49,7 +49,7 @@
         name: "{{ activemq_container_name }}"
       register: activemq_container_status
 
-    - name: Notify user of Activemq container deployment status
+    - name: Notify user of ActiveMQ container deployment status
       ansible.builtin.debug:
         msg: "{{ activemq_container_success_msg }}"
       when:
@@ -57,6 +57,6 @@
         - activemq_container_status.containers[0].State.Status == 'running'
 
   rescue:
-    - name: Activemq container deployment failed
+    - name: ActiveMQ container deployment failed
       ansible.builtin.fail:
         msg: "{{ activemq_container_failure_msg }}"
