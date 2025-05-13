@@ -69,6 +69,6 @@
   when: service_node_status
 
 - name: Configure firewalld setup postbootscripts on service or OIM Ha node
-  ansible.builtin.command: "{{ xcat_path }}/chdef service_oim_groups -p postbootscripts=\"omnia_allow_firewall_ports\""
+  ansible.builtin.command: "{{ xcat_path }}/chdef {{ service_oim_groups }} -p postbootscripts=\"omnia_allow_firewall_ports\""
   changed_when: true
   when: service_oim_groups != ''
