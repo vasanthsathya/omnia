@@ -32,13 +32,14 @@ mysql_container_failure_msg: |
 mysql_image_not_found_msg: |
   mysql image {{ mysql_container_name }}:{{ mysql_image_tag }} not found.
   Please check if image is available and re-run the playbook.
-mysql_dir: "{{ idrac_telemetry_dir }}/mysql"
+mysql_dir: "{{ idrac_telemetry_dir }}/mysqldb"
 mysql_data_volume: "{{ mysql_dir }}/mysql_data"
-mysql_log_volume: "{{ mysql_dir }}/log"
+mysql_log_volume: "{{ omnia_nfs_share }}/log/mysqldb"
 mysql_volumes:
- - "{{ mysql_data_volume }}:/opt/omnia:z"
- - "{{ mysql_log_volume }}:/opt/omnia/log:z"
+ - "{{ mysql_data_volume }}:/opt/omnia{{ selinux_option }}"
+ - "{{ mysql_log_volume }}:/opt/omnia/log{{ selinux_option }}"
 mysql_dirs:
-  - "{{ mysql_data_volume }}"
-  - "{{ mysql_log_volume }}"
-
+ - "{{ mysql_data_volume }}"
+ - "{{ mysql_log_volume }}"
+mysql_port: 3306
+wait_time: 10

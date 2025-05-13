@@ -25,5 +25,5 @@
 - name: Deploy idrac containers when idrac_telemetry_support is true
   when: hostvars['localhost']['idrac_telemetry_support']
   block:
-    - name: deploy mysql container
+    - name: Deploy mysql container
       ansible.builtin.include_tasks: deploy_mysql_container.yml

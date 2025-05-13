@@ -64,6 +64,7 @@
           MYSQL_DATABASE: "{{ mysql_database }}"
           MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
           MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
+      no_log: true
 
     - name: Start the mysql container
       containers.podman.podman_container:
@@ -82,28 +83,38 @@
         - mysql_container_status.containers | length > 0
         - mysql_container_status.containers[0].State.Status == 'running'
 
-    # - name: Render mysql template to temporary file
-    #   ansible.builtin.template:
-    #     src: init_telemetrydb.sql.j2
-    #     dest: /tmp/init_telemetrydb.sql
+    - name: Check if {{ mysql_port }} port is started # noqa: name[template]
+      ansible.builtin.wait_for:
+        host: localhost
+        port: "{{ mysql_port }}"
+        state: started
+        timeout: "{{ wait_time }}"
+      failed_when: false
+      when: mysql_container_status.containers | length > 0
 
-    # - name: Copy file "/tmp/init_telemetrydb.sql" on the host to the "mysqldb" container's root folder
-    #   containers.podman.podman_container_copy:
-    #     src: /tmp/init_telemetrydb.sql
-    #     dest: /
-    #     container: "{{ mysql_container_name }}"
+    - name: Render mysql template to temporary file
+      ansible.builtin.template:
+        src: init_telemetrydb.sql.j2
+        dest: /tmp/init_telemetrydb.sql
+        mode: "{{ root_read_write }}"
 
-    # - name: Execute SQL in mysql container using podman_container_exec
-    #   containers.podman.podman_container_exec:
-    #     name: "{{ mysql_container_name }}"
-    #     command: "/bin/sh -c 'mysql -u root -p{{ hostvars['localhost']['mysqldb_root_password'] }} < /init_telemetrydb.sql'"
-    #   register: sql_exec_result
-    #   #no_log: true
+    - name: Copy file "/tmp/init_telemetrydb.sql" on the host to the "mysqldb" container's root folder
+      containers.podman.podman_container_copy:
+        src: /tmp/init_telemetrydb.sql
+        dest: /
+        container: "{{ mysql_container_name }}"
 
-    # - name: Remove the temporary mysql file
-    #   ansible.builtin.file:
-    #     path: /tmp/init_telemetrydb.sql
-    #     state: absent
+    - name: Execute SQL in mysql container using podman_container_exec
+      containers.podman.podman_container_exec:
+        name: "{{ mysql_container_name }}"
+        command: "/bin/sh -c 'mysql -u root -p'{{ hostvars['localhost']['mysqldb_root_password'] }}' < /init_telemetrydb.sql'"
+      register: sql_exec_result
+      no_log: true
+
+    - name: Remove the temporary mysql file
+      ansible.builtin.file:
+        path: /tmp/init_telemetrydb.sql
+        state: absent
 
   rescue:
     - name: Container mysql deployment failed
