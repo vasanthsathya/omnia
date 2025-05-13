@@ -2,8 +2,8 @@
 
 # Adapt to list your (internal) IP networks from where browsing
 # should be allowed
-acl localnet src {{ network_data.admin_network.static_range.split('-')[0] }}/{{ network_data.admin_network.netmask_bits }}
-acl localnet src {{ network_data.admin_network.dynamic_range.split('-')[0] }}/{{ network_data.admin_network.netmask_bits }}
+acl localnet src {{ hostvars['localhost'].network_data.admin_network.static_range.split('-')[0] }}/{{ hostvars['localhost'].network_data.admin_network.netmask_bits }}
+acl localnet src {{ hostvars['localhost'].network_data.admin_network.dynamic_range.split('-')[0] }}/{{ hostvars['localhost'].network_data.admin_network.netmask_bits }}
 
 # List of ports where access is allowed
 {% set listOfAddedPorts = [] %}
@@ -16,13 +16,13 @@ acl Safe_ports port {{ port }}
 {% endfor %}
 
 # Ports from local_repo_config.yml
-{% for repo in omnia_repo_url_rhel if repo.port is defined %}
+{% for repo in hostvars['localhost']['omnia_repo_url_rhel'] if repo.port is defined %}
 {% if repo.port not in listOfAddedPorts %}
 {% set tmp = listOfAddedPorts.append(repo.port) %}
 acl Safe_ports port {{ repo.port }}
 {% endif %}
 {% endfor %}
-{% for repo in rhel_os_url if repo.port is defined %}
+{% for repo in hostvars['localhost']['rhel_os_url'] if repo.port is defined %}
 {% if repo.port not in listOfAddedPorts %}
 {% set tmp = listOfAddedPorts.append(repo.port) %}
 acl Safe_ports port {{ repo.port }}

@@ -13,9 +13,6 @@
 #  limitations under the License.
 ---
 
-- name: Fetch input configs; local_repo, network_spec, local_repo_config
-  ansible.builtin.include_tasks: fetch_input_configs.yml
-
 - name: Deploy squid container tasks
   ansible.builtin.include_tasks: deploy_squid_container.yml
-  when: routed_internet
+  when: hostvars['localhost']['enable_routed_internet']

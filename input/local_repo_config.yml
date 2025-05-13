@@ -135,8 +135,3 @@ omnia_repo_url_rhel:
 # By default, set to false to enable secure (HTTP) connection to the Pulp server.
 # Update to true if required to connect to the Pulp server using HTTPS.
 pulp_protocol_https: false
-
-# Set this variable to true to enable internet access via Squid proxy.
-# When set to true, all outbound HTTP/HTTPS traffic will be routed through the Squid proxy server.
-# When set to false, direct internet access will be used.
-routed_internet: false
