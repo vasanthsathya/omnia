@@ -98,34 +98,6 @@
     - not k8s_prometheus_support
     - not prometheus_gaudi_support
 
-# - name: Assert usernames and passwords in telemetry_login_vars.yml
-#   when: idrac_telemetry_support or omnia_telemetry_support
-#   block:
-#     - name: Assert timescaledb user name
-#       ansible.builtin.assert:
-#         that:
-#           - timescaledb_user | length > 1
-#           - '"-" not in timescaledb_user '
-#           - '"\\" not in timescaledb_user '
-#           - '"\"" not in timescaledb_user '
-#           - " \"'\" not in timescaledb_user "
-#       no_log: true
-
-#     - name: Assert timescaledb user password
-#       ansible.builtin.assert:
-#         that:
-#           - timescaledb_password | length > 1
-#           - '"-" not in timescaledb_password '
-#           - '"\\" not in timescaledb_password '
-#           - '"\"" not in timescaledb_password '
-#           - " \"'\" not in timescaledb_password "
-#           - '"@" not in timescaledb_password '
-#       no_log: true
-
-#   rescue:
-#     - name: Validation issue in telemetry_config.yml
-#       ansible.builtin.fail:
-#         msg: "{{ login_vars_fail_msg }}"
 
 # # Include validations for omnia telemetry
 # - name: Validate omnia telemetry

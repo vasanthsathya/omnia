@@ -34,16 +34,9 @@
         idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
         idrac_telemetry_scripting_stable_commit: "1f4bb26"
         idrac_telemetry_scripting_folder: iDRAC-Telemetry-Scripting
-        # login_vars_file: "{{ playbook_dir }}/input_params/telemetry_login_vars.yml"
-        # vault_filename: "{{ playbook_dir }}/input_params/.login_vault_key"
-        # idrac_inventory_filename: "/opt/omnia/idrac_inventory"
-        # idrac_file_existence: "iDRAC inventory file does not exist. Check /opt/omnia/idrac_inventory."
-        # monitor_config_file: "{{ playbook_dir }}/../input/monitor_config.yml"
-        # monitor_config_vault_filename: "{{ playbook_dir }}/../input/.monitor_vault_key"
         min_firmware_version_reqd: 4
         datacenter_license: false
         firmware_version: false
-        # file_perm: '0644'
         skipped_idrac: []
         telemetry_idrac: []
         service_type: 3
@@ -166,19 +159,4 @@
 
     - name: Telemetry Report
       ansible.builtin.debug:
-        msg: |
-          ===== Telemetry Summary Report =====
-
-          Total IPs Found: {{ idrac_ip_count }}
-          IPs List:
-            {% for item in idrac_ip %}
-            - {{ item }}
-            {% endfor %}
-
-          IPs with Telemetry Initiated: {{ filtered_idrac_count }}
-          IPs List (Telemetry Active):
-            {% for item in telemetry_idrac %}
-            - {{ item }}
-            {% endfor %}
-
-          =====================================
+        msg: "{{ telemetry_report.splitlines() | join(' ') }}"
