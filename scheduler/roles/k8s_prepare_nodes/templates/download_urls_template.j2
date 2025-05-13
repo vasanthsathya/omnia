@@ -29,11 +29,11 @@ docker_rh_repo_gpgkey: ""
     {% if enable_routed_internet %}
 # Include proxy config on clusters with partial or no dedicated internet access    
         {% if enable_k8s_ha %}
-http_proxy: "http://{{ kube_vip }}:3128"
-https_proxy: "http://{{ kube_vip }}:3128"
+http_proxy: "http://{{ kube_vip }}:{{ proxy_port }}"
+https_proxy: "http://{{ kube_vip }}:{{ proxy_port }}"
         {% else %}
-http_proxy: "http://{{ admin_nic_ip }}:3128"
-https_proxy: "http://{{ admin_nic_ip }}:3128"
+http_proxy: "http://{{ admin_nic_ip }}:{{ proxy_port }}"
+https_proxy: "http://{{ admin_nic_ip }}:{{ proxy_port }}"
         {% endif %}
     {% else %}
 # Include no_proxy config on cluster with dedicated internet
