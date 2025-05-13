@@ -15,13 +15,13 @@
 
 - name: Set iDRAC count incrementer
   ansible.builtin.set_fact:
-    idrac_awx_count: "{{ idrac_awx_count | int + 1 }}"
+    idrac_ip_count: "{{ idrac_ip_count | int + 1 }}"
     datacenter_license: false
     firmware_version: false
 
 - name: Set iDRAC IP list
   ansible.builtin.set_fact:
-    awx_idrac: "{{ awx_idrac + [item] }}"
+    idrac_ip: "{{ idrac_ip + [item] }}"
 
 - name: Filter iDRAC
   block:

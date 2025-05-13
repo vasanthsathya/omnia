@@ -22,7 +22,11 @@ provision_container_name: "omnia_provision"
 kubespray_container_port: "2224"
 kubespray_container_hostname: "omnia_kubespray"
 kubespray_container_name: "omnia_kubespray_v2.27.0"
-
+telemetry_container_name:
+  - "activemq"
+  - "idrac_receiver"
+  - "mysql"
+  
 # Usage: validate_provision_container.yml
 provision_container_status_msg: "Provision container Status: {{ provision_container_status.containers[0].State.Status }}"
 provision_container_fail_msg: "Provision container is not running. Current Status: {{ provision_container_status.containers[0].State.Status }}"
@@ -32,3 +36,8 @@ prepare_oim_not_executed_msg: "Provision container not found. Please execute pre
 kubespray_container_status_msg: "Kubespray container Status: {{ kubespray_container_status.containers[0].State.Status }}"
 kubespray_container_fail_msg: "Kubespray container is not running. Current Status: {{ kubespray_container_status.containers[0].State.Status }}"
 prepare_oim_kubespray_not_executed_msg: "Kubespray container not found. Please execute prepare_oim.yml to deploy all required containers."
+
+# Usage: validate_telemetry_container.yml
+telemetry_container_status_msg: "Telemetry container Status: {{ container_result.containers[0].State.Status }}"
+telemetry_container_fail_msg: "Telemetry containers are not running. Current Status: {{ container_result.containers[0].State.Status }}"
+prepare_oim_telemetry_not_executed_msg: "Telemetry containers not found. Please execute prepare_oim.yml to deploy all required containers."

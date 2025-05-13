@@ -15,7 +15,7 @@
 
 # Include and initialize variables
 - name: Initiate telemetry process if idrac_support is enabled
-  # when: idrac_telemetry_support is true
+  when: idrac_telemetry_support is true
   block:
     - name: Include telemetry common vars
       ansible.builtin.include_vars: "{{ playbook_dir }}/roles/telemetry_validation/vars/main.yml"
@@ -40,7 +40,6 @@
         idrac_file_existence: "iDRAC inventory file does not exist. Check /opt/omnia/idrac_inventory."
         monitor_config_file: "{{ playbook_dir }}/../input/monitor_config.yml"
         monitor_config_vault_filename: "{{ playbook_dir }}/../input/.monitor_vault_key"
-        bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
         min_firmware_version_reqd: 4
         datacenter_license: false
         firmware_version: false
@@ -48,18 +47,10 @@
         telemetry_idrac: []
         service_type: 3
         auth_type: 1
-        idrac_awx_count: 0
+        idrac_ip_count: 0
         filtered_idrac_count: 0
         failed_idrac: []
-        awx_idrac: []
-
-    - name: Read bmc_group_data
-      set_fact:
-        bmc_group_data: "{{ lookup('file', bmc_group_data_filename).splitlines() }}"
-
-    - name: Extract BMC_IP values
-      set_fact:
-        bmc_ips: "{{ bmc_group_data[1:] | map('split', ',') | map('first') | list }}"
+        idrac_ip: []
 
 # Filter iDRACs matching telemetry pre-requisites
 
@@ -68,7 +59,7 @@
       with_items: "{{ bmc_ips }}"
       loop_control:
         index_var: idrac_index
- #     no_log: true
+      no_log: true
 
 # Add iDRAC Credentials in DB and enable telemetry fetching
 
@@ -105,8 +96,8 @@
           block:
             - name: Check if services table exists
               community.mysql.mysql_query:
-                login_host: "127.0.0.1"
-                login_port: "3306"
+                login_host: "{{ mysqldb_host}}"
+                login_port: "{{ mysqldb_container_port }}"
                 login_user: "{{ mysqldb_user }}"
                 login_password: "{{ mysqldb_password }}"
                 query: "SHOW TABLES FROM {{ mysqldb_name }}"
@@ -118,8 +109,8 @@
 
             - name: Add iDRAC host in mysqlDB
               community.mysql.mysql_query:
-                login_host: "127.0.0.1"
-                login_port: "3306"
+                login_host: "{{ mysqldb_host }}"
+                login_port: "{{ mysqldb_container_port }}"
                 login_user: "{{ mysqldb_user }}"
                 login_password: "{{ mysqldb_password }}"
                 login_db: "{{ mysqldb_name }}"
@@ -151,10 +142,21 @@
 #             tty: true
 #           changed_when: false
 
-    - name: Telemetry report
+    - name: Telemetry Report
       ansible.builtin.debug:
-        msg:
-          - "Count of iDRAC IPs found: {{ idrac_awx_count }}"
-          - "List of iDRAC IPs found: {{ awx_idrac }}"
-          - "Count of iDRAC IPs where telemetry is initiated: {{ filtered_idrac_count }}"
-          - "List of iDRAC IPs where telemetry is initiated: {{ telemetry_idrac }}"
+        msg: |
+          ===== Telemetry Summary Report =====
+
+          Total IPs Found: {{ idrac_ip_count }}
+          IPs List:
+            {% for item in idrac_ip %}
+            - {{ item }}
+            {% endfor %}
+
+          IPs with Telemetry Initiated: {{ filtered_idrac_count }}
+          IPs List (Telemetry Active):
+            {% for item in telemetry_idrac %}
+            - {{ item }}
+            {% endfor %}
+
+          =====================================

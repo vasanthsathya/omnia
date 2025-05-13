@@ -51,6 +51,7 @@
   ansible.builtin.import_playbook: ../utils/create_container_group.yml
   vars:
     oim_group: true
+    omnia_telemetry_validation: true
 
 # - name: Update Repositories/Registries on nodes
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
