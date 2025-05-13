@@ -40,9 +40,15 @@
 - name: Cleanup idrac telemetry containers
   when: hostvars['localhost']['idrac_telemetry_support']
   block:
-    - name: cleanup the mysql container
+    - name: Cleanup the MySQL container
       ansible.builtin.import_tasks: cleanup_mysql.yml
- 
+
+    - name: Cleanup ActiveMQ containers
+      ansible.builtin.import_tasks: cleanup_activemq.yml
+
+    - name: Cleanup iDRAC Telemetry Receiver container
+      ansible.builtin.import_tasks: cleanup_idrac_telemetry_receiver.yml
+
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true

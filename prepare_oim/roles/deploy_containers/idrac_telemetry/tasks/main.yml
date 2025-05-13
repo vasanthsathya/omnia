@@ -20,10 +20,14 @@
     state: directory
     mode: "{{ root_read_write }}"
 
-# Deploy mysql container
-
 - name: Deploy idrac containers when idrac_telemetry_support is true
   when: hostvars['localhost']['idrac_telemetry_support']
   block:
-    - name: deploy mysql container
+    - name: Deploy MySQL container
       ansible.builtin.include_tasks: deploy_mysql_container.yml
+
+    - name: Deploy ActiveMQ container
+      ansible.builtin.include_tasks: deploy_activemq_container.yml
+
+    - name: Deploy iDRAC Telemetry Receiver container
+      ansible.builtin.include_tasks: deploy_idrac_telemetry_receiver_container.yml

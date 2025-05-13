@@ -57,10 +57,6 @@
         name: deploy_containers/common
         tasks_from: add_known_hosts.yml
 
-#- name: Validate high availability config
-#  ansible.builtin.import_playbook: ../input_validation/validate_config.yml
-#  when: hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.enable_oim_ha | default(false)
-
 - name: Deploy the PCS container
   hosts: oim
   connection: ssh

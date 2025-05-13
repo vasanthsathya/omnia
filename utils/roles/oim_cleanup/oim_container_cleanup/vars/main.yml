@@ -86,3 +86,15 @@ kubespray_cleanup_directory:
 # Usage: cleanup_mysql.yml
 idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry and all those logs
 mysql_container_name: "mysqldb"
+
+# Usage: cleanup_activemq.yml
+activemq_container_name: "activemq"
+activemq_cleanup_directory:
+  - "{{ omnia_nfs_share }}/log/telemetry/activemq"
+  - "{{ idrac_telemetry_dir }}/activemq"
+
+# Usage: cleanup_idrac_receiver.yml
+idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
+idrac_telemetry_receiver_cleanup_directory:
+  - "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
+  - "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"

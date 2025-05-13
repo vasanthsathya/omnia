@@ -13,33 +13,35 @@
 #  limitations under the License.
 ---
 
-- name: Check if {{ mysql_container_name }} container is present # noqa: name[template]
+- name: Check if iDRAC Telemtery Receiver container is running after deployment
   containers.podman.podman_container_info:
-    name: "{{ mysql_container_name }}"
-  register: mysql_container_status
+    name: "{{ idrac_telemetry_receiver_container_name }}"
+  register: idrac_receiver_container_status
   failed_when: false
 
-- name: Stop and Remove MySQL container
-  when: mysql_container_status.containers | length != 0
+- name: Stop and Remove iDRAC Telemtery Receiver container
+  when: idrac_receiver_container_status.containers | length != 0
   block:
-    - name: Stop the mysql container
+    - name: Stop the iDRAC Telemtery Receiver container
       containers.podman.podman_container:
-        name: "{{ mysql_container_name }}"
+        name: "{{ idrac_telemetry_receiver_container_name }}"
         state: stopped
       failed_when: false
 
-    - name: Remove MySQL container
+    - name: Remove iDRAC Telemtery Receiver container
       containers.podman.podman_container:
-        name: "{{ mysql_container_name }}"
+        name: "{{ idrac_telemetry_receiver_container_name }}"
         state: absent
         force_delete: true
 
-    - name: Remove telemetry directory
+    - name: Remove iDRAC Telemtery Receiver and Offline repo Directory
       ansible.builtin.file:
-        path: "{{ idrac_telemetry_dir }}"
+        path: "{{ item }}"
         state: absent
+      with_items:
+        - "{{ idrac_telemetry_receiver_cleanup_directory }}"
 
   rescue:
-    - name: Container MySQL removal failed
+    - name: Failure iDRAC Telemtery Receiver container removal
       ansible.builtin.fail:
-        msg: "{{ mysql_container_name }} {{ container_removal_failure_msg }}"
+        msg: "{{ idrac_telemetry_receiver_container_name }} {{ container_removal_failure_msg }}"

@@ -29,9 +29,8 @@
     - name: Include variable file telemetry_config.yml
       ansible.builtin.include_vars: "{{ input_project_dir }}/{{ telemetry_config_file }}"
       register: include_telemetry_config
-      #no_log: true
+      no_log: true
   rescue:
     - name: Failed to include telemetry_config.yml
       ansible.builtin.fail:
         msg: "{{ telemetry_config_syntax_fail_msg }} Possible Syntax Error Hints: {{ include_telemetry_config.message }}"
-

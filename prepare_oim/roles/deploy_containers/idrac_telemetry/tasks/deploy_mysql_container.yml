@@ -59,11 +59,7 @@
         restart_policy: "no"
         network_mode: host
         volumes: "{{ mysql_volumes }}"
-        env:
-          MYSQL_ROOT_PASSWORD: "{{ hostvars['localhost']['mysqldb_root_password'] }}"
-          MYSQL_DATABASE: "{{ mysql_database }}"
-          MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
-          MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
+        env: "{{ mysql_env }}"
 
     - name: Start the mysql container
       containers.podman.podman_container:
