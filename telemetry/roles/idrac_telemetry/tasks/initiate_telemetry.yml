@@ -46,11 +46,53 @@
         failed_idrac: []
         idrac_ip: []
 
+    - name: Fetch and filter iDRAC details from mysqlDB
+      block:
+        - name: Add iDRAC host in mysqlDB
+          block:
+            - name: Check if services table exists
+              community.mysql.mysql_query:
+                login_host: "{{ mysqldb_host}}"
+                login_port: "{{ mysqldb_container_port }}"
+                login_user: "{{ mysqldb_user }}"
+                login_password: "{{ mysqldb_password }}"
+                query: "SHOW TABLES FROM {{ mysqldb_name }}"
+              register: services_table_exists
+              until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
+              retries: "{{ db_retries }}"
+              delay: "{{ db_delay }}"
+              no_log: true
+
+            - name: Fetch iDRAC details of telemetry configured iDRACs
+              community.mysql.mysql_query:
+                login_host: "{{ mysqldb_host}}"
+                login_port: "{{ mysqldb_container_port }}"
+                login_user: "{{ mysqldb_user }}"
+                login_password: "{{ mysqldb_password }}"
+                query: "SELECT ip from {{ mysqldb_name + '.services' }}"
+              register: db_idrac_ip
+              until: db_idrac_ip is not failed
+              retries: "{{ db_retries }}"
+              delay: "{{ db_delay }}"
+              no_log: true
+
+            - name: Extract list of IPs from query_result
+              set_fact:
+                db_idrac_ips: "{{ db_idrac_ip.query_result[0] | map(attribute='ip') | list }}"
+
+            - name: Generate filtered iDRAC IP list
+              set_fact:
+                filtered_bmc_ips: "{{ bmc_ips | difference(db_idrac_ips) }}"
+      rescue:
+        - name: Show failure msg
+          ansible.builtin.fail:
+            msg: "{{ mysqldb_insert_fail_msg }}"
+
 # Filter iDRACs matching telemetry pre-requisites
 
     - name: Add iDRAC nodes and initiate telemetry
       ansible.builtin.include_tasks: filter_idrac.yml
-      with_items: "{{ bmc_ips }}"
+      with_items: "{{ filtered_bmc_ips }}"
       loop_control:
         index_var: idrac_index
       # no_log: true
@@ -86,41 +128,34 @@
       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
       block:
 
-        - name: Add iDRAC host in mysqlDB
-          block:
-            - name: Check if services table exists
-              community.mysql.mysql_query:
-                login_host: "{{ mysqldb_host}}"
-                login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
-                query: "SHOW TABLES FROM {{ mysqldb_name }}"
-              register: services_table_exists
-              until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
-              retries: "{{ db_retries }}"
-              delay: "{{ db_delay }}"
-              no_log: true
+        # - name: Add iDRAC host in mysqlDB
+        #   block:
+        #     - name: Check if services table exists
+        #       community.mysql.mysql_query:
+        #         login_host: "{{ mysqldb_host}}"
+        #         login_port: "{{ mysqldb_container_port }}"
+        #         login_user: "{{ mysqldb_user }}"
+        #         login_password: "{{ mysqldb_password }}"
+        #         query: "SHOW TABLES FROM {{ mysqldb_name }}"
+        #       register: services_table_exists
+        #       until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
+        #       retries: "{{ db_retries }}"
+        #       delay: "{{ db_delay }}"
+        #       no_log: true
 
-            - name: Fetch iDRAC details of telemetry configured iDRACs
-              community.mysql.mysql_query:
-                login_host: "{{ mysqldb_host}}"
-                login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
-                query: "SELECT ip from {{ mysqldb_name + '.services' }}"
-              register: db_idrac_ip
-              until: db_idrac_ip is not failed
-              retries: "{{ db_retries }}"
-              delay: "{{ db_delay }}"
-              no_log: true
+        #     - name: Fetch iDRAC details of telemetry configured iDRACs
+        #       community.mysql.mysql_query:
+        #         login_host: "{{ mysqldb_host}}"
+        #         login_port: "{{ mysqldb_container_port }}"
+        #         login_user: "{{ mysqldb_user }}"
+        #         login_password: "{{ mysqldb_password }}"
+        #         query: "SELECT ip from {{ mysqldb_name + '.services' }}"
+        #       register: db_idrac_ip
+        #       until: db_idrac_ip is not failed
+        #       retries: "{{ db_retries }}"
+        #       delay: "{{ db_delay }}"
+        #       no_log: true
 
-            - name: Extract list of IPs from query_result
-              set_fact:
-                db_idrac_ips: "{{ db_idrac_ip.query_result[0] | map(attribute='ip') | list }}"
-
-            - name: Generate filtered iDRAC IP list
-              set_fact:
-                telemetry_idrac: "{{ telemetry_idrac | difference(db_idrac_ips) }}"
 
             - name: Add iDRAC host in mysqlDB
               community.mysql.mysql_query:

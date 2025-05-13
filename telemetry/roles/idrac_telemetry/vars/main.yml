@@ -17,7 +17,7 @@
 python_version: "{{ ansible_python_interpreter }}"
 mysqldb_name: "telemetrydb"
 timescaledb_name: "telemetry_metrics"
-mysqldb_insert_fail_msg: "Failed to add iDRAC credential details to the mysql database.
+mysqldb_insert_fail_msg: "Failed to add/get iDRAC credential details in the mysql database.
 This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
 idrac_telemetry_pod_wait_fail_msg: "Execution failed as the idrac-telemetry pods did not start within the expected time.
 Please re-run the playbook after verifying that the idrac-telemetry pods are in running state by executing the command 'kubectl get pods -A.'"
