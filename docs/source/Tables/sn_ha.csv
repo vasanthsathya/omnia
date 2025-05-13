@@ -8,7 +8,7 @@
 * Captures the IP address of the active Service node."
 ``Active_node``,"* **Type**: string
 * Captures the service tag of the active Service node."
-"`` - Node_details: ""<service_tag>""``","* **Type**: string
+"``- Node_details: ""<service_tag>""``","* **Type**: string
 * Captures the service tag of the passive OIM nodes.
 * **Sample**:
  
