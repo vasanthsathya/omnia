@@ -22,9 +22,9 @@
         omnia_run_tags: >-
           {{
             (
-              (ansible_run_tags | default([]))
+              (ansible_run_tags | default([]) | difference(['all']))
               + ([ 'slurm' ] if not (hostvars['127.0.0.1']['config_file_status'] | default(false) | bool) else [])
-              + ([ 'k8s' ] if hostvars['127.0.0.1']['k8s_support'] else [])
+              + ([ 'k8s' ] if hostvars['127.0.0.1']['k8s_support'] | default(false) else [])
             ) | unique
           }}
         cacheable: true

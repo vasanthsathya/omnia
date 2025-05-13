@@ -222,7 +222,7 @@ def validate_server_spec(input_file_path, data, logger, module, omnia_base_dir, 
 
 def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name):
     network_spec_file_path = create_file_path(input_file_path, file_names["network_spec"])
-    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, module_utils_base, project_name, logger, module)
+    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, project_name, logger, module)
     admin_bmc_networks = {}
 
     for network in network_spec_json["Networks"]:
@@ -238,6 +238,8 @@ def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, modu
 
 def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
+
+    
     admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
     admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
     admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]

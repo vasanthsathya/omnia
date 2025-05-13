@@ -45,7 +45,6 @@ def schema(input_file_path, schema_file_path, passwords_set, omnia_base_dir, pro
         schema = json.load(open(schema_file_path, "r"))
         logger.debug(en_us_validation_msg.get_validation_initiated(input_file_path))
 
-        # Validate the input file with the schema and output the errors
         validator = jsonschema.Draft7Validator(schema)
         errors = sorted(validator.iter_errors(input_data), key=lambda e: e.path)
 

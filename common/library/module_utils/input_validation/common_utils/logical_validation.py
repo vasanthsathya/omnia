@@ -46,6 +46,7 @@ def validate_input_logic(input_file_path, data, logger, module, omnia_base_dir, 
 
     path_parts = input_file_path.split("/")
     file_name = path_parts[-1]
+    
     validation_function = validation_functions.get(file_name, None)
     print("validation_function", validation_function)
     if validation_function:
