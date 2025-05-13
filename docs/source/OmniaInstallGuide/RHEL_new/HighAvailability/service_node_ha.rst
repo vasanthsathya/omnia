@@ -37,24 +37,24 @@ Sample
 
          	- virtual_ip_address: “10.5.0.11” 
 
-                Active_node: “D636R10” 
+                Active_node: “ABC123” 
 
                 passive_node:  
 
-                  - Node_details: “D636R11”
+                  - Node_details: “DEF456”
 
             - virtual_ip_address: “10.5.0.12” 
 
-                Active_node: “D636R12” 
+                Active_node: “GHI789” 
 
                 passive_node:  
 
-                  - Node_details: “D636R13” 
+                  - Node_details: “JKL012” 
 
             - virtual_ip_address: “10.5.0.13” 
 
-                Active_node: “D636R14” 
+                Active_node: “MNO345” 
 
                 passive_node:  
 
-                  - Node_details: “D636R15”
+                  - Node_details: “pQR678”
