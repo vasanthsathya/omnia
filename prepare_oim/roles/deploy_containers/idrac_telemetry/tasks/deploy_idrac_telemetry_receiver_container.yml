@@ -31,7 +31,7 @@
   ansible.builtin.git:
     repo: "{{ idrac_telemetry_github }}"
     dest: "{{ idrac_telemetry_reference_path }}"
-    # version: "{{ reference_tools_stable_commit }}"
+    version: "{{ reference_tools_stable_commit }}"
     update: false
   register: clone_idrac_telemetry
   until: clone_idrac_telemetry is succeeded
@@ -78,6 +78,6 @@
         - idrac_receiver_container_status.containers[0].State.Status == 'running'
 
   rescue:
-    - name: iDRAC Telemtery Receiver container deployment failed
+    - name: Failure for iDRAC Telemtery Receiver container deployment
       ansible.builtin.fail:
         msg: "{{ idrac_telemetry_receiver_container_failure_msg }}"

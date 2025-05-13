@@ -40,9 +40,9 @@
 - name: Cleanup idrac telemetry containers
   when: hostvars['localhost']['idrac_telemetry_support']
   block:
-    - name: cleanup the mysql container
+    - name: Cleanup the mysql container
       ansible.builtin.import_tasks: cleanup_mysql.yml
-  
+
     - name: Cleanup idrac telemetry containers
       ansible.builtin.import_tasks: cleanup_activemq.yml
 

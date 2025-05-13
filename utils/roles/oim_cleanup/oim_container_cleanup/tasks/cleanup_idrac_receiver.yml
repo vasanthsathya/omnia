@@ -42,6 +42,6 @@
         - "{{ idrac_telemetry_receiver_cleanup_directory }}"
 
   rescue:
-    - name: iDRAC Telemtery Receiver container removal failed
+    - name: Failure iDRAC Telemtery Receiver container removal
       ansible.builtin.fail:
         msg: "{{ idrac_telemetry_receiver_container_name }} {{ container_removal_failure_msg }}"
