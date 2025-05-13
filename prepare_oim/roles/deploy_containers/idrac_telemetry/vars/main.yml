@@ -41,4 +41,66 @@ mysql_volumes:
 mysql_dirs:
   - "{{ mysql_data_volume }}"
   - "{{ mysql_log_volume }}"
+mysql_env:
+  MYSQL_ROOT_PASSWORD: "{{ hostvars['localhost']['mysqldb_root_password'] }}"
+  MYSQL_DATABASE: "{{ mysql_database }}"
+  MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
+  MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
 
+# Usage: deploy_activemq_container.yml
+activemq_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/activemq"
+activemq_dir: "{{ idrac_telemetry_dir }}/activemq"
+activemq_directories:
+  - { path: "{{ activemq_logs_dir }}", mode: "0744" }
+  - { path: "{{ activemq_dir }}", mode: "0744" }
+
+activemq_container_name: "omnia_activemq"
+activemq_image: "docker.io/rmohr/activemq:5.14.3"
+wait_time: 10
+activemq_volumes:
+  # - "{{ activemq_logs_dir }}:/opt/activemq/data/{{ selinux_option }}"
+  - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
+activemq_container_success_msg: "The {{ activemq_container_name }} container has been successfully deployed."
+activemq_container_failure_msg: |
+  The deployment of the {{ activemq_container_name }} container has failed. To resolve this issue,
+  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
+  After the cleanup, you can re-run the original playbook to deploy the {{ activemq_container_name }} container successfully.
+
+# deploy_idrac_receiver_container.yml
+idrac_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_receiver"
+idrac_receiver_dir: "{{ idrac_telemetry_dir }}/idrac_receiver"
+idrac_telemetry_github: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git
+idrac_telemetry_reference_path: "{{ idrac_receiver_dir }}/iDRAC-Telemetry-Reference-Tools"
+# reference_tools_stable_commit: "9f9c5ef"
+max_retries: 10
+delay_count: 5
+idrac_git_clone_error_msg: |
+  Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_github }}
+  to {{ idrac_telemetry_reference_path }}.
+  Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
+idrac_receiver_directories:
+  - { path: "{{ idrac_receiver_logs_dir }}", mode: "0744" }
+  - { path: "{{ idrac_receiver_dir }}", mode: "0744" }
+  - { path: "{{ idrac_telemetry_reference_path }}", mode: "0744" }
+idrac_receiver_container_name: "omnia_idrac_receiver"
+idrac_receiver_go_image: "docker.io/library/golang:1.17"
+idrac_receiver_volumes:
+  # - "{{ omnia_nfs_share }}/ssh_config/.ssh:/root/.ssh{{ selinux_option }}"
+  - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
+  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
+idrac_receiver_env:
+  MESSAGEBUS_HOST: "127.0.0.1"
+  MESSAGEBUS_PORT: "61613"
+  CONFIGUI_HTTP_PORT: "3000"
+  MYSQL_DATABASE: "{{ mysql_database }}"
+  MYSQL_USER: "{{ hostvars['localhost']['mysqldb_user'] }}"
+  MYSQL_PASSWORD: "{{ hostvars['localhost']['mysqldb_password'] }}"
+  MYSQL_HOST: "127.0.0.1"
+  MYSQL_HOST_PORT: "3306"
+  HTTP_PROXY: ""
+  HTTPS_PROXY: ""
+idrac_receiver_container_success_msg: "The {{ idrac_receiver_container_name }} container has been successfully deployed."
+idrac_receiver_container_failure_msg: |
+  The deployment of the {{ idrac_receiver_container_name }} container has failed. To resolve this issue,
+  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
+  After the cleanup, you can re-run the original playbook to deploy the {{ idrac_receiver_container_name }} container successfully.
