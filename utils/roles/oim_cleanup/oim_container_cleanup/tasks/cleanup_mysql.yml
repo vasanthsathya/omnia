@@ -34,6 +34,11 @@
         state: absent
         force_delete: true
 
+    - name: Remove all listed secrets
+      ansible.builtin.command: podman secret rm "{{ item }}"
+      loop: "{{ secrets }}"
+      changed_when: false
+
     - name: Remove telemetry directory
       ansible.builtin.file:
         path: "{{ idrac_telemetry_dir }}"
