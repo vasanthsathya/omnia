@@ -19,7 +19,7 @@
   register: mysql_container_status
   failed_when: false
 
-- name: Stop and Remove mysql container
+- name: Stop and Remove MySQL container
   when: mysql_container_status.containers | length != 0
   block:
     - name: Stop the mysql container
@@ -28,7 +28,7 @@
         state: stopped
       failed_when: false
 
-    - name: Remove mysql container
+    - name: Remove MySQL container
       containers.podman.podman_container:
         name: "{{ mysql_container_name }}"
         state: absent
@@ -45,6 +45,6 @@
         state: absent
 
   rescue:
-    - name: Container mysql removal failed
+    - name: Container MySQL removal failed
       ansible.builtin.fail:
         msg: "{{ mysql_container_name }} {{ container_removal_failure_msg }}"
