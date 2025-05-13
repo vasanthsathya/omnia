@@ -17,11 +17,18 @@
   hosts: localhost
   connection: local
   tasks:
-    - name: Set dynamic run tags including 'slurm'
-      when: not (hostvars['127.0.0.1']['config_file_status'] | default(false) | bool)
+    - name: Set omnia_run_tags with 'slurm' and/or 'k8s' based on conditions
       ansible.builtin.set_fact:
-        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['slurm']) | unique }}"
+        omnia_run_tags: >-
+          {{
+            (
+              (ansible_run_tags | default([]))
+              + ([ 'slurm' ] if not (hostvars['127.0.0.1']['config_file_status'] | default(false) | bool) else [])
+              + ([ 'k8s' ] if hostvars['127.0.0.1']['k8s_support'] else [])
+            ) | unique
+          }}
         cacheable: true
+
 
 - name: Invoke get_config_credentials.yml
   ansible.builtin.import_playbook: ../utils/credential_utility/get_config_credentials.yml
@@ -52,6 +59,11 @@
       ansible.builtin.include_role:
         name: cluster_validation
         tasks_from: validation_status_check.yml
+
+- name: Invoke validate_config.yml to perform L1 and L2 validations for k8s 
+  ansible.builtin.import_playbook: input_validation/validate_config.yml
+  when:
+    - hostvars['127.0.0.1']['k8s_support']
 
 - name: Create kubespray container group
   ansible.builtin.import_playbook: ../utils/create_container_group.yml

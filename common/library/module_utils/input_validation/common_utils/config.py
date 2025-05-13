@@ -62,7 +62,10 @@ input_file_inventory = {
     ],
     "monitoring": [files["telemetry_config"]],
     "local_repo": [files["local_repo_config"], files["software_config"]],
-    "k8s": [files["k8s_access_config"]],
+    "k8s": [
+        files["omnia_config"],
+        files["high_availability_config"]
+    ],
     "roce": [files["roce_plugin_config"]],
     "storage": [files["storage_config"]],
     "proxy": [files["site_config"]],
@@ -90,6 +93,17 @@ input_file_inventory = {
         files["roles_config"],
         files["high_availability_config"]
     ],
+}
+
+# Define a mapping in config.py (or dynamically in the code) for future tag-to-filename replacements
+tag_file_replacements = {
+    "k8s": {
+        "omnia_config": "k8s_scheduler",  # Replace omnia_config with k8s_scheduler for k8s tag
+    },
+    "slurm": {
+        "omnia_config": "slurm_scheduler",  # Example for another tag "slurm"
+    },
+    # Add more tag-based file mappings as needed
 }
 
 # All of the passwords fields
