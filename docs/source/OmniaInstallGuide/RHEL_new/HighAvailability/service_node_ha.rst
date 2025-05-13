@@ -36,31 +36,19 @@ Sample
 ::
 
     service_node_ha: 
-
         enable_service_ha: false 
-
-          service_nodes: 
-
+        service_nodes: 
          	- virtual_ip_address: “10.5.0.11” 
-
-                active_node_service_tag: “ABC123” 
-
-                passive_nodes:  
-
+              active_node_service_tag: “ABC123” 
+              passive_nodes:  
                   - node_service_tags: [“DEF456”]
 
             - virtual_ip_address: “10.5.0.12” 
-
-                active_node_service_tag: “GHI789” 
-
+              active_node_service_tag: “GHI789” 
                 passive_nodes:  
-
                   - node_service_tags: [“JKL012”, "XYZ765"] 
 
             - virtual_ip_address: “10.5.0.13” 
-
-                active_node_service_tag: “MNO345” 
-
+              active_node_service_tag: “MNO345” 
                 passive_nodes:  
-
                   - node_service_tags: [“pQR678”, "STU901", "VWX234"]
