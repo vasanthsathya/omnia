@@ -2,59 +2,65 @@ High Availability (HA) for the Service Node
 =====================================================
 
 In a large HPC cluster deployed by Omnia, service nodes are used to balance the load on the OIM. Each service node is responsible for discovering and provisioning a set of compute nodes. 
-For such scenarios, in order to maintain uninterrupted cluster experience, Omnia provides an option to enable high availability for the service nodes. HA Service nodes are brought online when their associated Service nodes fail.
+For such scenarios, in order to maintain uninterrupted cluster experience, Omnia provides an option to enable high availability for the service nodes. Omnia achieves this in the form of Active/Passive service nodes - provides a fully redundant 
+instance of the service nodes, which is only brought online when its associated primary node fails.
 
 Prerequisites
 --------------
 
-* To enable and configure the HA for OIM, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Refer the following table while doing so:
+* To enable and configure the HA for Service nodes, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Once the config file is updated, run the ``prepare_oim.yml`` playbook.
 
     .. csv-table:: Parameters for Service Node HA
         :file: ../../../Tables/sn_ha.csv
         :header-rows: 1
         :keepspace:
 
+* Ensure that the passive service nodes have ``service_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
+
+* Ensure that the passive service nodes are in booted state before provisioning.
+
 Playbook execution
 -------------------
 
-Once the details are provided to the input files, HA service nodes can be discovered during the cluster discovery and provision process using the below command:
+Once the details have been provided to the input files and the ``prepare_oim.yml`` playbook is executed, passive service nodes can be discovered during the cluster discovery and provision process using the below command:
 
 ::
 
     ansible-playbook discovery_provision.yml --tags "management_layer"
 
+.. note:: Ensure that ``local_repo.yml`` playbook has been executed successfully before provisioning.
 
 Sample
 -------
 
 ::
 
-    Service_node_ha: 
+    service_node_ha: 
 
-        enable_servicenode_ha: false 
+        enable_service_ha: false 
 
-          Service_nodes: 
+          service_nodes: 
 
          	- virtual_ip_address: “10.5.0.11” 
 
-                Active_node: “ABC123” 
+                active_node_service_tag: “ABC123” 
 
-                passive_node:  
+                passive_nodes:  
 
-                  - Node_details: “DEF456”
+                  - node_service_tags: [“DEF456”]
 
             - virtual_ip_address: “10.5.0.12” 
 
-                Active_node: “GHI789” 
+                active_node_service_tag: “GHI789” 
 
-                passive_node:  
+                passive_nodes:  
 
-                  - Node_details: “JKL012” 
+                  - node_service_tags: [“JKL012”, "XYZ765"] 
 
             - virtual_ip_address: “10.5.0.13” 
 
-                Active_node: “MNO345” 
+                active_node_service_tag: “MNO345” 
 
-                passive_node:  
+                passive_nodes:  
 
-                  - Node_details: “pQR678”
+                  - node_service_tags: [“pQR678”, "STU901", "VWX234"]
