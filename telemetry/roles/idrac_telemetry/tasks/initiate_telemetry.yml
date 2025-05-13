@@ -34,16 +34,17 @@
         idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
         idrac_telemetry_scripting_stable_commit: "1f4bb26"
         idrac_telemetry_scripting_folder: iDRAC-Telemetry-Scripting
-        login_vars_file: "{{ playbook_dir }}/input_params/telemetry_login_vars.yml"
-        vault_filename: "{{ playbook_dir }}/input_params/.login_vault_key"
-        idrac_inventory_filename: "/opt/omnia/idrac_inventory"
-        idrac_file_existence: "iDRAC inventory file does not exist. Check /opt/omnia/idrac_inventory."
-        monitor_config_file: "{{ playbook_dir }}/../input/monitor_config.yml"
-        monitor_config_vault_filename: "{{ playbook_dir }}/../input/.monitor_vault_key"
+        # login_vars_file: "{{ playbook_dir }}/input_params/telemetry_login_vars.yml"
+        # vault_filename: "{{ playbook_dir }}/input_params/.login_vault_key"
+        # idrac_inventory_filename: "/opt/omnia/idrac_inventory"
+        # idrac_file_existence: "iDRAC inventory file does not exist. Check /opt/omnia/idrac_inventory."
+        # monitor_config_file: "{{ playbook_dir }}/../input/monitor_config.yml"
+        # monitor_config_vault_filename: "{{ playbook_dir }}/../input/.monitor_vault_key"
         min_firmware_version_reqd: 4
         datacenter_license: false
         firmware_version: false
-        file_perm: '0644'
+        # file_perm: '0644'
+        skipped_idrac: []
         telemetry_idrac: []
         service_type: 3
         auth_type: 1
@@ -59,7 +60,7 @@
       with_items: "{{ bmc_ips }}"
       loop_control:
         index_var: idrac_index
-      no_log: true
+      # no_log: true
 
 # Add iDRAC Credentials in DB and enable telemetry fetching
 
@@ -106,6 +107,27 @@
               retries: "{{ db_retries }}"
               delay: "{{ db_delay }}"
               no_log: true
+
+            - name: Fetch iDRAC details of telemetry configured iDRACs
+              community.mysql.mysql_query:
+                login_host: "{{ mysqldb_host}}"
+                login_port: "{{ mysqldb_container_port }}"
+                login_user: "{{ mysqldb_user }}"
+                login_password: "{{ mysqldb_password }}"
+                query: "SELECT ip from {{ mysqldb_name + '.services' }}"
+              register: db_idrac_ip
+              until: db_idrac_ip is not failed
+              retries: "{{ db_retries }}"
+              delay: "{{ db_delay }}"
+              no_log: true
+
+            - name: Extract list of IPs from query_result
+              set_fact:
+                db_idrac_ips: "{{ db_idrac_ip.query_result[0] | map(attribute='ip') | list }}"
+
+            - name: Generate filtered iDRAC IP list
+              set_fact:
+                telemetry_idrac: "{{ telemetry_idrac | difference(db_idrac_ips) }}"
 
             - name: Add iDRAC host in mysqlDB
               community.mysql.mysql_query:
