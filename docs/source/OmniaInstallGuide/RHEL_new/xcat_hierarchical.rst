@@ -21,7 +21,7 @@ If ``service_node`` role is not defined then all nodes will be provisioned from 
 .. note:: To support hierarchical provisioning, all the SNs (active or passive) should be in booted state.
 
 
-Omnia also supports HA functionality for the ``OIM``, ``service_node``, and ``kube_control_plane`` of the management layer. For more information, `click here <HighAvailability/index.html>`.
+Omnia also supports HA functionality for the ``OIM``, ``service_node``, and ``kube_control_plane`` of the management layer. For more information, `click here <HighAvailability/index.html>`_.
 
 .. note:: 
     
