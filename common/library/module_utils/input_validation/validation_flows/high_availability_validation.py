@@ -17,6 +17,7 @@ import json
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
+from ansible.module_utils.input_validation.validation_flows import common_validation
 
 file_names = config.files
 create_error_msg = validation_utils.create_error_msg
@@ -67,6 +68,13 @@ def get_admin_netmaskbits(network_spec_json):
                 netmaskbits = value.get("netmask_bits", "N/A")
     return netmaskbits
 
+def get_admin_uncorrelated_node_start_ip(network_spec_json):
+    for network in network_spec_json["Networks"]:
+        for key, value in network.items():
+            if key == "admin_network":
+                admin_uncorrelated_node_start_ip = value.get("admin_uncorrelated_node_start_ip", "N/A")
+    return admin_uncorrelated_node_start_ip
+
 def get_primary_oim_admin_ip(network_spec_json):
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
@@ -105,9 +113,20 @@ def validate_vip_address(errors, config_type, vip_address, service_node_vip, adm
         if not validation_utils.is_ip_in_subnet(oim_admin_ip, admin_netmaskbits, vip_address):
             errors.append(create_error_msg(f"{config_type} virtual_ip_address", vip_address, en_us_validation_msg.virtual_ip_not_in_admin_subnet))
 
-def validate_k8s_head_node_ha(ha_data, mandatory_fields, errors, config_type=None):
-        #what all needs ot be implemented here???
-        logger.debug(f"Missing key in HA data")
+def validate_k8s_head_node_ha(errors, config_type, ha_data, network_spec_data, all_service_tags, ha_node_vip_list):
+    
+    #get network_spec data
+    admin_network = network_spec_data['admin_network']
+    admin_static_range = admin_network.get("static_range", "N/A")
+    admin_dynamic_range = admin_network.get("dynamic_range","N/A")
+    oim_admin_ip = network_spec_data['oim_admin_ip']
+    admin_uncorrelated_node_start_ip = network_spec_data['admin_uncorrelated_node_start_ip']
+
+    external_loadbalancer_ip = ha_data.get("external_loadbalancer_ip")
+    if external_loadbalancer_ip:
+        ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
+        does_overlap, _ = validation_utils.check_overlap(ip_ranges)
+
 
 def validate_service_node_ha(errors, config_type, ha_data, network_spec_data, all_service_tags, ha_node_vip_list):
     active_node_service_tag = ha_data.get('active_node_service_tag')
@@ -145,6 +164,7 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
     network_spec_info = {
         "admin_network": get_admin_static_dynamic_ranges(network_spec_json),
         "admin_netmaskbits": get_admin_netmaskbits(network_spec_json),
+        "admin_uncorrelated_node_start_ip": get_admin_uncorrelated_node_start_ip(network_spec_json),
         "oim_admin_ip": get_primary_oim_admin_ip(network_spec_json)
     }
     
