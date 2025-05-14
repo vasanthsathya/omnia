@@ -241,9 +241,6 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
     errors = []
     results=[]
     tag_names = eval(module.params["tag_names"])
-    if 'k8s' in tag_names:
-        results= scheduler_validation.validate_k8s_parameters(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name)
-
 
     admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
     admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
@@ -253,6 +250,11 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
     pod_external_ip_range = data["pod_external_ip_range"]
     k8s_service_addresses = data["k8s_service_addresses"]
     k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
+
+    if 'k8s' in tag_names:
+        results= scheduler_validation.validate_k8s_parameters(admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr)
+        if results:
+            errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.ip_overlap_fail_msg))
 
     run_intel_gaudi_tests = data["run_intel_gaudi_tests"]
     csi_powerscale_driver_secret_file_path = data["csi_powerscale_driver_secret_file_path"]

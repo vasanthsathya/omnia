@@ -53,6 +53,11 @@
       "description": "File path for the values.yaml file.",
       "type": "string",
       "pattern": "^$|^/?([a-zA-Z0-9_-]+(/?[a-zA-Z0-9_-]+)*)$"
+    },
+    "k8s_offline_install": {
+      "type": "boolean",
+      "description": "If true, packages/images will be pulled from OIM local repo; if false, pulled from internet.",
+      "default": true
     }
 },
   "required": [
@@ -62,5 +67,6 @@
      "k8s_service_addresses",
      "k8s_pod_network_cidr",
      "pod_external_ip_range",
-     "run_intel_gaudi_tests"]
+     "run_intel_gaudi_tests",
+     "k8s_offline_install"]
 }

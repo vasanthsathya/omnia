@@ -105,6 +105,10 @@ def validate_vip_address(errors, config_type, vip_address, service_node_vip, adm
         if not validation_utils.is_ip_in_subnet(oim_admin_ip, admin_netmaskbits, vip_address):
             errors.append(create_error_msg(f"{config_type} virtual_ip_address", vip_address, en_us_validation_msg.virtual_ip_not_in_admin_subnet))
 
+def validate_k8s_head_node_ha(ha_data, mandatory_fields, errors, config_type=None):
+        #what all needs ot be implemented here???
+        logger.debug(f"Missing key in HA data")
+
 def validate_service_node_ha(errors, config_type, ha_data, network_spec_data, all_service_tags, ha_node_vip_list):
     active_node_service_tag = ha_data.get('active_node_service_tag')
     passive_nodes = ha_data.get('passive_nodes', [])
@@ -128,7 +132,7 @@ ha_validation = {
     # Add more config_type functions here as needed
     #"oim_ha":validation_oim_ha,
     #"slurm_head_node_ha":validation_slurm_head_node_ha
-    "k8s_head_node_ha":validation_k8s_head_node_ha
+    "k8s_head_node_ha":validate_k8s_head_node_ha
 }
 
 def validate_high_availability_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
@@ -173,10 +177,6 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
         except KeyError as e:
             logger.error(f"Missing key in HA data: {e}")
             errors.append(f"Missing key in HA data: {e}")
-
-    def validation_k8s_head_node_ha(ha_data, mandatory_fields, errors, config_type=None):
-        #what all needs ot be implemented here???
-
 
     
     ha_configs = [
