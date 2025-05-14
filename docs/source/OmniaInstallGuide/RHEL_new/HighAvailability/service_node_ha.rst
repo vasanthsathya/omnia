@@ -45,7 +45,8 @@ Sample
     service_node_ha: 
         enable_service_ha: false 
         service_nodes: 
-         	- virtual_ip_address: “10.5.0.11” 
+         	
+          - virtual_ip_address: “10.5.0.11” 
             active_node_service_tag: “ABC123” 
               passive_nodes:  
                 - node_service_tags: [“DEF456”]
