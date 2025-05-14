@@ -127,6 +127,9 @@ def validate_k8s_head_node_ha(errors, config_type, ha_data, network_spec_data, a
         ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
         does_overlap, _ = validation_utils.check_overlap(ip_ranges)
 
+    if does_overlap:
+        errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.ip_overlap_fail_msg))
+
 
 def validate_service_node_ha(errors, config_type, ha_data, network_spec_data, all_service_tags, ha_node_vip_list):
     active_node_service_tag = ha_data.get('active_node_service_tag')
