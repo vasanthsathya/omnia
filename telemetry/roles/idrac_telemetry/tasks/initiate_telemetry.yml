@@ -169,7 +169,7 @@
         - name: Create telemetry report
           ansible.builtin.template:
             src: telemetry_report.j2
-            dest: /root/telemetry/telemetry_report.yml
+            dest: "{{ telemetry_report_path }}"
             mode: "{{ filemode }}"
             force: true
  
