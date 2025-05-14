@@ -1,7 +1,7 @@
 ===== Telemetry Summary Report =====
 
-Total IPs with Telemetry activated: {{ (db_idrac_ips | length) + (filtered_bmc_ips | length) }}
+Total IPs with Telemetry activated: {{ (db_idrac_ips | length) + (telemetry_idrac | length) }}
 Telemetry enabled IPs List:
-{% for item in db_idrac_ips + filtered_bmc_ips %}
+{% for item in db_idrac_ips + telemetry_idrac %}
   - {{ item }}
 {% endfor %}
