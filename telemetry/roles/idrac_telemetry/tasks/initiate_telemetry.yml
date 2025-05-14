@@ -163,6 +163,16 @@
 #             tty: true
 #           changed_when: false
 
-    - name: Telemetry Report
-      ansible.builtin.debug:
-        msg: "{{ telemetry_report.splitlines() }}"
+    - name: Create and update telemetry report from template
+      when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
+      block:
+        - name: Create telemetry report
+          ansible.builtin.template:
+            src: telemetry_report.j2
+            dest: /root/telemetry/telemetry_report.yml
+            mode: "{{ filemode }}"
+            force: true
+ 
+        - name: Telemetry Report
+          ansible.builtin.debug:
+            msg: "{{ telemetry_report.splitlines() }}"
