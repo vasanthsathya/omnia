@@ -18,11 +18,7 @@ python_version: "{{ ansible_python_interpreter }}"
 mysqldb_name: "telemetrydb"
 timescaledb_name: "telemetry_metrics"
 mysqldb_insert_fail_msg: "Failed to add/get iDRAC credential details in the mysql database.
-This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
-idrac_telemetry_pod_wait_fail_msg: "Execution failed as the idrac-telemetry pods did not start within the expected time.
-Please re-run the playbook after verifying that the idrac-telemetry pods are in running state by executing the command 'kubectl get pods -A.'"
-mysqldb_pod_wait_fail_msg: "Execution failed as the mysqldb pods did not start within the expected time.
-Please re-run the playbook after verifying that the mysqldb pods are in running state by executing the command 'kubectl get pods -A.'"
+ This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
 db_retries: 10
 db_delay: 10
 mysqldb_container_port: 3306
@@ -36,8 +32,14 @@ telemetry_report: |
     - {{ item }}
     {% endfor %}
 
+  IP with Telemetry not supported: {{ failed_idrac_count }}
+  IPs List (Telemetry not supported):
+    {% for item in failed_idrac %}
+    - {{ item }}
+    {% endfor %}
+
   IPs with Telemetry Initiated: {{ filtered_idrac_count }}
-  IPs List (Telemetry Active):
+  IPs List (Telemetry Activated):
     {% for item in telemetry_idrac %}
     - {{ item }}
     {% endfor %}

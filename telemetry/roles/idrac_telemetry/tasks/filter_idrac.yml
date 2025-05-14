@@ -78,8 +78,8 @@
 
 - name: Set variables for filtered iDRACs
   when:
-    - datacenter_license is true
-    - firmware_version is true
+    - datacenter_license
+    - firmware_version
   block:
     - name: Set iDRAC list
       ansible.builtin.set_fact:
@@ -88,3 +88,16 @@
     - name: Set counter value
       ansible.builtin.set_fact:
         filtered_idrac_count: "{{ filtered_idrac_count | int + 1 }}"
+
+- name: Set variables for unsupported iDRACs
+  when:
+    - not datacenter_license
+    - not firmware_version
+  block:
+    - name: Set iDRAC list
+      ansible.builtin.set_fact:
+        failed_idrac: "{{ failed_idrac + [item] }}"
+
+    - name: Set counter value
+      ansible.builtin.set_fact:
+        failed_idrac_count: "{{ failed_idrac_count | int + 1 }}"
