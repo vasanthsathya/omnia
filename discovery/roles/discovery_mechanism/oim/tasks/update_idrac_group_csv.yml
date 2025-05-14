@@ -24,7 +24,7 @@
       }}
 
 - name: Update BMC entries with group details in CSV
-  update_idrac_ip_entry:
+  update_bmc_group_entry:
     csv_path: "{{ bmc_group_csv_path }}"
     nodes: "{{ non_service_oim_nodes }}"
     bmc_username: "{{ bmc_username }}"
