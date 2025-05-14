@@ -1,4 +1,4 @@
-#  Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+#  Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
   community.postgresql.postgresql_query:
     db: omniadb
     login_user: postgres
-    query: SELECT node,status,admin_ip,service_tag,hostname FROM cluster.nodeinfo where (node!='oim') AND (admin_ip='{{ item }}');
+    query: SELECT node,bmc_ip,status,admin_ip,service_tag,hostname FROM cluster.nodeinfo where (node!='oim') AND (admin_ip='{{ item }}');
     login_password: "{{ hostvars['localhost']['postgresdb_password'] }}"
   become: true
   become_user: postgres
@@ -49,7 +49,7 @@
   community.postgresql.postgresql_query:
     db: omniadb
     login_user: postgres
-    query: SELECT node,status,admin_ip,service_tag,hostname FROM cluster.nodeinfo where (node!='oim') AND (service_tag='{{ item | upper }}' OR node='{{ item }}' OR hostname='{{ item }}'); # noqa: yaml[line-length]
+    query: SELECT node,bmc_ip,status,admin_ip,service_tag,hostname FROM cluster.nodeinfo where (node!='oim') AND (service_tag='{{ item | upper }}' OR node='{{ item }}' OR hostname='{{ item }}'); # noqa: yaml[line-length]
     login_password: "{{ hostvars['localhost']['postgresdb_password'] }}"
   become: true
   become_user: postgres
@@ -77,6 +77,7 @@
   ansible.builtin.set_fact:
     valid_nodes: "{{ valid_nodes | combine({item.item: {'node': item.query_result[0].node,
       'admin_ip': item.query_result[0].admin_ip,
+      'bmc_ip': item.query_result[0].bmc_ip,
       'status': item.query_result[0].status,
       'hostname': item.query_result[0].hostname,
       'service_tag': item.query_result[0].service_tag}}) }}"
@@ -160,6 +161,21 @@
   loop: "{{ query('ansible.builtin.dict', valid_nodes) }}"
   loop_control:
     label: "{{ item.key }}"
+
+- name: Update BMC entries with group details in CSV
+  update_idrac_ip_entry:
+    csv_path: "{{ bmc_group_csv_path }}"
+    nodes: "{{ valid_nodes }}"
+    delete: true
+  register: bmc_result
+
+- name: Show Deleted BMC IPs from bmc group data CSV
+  ansible.builtin.debug:
+    msg: "Deleted BMC IPs from bmc group data CSV: {{ bmc_result.deleted | join(', ') }}"
+  when:
+    - bmc_result.changed
+    - bmc_result.deleted is defined
+    - bmc_result.deleted | length > 0
 
 - name: Verify removed nodes
   ansible.builtin.set_fact:

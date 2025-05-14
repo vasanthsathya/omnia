@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@
 
     - name: Remove old SSH key
       ansible.builtin.include_tasks: remove_old_ssh_key.yml
+
+    - name: Update iDRAC ip with group details
+      ansible.builtin.include_tasks: update_idrac_group_csv.yml
+      when: idrac_telemetry_support | default(false)
 
     - name: Update postgres conf for service nodes
       ansible.builtin.include_tasks: service_node_postgres_setting.yml

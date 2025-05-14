@@ -1,4 +1,4 @@
-# Copyright 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -34,6 +34,9 @@ xcat_sbin_path: /opt/xcat/sbin
 empty_discover_node_msg: |
   "Failed. No nodes were discovered. Please ensure the input related to discovery details is correct inside provision_config.yml and network_spec.yml
    and check if IPMI is enabled on the nodes if using BMC discovery mechanism."
+
+# Usage: update_idrac_group_csv.yml
+bmc_group_csv_path: "/opt/omnia/telemetry/bmc_group_data.csv"
 
 # Usage: service_node_postgres_setting.yml
 no_service_node_msg: "[Warning] No new service nodes discovered, skipping service node configurations."

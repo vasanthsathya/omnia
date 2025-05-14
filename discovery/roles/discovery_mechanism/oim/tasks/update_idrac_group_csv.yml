@@ -1,0 +1,40 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+
+- name: Set fact for discovered nodes
+  ansible.builtin.set_fact:
+    non_service_oim_nodes: >-
+      {{
+        discovered_nodes
+        | rejectattr('role', 'search', 'service_node')
+        | rejectattr('role', 'search', 'oim_ha_node')
+        | list
+      }}
+
+- name: Update BMC entries with group details in CSV
+  update_idrac_ip_entry:
+    csv_path: "{{ bmc_group_csv_path }}"
+    nodes: "{{ non_service_oim_nodes }}"
+    bmc_username: "{{ bmc_username }}"
+    bmc_password: "{{ bmc_password }}"
+  register: bmc_result
+
+- name: Show Invalid BMC IPs
+  ansible.builtin.debug:
+    msg: "Invalid BMC IPs: {{ bmc_result.invalid | join(', ') }}"
+  when:
+    - bmc_result.changed
+    - bmc_result.invalid is defined
+    - bmc_result.invalid | length > 0
