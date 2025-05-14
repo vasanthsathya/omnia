@@ -172,7 +172,7 @@
             dest: "{{ telemetry_report_path }}"
             mode: "{{ filemode }}"
             force: true
- 
+
         - name: Telemetry Report
           ansible.builtin.debug:
             msg: "{{ telemetry_report.splitlines() }}"
