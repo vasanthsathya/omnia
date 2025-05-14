@@ -17,7 +17,7 @@
   ansible.builtin.set_fact:
     k8s_support: false
     slurm_support: false
-    
+
 - name: Load software_config.json
   ansible.builtin.include_vars:
     file: "{{ software_config_json_file }}"
