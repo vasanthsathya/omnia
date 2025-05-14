@@ -8,6 +8,12 @@ instance of the service nodes, which is only brought online when its associated 
 Prerequisites
 --------------
 
+* Ensure that the passive service nodes have ``service_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
+
+* Ensure that the passive service nodes are in booted state before provisioning.
+
+* Ensure that all the service nodes (active/passive) are connected to the Internet.
+
 * To enable and configure the HA for Service nodes, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Once the config file is updated, run the ``prepare_oim.yml`` playbook.
 
     .. csv-table:: Parameters for Service Node HA
@@ -15,9 +21,7 @@ Prerequisites
         :header-rows: 1
         :keepspace:
 
-* Ensure that the passive service nodes have ``service_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
-
-* Ensure that the passive service nodes are in booted state before provisioning.
+.. note:: Once the ``prepare_oim.yml`` playbook has been executed, any subsequent edits to the ``high_availability_config.yml`` or ``roles_config.yml`` files will not take effect. To apply changes made to these configuration files, you must re-run the ``prepare_oim.yml`` playbook.
 
 Playbook execution
 -------------------
@@ -38,17 +42,17 @@ Sample
     service_node_ha: 
         enable_service_ha: false 
         service_nodes: 
-         	  - virtual_ip_address: “10.5.0.11” 
-              active_node_service_tag: “ABC123” 
+         	- virtual_ip_address: “10.5.0.11” 
+            active_node_service_tag: “ABC123” 
               passive_nodes:  
-                  - node_service_tags: [“DEF456”]
+                - node_service_tags: [“DEF456”]
 
-            - virtual_ip_address: “10.5.0.12” 
-              active_node_service_tag: “GHI789” 
-                passive_nodes:  
-                  - node_service_tags: [“JKL012”, "XYZ765"] 
+          - virtual_ip_address: “10.5.0.12” 
+            active_node_service_tag: “GHI789” 
+              passive_nodes:  
+                - node_service_tags: [“JKL012”, "XYZ765"] 
 
-            - virtual_ip_address: “10.5.0.13” 
-              active_node_service_tag: “MNO345” 
-                passive_nodes:  
-                  - node_service_tags: [“pQR678”, "STU901", "VWX234"]
+          - virtual_ip_address: “10.5.0.13” 
+            active_node_service_tag: “MNO345” 
+              passive_nodes:  
+                - node_service_tags: [“pQR678”, "STU901", "VWX234"]

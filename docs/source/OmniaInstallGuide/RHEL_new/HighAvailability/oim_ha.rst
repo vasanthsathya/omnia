@@ -16,6 +16,12 @@ to create the OIM HA. The ``prepare_oim.yml`` playbook sets up the ``omnia_pcs``
 Prerequisites
 --------------
 
+* Ensure that the passive OIM nodes have ``oim_ha_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
+
+* Ensure that the passive OIM nodes are in booted state before provisioning.
+
+* For enabling HA functionality on the OIM, ensure that the Omnia shared path is set to an external NFS server.
+
 * To enable and configure HA for OIM, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Once the config file is updated, run the ``prepare_oim.yml`` playbook.
 
     .. csv-table:: Parameters for OIM HA
@@ -23,9 +29,7 @@ Prerequisites
         :header-rows: 1
         :keepspace:
 
-* Ensure that the passive OIM nodes have ``oim_ha_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
 
-* Ensure that the passive OIM nodes are in booted state before provisioning.
 
 Playbook execution
 --------------------

@@ -15,13 +15,13 @@ A typical hierarchical cluster consists of:
 .. image:: ../../images/xcat_hierarchical.png
     :width: 300px
 
-Hierarchical cluster in Omnia
--------------------------------
-
 Omnia supports hierarchical cluster formation only when ``service_node`` role is defined in ``roles_config.yml`` input file under the ``/opt/omnia/input/project_default/`` directory, where compute nodes will be associated with their respective service node. 
 If ``service_node`` role is not defined then all nodes will be provisioned from the OIM. For more information, `click here <composable_roles.html>`_.
 
 
 Omnia also supports HA functionality for the ``OIM``, ``service_node``, and ``kube_control_plane`` of the management layer. For more information, `click here <HighAvailability/index.html>`.
 
-.. note:: If you want to use HA functionality, ensure that all the nodes (active or passive) are in booted state.
+.. note:: 
+    
+    * In a hierarchical cluster setup, an external NFS share must be used for the Omnia shared path.
+    * If you want to use HA functionality, ensure that all the nodes (active or passive) are in booted state.
