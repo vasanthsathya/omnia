@@ -29,7 +29,7 @@ Prerequisites
         :header-rows: 1
         :keepspace:
 
-
+.. note:: The virtual IP addresses specified in the `high_availability_config.yml` file must be within the same subnet as the admin network.
 
 Playbook execution
 --------------------
