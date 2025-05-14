@@ -128,7 +128,7 @@ ha_validation = {
     # Add more config_type functions here as needed
     #"oim_ha":validation_oim_ha,
     #"slurm_head_node_ha":validation_slurm_head_node_ha
-    #"k8s_head_node_ha":validation_k8s_head_node_ha
+    "k8s_head_node_ha":validation_k8s_head_node_ha
 }
 
 def validate_high_availability_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
@@ -174,6 +174,11 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
             logger.error(f"Missing key in HA data: {e}")
             errors.append(f"Missing key in HA data: {e}")
 
+    def validation_k8s_head_node_ha(ha_data, mandatory_fields, errors, config_type=None):
+        #what all needs ot be implemented here???
+
+
+    
     ha_configs = [
         ("oim_ha", ["virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
         ("service_node_ha", ["service_nodes"]),

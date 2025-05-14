@@ -16,6 +16,7 @@ import json
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
+from ansible.module_utils.input_validation.validation_flows import scheduler_validation
 
 file_names = config.files
 create_error_msg = validation_utils.create_error_msg
@@ -238,8 +239,12 @@ def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, modu
 
 def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
+    results=[]
+    tag_names = eval(module.params["tag_names"])
+    if 'k8s' in tag_names:
+        results= scheduler_validation.validate_k8s_parameters(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name)
 
-    
+
     admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
     admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
     admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]

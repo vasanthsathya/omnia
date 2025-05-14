@@ -283,7 +283,8 @@
           "type": "boolean"
         },
         "virtual_ip_address": {
-          "type": "string"
+          "type": "string",
+          "format": "ipv4"
         },
         "external_loadbalancer_ip": {
           "type": "string",
