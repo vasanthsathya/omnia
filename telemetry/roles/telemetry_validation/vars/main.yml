@@ -158,7 +158,7 @@ conf_file_mode: "0644"
 
 # Usage: validate_idrac_inventory.yml
 bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
-bmc_group_data_file_not_found_msg: "Failed. The file BMC group data file does not exist."
+bmc_group_data_file_not_found_msg: "Failed. The BMC data file: {{ bmc_group_data_filename }} does not exist."
 
 # Usage: validate_telemetry_container.yml
 telemetry_container_status_msg: "Telemetry container Status: {{ telemetry_container_status.containers[0].State.Status }}"
