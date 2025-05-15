@@ -126,9 +126,9 @@
     - name: Execute SQL in MySQL container using podman_container_exec
       containers.podman.podman_container_exec:
         name: "{{ mysql_container_name }}"
-        command: "/bin/sh -c 'mysql -u root -p'{{ hostvars['localhost']['mysqldb_root_password'] }}' < '{{ tmp_file_path }}''"
+        command: "/bin/sh -c 'mysql -u root -p '{{ hostvars['localhost']['mysqldb_root_password'] }}' < '{{ tmp_file_path }}''"
       register: sql_exec_result
-      no_log: false
+      no_log: true
 
     - name: Remove the temporary MySQL file
       ansible.builtin.file:
