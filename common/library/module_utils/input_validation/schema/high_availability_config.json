@@ -62,7 +62,15 @@
               },
               "bmc_virtual_ip_address": {
                 "type": "string",
-                "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+                "oneOf": [
+                  {
+                    "maxLength": 0
+                  },
+                  {
+                    "minLength": 1,
+                    "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+                  }
+                ]
               },
               "active_node_service_tag": {
                 "type": "string",
