@@ -132,15 +132,15 @@ def add_bmc_entries(nodes, existing_entries, bmc_username, bmc_password, module,
 
 def main():
     "Main function for the custom ansible module - update_bmc_group_entry"
-    module_args = dict(
-        csv_path=dict(type='str', required=True),
-        nodes=dict(type='list', elements='dict', required=True),
-        bmc_username=dict(type='str', required=False, no_log=True),
-        bmc_password=dict(type='str', required=False, no_log=True),
-        delete=dict(type='bool', default=False)
-    )
+    module_args = {
+        'csv_path': {'type': 'str', 'required': True},
+        'nodes': {'type': 'list', 'elements': 'dict', 'required': True},
+        'bmc_username': {'type': 'str', 'required': False, 'no_log': True},
+        'bmc_password': {'type': 'str', 'required': False, 'no_log': True},
+        'delete': {'type': 'bool', 'default': False}
+    }
 
-    result = dict(changed=False, added=[], deleted=[], invalid=[])
+    result = {'changed': False, 'added': [], 'deleted': [], 'invalid': []}
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
