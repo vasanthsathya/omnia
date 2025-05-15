@@ -27,30 +27,33 @@
   register: mysql_container_info
   failed_when: false
 
-- name: Pull Podman image
-  containers.podman.podman_image:
-    name: "{{ mysql_docker_image }}"
-    tag: "{{ mysql_image_tag }}"
-    state: present
-  register: image_pull_result
-
-- name: Fail if the MySQL container image pull fails
-  ansible.builtin.fail:
-    msg: "{{ mysql_image_pull_fail_msg }}"
-  when: image_pull_result.failed
-
-- name: Verify if the MySQL image exists
-  containers.podman.podman_image_info:
-    name: "{{ mysql_docker_image }}:{{ mysql_image_tag }}"
-  register: image_facts
-
-- name: Fail if the MySQL image is not found
-  ansible.builtin.fail:
-    msg: "{{ mysql_image_not_found_msg }}"
-  when: not image_facts.images
-
 - name: Deploy MySQL container and check deployment status
+  when:
+    - mysql_container_info.containers | length == 0
+    - mysql_container_info.containers[0].State.Status != 'running'
   block:
+    - name: Pull Podman image
+      containers.podman.podman_image:
+        name: "{{ mysql_docker_image }}"
+        tag: "{{ mysql_image_tag }}"
+        state: present
+      register: image_pull_result
+
+    - name: Fail if the MySQL container image pull fails
+      ansible.builtin.fail:
+        msg: "{{ mysql_image_pull_fail_msg }}"
+      when: image_pull_result.failed
+
+    - name: Verify if the MySQL image exists
+      containers.podman.podman_image_info:
+        name: "{{ mysql_docker_image }}:{{ mysql_image_tag }}"
+      register: image_facts
+
+    - name: Fail if the MySQL image is not found
+      ansible.builtin.fail:
+        msg: "{{ mysql_image_not_found_msg }}"
+      when: not image_facts.images
+
     - name: Create MySQL_root_password secret
       ansible.builtin.shell: |
         set -o pipefail
