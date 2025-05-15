@@ -111,6 +111,6 @@ idrac_telemetry_receiver_env:
  HTTPS_PROXY: ""
 idrac_telemetry_receiver_container_success_msg: "The {{ idrac_telemetry_receiver_container_name }} container has been successfully deployed."
 idrac_telemetry_receiver_container_failure_msg: |
-  The deployment of the {{ idrac_receiver_container_name }} container has failed. To resolve this issue,
+  The deployment of the {{ idrac_telemetry_receiver_container_name }} container has failed. To resolve this issue,
   please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
-  After the cleanup, you can re-run the original playbook to deploy the {{ idrac_receiver_container_name }} container successfully.
+  After the cleanup, you can re-run the original playbook to deploy the {{ idrac_telemetry_receiver_container_name }} container successfully.

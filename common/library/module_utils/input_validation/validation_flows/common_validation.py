@@ -282,15 +282,13 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
 
 def validate_telemetry_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
-    idrac_collection_type = ["Prometheus"] # currently supports only Prometheus
-    idrac_telemetry_support = data["idrac_telemetry_support"]
-    idrac_telemetry_collection_type = data["idrac_telemetry_collection_type"]
-    visualization_support = data["visualization_support"]
+
+    idrac_telemetry_support = data.get("idrac_telemetry_support")
 
     if idrac_telemetry_support:
-        valid_collection_types = {item.lower() for item in idrac_collection_type}
-        if idrac_telemetry_collection_type.lower() not in valid_collection_types:
-            errors.append(create_error_msg("idrac_telemetry_collection_type", idrac_telemetry_collection_type, en_us_validation_msg.unsupported_idrac_telemetry_collection_type))
+        collection_type = data.get("idrac_telemetry_collection_type")
+        if collection_type and collection_type not in config.supported_telemetry_collection_type:
+            errors.append(create_error_msg("idrac_telemetry_collection_type", collection_type, en_us_validation_msg.unsupported_idrac_telemetry_collection_type))
 
     # preserved below code for future use
     '''

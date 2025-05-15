@@ -62,3 +62,6 @@ omnia_credentials:
     mandatory:
       - { username: mysqldb_user, password: mysqldb_password }
       - { password: mysqldb_root_password }
+  visualization:
+    mandatory:
+      - { username: grafana_username, password: grafana_password }
