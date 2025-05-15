@@ -17,7 +17,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils import omniadb_connection
 from ansible.module_utils.omniadb_connection import execute_select_query
 from ipaddress import IPv4Address
-import sys
+import sys, re
 
 def check_switch_table():
     """Checks if the cluster.switchinfo table has any entries."""
@@ -37,28 +37,28 @@ def check_presence_switch_port(switch_name, switch_port):
     return bool(result[0]["exists"]) if result else False
 
 def get_next_node_name(group):
-    """Fetch the next available node name based on ordering."""
+    """Fetch the next available node name based on the last valid node pattern."""
     query = """
         SELECT node
         FROM cluster.nodeinfo
         WHERE group_name = %s
-        ORDER BY node DESC
-        LIMIT 1;
+        ORDER BY node DESC;
     """
-
     result = execute_select_query(query=query, params=(group,))
 
-    if not result:
-        return f"{group}node001"  # First node if none exists
+    # Regular expression pattern: e.g., "grp0node001"
+    pattern = re.compile(rf"^{re.escape(group)}node(\d{{3}})$")
 
-    last_node_name = result[0]['node']
+    for row in result:
+        node_name = row['node']
+        match = pattern.match(node_name)
+        if match:
+            last_number = int(match.group(1))
+            next_node_name = f"{group}node{last_number + 1:03d}"
+            return next_node_name
 
-    # Extract numeric part dynamically (assumes format: group + "node" + number)
-    last_node_number = int(last_node_name.split('node')[-1])  # Extract numeric part
-    next_node_name = f"{group}node{last_node_number + 1:03d}"  # Ensure 3-digit format
-
-    return next_node_name
-
+    # No matching node found; return the first node name
+    return f"{group}node001"
 
 def assign_bmc_admin_ip(cursor, admin_details, admin_subnet, bmc_details,
                         admin_uncorrelated_node_start_ip, discovery_mechanism, mtms_db_path):
@@ -123,6 +123,8 @@ def main():
     domain_name = module.params["domain_name"]
     msg = []
     for group_name, group_data in group_details.items():
+        if not group_data.get("switch_status"):
+            continue
         # Extract switch and bmc details from group_data
         switch_ip = IPv4Address(group_data.get("switch_details", {}).get("ip", ""))
         switch_ports = group_data.get("switch_details", {}).get("ports", "")
@@ -139,10 +141,6 @@ def main():
         admin_uncorrelated_node_start_ip = IPv4Address(admin_uncorrelated_node_start_ip)
         discovery_mechanism = "switch_based"
         bmc_mode = "static"
-
-        # Validate switch IP
-        if not switch_ip:
-            module.fail_json(msg="Switch IP is missing in group_data")
 
         # Check if switchinfo table has entries
         if not check_switch_table():

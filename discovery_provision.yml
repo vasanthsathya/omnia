@@ -23,6 +23,10 @@
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['provision']) | unique }}"
         cacheable: true
 
+- name: Invoke validate_config.yml to perform L1 and L2 validations
+  tags: management_layer
+  ansible.builtin.import_playbook: input_validation/validate_config.yml
+
 - name: Invoke get_config_credentials.yml
   tags: management_layer
   ansible.builtin.import_playbook: utils/credential_utility/get_config_credentials.yml

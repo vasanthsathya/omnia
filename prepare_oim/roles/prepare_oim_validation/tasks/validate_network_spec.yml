@@ -13,6 +13,23 @@
 # limitations under the License.
 ---
 
+- name: Include network_spec.yml
+  block:
+    - name: Include network_spec file
+      ansible.builtin.include_vars: "{{ network_spec }}"
+      register: include_network_spec
+      no_log: true
+      tags: init
+  rescue:
+    - name: Failed to include network_spec.yml
+      ansible.builtin.fail:
+        msg: "{{ network_spec_syntax_fail_msg }} Error: {{ include_network_spec.message }}"
+
+- name: Parse network_spec data
+  ansible.builtin.set_fact:
+    network_data: "{{ network_data | default({}) | combine({item.key: item.value}) }}"
+  with_dict: "{{ Networks }}"
+
 - name: Set admin network nic and ip
   ansible.builtin.set_fact:
     admin_nic_ip: "{{ network_data.admin_network.primary_oim_admin_ip }}"
@@ -49,3 +66,23 @@
 - name: Extract network address
   ansible.builtin.set_fact:
     admin_net_addr: "{{ network_address_output.stdout.split('=')[1] }}"
+
+- name: Initialize network_interface_type
+  ansible.builtin.set_fact:
+    network_interface_type: ""
+    bmc_details_status: false
+
+- name: Checking BMC network input
+  ansible.builtin.set_fact:
+    bmc_details_status: true
+  when:
+    - network_data.bmc_network.oim_nic_name | default("", true) | length > 0
+    - network_data.bmc_network.netmask_bits | default("", true) | length > 0
+    - network_data.bmc_network.dynamic_range | default("", true) | length > 0
+
+- name: Set network_interface_type if LOM
+  ansible.builtin.set_fact:
+    network_interface_type: "{{ 'lom' | default('') }}"
+  when:
+    - bmc_details_status
+    - network_data.admin_network.oim_nic_name == network_data.bmc_network.oim_nic_name
