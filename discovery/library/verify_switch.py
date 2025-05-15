@@ -87,6 +87,9 @@ def main():
     ping_status = False
 
     for group, details in groups_roles_info.items():
+        if not details.get("switch_status"):
+            continue
+
         switch_info = details.get("switch_details", {})
         switch_ip = switch_info.get("ip")
         bmc_static_range = details.get("bmc_details", {}).get('static_range', '')
