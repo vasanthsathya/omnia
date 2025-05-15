@@ -36,7 +36,7 @@ mysql_dir: "{{ idrac_telemetry_dir }}/mysqldb"
 mysql_data_volume: "{{ mysql_dir }}/mysql_data"
 mysql_log_volume: "{{ omnia_nfs_share }}/log/mysqldb"
 mysql_volumes:
- - "{{ mysql_data_volume }}:/opt/omnia{{ selinux_option }}"
+ - "{{ mysql_data_volume }}:/var/lib/mysql{{ selinux_option }}"
  - "{{ mysql_log_volume }}:/opt/omnia/log{{ selinux_option }}"
 mysql_dirs:
  - "{{ mysql_data_volume }}"
