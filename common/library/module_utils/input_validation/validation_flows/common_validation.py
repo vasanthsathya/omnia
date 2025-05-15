@@ -366,3 +366,27 @@ def validate_telemetry_config(input_file_path, data, logger, module, omnia_base_
         errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.telemetry_ip_overlap_fail_msg))
 
     return errors
+
+def validate_additional_software(
+        input_file_path, data, logger, module, omnia_base_dir,
+        module_utils_base, project_name):
+    """
+    Validates the additional software configuration.
+
+    Args:
+        input_file_path (str): The path to the input file.
+        data (dict): The data to be validated.
+        logger (Logger): A logger instance.
+        module (Module): A module instance.
+        omnia_base_dir (str): The base directory of the Omnia configuration.
+        module_utils_base (str): The base directory of the module utils.
+        project_name (str): The name of the project.
+
+    Returns:
+        list: A list of errors encountered during validation.
+
+    """
+    errors = []
+    additional_software = data["additional_software"]["cluster"]
+    logger.info(f"Additional software: {additional_software}")
+    return errors
