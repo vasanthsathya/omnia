@@ -19,7 +19,7 @@ import os
 import requests
 from requests.auth import HTTPBasicAuth
 from ansible.module_utils.basic import AnsibleModule
-from requests.exceptions import ConnectTimeout, HTTPError, ConnectionError, Timeout, RequestException
+from requests.exceptions import ConnectTimeout, HTTPError, Timeout, RequestException
 requests.packages.urllib3.disable_warnings()
 
 def is_bmc_reachable_or_auth(ip, username, password, module):
@@ -79,8 +79,6 @@ def read_entries_csv(csv_path, module):
                     entries[row['BMC_IP']] = row
         except csv.Error as e:
             module.fail_json(msg=f"Failed to parse CSV file at {csv_path}: {str(e)}")
-        except Exception as e:
-            module.fail_json(msg=f"Unexpected error reading CSV at {csv_path}: {str(e)}")
 
     return entries
 
@@ -106,7 +104,7 @@ def delete_bmc_entries(nodes, existing_entries, result):
             result['deleted'].append(bmc_ip)
             result['changed'] = True
 
-def add_bmc_entries(nodes, existing_entries, bmc_username, bmc_password, module, result):
+def add_bmc_entries(nodes, existing_entries, bmc_creds, module, result):
     """
     Add BMC entries to the existing entries based on the provided nodes.
     """
@@ -116,7 +114,7 @@ def add_bmc_entries(nodes, existing_entries, bmc_username, bmc_password, module,
         parent = node.get('parent', '')
 
         if bmc_ip and bmc_ip not in existing_entries:
-            if is_bmc_reachable_or_auth(bmc_ip, bmc_username, bmc_password, module):
+            if is_bmc_reachable_or_auth(bmc_ip, bmc_creds.username, bmc_creds.password, module):
                 existing_entries[bmc_ip] = {
                     'BMC_IP': bmc_ip,
                     'GROUP_NAME': group,
@@ -147,11 +145,12 @@ def main():
     csv_path = module.params['csv_path']
     nodes = module.params['nodes']
     delete = module.params['delete']
-    bmc_username = module.params['bmc_username']
-    bmc_password = module.params['bmc_password']
+    bmc_creds = {}
+    bmc_creds['username'] = module.params.get('bmc_username')
+    bmc_creds['password'] = module.params.get('bmc_password')
 
     # Validate username and password only if delete is False
-    if not delete and (not bmc_username or not bmc_password):
+    if not delete and (not bmc_creds.get('username') or bmc_creds.get('password')):
         module.fail_json(msg="bmc_username and bmc_password are mandatory for add operation.")
 
     existing_entries = read_entries_csv(csv_path, module)
@@ -159,7 +158,7 @@ def main():
     if delete:
         delete_bmc_entries(nodes, existing_entries, result)
     else:
-        add_bmc_entries(nodes, existing_entries, bmc_username, bmc_password, module, result)
+        add_bmc_entries(nodes, existing_entries, bmc_creds, module, result)
 
     write_entries_csv(csv_path, existing_entries)
     module.exit_json(**result)
