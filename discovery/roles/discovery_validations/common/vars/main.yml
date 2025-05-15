@@ -87,10 +87,6 @@ iso_file_path_success_msg: "iso_file_path validated"
 iso_file_path_fail_msg: "Failed. Invalid iso_file_path: {{ iso_file_path }} provided. Make sure iso_file_path variable in software_config.json contains value
  mentioned in the variables cluster_type: {{ provision_os }} and cluster_os_version: {{ provision_os_version }} mentioned in software_config.json"
 
-# Usage: include_telemetry_config.yml
-telemetry_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/telemetry_config.yml"
-telemetry_config_syntax_fail_msg: "Failed. Syntax errors present in telemetry_config.yml. Fix errors and re-run playbook again. Common syntax Errors:"
-
 # Usage: validate_local_repo.yml
 metadata_file_path: "/opt/omnia/offline/.data/metadata.yml"
 local_repo_fail_msg: "Failed! Please run local_repo.yml before running discovery_provision.yml/prepare_oim.yml"

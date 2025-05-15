@@ -36,7 +36,8 @@ empty_discover_node_msg: |
    and check if IPMI is enabled on the nodes if using BMC discovery mechanism."
 
 # Usage: update_idrac_group_csv.yml
-bmc_group_csv_path: "/opt/omnia/telemetry/bmc_group_data.csv"
+telemetry_shared_path: "/opt/omnia/telemetry"
+bmc_group_csv_path: "{{ telemetry_shared_path }}/bmc_group_data.csv"
 
 # Usage: service_node_postgres_setting.yml
 no_service_node_msg: "[Warning] No new service nodes discovered, skipping service node configurations."

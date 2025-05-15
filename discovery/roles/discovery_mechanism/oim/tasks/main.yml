@@ -38,7 +38,6 @@
 
     - name: Update iDRAC ip with group details
       ansible.builtin.include_tasks: update_idrac_group_csv.yml
-      when: idrac_telemetry_support | default(false)
 
     - name: Update postgres conf for service nodes
       ansible.builtin.include_tasks: service_node_postgres_setting.yml
