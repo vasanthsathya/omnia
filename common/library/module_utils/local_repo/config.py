@@ -69,7 +69,7 @@ pulp_file_commands = {
     "distribution_create": "pulp file distribution create --name %s --base-path %s --repository %s",
     "distribution_update": "pulp file distribution update --name %s --base-path %s --repository %s",
 }
-
+CLI_FILE_PATH = "/root/.config/pulp/cli.toml"
 
 # ----------------------------
 # Used by download_image.py

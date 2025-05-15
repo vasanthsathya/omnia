@@ -15,6 +15,9 @@
 import os
 import subprocess
 import yaml
+import toml
+import requests
+import time
 
 def load_yaml_file(path):
     """
@@ -104,7 +107,8 @@ def process_file(file_path, vault_key, mode):
         mode (str): The mode of operation, either 'encrypt' or 'decrypt'.
 
     Returns:
-        tuple: A tuple containing a boolean indicating whether the operation was successful and a message.
+        tuple: A tuple containing a boolean indicating whether the
+        operation was successful and a message.
     """
     if not os.path.isfile(file_path):
         return False, f"File not found: {file_path}"
@@ -136,3 +140,78 @@ def process_file(file_path, vault_key, mode):
         message = f"Invalid mode for {file_path}"
 
     return success, message
+
+def load_pulp_config(path):
+    """
+    Load Pulp CLI configuration from a TOML file.
+
+    Args:
+        path (str): Path to the Pulp CLI config file.
+
+    Returns:
+        dict: A dictionary containing the following keys:
+            - username (str): Pulp username
+            - password (str): Pulp password.
+            - base_url (str): Base URL for Pulp API".
+    """
+    with open(path, "r", encoding = "utf-8") as f:
+        config = toml.load(f)
+    cli_config = config.get("cli", {})
+    return {
+        "username": cli_config.get("username", ""),
+        "password": cli_config.get("password", ""),
+        "base_url": cli_config.get("base_url", "")
+    }
+
+def wait_for_task(task_href, auth, base_url, timeout=3600, interval=3):
+    """
+    Polls a Pulp task until it reaches a terminal state: completed, failed, or canceled.
+
+    Args:
+        task_href (str): Relative URL to the task (e.g., /pulp/api/v3/tasks/<uuid>/).
+        auth (HTTPBasicAuth): Authentication object for HTTP requests.
+        base_url (str): Base URL of the Pulp server (e.g., https://localhost:2225).
+        timeout (int): Max time to wait in seconds. Default is 3600 (1 hour).
+        interval (int): Polling interval in seconds. Default is 3.
+
+    Returns:
+        bool: Final task response.
+    """
+    url = f"{base_url.rstrip('/')}{task_href}"
+    start = time.time()
+    session = requests.Session()
+
+    while (time.time() - start) < timeout:
+        try:
+            r = session.get(url, auth=auth, verify=False)
+            r.raise_for_status()
+            task = r.json()
+
+            state = task.get("state", "unknown")
+            if state in ("completed", "failed", "canceled"):
+                return True
+
+        except requests.RequestException:
+            return False
+
+        time.sleep(interval)
+
+    return False
+
+def get_header_end(base_url, relative_path):
+    """
+    Checks if a file exists at the specified URL using a GET request.
+
+    Args:
+        base_url (str): The base URL of the server.
+        relative_path (str): The relative path to the file.
+
+    Returns:
+        bool: True if the file exists (HTTP 200), False otherwise.
+    """
+    url = f"{base_url.rstrip('/')}/{relative_path.lstrip('/')}"
+    try:
+        response = requests.get(url, verify=False, stream=True)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
