@@ -622,7 +622,7 @@ def handle_file_upload(repository_name, relative_path, file_url, logger):
 
     auth = HTTPBasicAuth(config["username"], config["password"])
     # Wait for task completion with a timeout of 1 hour, polling every 30 seconds
-    task_result = wait_for_task(task_href, auth, base_url, timeout=3600, poll_interval=30)
+    task_result = wait_for_task(task_href, auth, base_url, timeout=3600, interval=30)
     if task_result:
         return "Success"
     else:
@@ -651,7 +651,7 @@ def handle_post_request(repository_name, relative_path, base_path, file_url, log
         repo_info = result["stdout"]
         base_url = repo_info.get("base_url")
         logger.info(f"Distribution exist for {repository_name} and base url is {base_url}")
-        if get_header_end(base_url, relative_path, logger):
+        if get_header_end(base_url, relative_path):
             return "Success"
 
     result = handle_file_upload(repository_name, relative_path, file_url, logger)
