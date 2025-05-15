@@ -167,14 +167,16 @@ def validate_oim_ha(errors, config_type, ha_data, network_spec_data, roles_confi
         roles_groups = roles_config_json.get("Groups", [])
         for _, group_data in roles_groups.items():
             static_range = group_data.get("bmc_details", {}).get("static_range", '')
-            if static_range:
+            if static_range and bmc_virtual_ip:
                 bmc_vip_conflict = validation_utils.is_ip_within_range(static_range, bmc_virtual_ip)
                 if bmc_vip_conflict:
                     errors.append(create_error_msg(f"{config_type} bmc_virtual_ip_address conflict with roles_config:", bmc_virtual_ip, en_us_validation_msg.bmc_virtual_ip_not_valid))
 
-        if bmc_network["dynamic_range"] != 'N/A':       
+        bmc_vip_conflict_dynamic = False
+        bmc_vip_conflict_dynamic_conversion = False
+        if bmc_network["dynamic_range"] and bmc_network["dynamic_range"] != 'N/A' and bmc_virtual_ip:       
             bmc_vip_conflict_dynamic = validation_utils.is_ip_within_range(bmc_network["dynamic_range"], bmc_virtual_ip)
-        if bmc_network["dynamic_conversion_static_range"] != 'N/A':
+        if bmc_network["dynamic_conversion_static_range"] and bmc_network["dynamic_conversion_static_range"] != 'N/A' and bmc_virtual_ip:
             bmc_vip_conflict_dynamic_conversion = validation_utils.is_ip_within_range(bmc_network["dynamic_conversion_static_range"], bmc_virtual_ip)
         if bmc_vip_conflict_dynamic or bmc_vip_conflict_dynamic_conversion:
             errors.append(create_error_msg(f"{config_type} bmc_virtual_ip_address conflict with network_spec", bmc_virtual_ip, en_us_validation_msg.bmc_virtual_ip_not_valid))
