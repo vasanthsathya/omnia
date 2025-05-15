@@ -18,7 +18,7 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    mode: "{{ root_read_write }}"
+    mode: "{{ dir_permissions_755 }}"
   loop: "{{ mysql_dirs }}"
 
 - name: Check if MySQL container is present # noqa: name[template]
@@ -53,26 +53,13 @@
         msg: "{{ mysql_image_not_found_msg }}"
       when: not image_facts.images
 
-    - name: Create MySQL_root_password secret
-      ansible.builtin.shell: |
-        set -o pipefail
-        echo -n '{{ hostvars['localhost']['mysqldb_root_password'] }}' | podman secret create '{{ mysql_root_password }}' -
-      changed_when: false
+    - name: Create Podman secrets for MySQL
+      containers.podman.podman_secret:
+        name: "{{ item.name }}"
+        state: present
+        data: "{{ item.value | string }}"
       no_log: true
-
-    - name: Create MySQLdb_password secret
-      ansible.builtin.shell: |
-        set -o pipefail
-        echo -n '{{ hostvars['localhost']['mysqldb_password'] }}' | podman secret create '{{ mysql_user_password }}'  -
-      changed_when: false
-      no_log: true
-
-    - name: Create MySQLdb_user secret
-      ansible.builtin.shell: |
-        set -o pipefail
-        echo -n '{{ hostvars['localhost']['mysqldb_user'] }}' | podman secret create '{{ mysql_user }}' -
-      changed_when: false
-      no_log: true
+      loop: "{{ mysql_secrets }}"
 
     - name: Deploy the MySQL container
       containers.podman.podman_container:
@@ -91,11 +78,7 @@
         entrypoint: "{{ bin_sh }}"
         command:
           - -c
-          - >
-            export MYSQL_ROOT_PASSWORD=$(cat {{ mysql_container_root_password_secret_path }}) &&
-            export MYSQL_USER=$(cat {{ mysql_container_user_secret_path }}) &&
-            export MYSQL_PASSWORD=$(cat {{ mysql_container_user_password_secret_path }}) &&
-            exec /usr/local/bin/docker-entrypoint.sh mysqld
+          - "{{ mysql_entry_script }}"
       no_log: true
 
     - name: Start the MySQL container
@@ -145,7 +128,7 @@
         name: "{{ mysql_container_name }}"
         command: "/bin/sh -c 'mysql -u root -p'{{ hostvars['localhost']['mysqldb_root_password'] }}' < '{{ tmp_file_path }}''"
       register: sql_exec_result
-      no_log: true
+      no_log: false
 
     - name: Remove the temporary MySQL file
       ansible.builtin.file:

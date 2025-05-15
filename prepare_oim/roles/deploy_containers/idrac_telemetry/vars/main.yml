@@ -15,6 +15,7 @@
 
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry
+dir_permissions_755: "0755"
 root_read_write: "0644"
 mysql_docker_image: "docker.io/library/mysql"
 mysql_container_name: "mysqldb"
@@ -32,14 +33,13 @@ mysql_container_failure_msg: |
 mysql_image_not_found_msg: |
   MySQL image {{ mysql_container_name }}:{{ mysql_image_tag }} not found.
   Please check if image is available and re-run the playbook.
-mysql_dir: "{{ idrac_telemetry_dir }}/mysqldb"
-mysql_data_volume: "{{ mysql_dir }}/mysql_data"
-mysql_log_volume: "{{ omnia_nfs_share }}/log/mysqldb"
+mysql_data_dir: "{{ idrac_telemetry_dir }}/mysqldb"
+mysql_log_volume: "{{ omnia_nfs_share }}/log/telemetry/mysqldb"
 mysql_volumes:
- - "{{ mysql_data_volume }}:/opt/omnia{{ selinux_option }}"
+ - "{{ mysql_data_dir }}:/opt/omnia{{ selinux_option }}"
  - "{{ mysql_log_volume }}:/opt/omnia/log{{ selinux_option }}"
 mysql_dirs:
- - "{{ mysql_data_volume }}"
+ - "{{ mysql_data_dir }}"
  - "{{ mysql_log_volume }}"
 mysql_port: 3306
 init_sql_file: "init_telemetrydb.sql"
@@ -47,22 +47,24 @@ tmp_path: "/tmp/"
 mysql_root_password: "mysql_root_password"
 mysql_user_password: "mysql_user_password"
 mysql_user: "mysql_user"
-secrets:
- - "{{ mysql_root_password }}"
- - "{{ mysql_user }}"
- - "{{ mysql_user_password }}"
-container_secret_path: "/run/secrets/"
+# container_secret_path: "/run/secrets/"
+mysql_secrets:
+  - { name: "{{ mysql_root_password }}", value: "{{ hostvars['localhost']['mysqldb_root_password'] }}" }
+  - { name: "{{ mysql_user_password }}", value: "{{ hostvars['localhost']['mysqldb_password'] }}" }
+  - { name: "{{ mysql_user }}", value: "{{ hostvars['localhost']['mysqldb_user'] }}" }
 bin_sh: "/bin/sh"
-mysql_container_root_password_secret_path: "{{ container_secret_path }}/{{ mysql_root_password }}"
-mysql_container_user_secret_path: "{{ container_secret_path }}/{{ mysql_user }}"
-mysql_container_user_password_secret_path: "{{ container_secret_path }}/{{ mysql_user_password }}"
+mysql_entry_script: |
+  export MYSQL_ROOT_PASSWORD=$(cat /run/secrets/mysql_root_password) &&
+  export MYSQL_USER=$(cat /run/secrets/mysql_user) &&
+  export MYSQL_PASSWORD=$(cat /run/secrets/mysql_user_password) &&
+  exec /usr/local/bin/docker-entrypoint.sh mysqld
 
 # Usage: deploy_activemq_container.yml
 activemq_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/activemq"
 activemq_dir: "{{ idrac_telemetry_dir }}/activemq"
 activemq_directories:
- - { path: "{{ activemq_logs_dir }}", mode: "0744" }
- - { path: "{{ activemq_dir }}", mode: "0744" }
+ - { path: "{{ activemq_logs_dir }}", mode: "{{ dir_permissions_755 }}" }
+ - { path: "{{ activemq_dir }}", mode: "{{ dir_permissions_755 }}" }
 
 activemq_container_name: "activemq"
 activemq_image: "docker.io/rmohr/activemq:5.14.3"
@@ -89,9 +91,9 @@ idrac_git_clone_error_msg: |
   to {{ idrac_telemetry_reference_path }}.
   Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
 idrac_telemetry_receiver_directories:
- - { path: "{{ idrac_telemetry_receiver_logs_dir }}", mode: "0744" }
- - { path: "{{ idrac_telemetry_receiver_dir_path }}", mode: "0744" }
- - { path: "{{ idrac_telemetry_reference_path }}", mode: "0744" }
+ - { path: "{{ idrac_telemetry_receiver_logs_dir }}", mode: "{{ dir_permissions_755 }}" }
+ - { path: "{{ idrac_telemetry_receiver_dir_path }}", mode: "{{ dir_permissions_755 }}" }
+ - { path: "{{ idrac_telemetry_reference_path }}", mode: "{{ dir_permissions_755 }}" }
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
 idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
 idrac_telemetry_receiver_volumes:
