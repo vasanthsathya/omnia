@@ -146,7 +146,7 @@ def validate_k8s_head_node_ha(errors, config_type, ha_data, network_spec_data, r
     admin_dynamic_range = admin_network.get("dynamic_range","N/A")
     oim_admin_ip = network_spec_data['oim_admin_ip']
     admin_uncorrelated_node_start_ip = network_spec_data['admin_uncorrelated_node_start_ip']
-
+    does_overlap=[]
     external_loadbalancer_ip = ha_data.get("external_loadbalancer_ip")
     if external_loadbalancer_ip:
         ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
