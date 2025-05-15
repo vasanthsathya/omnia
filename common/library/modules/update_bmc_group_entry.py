@@ -13,12 +13,12 @@
 #  limitations under the License.
 
 #!/usr/bin/python
-
-from ansible.module_utils.basic import AnsibleModule
+""" Ansible module to update BMC group entry in CSV file. """
 import csv
 import os
 import requests
 from requests.auth import HTTPBasicAuth
+from ansible.module_utils.basic import AnsibleModule
 from requests.exceptions import ConnectTimeout, HTTPError, ConnectionError, Timeout, RequestException
 requests.packages.urllib3.disable_warnings()
 
@@ -70,7 +70,9 @@ def read_entries_csv(csv_path, module):
                 actual_columns = set(reader.fieldnames or [])
                 if not expected_columns.issubset(actual_columns):
                     module.fail_json(
-                        msg=f"CSV file at {csv_path} is missing required columns. Expected: {expected_columns}, Found: {actual_columns}"
+                        msg=f"CSV file at {csv_path} is missing required columns. \
+                            Expected: {expected_columns}, \
+                            Found: {actual_columns}"
                     )
 
                 for row in reader:
@@ -94,6 +96,9 @@ def write_entries_csv(csv_path, entries):
             writer.writerow(entry)
 
 def delete_bmc_entries(nodes, existing_entries, result):
+    """
+    Delete BMC entries from the existing entries based on the provided nodes.
+    """
     for node in nodes:
         bmc_ip = node.get('bmc_ip')
         if bmc_ip in existing_entries:
@@ -102,6 +107,9 @@ def delete_bmc_entries(nodes, existing_entries, result):
             result['changed'] = True
 
 def add_bmc_entries(nodes, existing_entries, bmc_username, bmc_password, module, result):
+    """
+    Add BMC entries to the existing entries based on the provided nodes.
+    """
     for node in nodes:
         bmc_ip = node.get('bmc_ip')
         group = node.get('group_name', '')
@@ -123,7 +131,7 @@ def add_bmc_entries(nodes, existing_entries, bmc_username, bmc_password, module,
 
 
 def main():
-    "Main function"
+    "Main function for the custom ansible module - update_bmc_group_entry"
     module_args = dict(
         csv_path=dict(type='str', required=True),
         nodes=dict(type='list', elements='dict', required=True),
