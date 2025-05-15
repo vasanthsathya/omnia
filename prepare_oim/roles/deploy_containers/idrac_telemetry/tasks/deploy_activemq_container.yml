@@ -28,6 +28,7 @@
   failed_when: false
 
 - name: Deploy ActiveMQ container and check deployment status
+  when: activemq_container_info.containers | length == 0 or activemq_container_info.containers[0].State.Status != 'running'
   block:
     - name: Deploy the Activemq container
       containers.podman.podman_container:
