@@ -16,7 +16,7 @@
 # Usage: main.yml
 inv_format_fail_msg: "Failed. Invalid inventory format. Provide inventory with nodes group."
 incorrect_inv_values: "Provide either service tag or IP in inventory values"
-warn_msg_for_invalid_node: "[Warning] {{ item }} is either invalid IP/servicetag or it is not discovered/provisioned nodes."
+warn_msg_for_invalid_node: "[Warning] {{ item }} is either invalid IP/servicetag/node  or it is not discovered/provisioned nodes."
 omnia_telemetry_file: "/opt/omnia/telemetry/omnia_telemetry"
 omnia_telemetry_servicepath: "/etc/systemd/omnia_telemetry.service"
 delete_node_info: "{{ provision_shared_library_path }}/cleanup/delete_node_info.py"
