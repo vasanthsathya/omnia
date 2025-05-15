@@ -45,6 +45,7 @@
   when: clone_idrac_telemetry is failed
 
 - name: Deploy iDRAC Telemtery Receiver container and check deployment status
+  when: idrac_receiver_container_info.containers | length == 0 or idrac_receiver_container_info.containers[0].State.Status != 'running'
   block:
     - name: Deploy the iDRAC telemetry receiver container
       containers.podman.podman_container:

@@ -29,8 +29,7 @@
 
 - name: Deploy MySQL container and check deployment status
   when:
-    - mysql_container_info.containers | length == 0
-    - mysql_container_info.containers[0].State.Status != 'running'
+    - mysql_container_info.containers | length == 0 or mysql_container_info.containers[0].State.Status != 'running'
   block:
     - name: Pull Podman image
       containers.podman.podman_image:
