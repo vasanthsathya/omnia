@@ -19,8 +19,15 @@ import os
 import requests
 from requests.auth import HTTPBasicAuth
 from ansible.module_utils.basic import AnsibleModule
-from requests.exceptions import ConnectTimeout, HTTPError, Timeout, RequestException
-requests.packages.urllib3.disable_warnings()
+from requests import packages
+from requests.exceptions import (
+    ConnectionError as RequestsConnectionError,
+    ConnectTimeout,
+    HTTPError,
+    Timeout,
+    RequestException
+)
+packages.urllib3.disable_warnings()
 
 def is_bmc_reachable_or_auth(ip, username, password, module):
     """
@@ -49,7 +56,7 @@ def is_bmc_reachable_or_auth(ip, username, password, module):
         module.warn(f"BMC IP {ip} connection timed out. Not reachable.")
     except HTTPError as http_err:
         module.warn(f"BMC IP {ip} HTTP error occurred: {http_err}")
-    except ConnectionError:
+    except RequestsConnectionError:
         module.warn(f"BMC IP {ip} is unreachable (connection error).")
     except Timeout:
         module.warn(f"BMC IP {ip} request timed out.")
@@ -150,7 +157,7 @@ def main():
     bmc_creds['password'] = module.params.get('bmc_password')
 
     # Validate username and password only if delete is False
-    if not delete and (not bmc_creds.get('username') or bmc_creds.get('password')):
+    if not delete and (not bmc_creds.get('username') or not bmc_creds.get('password')):
         module.fail_json(msg="bmc_username and bmc_password are mandatory for add operation.")
 
     existing_entries = read_entries_csv(csv_path, module)
