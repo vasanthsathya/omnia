@@ -69,7 +69,7 @@ def nodeset_mapping_nodes(install_osimage, service_osimage, discovery_mechanism,
                 changed = True
             except subprocess.CalledProcessError as e:
                 module.warn(f"Failed to execute command '{command}' for node {node[0]}: {e}")
-                continue  # Continue with the next node
+
     cursor.close()
     conn.close()
 
