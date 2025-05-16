@@ -96,6 +96,7 @@
     - hostvars['127.0.0.1']['k8s_support']
     - hostvars[groups['kube_control_plane'][0]]['k8s_installation_status']
     - hostvars['127.0.0.1']['enable_k8s_ha']
+    - not hostvars[groups['kube_control_plane'][0]]['kube_vip_present']
 
 - name: Add nodes to kubernetes cluster
   ansible.builtin.import_playbook: playbooks/k8s_add_node_install.yml
