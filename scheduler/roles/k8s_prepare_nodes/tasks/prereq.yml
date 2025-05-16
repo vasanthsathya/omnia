@@ -28,7 +28,7 @@
     executable: /usr/local/bin/pip3.11
     extra_args: >
       --find-links={{ hostvars['localhost']['offline_pip_module_path'] }}/{{ item.name }}=={{ item.version }}/
-      --trusted-host={{ hostvars['localhost']['admin_nic_ip'] }}
+      --trusted-host={{ hostvars['localhost']['pulp_server_ip'] }}
       --no-index
   loop: "{{ pip_packages }}"
   loop_control:
