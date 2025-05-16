@@ -70,6 +70,10 @@ pulp_file_commands = {
     "distribution_update": "pulp file distribution update --name %s --base-path %s --repository %s",
 }
 CLI_FILE_PATH = "/root/.config/pulp/cli.toml"
+POST_TIMEOUT = 3600
+TAR_POLL_VAL = 3
+FILE_POLL_VAL = 1
+ISO_POLL_VAL = 15
 
 # ----------------------------
 # Used by download_image.py
