@@ -59,7 +59,7 @@
                 login_password: "{{ mysqldb_password }}"
                 query: "SHOW TABLES FROM {{ mysqldb_name }}"
               register: services_table_exists
-              until: services_table_exists is not failed and services_table_exists.query_result[0] | length > 1
+              until: services_table_exists is not failed and services_table_exists.query_result[0] | length != 0
               retries: "{{ db_retries }}"
               delay: "{{ db_delay }}"
               no_log: true
