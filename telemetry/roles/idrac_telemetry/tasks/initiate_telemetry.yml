@@ -152,16 +152,18 @@
           ansible.builtin.fail:
             msg: "{{ mysqldb_insert_fail_msg }}"
 
-# # Initiate iDRAC collection
-#     - name: Initiate telemetry collection
-#       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
-#       block:
-#         - name: Initiate telemetry-collector
-#           containers.podman.podman_container_exec:
-#             name : "{{ idrac_telemetry_pod }}"
-#             command: 'nohup go run cmd/redfishread/redfishread.go &'
-#             tty: true
-#           changed_when: false
+# Initiate iDRAC collection
+    - name: Initiate telemetry collection
+      when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
+      block:
+        - name: Initiate telemetry-collector
+          containers.podman.podman_container_exec:
+            name: "{{ idrac_telemetry_container }}"
+            command: sh
+            argv:
+              - -c
+              - "nohup go run cmd/redfishread/redfishread.go &"
+          changed_when: false
 
     - name: Create and update telemetry report from template
       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)

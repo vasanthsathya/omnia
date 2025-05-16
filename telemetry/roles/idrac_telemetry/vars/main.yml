@@ -18,6 +18,7 @@ python_version: "{{ ansible_python_interpreter }}"
 mysqldb_name: "idrac_telemetrydb"
 timescaledb_name: "telemetry_metrics"
 telemetry_report_path: "/opt/omnia/telemetry/idrac_telemetry_report.yml"
+idrac_telemetry_container: "idrac_telemetry_receiver"
 # report_template_path: "/opt/omnia/telemetry/templates/telemetry_report.j2"
 mysqldb_insert_fail_msg: "Failed to add/get iDRAC credential details in the mysql database.
  This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
