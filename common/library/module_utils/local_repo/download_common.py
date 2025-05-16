@@ -34,6 +34,123 @@ from ansible.module_utils.local_repo.config import (
     FILE_POLL_VAL
 )
 
+def handle_file_upload(repository_name, relative_path, file_url, poll_interval, logger):
+    """
+    Ensure repository exists, then POST a file to Pulp and wait for the task to complete.
+
+    Args:
+        repository_name (str): Name of the repository.
+        relative_path (str): Relative path for the file in the repository.
+        file_url (str): URL of the file to upload.
+        poll_interval: Polling time
+        logger (logging.Logger): Logger instance.
+
+    Returns:
+        str: "Success" if operation completes successfully, "Failed" otherwise.
+    """
+    # Check if repository exists
+    result = execute_command(pulp_file_commands["show_repository"] % repository_name, logger)
+    if not result:
+        logger.info(f"Repository {repository_name} does not exist. Creating it...")
+        if not execute_command(pulp_file_commands["create_repository"] % repository_name, logger):
+            logger.error(f"Failed to create repository: {repository_name}")
+            return "Failed"
+    else:
+        logger.info(f"Repository {repository_name} already exists.")
+
+    # Fetch repository info with JSON parsing
+    result = execute_command(pulp_file_commands["show_repository"] % repository_name, logger, type_json=True)
+    if not result:
+        logger.error(f"Failed to fetch repository info for: {repository_name}")
+        return "Failed"
+
+    repo_info = result["stdout"]
+    pulp_href = repo_info.get("pulp_href")
+
+    # Load config for authentication and base_url
+    config = load_pulp_config(CLI_FILE_PATH)
+    base_url = config["base_url"]
+
+    # Prepare POST request data
+    url = f"{base_url}/pulp/api/v3/content/file/files/"
+    data = {
+        "file_url": file_url,
+        "relative_path": relative_path,
+        "repository": pulp_href
+    }
+
+    response = requests.post(
+        url,
+        auth=HTTPBasicAuth(config["username"], config["password"]),
+        json=data,
+        verify=False
+    )
+
+    if response.status_code != 202:
+        logger.error(f"Failed to POST file to repository {repository_name}. Status code: {response.status_code}")
+        return "Failed"
+
+    task_href = response.json().get("task")
+    if not task_href:
+        logger.error("Task href not found in POST response.")
+        return "Failed"
+
+    auth = HTTPBasicAuth(config["username"], config["password"])
+
+    task_result = wait_for_task(task_href, auth, base_url, timeout=POST_TIMEOUT, interval=poll_interval)
+    if task_result:
+        return "Success"
+    else:
+        return "Failed"
+
+def handle_post_request(repository_name, relative_path, base_path, file_url, poll_interval,logger):
+    """
+    Handles the full Pulp upload and distribution process for a given repository and file.
+
+    This function checks if a distribution for the given repository already serves the file.
+    If not, it uploads the file to the repository (creating it if needed), creates a publication,
+    and creates or updates a distribution as required.
+
+    Args:
+        repository_name (str): Name of the Pulp repository.
+        relative_path (str): Path where the file should be stored inside the repository.
+        base_path (str): The base path for the distribution.
+        file_url (str): URL of the file to be uploaded.
+        poll_interval: Interval for polling
+        logger (logging.Logger): Logger for logging messages and errors.
+
+    Returns:
+        str: "Success" if the operation completes successfully, "Failed" otherwise.
+    """
+    result = execute_command(pulp_file_commands["show_distribution"] % (repository_name), logger, type_json= True)
+    if result:
+        repo_info = result["stdout"]
+        base_url = repo_info.get("base_url")
+        logger.info(f"Distribution exist for {repository_name} and base url is {base_url}")
+        if get_header_end(base_url, relative_path):
+            return "Success"
+
+    result = handle_file_upload(repository_name, relative_path, file_url, poll_interval,logger)
+    if result =="Success":
+        distribution_name = repository_name
+        logger.info("Creating publication...")
+        if not execute_command(pulp_file_commands["publication_create"] % (repository_name), logger):
+            logger.error(f"Failed to create publication for repository: {repository_name}")
+            result = "Failed"
+
+        logger.info("Checking distribution...")
+        if not execute_command(pulp_file_commands["show_distribution"] % (distribution_name), logger):
+            logger.info(f"Distribution {distribution_name} does not exist. Creating it...")
+            if not execute_command(pulp_file_commands["distribution_create"] % (distribution_name, base_path, repository_name), logger):
+                logger.error(f"Failed to create distribution: {distribution_name}")
+                result = "Failed"
+        else:
+            logger.info(f"Distribution {distribution_name} already exists. Updating it...")
+            if not execute_command(pulp_file_commands["distribution_update"] % (distribution_name, base_path, repository_name), logger):
+                logger.error(f"Failed to update distribution: {distribution_name}")
+                result = "Failed"
+    return result
+    
 def process_file(repository_name, output_file, relative_path, base_path, distribution_name, url, file_path, logger):
     """
     Process a file using Pulp, ensuring it is downloaded and stored in the specified file_path.
@@ -108,8 +225,7 @@ def process_file(repository_name, output_file, relative_path, base_path, distrib
  
     except Exception as e:
         logger.error(f"Error processing file: {e}")
-        return "Failed"
- 
+        return "Failed" 
     finally:
         logger.info("#" * 30 + f" {process_file.__name__} end " + "#" * 30)  # End of function
  
@@ -169,14 +285,12 @@ def process_file_without_download(repository_name, output_file, relative_path, b
             if not execute_command(pulp_file_commands["distribution_update"] % (distribution_name, base_path, repository_name), logger):
                 logger.error(f"Failed to update distribution: {distribution_name}")
                 return "Failed"
- 
         logger.info(f"Processing for file {url} completed successfully!")
         return "Success"
  
     except Exception as e:
         logger.error(f"Error processing file: {e}")
         return "Failed"
- 
     finally:
         logger.info("#" * 30 + f" {process_file_without_download.__name__} end " + "#" * 30)  # End of function
  
@@ -426,8 +540,7 @@ def process_ansible_galaxy_collection(file, repo_store_path, status_file_path, l
             except Exception as e:
                 logger.error(f"Error processing ansible-galaxy-collection: {e}")
                 status = "Failed"
- 
- 
+                
     except subprocess.CalledProcessError as e:
         logger.error(f"Error executing ansible-galaxy commands: {e}")
         status = "Failed"
@@ -534,125 +647,7 @@ def process_tarball(package, repo_store_path, status_file_path, version_variable
             write_status_to_file(status_file_path, package_name, package_type, status, logger)
             logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)  # End of function
             return status
-
-def handle_file_upload(repository_name, relative_path, file_url, poll_interval, logger):
-    """
-    Ensure repository exists, then POST a file to Pulp and wait for the task to complete.
-
-    Args:
-        repository_name (str): Name of the repository.
-        relative_path (str): Relative path for the file in the repository.
-        file_url (str): URL of the file to upload.
-        poll_interval: Polling time
-        logger (logging.Logger): Logger instance.
-
-    Returns:
-        str: "Success" if operation completes successfully, "Failed" otherwise.
-    """
-    # Check if repository exists
-    result = execute_command(pulp_file_commands["show_repository"] % repository_name, logger)
-    if not result:
-        logger.info(f"Repository {repository_name} does not exist. Creating it...")
-        if not execute_command(pulp_file_commands["create_repository"] % repository_name, logger):
-            logger.error(f"Failed to create repository: {repository_name}")
-            return "Failed"
-    else:
-        logger.info(f"Repository {repository_name} already exists.")
-
-    # Fetch repository info with JSON parsing
-    result = execute_command(pulp_file_commands["show_repository"] % repository_name, logger, type_json=True)
-    if not result:
-        logger.error(f"Failed to fetch repository info for: {repository_name}")
-        return "Failed"
-
-    repo_info = result["stdout"]
-    pulp_href = repo_info.get("pulp_href")
-
-    # Load config for authentication and base_url
-    config = load_pulp_config(CLI_FILE_PATH)
-    base_url = config["base_url"]
-
-    # Prepare POST request data
-    url = f"{base_url}/pulp/api/v3/content/file/files/"
-    data = {
-        "file_url": file_url,
-        "relative_path": relative_path,
-        "repository": pulp_href
-    }
-
-    response = requests.post(
-        url,
-        auth=HTTPBasicAuth(config["username"], config["password"]),
-        json=data,
-        verify=False
-    )
-
-    if response.status_code != 202:
-        logger.error(f"Failed to POST file to repository {repository_name}. Status code: {response.status_code}")
-        return "Failed"
-
-    task_href = response.json().get("task")
-    if not task_href:
-        logger.error("Task href not found in POST response.")
-        return "Failed"
-
-    auth = HTTPBasicAuth(config["username"], config["password"])
-
-    task_result = wait_for_task(task_href, auth, base_url, timeout=POST_TIMEOUT, interval=poll_interval)
-    if task_result:
-        return "Success"
-    else:
-        return "Failed"
-
-def handle_post_request(repository_name, relative_path, base_path, file_url, poll_interval,logger):
-    """
-    Handles the full Pulp upload and distribution process for a given repository and file.
-
-    This function checks if a distribution for the given repository already serves the file.
-    If not, it uploads the file to the repository (creating it if needed), creates a publication,
-    and creates or updates a distribution as required.
-
-    Args:
-        repository_name (str): Name of the Pulp repository.
-        relative_path (str): Path where the file should be stored inside the repository.
-        base_path (str): The base path for the distribution.
-        file_url (str): URL of the file to be uploaded.
-        poll_interval: Interval for polling
-        logger (logging.Logger): Logger for logging messages and errors.
-
-    Returns:
-        str: "Success" if the operation completes successfully, "Failed" otherwise.
-    """
-    result = execute_command(pulp_file_commands["show_distribution"] % (repository_name), logger, type_json= True)
-    if result:
-        repo_info = result["stdout"]
-        base_url = repo_info.get("base_url")
-        logger.info(f"Distribution exist for {repository_name} and base url is {base_url}")
-        if get_header_end(base_url, relative_path):
-            return "Success"
-
-    result = handle_file_upload(repository_name, relative_path, file_url, poll_interval,logger)
-    if result =="Success":
-        distribution_name = repository_name
-        logger.info("Creating publication...")
-        if not execute_command(pulp_file_commands["publication_create"] % (repository_name), logger):
-            logger.error(f"Failed to create publication for repository: {repository_name}")
-            result = "Failed"
-
-        logger.info("Checking distribution...")
-        if not execute_command(pulp_file_commands["show_distribution"] % (distribution_name), logger):
-            logger.info(f"Distribution {distribution_name} does not exist. Creating it...")
-            if not execute_command(pulp_file_commands["distribution_create"] % (distribution_name, base_path, repository_name), logger):
-                logger.error(f"Failed to create distribution: {distribution_name}")
-                result = "Failed"
-        else:
-            logger.info(f"Distribution {distribution_name} already exists. Updating it...")
-            if not execute_command(pulp_file_commands["distribution_update"] % (distribution_name, base_path, repository_name), logger):
-                logger.error(f"Failed to update distribution: {distribution_name}")
-                result = "Failed"
-    return result
-
-
+            
 def process_iso(package, repo_store_path, status_file_path, cluster_os_type, cluster_os_version, version_variables, logger):
     """
     Process an ISO package.
