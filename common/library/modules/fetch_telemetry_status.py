@@ -24,6 +24,22 @@ def load_yaml(path):
         return yaml.safe_load(file)
 
 def main():
+    """
+    This function is the main entry point of the Ansible module.
+    It takes telemetry config file path as a parameter.
+
+    This function loads the telemetry configuration from a YAML file, checks the status of various telemetry components,
+    and returns the status as a list.
+
+    Parameters:
+       telemetry_config_path: path to telemetry_config.yml 
+
+    Returns:
+        A list containing the telemetry status.
+
+    Raises:
+        None
+    """
     module_args = {
         "telemetry_config_path": {"type": "str", "required": False, "default": TELEMETRY_CONFIG_PATH_DEFAULT}
     }
@@ -35,8 +51,8 @@ def main():
 
     if telemetry_config_data["idrac_telemetry_support"]:
         telemetry_status_list.append("idrac_telemetry")
-    #if telemetry_config_data["visualization_support"]:
-    #    telemetry_status_dict.append("visualization")
+    if telemetry_config_data["visualization_support"]:
+        telemetry_status_list.append("visualization")
 
     module.exit_json(
             changed=False,

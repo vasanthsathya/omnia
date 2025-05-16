@@ -52,7 +52,7 @@
         tasks_from: validate_telemetry_container.yml
       loop:
         - "activemq"
-        - "idrac_receiver"
+        - "idrac_telemetry_receiver"
         - "mysqldb"
       loop_control:
         loop_var: telemetry_container
