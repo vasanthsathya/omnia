@@ -1,0 +1,110 @@
+---
+
+- name: Create Grafana directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode }}"
+  loop: "{{ grafana_dirs }}"
+
+- name: Create Grafana Podman volumes
+  containers.podman.podman_volume:
+    name: "{{ item.path }}"
+    state: present
+  loop: "{{ grafana_dirs }}"
+
+- name: Check if Grafana container is present # noqa: name[template]
+  containers.podman.podman_container_info:
+    name: "{{ grafana_container_name }}"
+  register: grafana_container_info
+  failed_when: false
+
+- name: Deploy Grafana container and check deployment status
+  when: grafana_container_info.containers | length == 0 or grafana_container_info.containers[0].State.Status != 'running'
+  block:
+    - name: Pull Grafana Podman image
+      containers.podman.podman_image:
+        name: "{{ grafana_image }}"
+        tag: "{{ grafana_image_tag }}"
+        state: present
+      register: image_pull_result
+
+    - name: Fail if Grafana image pull fails
+      ansible.builtin.fail:
+        msg: "{{ grafana_image_pull_fail_msg }}"
+      when: image_pull_result.failed
+
+    - name: Verify Grafana image exists
+      containers.podman.podman_image_info:
+        name: "{{ grafana_image }}:{{ grafana_image_tag }}"
+      register: image_facts
+
+    - name: Fail if Grafana image not found
+      ansible.builtin.fail:
+        msg: "{{ grafana_image_not_found_msg }}"
+      when: not image_facts.images
+    
+    - name: Create Grafana admin user secret
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo -n '{{ grafana_admin_user }}' | podman secret create '{{ grafana_admin_user_secret }}' -
+      changed_when: false
+
+    - name: Create Grafana admin password secret
+      ansible.builtin.shell: |
+        set -o pipefail
+        echo -n '{{ grafana_admin_password }}' | podman secret create '{{ grafana_admin_password_secret }}' -
+      changed_when: false
+
+    - name: Deploy Grafana container with Podman secrets
+      containers.podman.podman_container:
+        name: "{{ grafana_container_name }}"
+        image: "{{ grafana_image }}:{{ grafana_image_tag }}"
+        state: present
+        restart_policy: "no"
+        network_mode: host
+        volumes: "{{ grafana_volumes }}"
+        secrets:
+          - "{{ grafana_admin_user_secret }}"
+          - "{{ grafana_admin_password_secret }}"
+        env:
+          GF_SERVER_HTTP_PORT: "{{ grafana_port }}"
+          GF_USERS_ALLOW_SIGN_UP: "false"
+          GF_USERS_ALLOW_ORG_CREATE: "false"
+        command: >
+          /bin/sh -c
+          "export GF_SECURITY_ADMIN_USER=$(cat /run/secrets/{{ grafana_admin_user_secret }}) &&
+           export GF_SECURITY_ADMIN_PASSWORD=$(cat /run/secrets/{{ grafana_admin_password_secret }}) &&
+           /run.sh"
+      no_log: true
+
+    - name: Start Grafana container
+      containers.podman.podman_container:
+        name: "{{ grafana_container_name }}"
+        state: "started"
+
+    - name: Check if Grafana container is running
+      containers.podman.podman_container_info:
+        name: "{{ grafana_container_name }}"
+      register: grafana_container_status
+
+    - name: Notify user of Grafana deployment status
+      ansible.builtin.debug:
+        msg: "{{ grafana_container_success_msg }}"
+      when:
+        - grafana_container_status.containers | length > 0
+        - grafana_container_status.containers[0].State.Status == 'running'
+
+    - name: Wait for Grafana port {{ grafana_port }} to be open
+      ansible.builtin.wait_for:
+        host: localhost
+        port: "{{ grafana_port }}"
+        state: started
+        timeout: "{{ wait_time }}"
+      failed_when: false
+      when: grafana_container_status.containers | length > 0
+
+  rescue:
+    - name: Grafana container deployment failed
+      ansible.builtin.fail:
+        msg: "{{ grafana_container_failure_msg }}"
