@@ -13,6 +13,7 @@
 # limitations under the License.
 ---
 
+# Usage: deploy_mysql_container.yml
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry
 dir_permissions_755: "0755"
@@ -35,12 +36,12 @@ mysql_image_not_found_msg: |
   Please check if image is available and re-run the playbook.
 mysql_data_dir: "{{ idrac_telemetry_dir }}/mysqldb"
 mysql_log_volume: "{{ omnia_nfs_share }}/log/telemetry/mysqldb"
-mysql_volumes:
-  - "{{ mysql_data_dir }}:/opt/omnia{{ selinux_option }}"
-  - "{{ mysql_log_volume }}:/opt/omnia/log{{ selinux_option }}"
-mysql_dirs:
-  - "{{ mysql_data_dir }}"
-  - "{{ mysql_log_volume }}"
+mysqldb_podman_volumes:
+  - { name: "mysqldb_data", path: "{{ mysql_data_dir }}" }
+  - { name: "mysqldb_log", path: "{{ mysql_log_volume }}" }
+mysqldb_volumes:
+  - "mysqldb_data:/var/lib/mysql{{ selinux_option }}"
+  - "mysqldb_log:/var/log/mysql{{ selinux_option }}"
 mysql_port: 3306
 mysql_root_password: "mysql_root_password"
 mysql_user_password: "mysql_user_password"
@@ -66,6 +67,10 @@ mysql_db_create_query:
       authType INT,
       auth VARCHAR(4096)
     )
+create_db_retries: 10
+create_db_delay: 10
+mysql_database_create_failure_msg: |
+  The creation of the MySQL database {{ mysql_database }} has failed.
 
 # Usage: deploy_activemq_container.yml
 activemq_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/activemq"
