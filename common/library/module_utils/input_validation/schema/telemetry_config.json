@@ -14,7 +14,8 @@
     }
   },
   "required": [
-    "idrac_telemetry_support"
+    "idrac_telemetry_support",
+    "visualization_support"
   ],
   "allOf": [
     {

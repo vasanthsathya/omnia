@@ -23,8 +23,8 @@
 idrac_telemetry_support: false
 
 # This variable used to decide the iDRAC telemetry collection.
-# Supported values are Prometheus, Kafka, Timescale.
-idrac_telemetry_collection_type: "Prometheus"
+# Supported values are prometheus.
+idrac_telemetry_collection_type: "prometheus"
 
 # This variable is used to enable visualizations on grafana
 # Accepted values:  true or false

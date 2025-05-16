@@ -124,6 +124,8 @@ os_version_ranges = {
     "ubuntu": ["20.04", "22.04", "24.04"]
 }
 
+supported_telemetry_collection_type = ["prometheus"]
+
 # Dict of the file that can be encrypted and it's ansible vault key
 def get_vault_password(yaml_file):
     vault_passwords = {
