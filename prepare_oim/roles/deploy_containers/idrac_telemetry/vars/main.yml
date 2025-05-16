@@ -42,8 +42,6 @@ mysql_dirs:
   - "{{ mysql_data_dir }}"
   - "{{ mysql_log_volume }}"
 mysql_port: 3306
-init_sql_file: "init_telemetrydb.sql"
-tmp_path: "/tmp/"
 mysql_root_password: "mysql_root_password"
 mysql_user_password: "mysql_user_password"
 mysql_user: "mysql_user"
@@ -58,6 +56,16 @@ mysql_entry_script: |
   export MYSQL_USER=$(cat /run/secrets/mysql_user) &&
   export MYSQL_PASSWORD=$(cat /run/secrets/mysql_user_password) &&
   exec /usr/local/bin/docker-entrypoint.sh mysqld
+
+mysql_db_create_query:
+  - "CREATE DATABASE IF NOT EXISTS {{ mysql_database }}"
+  - >
+    CREATE TABLE IF NOT EXISTS {{ mysql_database }}.services (
+      ip VARCHAR(255) PRIMARY KEY,
+      serviceType INT,
+      authType INT,
+      auth VARCHAR(4096)
+    )
 
 # Usage: deploy_activemq_container.yml
 activemq_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/activemq"

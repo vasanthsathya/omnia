@@ -107,33 +107,16 @@
       failed_when: false
       when: mysql_container_status.containers | length > 0
 
-    - name: Set fact for temporary file
-      ansible.builtin.set_fact:
-        tmp_file_path: "{{ tmp_path }}{{ init_sql_file }}"
-
-    - name: Copy static SQL file to host
-      ansible.builtin.copy:
-        src: "{{ init_sql_file }}"
-        dest: "{{ tmp_file_path }}"
-        mode: "{{ root_read_write }}"
-
-    - name: Copy file "/tmp/init_telemetrydb.sql" on the host to the "MySQL" container's root folder
-      containers.podman.podman_container_copy:
-        src: "{{ tmp_file_path }}"
-        dest: "{{ tmp_file_path }}"
-        container: "{{ mysql_container_name }}"
-
-    - name: Execute SQL in MySQL container using podman_container_exec
-      containers.podman.podman_container_exec:
-        name: "{{ mysql_container_name }}"
-        command: "/bin/sh -c 'mysql -u root -p '{{ hostvars['localhost']['mysqldb_root_password'] }}' < '{{ tmp_file_path }}''"
-      register: sql_exec_result
-      no_log: true
-
-    - name: Remove the temporary MySQL file
-      ansible.builtin.file:
-        path: "{{ tmp_file_path }}"
-        state: absent
+    - name: Execute SQL to create DB and table
+      community.mysql.mysql_query:
+        login_host: "127.0.0.1"
+        login_port: "{{ mysql_port }}"
+        login_user: "root"
+        login_password: "{{ hostvars['localhost']['mysqldb_root_password'] }}"
+        query: "{{ mysql_db_create_query }}"
+      no_log: false
+      delegate_to: localhost
+      register: create_telemetry_schema_result
 
   rescue:
     - name: Container MySQL deployment failed
