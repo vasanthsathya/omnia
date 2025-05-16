@@ -36,6 +36,7 @@
   ansible.builtin.command: kubectl get pods --all-namespaces
   changed_when: false
   register: k8s_pods
+  failed_when: false
 
 - name: Set kube_vip_present flag
   ansible.builtin.set_fact:
