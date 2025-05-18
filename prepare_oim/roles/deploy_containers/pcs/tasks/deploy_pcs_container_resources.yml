@@ -14,6 +14,10 @@
 
 ---
 
+- name: Debug 
+  debug:
+    var: hostvars['localhost']['admin_nic_ip']
+
 - name: Re-create pcs-start.sh with all container resources
   ansible.builtin.template:
     src: "{{ item.template }}"
