@@ -35,6 +35,7 @@ pcs_startup_file:
   - {template: "pcs-container.container.j2", dest: "{{ oim_shared_path }}/omnia/pcs/{{ pcs_container_name }}.container", mode: "{{ read_write_mode }}" }
   - {template: "pcs-container.container.j2", dest: "{{ container_systemd_dir }}/{{ pcs_container_name }}.container", mode: "{{ read_write_mode }}" }
 
+squid_port_cmd: sh -c "podman port squid | awk -F'/' '{print $1}'"
 pcs_resource_script:
   - {template: "pcs-container-resource-init.sh.j2", dest: "{{ oim_shared_path }}/omnia/pcs/pcs-start.sh", mode: "{{ read_write_execute_mode }}" }
 
@@ -146,7 +147,11 @@ pulp_run_opts: >-
 # Usage: pcs-start.sh.j2: squid
 squid_container_name: "squid"
 squid_image: "docker.io/ubuntu/squid"
+<<<<<<< HEAD
+squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:{{ squid_container_port.stdout }}:{{ squid_container_port.stdout }}"
+=======
 squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:3128:3128"
+>>>>>>> a5b46ebbba20813da22b990f328a47ab75617ef8
 squid_share: "{{ omnia_nfs_share }}/squid"
 squid_run_opts: >-
   --hostname {{ squid_container_name }} --restart=on-failure --publish {{ squid_port }}
