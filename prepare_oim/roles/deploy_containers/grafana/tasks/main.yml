@@ -14,10 +14,8 @@
 
 ---
 
-- name: Deploy Prometheus Pump and Prometheus container
-  when:
-    - hostvars['localhost']['idrac_telemetry_support']
-    - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
+- name: Deploy grafana containers when idrac_telemetry_support is true
+  when: hostvars['localhost']['visualization_support']
   block:
-    - name: Deploy Prometheus Pump Container
-      ansible.builtin.include_tasks: deploy_prometheus_pump_container.yml
+    - name: Deploy Grafana container
+      ansible.builtin.include_tasks: deploy_grafana_container.yml
