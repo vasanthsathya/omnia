@@ -151,9 +151,9 @@ squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:{{ squid_container_port
 squid_share: "{{ omnia_nfs_share }}/squid"
 squid_run_opts: >-
   --hostname {{ squid_container_name }} --restart=on-failure --publish {{ squid_port }}
-  -v {{ squid_share }}/cache:/var/spool/squid
-  -v {{ squid_share }}/squid.conf:/etc/squid/squid.conf
-  -v {{ omnia_nfs_share }}/log/squid:/var/log/squid
+  -v {{ squid_share }}/cache:/var/spool/squid{{ selinux_option }}
+  -v {{ squid_share }}/squid.conf:/etc/squid/squid.conf{{ selinux_option }}
+  -v {{ omnia_nfs_share }}/log/squid:/var/log/squid{{ selinux_option }}
 
 pcs_resources:
   - "{{ pulp_container_name }}"
