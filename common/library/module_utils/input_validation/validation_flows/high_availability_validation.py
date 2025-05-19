@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import ipaddress
-import json
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
@@ -25,14 +23,26 @@ contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
 
 
-def get_roles_config_json(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name):
+def get_roles_config_json(
+    input_file_path,
+    logger,
+    module,
+    omnia_base_dir,
+    project_name
+):
     roles_config_file_path = create_file_path(input_file_path, file_names["roles_config"])
-    roles_config_json = validation_utils.load_yaml_as_json(roles_config_file_path, omnia_base_dir, project_name, logger, module)
-    
+    roles_config_json = validation_utils.load_yaml_as_json(
+        roles_config_file_path, omnia_base_dir, project_name, logger, module
+    )
+
     return roles_config_json
 
-def check_and_validate_ha_role_in_roles_config(errors, roles_config_json, ha_role):
-    
+def check_and_validate_ha_role_in_roles_config(
+    errors,
+    roles_config_json,
+    ha_role
+):
+
     # Get groups and roles
     groups_configured = roles_config_json.get('Groups',{})
     roles_configured = roles_config_json.get('Roles',[])
@@ -43,7 +53,11 @@ def check_and_validate_ha_role_in_roles_config(errors, roles_config_json, ha_rol
     if ha_role_entry:
         missing_groups = [g for g in ha_role_entry.get('groups', []) if g not in groups_configured]
         for group in missing_groups:
-            errors.append(create_error_msg(f"group: '{group}' associated for role", ha_role, en_us_validation_msg.group_not_found))
+            errors.append(create_error_msg(
+                f"group: '{group}' associated for role",
+                ha_role,
+                en_us_validation_msg.group_not_found
+                ))
     else:
         errors.append(create_error_msg("role", ha_role, en_us_validation_msg.role_node_found))
 
@@ -100,38 +114,93 @@ def get_primary_oim_admin_ip(network_spec_json):
                 oim_admin_ip = value.get("primary_oim_admin_ip", "N/A")
     return oim_admin_ip
 
-def is_service_tag_present(service_tags_list, input_service_tag):
+def is_service_tag_present(
+    service_tags_list,
+    input_service_tag
+):
     return input_service_tag in service_tags_list
 
-def validate_service_tag_presence(errors, config_type, all_service_tags, active_node_service_tag, passive_nodes):
+def validate_service_tag_presence(
+    errors,
+    config_type,
+    all_service_tags,
+    active_node_service_tag,
+    passive_nodes
+):
     #validate_active_node_uniqueness
-    if active_node_service_tag and is_service_tag_present(all_service_tags, active_node_service_tag):
-        errors.append(create_error_msg(f"{config_type}", active_node_service_tag, en_us_validation_msg.duplicate_active_node_service_tag))
+    if (
+        active_node_service_tag
+        and is_service_tag_present(all_service_tags, active_node_service_tag)
+    ):
+        errors.append(create_error_msg(
+            f"{config_type}",
+            active_node_service_tag,
+            en_us_validation_msg.duplicate_active_node_service_tag
+        ))
 
     #validate passive_node_uniqueness
     for node_service_tags in passive_nodes:
         for service_tag in node_service_tags.get('node_service_tags', []):
-            if service_tag == active_node_service_tag or is_service_tag_present(all_service_tags, service_tag):
-                errors.append(create_error_msg(f"{config_type}", service_tag, en_us_validation_msg.duplicate_passive_node_service_tag))
+            if (
+                service_tag == active_node_service_tag
+                or is_service_tag_present(all_service_tags, service_tag)
+            ):
+                errors.append(create_error_msg(
+                    f"{config_type}",
+                    service_tag,
+                    en_us_validation_msg.duplicate_passive_node_service_tag
+                ))
 
-def validate_vip_address(errors, config_type, vip_address, service_node_vip, admin_network, admin_netmaskbits, oim_admin_ip):
+def validate_vip_address(
+    errors,
+    config_type,
+    vip_address,
+    service_node_vip,
+    admin_network,
+    admin_netmaskbits,
+    oim_admin_ip
+):
 
     # validate if the same virtual_ip_address is already use
     if vip_address in service_node_vip:
-        errors.append(create_error_msg(f"{config_type} virtual_ip_address:", vip_address, en_us_validation_msg.duplicate_virtual_ip))
+        errors.append(create_error_msg(
+            f"{config_type} virtual_ip_address:",
+            vip_address,
+            en_us_validation_msg.duplicate_virtual_ip
+        ))
     else:
-        # virtual_ip_address is mutually exclusive with admin static and dynamic ranges                 
-        vip_within_static_range = validation_utils.is_ip_within_range(admin_network["static_range"], vip_address)
-        vip_within_dynamic_range = validation_utils.is_ip_within_range(admin_network["dynamic_range"], vip_address)
+        # virtual_ip_address is mutually exclusive with admin static and dynamic ranges
+        vip_within_static_range = validation_utils.is_ip_within_range(
+            admin_network["static_range"],
+            vip_address
+        )
+        vip_within_dynamic_range = validation_utils.is_ip_within_range(
+            admin_network["dynamic_range"],
+            vip_address
+        )
 
         if vip_within_static_range or  vip_within_dynamic_range:
-            errors.append(create_error_msg(f"{config_type} virtual_ip_address", vip_address, en_us_validation_msg.virtual_ip_not_valid))
+            errors.append(create_error_msg(
+                f"{config_type} virtual_ip_address",
+                vip_address,
+                en_us_validation_msg.virtual_ip_not_valid
+            ))
 
         # validate virtual_ip_address is in the admin subnet
         if not validation_utils.is_ip_in_subnet(oim_admin_ip, admin_netmaskbits, vip_address):
-            errors.append(create_error_msg(f"{config_type} virtual_ip_address", vip_address, en_us_validation_msg.virtual_ip_not_in_admin_subnet))
+            errors.append(create_error_msg(
+                f"{config_type} virtual_ip_address",
+                vip_address,
+                en_us_validation_msg.virtual_ip_not_in_admin_subnet
+            ))
 
-def validate_service_node_ha(errors, config_type, ha_data, network_spec_data, roles_config_json, all_service_tags, ha_node_vip_list):
+def validate_service_node_ha(
+    errors, config_type,
+    ha_data, network_spec_data,
+    _roles_config_json,
+    all_service_tags,
+    ha_node_vip_list
+):
     active_node_service_tag = ha_data.get('active_node_service_tag')
     passive_nodes = ha_data.get('passive_nodes', [])
     vip_address = ha_data.get('virtual_ip_address')
@@ -142,13 +211,34 @@ def validate_service_node_ha(errors, config_type, ha_data, network_spec_data, ro
     oim_admin_ip = network_spec_data['oim_admin_ip']
 
     # validate active_node_service_tag and passive_node_service_tag
-    validate_service_tag_presence(errors, config_type, all_service_tags, active_node_service_tag, passive_nodes)
+    validate_service_tag_presence(
+        errors,
+        config_type,
+        all_service_tags,
+        active_node_service_tag,
+        passive_nodes
+    )
 
     # validate if duplicate virtual ip address is present
     if vip_address:
-        validate_vip_address(errors, config_type, vip_address, ha_node_vip_list, admin_network, admin_netmaskbits, oim_admin_ip)
+        validate_vip_address(errors,
+            config_type,
+            vip_address,
+            ha_node_vip_list,
+            admin_network,
+            admin_netmaskbits,
+            oim_admin_ip
+        )
 
-def validate_oim_ha(errors, config_type, ha_data, network_spec_data, roles_config_json, all_service_tags, ha_node_vip_list):
+def validate_oim_ha(
+    errors,
+    config_type,
+    ha_data,
+    network_spec_data,
+    roles_config_json,
+    _all_service_tags,
+    ha_node_vip_list
+):
     admin_virtual_ip = ha_data.get('admin_virtual_ip_address', "")
     bmc_virtual_ip = ha_data.get('bmc_virtual_ip_address', "")
 
@@ -161,8 +251,16 @@ def validate_oim_ha(errors, config_type, ha_data, network_spec_data, roles_confi
     bmc_nic_name = network_spec_data['bmc_nic_name']
 
     if admin_virtual_ip:
-        validate_vip_address(errors, config_type, admin_virtual_ip, ha_node_vip_list, admin_network, admin_netmaskbits, oim_admin_ip)
-    
+        validate_vip_address(
+            errors,
+            config_type,
+            admin_virtual_ip,
+            ha_node_vip_list,
+            admin_network,
+            admin_netmaskbits,
+            oim_admin_ip
+        )
+
     if admin_nic_name == bmc_nic_name:
         roles_groups = roles_config_json.get("Groups", [])
         for _, group_data in roles_groups.items():
@@ -170,18 +268,45 @@ def validate_oim_ha(errors, config_type, ha_data, network_spec_data, roles_confi
             if static_range and bmc_virtual_ip:
                 bmc_vip_conflict = validation_utils.is_ip_within_range(static_range, bmc_virtual_ip)
                 if bmc_vip_conflict:
-                    errors.append(create_error_msg(f"{config_type} bmc_virtual_ip_address conflict with roles_config:", bmc_virtual_ip, en_us_validation_msg.bmc_virtual_ip_not_valid))
+                    errors.append(create_error_msg(
+                        f"{config_type} bmc_virtual_ip_address conflict with roles_config:",
+                        bmc_virtual_ip,
+                        en_us_validation_msg.bmc_virtual_ip_not_valid
+                    ))
 
         bmc_vip_conflict_dynamic = False
         bmc_vip_conflict_dynamic_conversion = False
-        if bmc_network["dynamic_range"] and bmc_network["dynamic_range"] != 'N/A' and bmc_virtual_ip:       
-            bmc_vip_conflict_dynamic = validation_utils.is_ip_within_range(bmc_network["dynamic_range"], bmc_virtual_ip)
-        if bmc_network["dynamic_conversion_static_range"] and bmc_network["dynamic_conversion_static_range"] != 'N/A' and bmc_virtual_ip:
-            bmc_vip_conflict_dynamic_conversion = validation_utils.is_ip_within_range(bmc_network["dynamic_conversion_static_range"], bmc_virtual_ip)
+        if (
+            bmc_network["dynamic_range"]
+            and bmc_network["dynamic_range"] != 'N/A'
+            and bmc_virtual_ip
+        ):
+            bmc_vip_conflict_dynamic = validation_utils.is_ip_within_range(
+                bmc_network["dynamic_range"],
+                bmc_virtual_ip
+            )
+
+        if (
+            bmc_network["dynamic_conversion_static_range"]
+            and bmc_network["dynamic_conversion_static_range"] != 'N/A'
+            and bmc_virtual_ip
+        ):
+            bmc_vip_conflict_dynamic_conversion = validation_utils.is_ip_within_range(
+                bmc_network["dynamic_conversion_static_range"],
+                bmc_virtual_ip
+            )
+
         if bmc_vip_conflict_dynamic or bmc_vip_conflict_dynamic_conversion:
-            errors.append(create_error_msg(f"{config_type} bmc_virtual_ip_address conflict with network_spec", bmc_virtual_ip, en_us_validation_msg.bmc_virtual_ip_not_valid))
+            errors.append(create_error_msg(
+                f"{config_type} bmc_virtual_ip_address conflict with network_spec",
+                bmc_virtual_ip,
+                en_us_validation_msg.bmc_virtual_ip_not_valid
+            ))
     elif bmc_virtual_ip:
-        errors.append(create_error_msg("bmc_virtual_ip_address", bmc_virtual_ip, "For use only with a LOM configuration, " + en_us_validation_msg.feild_must_be_empty))
+        errors.append(create_error_msg(
+            "bmc_virtual_ip_address",
+            bmc_virtual_ip,
+            "For use only with a LOM configuration, " + en_us_validation_msg.feild_must_be_empty))
 
 # Dispatch table maps config_type to validation handler
 ha_validation = {
@@ -192,15 +317,35 @@ ha_validation = {
     #"k8s_head_node_ha":validation_k8s_head_node_ha
 }
 
-def validate_high_availability_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_high_availability_config(
+    input_file_path,
+    data,
+    logger,
+    module,
+    omnia_base_dir,
+    module_utils_base,
+    project_name
+):
     errors = []
     ha_node_vip_list = []
     all_service_tags = set()
     network_spec_file_path = create_file_path(input_file_path, file_names["network_spec"])
-    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, project_name, logger, module)
+    network_spec_json = validation_utils.load_yaml_as_json(
+        network_spec_file_path,
+        omnia_base_dir,
+        project_name,
+        logger,
+        module
+    )
 
     # load roles_config for L2 validations
-    roles_config_json = get_roles_config_json(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
+    roles_config_json = get_roles_config_json(
+        input_file_path,
+        logger,
+        module,
+        omnia_base_dir,
+        project_name
+    )
 
     network_spec_info = {
         "admin_network": get_admin_static_dynamic_ranges(network_spec_json),
@@ -210,7 +355,8 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
         "admin_netmaskbits": get_admin_netmaskbits(network_spec_json),
         "oim_admin_ip": get_primary_oim_admin_ip(network_spec_json)
     }
-    
+
+    # pylint: disable=too-many-branches
     def validate_ha_config(ha_data, mandatory_fields, errors, config_type=None):
         try:
             check_mandatory_fields(mandatory_fields, ha_data, errors)
@@ -227,7 +373,14 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
                     check_mandatory_fields(["node_service_tags"], passive_node, errors)
 
             if config_type in ha_validation:
-                ha_validation[config_type](errors, config_type, ha_data, network_spec_info, roles_config_json, all_service_tags, ha_node_vip_list)
+                ha_validation[config_type](errors,
+                    config_type,
+                    ha_data,
+                    network_spec_info,
+                    roles_config_json,
+                    all_service_tags,
+                    ha_node_vip_list
+                )
 
             # append all the active and passive node service tags to a set
             if 'active_node_service_tag' in ha_data:
@@ -273,7 +426,16 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
                     ha_role = "service_node" #expected role to be defined in roles_config
                     check_and_validate_ha_role_in_roles_config(errors, roles_config_json, ha_role)
                     for service_node in ha_data['service_nodes']:
-                        validate_ha_config(service_node, ["virtual_ip_address", "active_node_service_tag", "passive_nodes"], errors, config_type=config_name)
+                        validate_ha_config(
+                            service_node,
+                            [
+                                "virtual_ip_address",
+                                "active_node_service_tag",
+                                "passive_nodes"
+                            ],
+                            errors,
+                            config_type=config_name
+                        )
                 else:
                     validate_ha_config(ha_data, mandatory_fields, errors, config_type=config_name)
         else:
