@@ -147,11 +147,7 @@ pulp_run_opts: >-
 # Usage: pcs-start.sh.j2: squid
 squid_container_name: "squid"
 squid_image: "docker.io/ubuntu/squid"
-<<<<<<< HEAD
 squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:{{ squid_container_port.stdout }}:{{ squid_container_port.stdout }}"
-=======
-squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:3128:3128"
->>>>>>> a5b46ebbba20813da22b990f328a47ab75617ef8
 squid_share: "{{ omnia_nfs_share }}/squid"
 squid_run_opts: >-
   --hostname {{ squid_container_name }} --restart=on-failure --publish {{ squid_port }}
