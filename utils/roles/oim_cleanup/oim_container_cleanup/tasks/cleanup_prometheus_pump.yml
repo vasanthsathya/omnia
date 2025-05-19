@@ -47,4 +47,3 @@
     - name: Prometheus Pump container removal failed
       ansible.builtin.fail:
         msg: "{{ prometheus_pump_container_name }} {{ container_removal_failure_msg }}"
-
