@@ -93,6 +93,9 @@ secrets:
   - "{{ mysql_root_password }}"
   - "{{ mysql_user }}"
   - "{{ mysql_user_password }}"
+mysqldb_podman_volumes:
+  - { name: "mysqldb_data", path: "{{ mysql_data_dir }}" }
+  - { name: "mysqldb_log", path: "{{ mysql_log_volume }}" }
 
 
 # Usage: cleanup_activemq.yml
@@ -100,9 +103,17 @@ activemq_container_name: "activemq"
 activemq_cleanup_directory:
   - "{{ omnia_nfs_share }}/log/telemetry/activemq"
   - "{{ idrac_telemetry_dir }}/activemq"
+activemq_podman_volumes:
+  - { name: "activemq_log", path: "{{ omnia_nfs_share }}/log/telemetry/activemq" }
 
 # Usage: cleanup_idrac_receiver.yml
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
 idrac_telemetry_receiver_cleanup_directory:
   - "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
   - "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
+
+# Usage: cleanup_prometheus_pump.yml
+prometheus_pump_container_name: "prometheus_pump"
+prometheus_pump_cleanup_directory:
+  - "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
+  - "{{ idrac_telemetry_dir }}/prometheus_pump"

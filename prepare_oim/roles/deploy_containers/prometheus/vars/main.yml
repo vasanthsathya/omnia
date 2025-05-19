@@ -1,0 +1,41 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+omnia_nfs_share: "{{ oim_shared_path }}/omnia"
+prometheus_dir: "{{ omnia_nfs_share }}/telemetry/prometheus" # For prometheus
+dir_mode: "0755"
+idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
+
+# Usage: delpoy_prometheus_pump_container.yml
+prometheus_pump_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
+prometheus_pump_dir: "{{ prometheus_dir }}/prometheus_pump"
+prometheus_pump_directories:
+ - { path: "{{ prometheus_pump_logs_dir }}", mode: "0755" }
+ - { path: "{{ prometheus_pump_dir }}", mode: "0755" }
+prometheus_pump_volumes:
+ - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
+ - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
+
+prometheus_pump_container_name: "prometheus_pump"
+prometheus_pump_image: "docker.io/library/golang:1.17"
+prometheus_pump_receiver_env:
+ MESSAGEBUS_HOST: "localhost"
+ MESSAGEBUS_PORT: "61613"
+ PROMETHEUSDB_SERVER: "prometheus"
+wait_time: 10
+prometheus_pump_container_success_msg: "The {{ prometheus_pump_container_name }} container has been successfully deployed."
+prometheus_pump_container_failure_msg: |
+  The deployment of the {{ prometheus_pump_container_name }} container has failed. To resolve this issue,
+  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
+  After the cleanup, you can re-run the original playbook to deploy the {{ prometheus_pump_container_name }} container successfully.

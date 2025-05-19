@@ -49,6 +49,14 @@
     - name: Cleanup iDRAC Telemetry Receiver container
       ansible.builtin.import_tasks: cleanup_idrac_telemetry_receiver.yml
 
+- name: Cleanup prometheus pump and prometheus container
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
+  block:
+    - name: Cleanup prometheus pump container
+      ansible.builtin.import_tasks: cleanup_prometheus_pump.yml
+
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true

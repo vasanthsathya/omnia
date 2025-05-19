@@ -1,0 +1,9 @@
+---
+
+- name: Deploy Prometheus Pump and Prometheus container
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
+  block:
+    - name: Deploy Prometheus Pump Container
+      ansible.builtin.include_tasks: deploy_prometheus_pump_container.yml

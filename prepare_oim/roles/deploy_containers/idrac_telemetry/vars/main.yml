@@ -82,8 +82,11 @@ activemq_directories:
 activemq_container_name: "activemq"
 activemq_image: "docker.io/rmohr/activemq:5.14.3"
 wait_time: 10
+activemq_podman_volumes:
+  - { name: "activemq_log", path: "{{ activemq_logs_dir }}" }
+
 activemq_volumes:
-  # - "{{ activemq_logs_dir }}:/opt/activemq/data/{{ selinux_option }}"
+  - "activemq_log:/opt/activemq/data/{{ selinux_option }}"
   - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
 activemq_container_success_msg: "The {{ activemq_container_name }} container has been successfully deployed."
 activemq_container_failure_msg: |
