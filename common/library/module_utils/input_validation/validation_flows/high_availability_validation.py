@@ -30,6 +30,19 @@ def get_roles_config_json(
     omnia_base_dir,
     project_name
 ):
+    """
+    Retrieves the roles configuration from a YAML file.
+
+    Parameters:
+        input_file_path (str): The path to the input file.
+        logger (Logger): A logger instance.
+        module (AnsibleModule): An Ansible module instance.
+        omnia_base_dir (str): The base directory of the Omnia project.
+        project_name (str): The name of the project.
+
+    Returns:
+        dict: The roles configuration as json.
+    """
     roles_config_file_path = create_file_path(input_file_path, file_names["roles_config"])
     roles_config_json = validation_utils.load_yaml_as_json(
         roles_config_file_path, omnia_base_dir, project_name, logger, module
@@ -42,6 +55,17 @@ def check_and_validate_ha_role_in_roles_config(
     roles_config_json,
     ha_role
 ):
+    """
+	Validates the HA role in the roles_config.yml file.
+
+	Parameters:
+		errors (list): A list to store error messages.
+		roles_config_json (dict): A json containing the roles configuration.
+		ha_role (str): The name of the HA role to validate.
+
+	Returns:
+		None
+	"""
 
     # Get groups and roles
     groups_configured = roles_config_json.get('Groups',{})
@@ -63,6 +87,18 @@ def check_and_validate_ha_role_in_roles_config(
 
 
 def get_admin_static_dynamic_ranges(network_spec_json):
+    """
+    This function takes a network specification JSON object as input
+    and returns a dictionary containing the static and dynamic ranges
+    of the admin network.
+
+    Args:
+        network_spec_json (dict): A JSON object containing the network specification.
+
+    Returns:
+        dict: A dictionary containing the static and dynamic ranges of the admin network.
+    """
+    admin_network = {}
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "admin_network":
@@ -75,6 +111,17 @@ def get_admin_static_dynamic_ranges(network_spec_json):
     return admin_network
 
 def get_bmc_network(network_spec_json):
+    """
+    Returns the BMC network configuration from the network specification JSON.
+
+    Parameters:
+        network_spec_json (dict): The network specification JSON.
+
+    Returns:
+        dict: The BMC network configuration,
+        containing dynamic_range and dynamic_conversion_static_range.
+    """
+    bmc_network = {}
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "bmc_network":
@@ -87,6 +134,16 @@ def get_bmc_network(network_spec_json):
     return bmc_network
 
 def get_admin_netmaskbits(network_spec_json):
+    """
+    Retrieves the netmask bits for the admin network.
+
+    Parameters:
+        network_spec_json (dict): The network specification JSON.
+
+    Returns:
+        str: The netmask bits for the admin network, or "N/A" if not found.
+    """
+    netmaskbits = ""
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "admin_network":
@@ -94,6 +151,16 @@ def get_admin_netmaskbits(network_spec_json):
     return netmaskbits
 
 def get_admin_nic_name(network_spec_json):
+    """
+    Retrieves the oim_nic_name for the admin network.
+
+    Parameters:
+        network_spec_json (dict): The network specification JSON.
+
+    Returns:
+        str: The oim_nic_name for the admin network, or "N/A" if not found.
+    """
+    admin_nic_name = ""
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "admin_network":
@@ -101,6 +168,16 @@ def get_admin_nic_name(network_spec_json):
     return admin_nic_name
 
 def get_bmc_nic_name(network_spec_json):
+    """
+    Retrieves the oim_nic_name for the admin network.
+
+    Parameters:
+        network_spec_json (dict): The network specification JSON.
+
+    Returns:
+        str: The oim_nic_name for the bmc network, or "N/A" if not found.
+    """
+    bmc_nic_name = ""
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "bmc_network":
@@ -108,6 +185,16 @@ def get_bmc_nic_name(network_spec_json):
     return bmc_nic_name
 
 def get_primary_oim_admin_ip(network_spec_json):
+    """
+    This function retrieves the primary OIM admin IP address from a given network spec JSON object.
+
+    Args:
+        network_spec_json (dict): The JSON object containing the network specifications.
+
+    Returns:
+        str: The primary OIM admin IP address or "N/A" if not found.
+    """
+    oim_admin_ip = ""
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "admin_network":
@@ -118,6 +205,16 @@ def is_service_tag_present(
     service_tags_list,
     input_service_tag
 ):
+    """
+    Checks if a service tag is present in a given list of service tags.
+
+    Args:
+        service_tags_list (list): A list of service tags.
+        input_service_tag (str): The service tag to be checked.
+
+    Returns:
+        bool: True if the service tag is present, False otherwise.
+    """
     return input_service_tag in service_tags_list
 
 def validate_service_tag_presence(
@@ -127,6 +224,19 @@ def validate_service_tag_presence(
     active_node_service_tag,
     passive_nodes
 ):
+    """
+    Validates the presence of service tags in the given list of all service tags.
+
+    Parameters:
+        errors (list): A list to store error messages.
+        config_type (str): The type of configuration being validated.
+        all_service_tags (list): A list of all service tags.
+        active_node_service_tag (str): The service tag of the active node.
+        passive_nodes (list): A list of passive nodes with their service tags.
+
+    Returns:
+        None
+    """
     #validate_active_node_uniqueness
     if (
         active_node_service_tag
@@ -160,6 +270,23 @@ def validate_vip_address(
     admin_netmaskbits,
     oim_admin_ip
 ):
+
+    """
+	Validate a virtual IP address against a list of existing service node VIPs,
+    admin network static and dynamic ranges, and admin subnet.
+
+	Parameters:
+	- errors (list): A list to store error messages.
+	- config_type (str): The type of configuration being validated.
+	- vip_address (str): The virtual IP address to be validated.
+	- service_node_vip (list): A list of existing service node VIPs.
+	- admin_network (dict): A dictionary containing admin network configuration.
+	- admin_netmaskbits (str): The netmask bits value of the admin network.
+	- oim_admin_ip (str): The IP address of the OIM admin interface.
+
+	Returns:
+	- None: The function does not return any value, it only appends error messages to the errors list.
+	"""
 
     # validate if the same virtual_ip_address is already use
     if vip_address in service_node_vip:
@@ -201,6 +328,21 @@ def validate_service_node_ha(
     all_service_tags,
     ha_node_vip_list
 ):
+    """
+    Validates the high availability configuration for a service node.
+
+    Parameters:
+    errors (list): A list to store error messages.
+    config_type (str): The type of high availability configuration.
+    ha_data (dict): A dictionary containing high availability data.
+    network_spec_data (dict): A dictionary containing network specification data.
+    _roles_config_json (dict): A dictionary containing roles configuration data.
+    all_service_tags (list): A list of all service tags.
+    ha_node_vip_list (list): A list of virtual IP addresses for high availability nodes.
+
+    Returns:
+    None
+    """
     active_node_service_tag = ha_data.get('active_node_service_tag')
     passive_nodes = ha_data.get('passive_nodes', [])
     vip_address = ha_data.get('virtual_ip_address')
@@ -239,6 +381,21 @@ def validate_oim_ha(
     _all_service_tags,
     ha_node_vip_list
 ):
+    """
+    Validates the high availability configuration for a oim node.
+
+    Parameters:
+    errors (list): A list to store error messages.
+    config_type (str): The type of high availability configuration.
+    ha_data (dict): A dictionary containing high availability data.
+    network_spec_data (dict): A dictionary containing network specification data.
+    _roles_config_json (dict): A dictionary containing roles configuration data.
+    all_service_tags (list): A list of all service tags.
+    ha_node_vip_list (list): A list of virtual IP addresses for high availability nodes.
+
+    Returns:
+    None
+    """
     admin_virtual_ip = ha_data.get('admin_virtual_ip_address', "")
     bmc_virtual_ip = ha_data.get('bmc_virtual_ip_address', "")
 
@@ -323,9 +480,24 @@ def validate_high_availability_config(
     logger,
     module,
     omnia_base_dir,
-    module_utils_base,
+    _module_utils_base,
     project_name
 ):
+    """
+    Validates high availability configuration for different ha config types.
+
+    Parameters:
+        input_file_path (str): The path of the input file.
+        data (dict): The data to be validated.
+        logger (Logger): The logger object.
+        module (AnsibleModule): The Ansible module object.
+        omnia_base_dir (str): The base directory of Omnia.
+        module_utils_base (str): The base directory of module_utils.
+        project_name (str): The name of the project.
+
+    Returns:
+        list: A list of errors found during validation.
+    """
     errors = []
     ha_node_vip_list = []
     all_service_tags = set()
@@ -414,7 +586,7 @@ def validate_high_availability_config(
         ha_data = data.get(config_name)
         if ha_data:
             ha_data = ha_data[0] if isinstance(ha_data, list) else ha_data
-            enable_key = f'enable_{config_name.split("_")[0]}_ha'
+            enable_key = f'enable_{config_name.split("_", maxsplit=1)[0]}_ha'
             if ha_data.get(enable_key):
                 if config_name == "oim_ha":
                     ha_role = "oim_ha_node" #expected role to be defined in roles_config
