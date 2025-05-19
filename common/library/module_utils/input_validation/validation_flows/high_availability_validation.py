@@ -230,9 +230,14 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
                 ha_validation[config_type](errors, config_type, ha_data, network_spec_info, roles_config_json, all_service_tags, ha_node_vip_list)
 
             # append all the active and passive node service tags to a set
-            all_service_tags.add(ha_data['active_node_service_tag'])
-            for node_service_tag in ha_data.get('passive_nodes', []):
-                all_service_tags.update(node_service_tag.get('node_service_tags', []))
+            if 'active_node_service_tag' in ha_data:
+                all_service_tags.add(ha_data['active_node_service_tag'])
+            elif 'active_node_service_tags' in ha_data:
+                all_service_tags.update(ha_data.get('active_node_service_tags',[]))
+
+            if 'passive_nodes' in ha_data:
+                for node_service_tag in ha_data.get('passive_nodes', []):
+                    all_service_tags.update(node_service_tag.get('node_service_tags', []))
 
             if 'virtual_ip_address' in ha_data:
                 ha_node_vip_list.append(ha_data['virtual_ip_address'])
@@ -248,7 +253,7 @@ def validate_high_availability_config(input_file_path, data, logger, module, omn
     ha_configs = [
         ("oim_ha", ["admin_virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
         ("service_node_ha", ["service_nodes"]),
-        ("slurm_head_node_ha", ["virtual_ip_address", "active_node_service_tags", "passive_nodes"]),
+        ("slurm_head_node_ha", ["virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
         ("k8s_head_node_ha", ["virtual_ip_address", "active_node_service_tags"])
     ]
 
