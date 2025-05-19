@@ -38,7 +38,7 @@ bin_sh: "/bin/sh"
 grafana_entrypoint: "/run.sh"
 grafana_entry_script: >-
   export GF_SECURITY_ADMIN_USER=$(cat /run/secrets/grafana_user) && export GF_SECURITY_ADMIN_PASSWORD=$(cat /run/secrets/grafana_user_password) && /run.sh
-wait_time: 10
+wait_time: 30
 grafana_container_success_msg: "The Grafana container '{{ grafana_container_name }}' was successfully deployed and is running."
 grafana_container_failure_msg: "The Grafana container '{{ grafana_container_name }}' failed to deploy. Please check logs and container configuration."
 grafana_image_pull_fail_msg: |
