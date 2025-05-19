@@ -55,7 +55,7 @@
       loop:
         - "{{ mysqldb_data_dir }}"
         - "{{ mysql_log_volume }}"
-        
+
     - name: Remove telemetry directory
       ansible.builtin.file:
         path: "{{ idrac_telemetry_dir }}"
