@@ -2,7 +2,7 @@
 #SBATCH --job-name=testMPI
 #SBATCH --output=output.txt
 #SBATCH --partition=normal
-#SBATCH -N 1 --nodelist=springnode00003.spring.test
+#SBATCH -N 2 --nodelist=springnode00003.spring.test,springnode00004.spring.test
 
 pwd; hostname; date
 
@@ -13,10 +13,10 @@ export LD_LIBRARY_PATH=/<openmpi_build_location>/lib:$LD_LIBRARY_PATH
 
 #Below command can be used to run mpirun command jobfrom NFS share
 cd /<hpl_path>/amd-zen-hpl-2024_10_08
-mpirun -np 1 --mca orte_keep_fqdn_hostnames 1 ./xhpl
+mpirun -np 2 --mca orte_keep_fqdn_hostnames 1 ./xhpl
 
 #Below command can be used to run job from NFS share
 #cd /<hpl_path>/amd-zen-hpl-2024_10_08
-#srun -N 1 --mpi=pmix_v3 -n 1 ./xhpl
+#srun -N 2 --mpi=pmix_v3 -n 2 ./xhpl
 
 date
