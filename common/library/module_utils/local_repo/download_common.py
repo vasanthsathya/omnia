@@ -169,7 +169,7 @@ def handle_post_request(repository_name, relative_path, base_path, file_url, pol
         client = RestClient()
         response = client.get(file_check_url)
 
-        if response and response.get("status") == 200:
+        if response is not None:
             logger.info(f"File already exists at {file_check_url}. Skipping upload.")
             return "Success"
 
