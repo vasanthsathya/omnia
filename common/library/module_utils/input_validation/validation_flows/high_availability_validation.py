@@ -15,7 +15,6 @@
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
-from ansible.module_utils.input_validation.validation_flows import common_validation
 
 file_names = config.files
 create_error_msg = validation_utils.create_error_msg
@@ -152,6 +151,15 @@ def get_admin_netmaskbits(network_spec_json):
     return netmaskbits
 
 def get_admin_uncorrelated_node_start_ip(network_spec_json):
+    """
+    Retrieves the get_admin_uncorrelated_node_start_ip for the admin network.
+
+    Parameters:
+        network_spec_json (dict): The network specification JSON.
+
+    Returns:
+        str: The get_admin_uncorrelated_node_start_ip for the admin network, or "N/A" if not found.
+    """
     for network in network_spec_json["Networks"]:
         for key, value in network.items():
             if key == "admin_network":
@@ -329,7 +337,32 @@ def validate_vip_address(
                 en_us_validation_msg.virtual_ip_not_in_admin_subnet
             ))
 
-def validate_k8s_head_node_ha(errors, config_type, ha_data, network_spec_data, roles_config_json,all_service_tags, ha_node_vip_list):
+def validate_k8s_head_node_ha(
+    errors, config_type, 
+    ha_data, network_spec_data, 
+    roles_config_json,
+    all_service_tags, 
+    ha_node_vip_list):
+    """
+    Validates Kubernetes HA (High Availability) head node configuration for potential issues.
+    Args:
+        errors (list): A list to which error messages will be appended.
+        config_type (str): A string representing the current configuration context or type, used in error reporting.
+        ha_data (dict): Contains high availability configuration data, including:
+            - 'external_loadbalancer_ip' (str): The IP of the external load balancer.
+            - 'active_node_service_tag' (list): A list of service tags marked as active.
+        network_spec_data (dict): Contains network specification data, including:
+            - 'admin_network' (dict): Includes 'static_range' and 'dynamic_range' for the admin network.
+            - 'oim_admin_ip' (str): The OIM admin IP.
+            - 'admin_uncorrelated_node_start_ip' (str): Starting IP for uncorrelated admin nodes.
+        roles_config_json (dict): Reserved for future role-based validations (currently unused).
+        all_service_tags (list): A list of all service tags defined in the system.
+        ha_node_vip_list (list): List of virtual IPs assigned to HA nodes (currently unused).
+
+    Returns:
+        None: Errors are collected in the provided `errors` list.
+    """
+    
     #get network_spec data
     admin_network = network_spec_data['admin_network']
     admin_static_range = admin_network.get("static_range", "N/A")
@@ -349,8 +382,14 @@ def validate_k8s_head_node_ha(errors, config_type, ha_data, network_spec_data, r
 
     # Optional: check if there are common values
     if common_tags:
-         errors.append(create_error_msg(f"{config_type}", common_tags, en_us_validation_msg.duplicate_active_node_service_tag))
-        
+        errors.append(
+            create_error_msg(
+                f"{config_type}", 
+                common_tags, 
+                en_us_validation_msg.duplicate_active_node_service_tag
+            )
+        )
+    
     if external_loadbalancer_ip:
         ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
         does_overlap, _ = validation_utils.check_overlap(ip_ranges)
