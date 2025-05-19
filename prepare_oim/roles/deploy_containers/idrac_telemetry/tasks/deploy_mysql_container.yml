@@ -94,11 +94,6 @@
           - "{{ mysql_entry_script }}"
       no_log: false
 
-    - name: Start the MySQL container
-      containers.podman.podman_container:
-        name: "{{ mysql_container_name }}"
-        state: "started"
-
     - name: Check if MySQL container is running after deployment
       containers.podman.podman_container_info:
         name: "{{ mysql_container_name }}"

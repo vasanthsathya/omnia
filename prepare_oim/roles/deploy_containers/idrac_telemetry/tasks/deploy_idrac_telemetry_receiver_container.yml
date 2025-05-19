@@ -51,7 +51,7 @@
       containers.podman.podman_container:
         name: "{{ idrac_telemetry_receiver_container_name }}"
         image: "{{ idrac_telemetry_receiver_go_image }}"
-        state: present
+        state: started
         restart_policy: "no"
         hostname: "{{ idrac_telemetry_receiver_container_name }}"
         network_mode: host
@@ -60,11 +60,6 @@
         privileged: false
         env: "{{ idrac_telemetry_receiver_env }}"
         command: /bin/sh -c "./scripts/example/idrac-telemetry-receiver.sh"
-
-    - name: Start the iDRAC Telemtery Receiver container
-      containers.podman.podman_container:
-        name: "{{ idrac_telemetry_receiver_container_name }}"
-        state: started
 
     - name: Check if iDRAC Telemtery Receiver container is running after deployment
       containers.podman.podman_container_info:

@@ -45,16 +45,11 @@
       containers.podman.podman_container:
         name: "{{ activemq_container_name }}"
         image: "{{ activemq_image }}"
-        state: present
+        state: started
         restart_policy: "no"
         detach: true
         network_mode: host
         volumes: "{{ activemq_volumes }}"
-
-    - name: Start the ActiveMQ container
-      containers.podman.podman_container:
-        name: "{{ activemq_container_name }}"
-        state: "started"
 
     - name: Check if Activemq container is running after deployment
       containers.podman.podman_container_info:

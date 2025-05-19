@@ -13,7 +13,7 @@
 # limitations under the License.
 ---
 
-container_removal_failure_msg: " container could not be removed."
+container_removal_failure_msg: " container could not be removed. Please check container logs."
 omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
 
 # Usage: cleanup_pcs.yml
