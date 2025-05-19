@@ -41,9 +41,10 @@ grafana_entry_script: >-
 wait_time: 30
 grafana_container_success_msg: "The Grafana container '{{ grafana_container_name }}' container has been successfully deployed."
 grafana_container_failure_msg: |
-  The deployment of the {{ grafana_container_name }} container has failed. To resolve this issue,
-  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
-  After the cleanup, you can re-run the original playbook to deploy the {{ grafana_container_name }} container successfully.
+  The deployment of the {{ grafana_container_name }} container has failed. 
+  To resolve this, check logs using 'podman logs {{ grafana_container_name }}' from OIM
+  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ grafana_container_name }} container.
 grafana_image_pull_fail_msg: |
   The pull of the Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
