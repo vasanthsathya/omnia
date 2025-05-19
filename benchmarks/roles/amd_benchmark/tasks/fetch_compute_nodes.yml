@@ -33,4 +33,3 @@
   loop: "{{ sinfo_output.stdout_lines }}"
   loop_control:
     loop_var: compute_node
-
