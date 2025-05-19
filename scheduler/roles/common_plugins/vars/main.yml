@@ -1,4 +1,4 @@
-#  Copyright 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+#  Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -85,3 +85,13 @@ whereabouts_folder: "{{ k8s_tmp_dir }}/whereabouts"
 tmp_folder: "{{ k8s_tmp_dir }}"
 wherabout_crds_folder: "{{ k8s_tmp_dir }}/whereabouts/doc/crds"
 git_permissions: "0644"
+
+# Usage: pod_status.yml
+retries_count: "30"
+delay_time: "5"
+k8s_not_accessible_msg: "Kubernetes not found or not accessible: {{ k8s_status.msg }}"
+k8s_namespace_error_msg: "Namespace error: {{ k8s_status.namespace_error }}"
+k8s_node_not_ready: "Some nodes are NotReady: {{ k8s_status.not_ready_nodes }}"
+k8s_pods_failed_msg: "Some pods failed: {{ k8s_status.failed_pods }}"
+k8s_cluster_issue_msg: "Cluster issues detected."
+k8s_status_success_msg: "All Kubernetes nodes are Ready and all pods are Running or Succeeded."
