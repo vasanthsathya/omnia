@@ -20,7 +20,7 @@
   failed_when: false
 
 - name: Deploy Grafana container and check deployment status
-  when: 
+  when:
     - grafana_container_info.containers | length == 0 or grafana_container_info.containers[0].State.Status != 'running'
   block:
     - name: Create Grafana directories
@@ -89,7 +89,7 @@
           GF_USERS_ALLOW_SIGN_UP: "false"
           GF_USERS_ALLOW_ORG_CREATE: "false"
         entrypoint: "{{ bin_sh }}"
-        command:         
+        command:       
           - -c
           - "{{ grafana_entry_script }}"
       no_log: false
