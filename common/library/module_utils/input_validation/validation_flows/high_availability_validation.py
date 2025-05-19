@@ -148,6 +148,19 @@ def validate_k8s_head_node_ha(errors, config_type, ha_data, network_spec_data, r
     admin_uncorrelated_node_start_ip = network_spec_data['admin_uncorrelated_node_start_ip']
     does_overlap=[]
     external_loadbalancer_ip = ha_data.get("external_loadbalancer_ip")
+    active_node_service_tags = ha_data.get('active_node_service_tag')
+    # validate active_node_service_tag and passive_node_service_tag
+    #validate_service_tag(errors, config_type, all_service_tags, active_node_service_tag, passive_nodes)
+    all_service_tags_set = set(all_service_tags)
+    active_node_service_tags_set = set(active_node_service_tags)
+
+    # Find the intersection
+    common_tags = all_service_tags_set & active_node_service_tags_set
+
+    # Optional: check if there are common values
+    if common_tags:
+         errors.append(create_error_msg(f"{config_type}", common_tags, en_us_validation_msg.duplicate_active_node_service_tag))
+        
     if external_loadbalancer_ip:
         ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
         does_overlap, _ = validation_utils.check_overlap(ip_ranges)
