@@ -34,6 +34,13 @@
         state: absent
         force_delete: true
 
+    - name: Remove Podman bind-mounted volumes for MySQL
+      containers.podman.podman_volume:
+        name: "{{ item.name }}"
+        state: absent
+      loop: "{{ mysqldb_podman_volumes }}"
+      changed_when: false
+
     - name: Remove all listed secrets
       ansible.builtin.command: podman secret rm "{{ item }}"
       loop: "{{ secrets }}"
@@ -43,6 +50,7 @@
       ansible.builtin.file:
         path: "{{ idrac_telemetry_dir }}"
         state: absent
+        force: true
 
   rescue:
     - name: Container MySQL removal failed
