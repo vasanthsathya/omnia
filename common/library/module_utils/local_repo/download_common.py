@@ -165,7 +165,12 @@ def handle_post_request(repository_name, relative_path, base_path, file_url, pol
         repo_info = result["stdout"]
         base_url = repo_info.get("base_url")
         logger.info(f"Distribution exist for {repository_name} and base url is {base_url}")
-        if get_header_end(base_url, relative_path):
+        file_check_url = f"{base_url.rstrip('/')}/{relative_path.lstrip('/')}"
+        client = RestClient()
+        response = client.get(file_check_url)
+
+        if response and response.get("status") == 200:
+            logger.info(f"File already exists at {file_check_url}. Skipping upload.")
             return "Success"
 
     result = handle_file_upload(repository_name, relative_path, file_url, poll_interval,logger)
