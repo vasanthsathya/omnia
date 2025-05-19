@@ -144,11 +144,6 @@ def handle_file_upload(repository_name, relative_path, file_url, poll_interval, 
 def handle_post_request(repository_name, relative_path, base_path, file_url, poll_interval,logger):
     """
     Handles the full Pulp upload and distribution process for a given repository and file.
-
-    This function checks if a distribution for the given repository already serves the file.
-    If not, it uploads the file to the repository (creating it if needed), creates a publication,
-    and creates or updates a distribution as required.
-
     Args:
         repository_name (str): Name of the Pulp repository.
         relative_path (str): Path where the file should be stored inside the repository.
@@ -160,19 +155,6 @@ def handle_post_request(repository_name, relative_path, base_path, file_url, pol
     Returns:
         str: "Success" if the operation completes successfully, "Failed" otherwise.
     """
-    result = execute_command(pulp_file_commands["show_distribution"] % (repository_name), logger, type_json= True)
-    if result:
-        repo_info = result["stdout"]
-        base_url = repo_info.get("base_url")
-        logger.info(f"Distribution exist for {repository_name} and base url is {base_url}")
-        file_check_url = f"{base_url.rstrip('/')}/{relative_path.lstrip('/')}"
-        client = RestClient()
-        response = client.get(file_check_url)
-
-        if response is not None:
-            logger.info(f"File already exists at {file_check_url}. Skipping upload.")
-            return "Success"
-
     result = handle_file_upload(repository_name, relative_path, file_url, poll_interval,logger)
     if result =="Success":
         distribution_name = repository_name
