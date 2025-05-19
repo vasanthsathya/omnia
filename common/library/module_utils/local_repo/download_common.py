@@ -17,22 +17,64 @@ import subprocess
 import shlex
 import tarfile
 import shutil
-import requests
-from requests.auth import HTTPBasicAuth
 import time
-import json
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import write_status_to_file,execute_command
-from ansible.module_utils.local_repo.common_functions import load_pulp_config, wait_for_task, get_header_end
+from ansible.module_utils.local_repo.rest_client import RestClient
+from ansible.module_utils.local_repo.common_functions import load_pulp_config
 from ansible.module_utils.local_repo.config import (
     pulp_file_commands,
     CLI_FILE_PATH,
     POST_TIMEOUT,
     ISO_POLL_VAL,
     TAR_POLL_VAL,
-    FILE_POLL_VAL
+    FILE_POLL_VAL,
+    FILE_URI
 )
+
+def wait_for_task(task_href, base_url, username, password, logger, timeout=3600, interval=3):
+    """
+    Polls a Pulp task until it reaches a terminal state: completed, failed, or canceled.
+
+    Args:
+        task_href (str): Relative URL to the task
+        base_url (str): Base URL of the Pulp server
+        username (str): Username for basic auth.
+        password (str): Password for basic auth.
+        logger (logging.Logger): Logger instance.
+        timeout (int): Max time to wait in seconds. Default is 3600 (1 hour).
+        interval (int): Polling interval in seconds. Default is 3.
+
+    Returns:
+        bool: True if task completed successfully, False if failed, canceled, or timeout.
+    """
+    rest_client = RestClient(base_url, username, password)
+
+    parsed_base = base_url.rstrip('/')
+    if task_href.startswith(parsed_base):
+        uri = task_href[len(parsed_base):]
+    else:
+        uri = task_href
+
+    start = time.time()
+
+    while (time.time() - start) < timeout:
+        task = rest_client.get(uri)
+        if task is None:
+            logger.error(f"Failed to get task info from {uri}")
+            return False
+
+        state = task.get("state", "unknown")
+        if state == "completed":
+            return True
+        elif state in ("failed", "canceled"):
+            return False
+
+        time.sleep(interval)
+
+    logger.error("Timeout waiting for task to complete")
+    return False
 
 def handle_file_upload(repository_name, relative_path, file_url, poll_interval, logger):
     """
@@ -71,33 +113,29 @@ def handle_file_upload(repository_name, relative_path, file_url, poll_interval, 
     config = load_pulp_config(CLI_FILE_PATH)
     base_url = config["base_url"]
 
-    # Prepare POST request data
-    url = f"{base_url}/pulp/api/v3/content/file/files/"
+    # Initialize RestClient
+    client = RestClient(base_url, config["username"], config["password"])
+
     data = {
         "file_url": file_url,
         "relative_path": relative_path,
         "repository": pulp_href
     }
 
-    response = requests.post(
-        url,
-        auth=HTTPBasicAuth(config["username"], config["password"]),
-        json=data,
-        verify=False
-    )
+    response = client.post(FILE_URI, data)
 
-    if response.status_code != 202:
-        logger.error(f"Failed to POST file to repository {repository_name}. Status code: {response.status_code}")
+    if not response:
+        logger.error(f"Failed to POST file to repository {repository_name}.")
         return "Failed"
 
-    task_href = response.json().get("task")
+    task_href = response.get("task")
     if not task_href:
         logger.error("Task href not found in POST response.")
         return "Failed"
 
-    auth = HTTPBasicAuth(config["username"], config["password"])
+    # Wait for task completion
+    task_result = wait_for_task(task_href, base_url, config["username"], config["password"], logger, timeout=POST_TIMEOUT, interval=poll_interval)
 
-    task_result = wait_for_task(task_href, auth, base_url, timeout=POST_TIMEOUT, interval=poll_interval)
     if task_result:
         return "Success"
     else:
@@ -150,7 +188,7 @@ def handle_post_request(repository_name, relative_path, base_path, file_url, pol
                 logger.error(f"Failed to update distribution: {distribution_name}")
                 result = "Failed"
     return result
-    
+
 def process_file(repository_name, output_file, relative_path, base_path, distribution_name, url, file_path, logger):
     """
     Process a file using Pulp, ensuring it is downloaded and stored in the specified file_path.
