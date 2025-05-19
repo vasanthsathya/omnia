@@ -94,11 +94,6 @@
           - "{{ grafana_entry_script }}"
       no_log: false
 
-    - name: Start Grafana container
-      containers.podman.podman_container:
-        name: "{{ grafana_container_name }}"
-        state: "started"
-
     - name: Check if Grafana container is running after deployment
       containers.podman.podman_container_info:
         name: "{{ grafana_container_name }}"
