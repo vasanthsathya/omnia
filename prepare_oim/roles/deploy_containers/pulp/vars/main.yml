@@ -127,9 +127,10 @@ generate_cert_cmd: >
   -subj "/CN={{ pulp_server_ip }}"
   -addext {{ cert_san }}
 
+pulp_cert_src: "{{ pulp_shared_path }}/settings/certs/pulp_webserver.crt"
+ca_trust_path: "/etc/pki/ca-trust/source/anchors/"
+
 # Usage: reload_pulp_nginx.yml
-# pulp_cert_src: "{{ oim_shared_path }}/omnia/pulp/settings/certs/pulp_webserver.crt"
-# ca_trust_path: "/etc/pki/ca-trust/source/anchors/"
 nginx_reload_cmd: "nginx -s reload"
 nginx_retries_var: 10
 omnia_container_name: "omnia_core"
