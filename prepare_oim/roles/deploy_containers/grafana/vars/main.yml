@@ -39,10 +39,15 @@ grafana_entrypoint: "/run.sh"
 grafana_entry_script: >-
   export GF_SECURITY_ADMIN_USER=$(cat /run/secrets/grafana_user) && export GF_SECURITY_ADMIN_PASSWORD=$(cat /run/secrets/grafana_user_password) && /run.sh
 wait_time: 30
-grafana_container_success_msg: "The Grafana container '{{ grafana_container_name }}' was successfully deployed and is running."
-grafana_container_failure_msg: "The Grafana container '{{ grafana_container_name }}' failed to deploy. Please check logs and container configuration."
+grafana_container_success_msg: "The Grafana container '{{ grafana_container_name }}' container has been successfully deployed."
+grafana_container_failure_msg: |
+  The deployment of the {{ grafana_container_name }} container has failed. To resolve this issue,
+  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
+  After the cleanup, you can re-run the original playbook to deploy the {{ grafana_container_name }} container successfully.
 grafana_image_pull_fail_msg: |
   The pull of the Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
+  After addressing the issue, you can re-run the playbook to successfully pull the Grafana image.
 grafana_image_not_found_msg: |
   The Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' was not found after pull attempt.
+  Please check if the image is available and re-run the playbook.
