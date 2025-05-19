@@ -28,9 +28,10 @@ mysql_image_pull_fail_msg: |
 mysql_database: "idrac_telemetrydb"
 mysql_container_success_msg: "The MySQL container {{ mysql_container_name }} has been successfully created and is running."
 mysql_container_failure_msg: |
-  The deployment of the {{ mysql_container_name }} container has failed. To resolve this issue,
-  please run the utils/oim_cleanup.yml playbook to clean up any existing OIM resources.
-  After the cleanup, you can re-run the original playbook to deploy the {{ mysql_container_name }} container successfully.
+  Deployment of {{ mysql_container_name }} container failed.
+  To resolve this, check logs using 'podman logs {{ mysql_container_name }}' from OIM
+  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ mysql_container_name }} container.
 mysql_image_not_found_msg: |
   MySQL image {{ mysql_container_name }}:{{ mysql_image_tag }} not found.
   Please check if image is available and re-run the playbook.
@@ -78,20 +79,21 @@ activemq_dir: "{{ idrac_telemetry_dir }}/activemq"
 activemq_directories:
   - { path: "{{ activemq_logs_dir }}", mode: "{{ dir_permissions_755 }}" }
   - { path: "{{ activemq_dir }}", mode: "{{ dir_permissions_755 }}" }
-
 activemq_container_name: "activemq"
 activemq_image: "docker.io/rmohr/activemq:5.14.3"
 wait_time: 10
+activemq_podman_volumes:
+  - { name: "activemq_log", path: "{{ activemq_logs_dir }}" }
 activemq_volumes:
-  # - "{{ activemq_logs_dir }}:/opt/activemq/data/{{ selinux_option }}"
-  - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
+  - "activemq_log:/opt/activemq/data/{{ selinux_option }}"
 activemq_container_success_msg: "The {{ activemq_container_name }} container has been successfully deployed."
 activemq_container_failure_msg: |
-  The deployment of the {{ activemq_container_name }} container has failed. To resolve this issue,
-  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
-  After the cleanup, you can re-run the original playbook to deploy the {{ activemq_container_name }} container successfully.
+  Deployment of {{ activemq_container_name }} container failed.
+  To resolve this, check logs using 'podman logs {{ activemq_container_name }}' from OIM
+  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ activemq_container_name }} container.
 
-# deploy_idrac_receiver_container.yml
+# Usage: deploy_idrac_telemetry_receiver_container.yml
 idrac_telemetry_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
 idrac_telemetry_receiver_dir_path: "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
 idrac_telemetry_github: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git
@@ -110,8 +112,6 @@ idrac_telemetry_receiver_directories:
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
 idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
 idrac_telemetry_receiver_volumes:
-  # - "{{ omnia_nfs_share }}/ssh_config/.ssh:/root/.ssh{{ selinux_option }}"
-  - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
   - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
 idrac_telemetry_receiver_env:
   MESSAGEBUS_HOST: "127.0.0.1"
@@ -126,6 +126,7 @@ idrac_telemetry_receiver_env:
   HTTPS_PROXY: ""
 idrac_telemetry_receiver_container_success_msg: "The {{ idrac_telemetry_receiver_container_name }} container has been successfully deployed."
 idrac_telemetry_receiver_container_failure_msg: |
-  The deployment of the {{ idrac_telemetry_receiver_container_name }} container has failed. To resolve this issue,
-  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
-  After the cleanup, you can re-run the original playbook to deploy the {{ idrac_telemetry_receiver_container_name }} container successfully.
+  Deployment of {{ idrac_telemetry_receiver_container_name }} container failed.
+  To resolve this, check logs using 'podman logs {{ idrac_telemetry_receiver_container_name }}' from OIM
+  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ idrac_telemetry_receiver_container_name }} container.

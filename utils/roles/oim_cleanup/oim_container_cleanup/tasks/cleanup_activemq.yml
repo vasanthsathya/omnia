@@ -34,10 +34,18 @@
         state: absent
         force_delete: true
 
+    - name: Remove Podman bind-mounted volumes for ActiveMQ
+      containers.podman.podman_volume:
+        name: "{{ item.name }}"
+        state: absent
+      loop: "{{ activemq_podman_volumes }}"
+      changed_when: false
+
     - name: Remove ActiveMQ and Offline repo Directory
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
+        force: true
       with_items:
         - "{{ activemq_cleanup_directory }}"
 
