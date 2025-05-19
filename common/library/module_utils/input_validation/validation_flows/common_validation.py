@@ -24,7 +24,10 @@ create_file_path = validation_utils.create_file_path
 contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
 
-def validate_software_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_software_config(
+    input_file_path, data,
+    logger, module, omnia_base_dir,
+    module_utils_base, project_name):
     errors = []
     cluster_os_type = data["cluster_os_type"]
     cluster_os_version = data["cluster_os_version"]
@@ -34,15 +37,26 @@ def validate_software_config(input_file_path, data, logger, module, omnia_base_d
         version_range = os_version_ranges[cluster_os_type.lower()]
         if cluster_os_type.lower() in ["rhel", "rocky"]:
             if float(cluster_os_version) != float(version_range[0]):
-                errors.append(create_error_msg("cluster_os_version", cluster_os_version, en_us_validation_msg.os_version_fail_msg(cluster_os_type, version_range[0], None)))
+                errors.append(
+                    create_error_msg(
+                        "cluster_os_version", cluster_os_version,
+                        en_us_validation_msg.os_version_fail_msg(
+                            cluster_os_type, version_range[0], None)))
         elif cluster_os_type.lower() == "ubuntu":
             if cluster_os_version not in version_range:
-                errors.append(create_error_msg("cluster_os_version", cluster_os_version, en_us_validation_msg.os_version_fail_msg(cluster_os_type, version_range[0], version_range[1])))
+                errors.append(
+                    create_error_msg(
+                        "cluster_os_version", cluster_os_version,
+                        en_us_validation_msg.os_version_fail_msg(
+                            cluster_os_type, version_range[0], version_range[1])))
 
     iso_file_path = data.get("iso_file_path", "")
-    not_valid_iso_msg = validation_utils.verify_iso_file(iso_file_path, cluster_os_type, cluster_os_version)
+    not_valid_iso_msg = validation_utils.verify_iso_file(
+                            iso_file_path, cluster_os_type, cluster_os_version)
     if not_valid_iso_msg:
-        errors.append(create_error_msg("iso_file_path", iso_file_path, not_valid_iso_msg))
+        errors.append(
+            create_error_msg(
+                "iso_file_path", iso_file_path, not_valid_iso_msg))
     softwares = data["softwares"]
     need_additional_software_info = ["bcm_roce", "amdgpu", "vllm", "pytorch", "tensorflow", "intelgaudi"]
     filtered_softwares = [item for item in softwares if item.get("name") in need_additional_software_info]
@@ -50,13 +64,33 @@ def validate_software_config(input_file_path, data, logger, module, omnia_base_d
     for software_name in filtered_softwares:
         name = software_name["name"]
         if not data.get(name):
-            errors.append(create_error_msg(f"{name}", None, en_us_validation_msg.software_mandatory_fail_msg(name)))
+            errors.append(
+                create_error_msg(
+                    f"{name}", None,
+                    en_us_validation_msg.software_mandatory_fail_msg(name)))
 
     return errors
 
 # Below is a validation function for each file in the input folder
 def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
-    # check to make sure associated os info is filled out
+    """
+    Validates local repository configuration based on the cluster OS type.
+
+    Checks whether the appropriate OS URL (`ubuntu_os_url` or `rhel_os_url`) is provided
+    in the input data based on the detected cluster OS type from the software config file.
+
+    Args:
+        input_file_path (str): Path to the main input file.
+        data (dict): Input data containing OS URLs.
+        logger: Logger object for logging (not used here).
+        module: Ansible module object (not used here).
+        omnia_base_dir (str): Base directory for Omnia (not used here).
+        module_utils_base (str): Base directory for module utilities (not used here).
+        project_name (str): Project name (not used here).
+
+    Returns:
+        list: A list of error messages if validation fails.
+    """
     errors = []
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
