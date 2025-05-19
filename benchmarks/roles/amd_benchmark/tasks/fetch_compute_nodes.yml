@@ -13,14 +13,24 @@
 #  limitations under the License.
 ---
 
-- name: Verify slurm is running
-  ansible.builtin.include_tasks: pre_requisites.yml
+- name: Install packages on control nodes
+  ansible.builtin.include_tasks: install_packages.yml
 
-- name: Fetch software_config.json and check for amd_benchmarks support
-  ansible.builtin.include_tasks: fetch_software_config.yml
+- name: Get list of slurm compute nodes
+  ansible.builtin.command: sinfo -h -r --format="%n"
+  register: sinfo_output
+  delegate_to: "{{  groups['slurm_control_node'] | first }}"
+  failed_when: false
+  changed_when: false
+  run_once: true
 
-- name: Install packages
-  ansible.builtin.include_tasks: fetch_compute_nodes.yml
+- name: Install packages on compute nodes
+  ansible.builtin.include_tasks: install_packages.yml
+  args:
+    apply:
+      delegate_to: "{{ compute_node }}"
+  run_once: true
+  loop: "{{ sinfo_output.stdout_lines }}"
+  loop_control:
+    loop_var: compute_node
 
-- name: Configure slurm
-  ansible.builtin.include_tasks: configure_slurm.yml
