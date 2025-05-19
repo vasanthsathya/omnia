@@ -17,7 +17,7 @@ prometheus_dir: "{{ omnia_nfs_share }}/telemetry/prometheus" # For prometheus
 dir_mode: "0755"
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 
-# Usage: delpoy_prometheus_pump_container.yml
+# Usage: deploy_prometheus_pump_container.yml
 prometheus_pump_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
 prometheus_pump_dir: "{{ prometheus_dir }}/prometheus_pump"
 prometheus_pump_directories:
@@ -25,14 +25,12 @@ prometheus_pump_directories:
  - { path: "{{ prometheus_pump_dir }}", mode: "0755" }
 prometheus_pump_volumes:
  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
-
 prometheus_pump_container_name: "prometheus_pump"
 prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_receiver_env:
  MESSAGEBUS_HOST: "localhost"
  MESSAGEBUS_PORT: "61613"
  PROMETHEUSDB_SERVER: "prometheus"
-wait_time: 10
 prometheus_pump_container_success_msg: "The {{ prometheus_pump_container_name }} container has been successfully deployed."
 prometheus_pump_container_failure_msg: |
   Deployment of {{ prometheus_pump_container_name }} container failed.
