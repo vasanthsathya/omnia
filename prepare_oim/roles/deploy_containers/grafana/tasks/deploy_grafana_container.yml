@@ -89,7 +89,7 @@
           GF_USERS_ALLOW_SIGN_UP: "false"
           GF_USERS_ALLOW_ORG_CREATE: "false"
         entrypoint: "{{ bin_sh }}"
-        command:       
+        command:
           - -c
           - "{{ grafana_entry_script }}"
       no_log: false
