@@ -49,6 +49,12 @@
     - name: Cleanup iDRAC Telemetry Receiver container
       ansible.builtin.import_tasks: cleanup_idrac_telemetry_receiver.yml
 
+- name: Cleanup Grafana container
+  when: hostvars['localhost']['visualization_support']
+  block:
+    - name: Cleanup Grafana container
+      ansible.builtin.import_tasks: cleanup_grafana.yml
+
 - name: Cleanup prometheus pump and prometheus container
   when:
     - hostvars['localhost']['idrac_telemetry_support']
