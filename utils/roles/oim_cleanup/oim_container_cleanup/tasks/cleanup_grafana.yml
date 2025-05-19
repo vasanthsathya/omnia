@@ -42,8 +42,18 @@
       loop: "{{ grafana_podman_volumes }}"
       changed_when: false
 
+    - name: Remove Grafana directories from host
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ grafana_data_dir }}"
+        - "{{ grafana_logs_dir }}"
+
     - name: Remove all listed secrets
-      ansible.builtin.command: podman secret rm "{{ item }}"
+      containers.podman.podman_secret:
+        name: "{{ item }}"
+        state: absent
       loop: "{{ grafana_secrets }}"
       changed_when: false
 

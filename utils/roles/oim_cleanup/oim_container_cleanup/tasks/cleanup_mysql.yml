@@ -41,9 +41,19 @@
       loop: "{{ mysqldb_podman_volumes }}"
       changed_when: false
 
+    - name: Remove MySQL directories from host
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ mysqldb_data_dir }}"
+        - "{{ mysql_log_volume }}"
+
     - name: Remove all listed secrets
-      ansible.builtin.command: podman secret rm "{{ item }}"
-      loop: "{{ secrets }}"
+      containers.podman.podman_secret:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ mysqldb_secrets }}"
       changed_when: false
 
     - name: Remove telemetry directory

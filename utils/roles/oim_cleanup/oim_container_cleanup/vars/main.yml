@@ -89,13 +89,15 @@ mysql_container_name: "mysqldb"
 mysql_root_password: "mysql_root_password"
 mysql_user_password: "mysql_user_password"
 mysql_user: "mysql_user"
-secrets:
+mysqldb_secrets:
   - "{{ mysql_root_password }}"
   - "{{ mysql_user }}"
   - "{{ mysql_user_password }}"
 mysqldb_podman_volumes:
   - { name: "mysqldb_data", path: "{{ mysql_data_dir }}" }
   - { name: "mysqldb_log", path: "{{ mysql_log_volume }}" }
+mysql_data_dir: "{{ idrac_telemetry_dir }}/mysqldb"
+mysql_log_volume: "{{ omnia_nfs_share }}/log/telemetry/mysqldb"
 
 # Usage: cleanup_activemq.yml
 activemq_container_name: "activemq"
@@ -124,6 +126,8 @@ grafana_user_password: "grafana_user_password"
 grafana_secrets:
   - "{{ grafana_user }}"
   - "{{ grafana_user_password }}"
+grafana_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/grafana"
+grafana_data_dir: "{{ omnia_nfs_share }}/telemetry/grafana"
 grafana_podman_volumes:
   - { name: "grafana_data", path: "{{ grafana_data_dir }}" }
   - { name: "grafana_log", path: "{{ grafana_logs_dir }}" }
