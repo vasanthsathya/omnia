@@ -14,16 +14,10 @@
 
 ---
 
-<<<<<<< HEAD
 - name: Read port from Squid container
   ansible.builtin.command: "{{ squid_port_cmd }}"
   register: squid_container_port
   changed_when: false
-=======
-- name: Debug 
-  debug:
-    var: hostvars['localhost']['admin_nic_ip']
->>>>>>> a5b46ebbba20813da22b990f328a47ab75617ef8
 
 - name: Re-create pcs-start.sh with all container resources
   ansible.builtin.template:
