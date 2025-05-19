@@ -93,7 +93,7 @@ activemq_container_failure_msg: |
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
   After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ activemq_container_name }} container.
 
-# deploy_idrac_telemetry_receiver_container.yml
+# Usage: deploy_idrac_telemetry_receiver_container.yml
 idrac_telemetry_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
 idrac_telemetry_receiver_dir_path: "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
 idrac_telemetry_github: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git

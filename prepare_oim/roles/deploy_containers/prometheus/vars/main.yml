@@ -13,11 +13,11 @@
 #  limitations under the License.
 
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
+
+# Usage: deploy_prometheus_pump_container.yml
 prometheus_dir: "{{ omnia_nfs_share }}/telemetry/prometheus" # For prometheus
 dir_mode: "0755"
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
-
-# Usage: deploy_prometheus_pump_container.yml
 prometheus_pump_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
 prometheus_pump_dir: "{{ prometheus_dir }}/prometheus_pump"
 prometheus_pump_directories:
