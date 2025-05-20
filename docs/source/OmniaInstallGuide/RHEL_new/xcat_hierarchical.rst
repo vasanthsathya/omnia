@@ -18,7 +18,7 @@ A typical hierarchical cluster consists of:
 Prerequisites
 --------------
 
-1. Ensure that the ``/opt/omnia/input/project_default/software_config.json`` file contains ``service_node`` under the ``softwares`` list. ::
+1. Ensure that the ``/opt/omnia/input/project_default/software_config.json`` file contains ``{"name": "service_node"}`` under the ``softwares`` list. ::
 
     "softwares": [
         

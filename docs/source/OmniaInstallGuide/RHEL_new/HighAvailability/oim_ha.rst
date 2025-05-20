@@ -18,8 +18,6 @@ Prerequisites
 
 * Ensure that the passive OIM nodes have ``oim_ha_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
 
-* Ensure that the passive OIM nodes are in booted state before provisioning.
-
 * For enabling HA functionality on the OIM, ensure that the Omnia shared path is set to an external NFS server.
 
 * To enable and configure HA for OIM, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Once the config file is updated, run the ``prepare_oim.yml`` playbook.
@@ -53,4 +51,4 @@ Sample
         bmc_virtual_ip_address: ""
         active_node_service_tag: "XYZ765"
         passive_nodes:
-            - node_service_tags: ["ABC123", "DEF456", "GHI789"]
+            - node_service_tags: ["ABC123"]
