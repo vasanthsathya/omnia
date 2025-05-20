@@ -20,10 +20,27 @@ If ``service_node`` role is not defined then all nodes will be provisioned from 
 
 .. note:: To support hierarchical provisioning, all the SNs (active or passive) should be in booted state.
 
+Playbook execution
+-------------------
 
-Omnia also supports HA functionality for the ``OIM``, ``service_node``, and ``kube_control_plane`` of the management layer. For more information, `click here <HighAvailability/index.html>`_.
+A complete hierarchical cluster can be provisioned with two consecutive runs of the ``discovery_provision.yml`` playbook. Follow the below steps to set up the management layer (OIM, SN, Login Node, Auth server) first and then the compute nodes.
+
+1. To set up the management layer (OIM, SN, Login Node, Auth server), run the ``discovery_provision.yml`` playbook with ``management_layer`` tag. ::
+
+    ansible-playbook discovery_provision.yml --tags "management_layer"
+
+2. To set up the compute nodes, run the ``discovery_provision.yml`` playbook without any specified tags. ::
+
+    ansible-playbook discovery_provision.yml
+
+
+[Optional] High Availability
+--------------------------------
+
+Omnia also supports HA functionality for the ``OIM``, ``service_node``, and ``kube_control_plane`` of the management layer. If you want HA functionality along with your hierarchical cluster, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. For more information, `click here <HighAvailability/index.html>`_.
 
 .. note:: 
     
     * In a hierarchical cluster setup, an external NFS share must be used for the Omnia shared path.
     * If you want to use HA functionality, ensure that all the nodes (active or passive) are in booted state.
+
