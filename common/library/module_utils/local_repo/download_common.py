@@ -350,7 +350,6 @@ def process_manifest(file,repo_store_path, status_file_path,logger):
  
         # Ensure the manifest directory exists
         manifest_directory = os.path.join(repo_store_path, "offline_repo", "cluster", "manifest", package_name)
-        os.makedirs(manifest_directory, exist_ok=True)
  
         # # Determine the manifest file path
         file_path = os.path.join(manifest_directory, f"{package_name}.yaml")
@@ -622,7 +621,6 @@ def process_tarball(package, repo_store_path, status_file_path, version_variable
     tarball_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', 'tarball', package_name)
 
     logger.info(f"Processing tarball to directory: {tarball_directory}")
-    os.makedirs(tarball_directory, exist_ok=True)  # Ensure the directory exists
 
     # Use the package name for the tarball filename
     tarball_path = os.path.join(tarball_directory, f"{package_name}.tar.gz")
@@ -720,8 +718,6 @@ def process_iso(package, repo_store_path, status_file_path, cluster_os_type, clu
     iso_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', cluster_os_type, cluster_os_version, 'iso', package_name)
     base_path = iso_directory.strip("/")
     logger.info(f"Processing iso Package to directory: {iso_directory}")
-
-    os.makedirs(iso_directory, exist_ok=True)
 
     if path_support == False and url_support == True:
         try:
