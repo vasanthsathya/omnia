@@ -54,4 +54,4 @@ Sample
           - virtual_ip_address: “10.5.0.12” 
             active_node_service_tag: “GHI789” 
               passive_nodes:  
-                - node_service_tags: [“JKL012”,]
+                - node_service_tags: [“JKL012”]
