@@ -22,7 +22,7 @@ Prerequisites
 
     "softwares": [
         
-        {"name": "service_node" },
+        {"name": "service_node"},
     ]
 
 2. Omnia supports hierarchical cluster formation only when ``service_node`` role is defined in ``roles_config.yml`` input file under the ``/opt/omnia/input/project_default/`` directory. If ``service_node`` role is not defined then all nodes will be provisioned from the OIM. For more information, `click here <composable_roles.html>`_.

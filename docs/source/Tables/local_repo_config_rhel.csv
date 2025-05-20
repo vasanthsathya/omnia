@@ -3,7 +3,7 @@
 
 ``JSON List``
 
-Optional","* This variable accepts user-defined repository urls, from which the software packages/images will be downloaded and accessed by the cluster.
+Optional","* This variable accepts the repository urls from which the software packages/images will be downloaded and accessed by the cluster.
 * Omnia downloads the software packages/images the given list of URLs and stores them into a Pulp container, present on the NFS share. These packages/images are then accessed by the cluster nodes from that NFS share.
 * ``url`` defines the baseurl for the repository.
 * ``gpgkey`` defines gpgkey for the repository. If ``gpgkey`` is omitted then ``gpgcheck=0`` is set for that repository.
@@ -13,6 +13,19 @@ Optional","* This variable accepts user-defined repository urls, from which the 
 * **Example**: ``- { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", sslcacert: """", sslclientkey: """", sslclientcert: """" }``
 
 .. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<user_repo_name>``. The certificate files are encypted post ``local_repo.yml`` playbook execution. Execute the ``ansible-vault decrypt <certificate_file> --vault-password-file /opt/omnia/input/project_default/.local_repo_credentials_key`` command to decrypt the files. "
+"**user_registry**
+
+``JSON List``
+
+Optional","* This variable accepts the URL and port of the registry containing the software images, required for the cluster nodes. This ``user_registry`` is configured based on the value provided for ``repo_config`` in the ``/opt/omnia/input/project_default/software_config.json``.
+* When ``repo_config`` is ``always``, Omnia downloads the images from the URLs mentioned in the ``user_registry`` and then stores them in a local Pulp repository on the OIM. These images  are then accessed by the cluster nodes.
+* When ``repo_config`` is ``partial``, a local repository is created on the OIM only for images that are not present in the ``user_registry``. Compute nodes can directly mirror images from the URLs listed in the ``user_registry``, using ``http_proxy``.
+* When ``repo_config`` is ``never``, no local repository is created and images are directly downloaded from the Internet  on each cluster node.
+* **Format**: ``- { host: <URL>:<port>, cert_path: ""<certificate path>"" }
+* ``host`` captures the URL and port of the ``user_registry``.
+* ``cert_path`` captures the absolute path of the security certificates for each registry. If this path is not provided, insecure registries are configured.
+
+.. note:: If similar repository URLs are present in both ``user_repo_url`` and ``user_registry``, Omnia downloads the image from the ``user_registry``."
 "**rhel_os_url**
 
 ``string``
@@ -51,3 +64,10 @@ Required","* This variable accepts a list of all the repo urls from where ``.rpm
 .. note::
       * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
       * Ensure that all the listed URLs are reachable from the OIM."
+"**enable_routed_internet**
+
+``Boolean``
+
+Mandatory","* If ``repo_config`` is set to ``partial`` or ``never``, then ``enable_routed_internet`` must be set to ``true``. When ``enable_routed_internet`` is set to true, a Squid container is deployed on the OIM to act as a proxy, enabling clusters with limited or no direct internet access to download packages from the Internet.
+* It is recommended to set ``enable_routed_internet`` to ``false`` if the cluster has direct internet access or if the ``repo_config`` is set to  ``always``, to ensure that packages are accesssed from the Omnia repository instead of external sources.
+* **Default value**: ``true``"
