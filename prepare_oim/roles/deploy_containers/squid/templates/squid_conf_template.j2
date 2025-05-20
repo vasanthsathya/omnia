@@ -71,7 +71,7 @@ http_access allow localnet
 http_access deny all
 
 # Squid normally listens to port 3128
-http_port {{ squid_port_listen }}
+http_port {{ hostvars['oim']['squid_proxy_port'] }}
 
 # Uncomment and adjust the following to add a disk cache directory.
 #cache_dir ufs /var/spool/squid 100 16 256
