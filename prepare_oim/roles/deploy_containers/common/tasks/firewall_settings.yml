@@ -53,6 +53,10 @@
     permanent: true
   loop: "{{ pcs_firewall_services }}"
 
+- name: Set fact for squid proxy port
+  ansible.builtin.set_fact:
+    squid_proxy_port: "{{ squid_proxy_port }}"
+
 - name: Add squid-related ports on host firewalld
   ansible.posix.firewalld:
     port: "{{ item }}"

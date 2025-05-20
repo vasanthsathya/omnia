@@ -14,11 +14,6 @@
 
 ---
 
-- name: Read port from Squid container
-  ansible.builtin.command: "{{ squid_port_cmd }}"
-  register: squid_container_port
-  changed_when: false
-
 - name: Re-create pcs-start.sh with all container resources
   ansible.builtin.template:
     src: "{{ item.template }}"

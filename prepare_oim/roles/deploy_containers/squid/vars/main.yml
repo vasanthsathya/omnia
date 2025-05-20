@@ -25,7 +25,6 @@ squid_safe_ports:
   - 2225  # pulp
   - 21    # ftp
   - 1025-65535
-squid_port_listen: "3128"
 squid_image: "docker.io/ubuntu/squid"
 squid_deployed_msg: "The {{ squid_container_name }} container has been successfully deployed."
 squid_deployed_fail_msg:
@@ -36,8 +35,7 @@ squid_deployed_fail_msg:
 # Usage: deploy_squid_container.yml
 squid_conf_tmp_path: "{{ role_path }}/templates/squid_conf_template.j2"
 squid_conf_shared_path: "{{ squid_shared_path }}/squid.conf"
-squid_container_port: "3128"
-squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:3128:3128"
+squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:{{ hostvars['oim']['squid_proxy_port'] }}:{{ hostvars['oim']['squid_proxy_port'] }}"
 squid_directories:
   - { path: "{{ squid_shared_path }}", mode: "{{ squid_dir_permissions }}" }
   - { path: "{{ squid_logs_dir }}", mode: "{{ logs_dir_permission }}" }
