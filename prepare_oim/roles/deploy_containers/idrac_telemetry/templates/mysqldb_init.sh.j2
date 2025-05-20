@@ -27,7 +27,5 @@ if [ -d "$MYSQL_DATA_DIR/mysql" ] && [ "$(ls -A $MYSQL_DATA_DIR/mysql)" ]; then
   echo "MySQL data directory already initialized."
 else
   echo "MySQL data directory not found or empty. Proceeding with initialization."
+  exec /usr/local/bin/docker-entrypoint.sh mysqld
 fi
-
-# Always pass control to the default entrypoint to let it handle the actual startup
-exec /usr/local/bin/docker-entrypoint.sh mysqld

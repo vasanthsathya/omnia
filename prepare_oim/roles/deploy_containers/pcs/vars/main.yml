@@ -160,24 +160,10 @@ pcs_failed_resource_msg: |
   and its resources.
 
 # Usage: pcs-container-resource-init.sh: idrac_telemetry
-idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry
 telemetry_pcs_group: omnia_telemetry
 # mysqldb
-mysql_docker_image: "docker.io/library/mysql"
-mysql_container_name: "mysqldb"
-mysql_image_tag: "8.0"
-mysql_database: "idrac_telemetrydb"
 mysql_env_vars:
   - "MYSQL_DATABASE={{ mysql_database }}"
-mysql_port: 3306
-mysql_root_password: "mysql_root_password"
-mysql_user: "mysql_user"
-mysql_user_password: "mysql_user_password"
-mysql_entry_script: "/usr/local/bin/mysqldb_init.sh"
-mysqldb_volumes:
-  - "mysqldb_data:/var/lib/mysql{{ selinux_option }}"
-  - "mysqldb_log:/var/log/mysql{{ selinux_option }}"
-  - "{{ idrac_telemetry_dir }}/mysqldb_init.sh:{{ mysql_entry_script }}{{ selinux_option }}"
 mysql_run_opts: >-
   --restart=no
   --network=host
@@ -191,8 +177,6 @@ mysql_run_opts: >-
   --detach
 
 # activemq
-activemq_container_name: "activemq"
-activemq_image: "docker.io/rmohr/activemq:5.14.3"
 activemq_run_opts: >-
   --network=host
   --volume activemq_log:/opt/activemq/data{{ selinux_option }}
@@ -200,23 +184,6 @@ activemq_run_opts: >-
   --name {{ activemq_container_name }}
 
 # idrac_telemetry_receiver
-idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
-idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
-idrac_telemetry_receiver_dir_path: "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
-idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
-idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
-idrac_telemetry_receiver_volumes:
-  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
-  - "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver_init.sh:{{ idrac_telemetry_receiver_entry_script }}{{ selinux_option }}"
-idrac_telemetry_receiver_env:
-  MESSAGEBUS_HOST: "127.0.0.1"
-  MESSAGEBUS_PORT: "61613"
-  CONFIGUI_HTTP_PORT: "3000"
-  MYSQL_DATABASE: "{{ mysql_database }}"
-  MYSQL_HOST: "127.0.0.1"
-  MYSQL_HOST_PORT: "{{ mysql_port }}"
-  HTTP_PROXY: ""
-  HTTPS_PROXY: ""
 idrac_telemetry_receiver_run_opts: >-
   --network=host
   --secret {{ mysql_user }},type=env,target=MYSQL_USER
