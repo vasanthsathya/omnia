@@ -115,6 +115,11 @@ pcs constraint order start {{ omnia_core_name }} then start {{ provision_contain
 {% if hostvars['localhost']['k8s_support'] %}
 pcs constraint order start {{ omnia_core_name }} then start {{ kubespray_name }}
 {% endif %}
+{% if hostvars['localhost']['idrac_telemetry_support'] %}
+# Ensure activemq starts before mysqldb
+pcs constraint order start {{ mysql_container_name }} then start {{ activemq_container_name }}
+pcs constraint order start {{ mysql_container_name }} then start {{ idrac_telemetry_receiver_container_name }}
+{% endif %}
 
 pcs resource defaults update migration-threshold={{ migration_threshold }}
 
