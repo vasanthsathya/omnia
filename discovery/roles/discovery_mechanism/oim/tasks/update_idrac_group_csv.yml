@@ -18,7 +18,6 @@
     non_service_oim_nodes: >-
       {{
         discovered_nodes
-        | rejectattr('role', 'search', 'service_node')
         | rejectattr('role', 'search', 'oim_ha_node')
         | list
       }}
