@@ -13,6 +13,9 @@
 # limitations under the License.
 ---
 
+max_retries: 10
+delay_count: 5
+
 # Usage: deploy_grafana_container.yml
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 grafana_image: "docker.io/grafana/grafana"

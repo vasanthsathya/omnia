@@ -13,13 +13,16 @@
 #  limitations under the License.
 
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
+dir_mode: "0755"
+file_mode: "0644"
+telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry/"
+idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
+max_retries: 10
+delay_count: 5
 
 # Usage: deploy_prometheus_pump_container.yml
-prometheus_dir: "{{ omnia_nfs_share }}/telemetry/prometheus" # For prometheus
-dir_mode: "0755"
-idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 prometheus_pump_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
-prometheus_pump_dir: "{{ prometheus_dir }}/prometheus_pump"
+prometheus_pump_dir: "{{ telemetry_dir_path }}/prometheus_pump"
 prometheus_pump_directories:
  - { path: "{{ prometheus_pump_logs_dir }}", mode: "0755" }
  - { path: "{{ prometheus_pump_dir }}", mode: "0755" }
@@ -37,3 +40,28 @@ prometheus_pump_container_failure_msg: |
   To resolve this, check logs using 'podman logs {{ prometheus_pump_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
   After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ prometheus_pump_container_name }} container.
+
+# Usage: deploy_prometheus_container.yml
+prometheus_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus"
+prometheus_data_dir: "{{ telemetry_dir_path }}/prometheus/prometheus_data"
+prometheus_dir: "{{ telemetry_dir_path }}/prometheus"
+proemetheus_yml_temp_src: "{{ role_path }}/templates/prometheus_yml.j2"
+prometheus_podman_volumes:
+ - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
+ - { name: "prometheus_log", path: "{{ prometheus_logs_dir }}" }
+prometheus_container_name: "prometheus"
+prometheus_image: "prom/prometheus:v2.36.0"
+prometheus_volumes:
+ - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml:ro,Z"
+ - "prometheus_data:/prometheus"
+#  - "prometheus_log:/prometheus/log"
+
+prometheus_env:
+ PROMETHEUS_DB: "poweredge_telemetry_metrics"
+ node.name: "127.0.0.1"
+prometheus_container_success_msg: "The {{ prometheus_container_name }} container has been successfully deployed."
+prometheus_container_failure_msg: |
+  Deployment of {{ prometheus_container_name }} container failed.
+  To resolve this, check logs using 'podman logs {{ prometheus_container_name }}' from OIM
+  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ prometheus_container_name }} container.

@@ -51,7 +51,7 @@
 
     - name: Fail if the MySQL container image pull fails
       ansible.builtin.fail:
-        msg: "{{ mysql_image_pull_fail_msg }}"
+        msg: "{{ mysql_image_pull_fail_msg.splitlines() | join(' ') }}"
       when: image_pull_result.failed
 
     - name: Verify if the MySQL image exists
@@ -61,7 +61,7 @@
 
     - name: Fail if the MySQL image is not found
       ansible.builtin.fail:
-        msg: "{{ mysql_image_not_found_msg }}"
+        msg: "{{ mysql_image_not_found_msg.splitlines() | join(' ') }}"
       when: not image_facts.images
 
     - name: Create Podman secrets for MySQL
@@ -98,10 +98,14 @@
       containers.podman.podman_container_info:
         name: "{{ mysql_container_name }}"
       register: mysql_deploy_container_info
+      until: mysql_deploy_container_info.containers | length > 0 and
+             mysql_deploy_container_info.containers[0].State.Status == 'running'
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_count }}"
 
     - name: Notify user of MySQL deployment status
       ansible.builtin.debug:
-        msg: "{{ mysql_container_success_msg }}"
+        msg: "{{ mysql_container_success_msg.splitlines() | join(' ') }}"
       when:
         - mysql_deploy_container_info.containers | length > 0
         - mysql_deploy_container_info.containers[0].State.Status == 'running'
@@ -118,7 +122,7 @@
   rescue:
     - name: Container MySQL deployment failed
       ansible.builtin.fail:
-        msg: "{{ mysql_container_failure_msg }}"
+        msg: "{{ mysql_container_failure_msg.splitlines() | join(' ') }}"
 
 - name: Create MySQL database and table
   block:
@@ -140,4 +144,4 @@
   rescue:
     - name: DB creation failed
       ansible.builtin.fail:
-        msg: "{{ mysql_database_create_failure_msg }} Error: {{ createdb_result.msg }}"
+        msg: "{{ mysql_database_create_failure_msg.splitlines() | join(' ') }} Error: {{ createdb_result.msg }}"

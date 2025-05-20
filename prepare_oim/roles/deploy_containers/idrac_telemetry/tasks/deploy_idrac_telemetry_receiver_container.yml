@@ -27,22 +27,26 @@
   register: idrac_receiver_container_info
   failed_when: false
 
-- name: Checkout iDRAC Telemetry GitHub repo
-  ansible.builtin.git:
-    repo: "{{ idrac_telemetry_github }}"
-    dest: "{{ idrac_telemetry_reference_path }}"
-    version: "{{ reference_tools_stable_commit }}"
-    update: false
-  register: clone_idrac_telemetry
-  until: clone_idrac_telemetry is succeeded
-  retries: "{{ max_retries }}"
-  delay: "{{ delay_count }}"
-  failed_when: false
+- name: Git checkout for iDRAC Telemetry Reference Tools
+  block:
+    - name: Checkout iDRAC Telemetry GitHub repo
+      ansible.builtin.git:
+        repo: "{{ idrac_telemetry_github }}"
+        dest: "{{ idrac_telemetry_reference_git_clone_path }}"
+        version: "{{ reference_tools_stable_commit }}"
+        update: false
+      delegate_to: localhost
+      connection: local
+      register: clone_idrac_telemetry
+      until: clone_idrac_telemetry is succeeded
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_count }}"
 
-- name: Fail if iDRAC telemetry Git clone fails
-  ansible.builtin.fail:
-    msg: "{{ idrac_git_clone_error_msg }}"
-  when: clone_idrac_telemetry is failed
+  rescue:
+    - name: Fail if iDRAC telemetry Git clone fails
+      ansible.builtin.fail:
+        msg: "{{ idrac_git_clone_error_msg.splitlines() | join(' ') }}"
+      when: clone_idrac_telemetry is failed
 
 - name: Deploy iDRAC Telemtery Receiver container and check deployment status
   when: idrac_receiver_container_info.containers | length == 0 or idrac_receiver_container_info.containers[0].State.Status != 'running'
@@ -65,10 +69,14 @@
       containers.podman.podman_container_info:
         name: "{{ idrac_telemetry_receiver_container_name }}"
       register: idrac_receiver_container_status
+      until: idrac_receiver_container_status.containers | length > 0 and
+             idrac_receiver_container_status.containers[0].State.Status == 'running'
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_count }}"
 
     - name: Notify user of iDRAC Telemtery Receiver container deployment status
       ansible.builtin.debug:
-        msg: "{{ idrac_telemetry_receiver_container_success_msg }}"
+        msg: "{{ idrac_telemetry_receiver_container_success_msg.splitlines() | join(' ') }}"
       when:
         - idrac_receiver_container_status | length > 0
         - idrac_receiver_container_status.containers[0].State.Status == 'running'
@@ -76,4 +84,4 @@
   rescue:
     - name: Failure for iDRAC Telemtery Receiver container deployment
       ansible.builtin.fail:
-        msg: "{{ idrac_telemetry_receiver_container_failure_msg }}"
+        msg: "{{ idrac_telemetry_receiver_container_failure_msg.splitlines() | join(' ') }}"

@@ -98,6 +98,10 @@
       containers.podman.podman_container_info:
         name: "{{ grafana_container_name }}"
       register: grafana_container_status
+      until: grafana_container_status.containers | length > 0 and
+             grafana_container_status.containers[0].State.Status == 'running'
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_count }}"
 
     - name: Notify user of Grafana deployment status
       ansible.builtin.debug:

@@ -47,10 +47,14 @@
       containers.podman.podman_container_info:
         name: "{{ prometheus_pump_container_name }}"
       register: prometheus_pump_status
+      until: prometheus_pump_status.containers | length > 0 and
+             prometheus_pump_status.containers[0].State.Status == 'running'
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_count }}"
 
     - name: Notify user of Prometheus Pump container deployment status
       ansible.builtin.debug:
-        msg: "{{ prometheus_pump_container_success_msg }}"
+        msg: "{{ prometheus_pump_container_success_msg.splitlines() | join(' ') }}"
       when:
         - prometheus_pump_status.containers | length > 0
         - prometheus_pump_status.containers[0].State.Status == 'running'
@@ -58,4 +62,4 @@
   rescue:
     - name: Prometheus Pump container deployment failed
       ansible.builtin.fail:
-        msg: "{{ prometheus_pump_container_failure_msg }}"
+        msg: "{{ prometheus_pump_container_failure_msg.splitlines() | join(' ') }}"

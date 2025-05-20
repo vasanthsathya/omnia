@@ -97,6 +97,7 @@ activemq_container_failure_msg: |
 idrac_telemetry_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
 idrac_telemetry_receiver_dir_path: "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
 idrac_telemetry_github: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git
+idrac_telemetry_reference_git_clone_path: "/opt/omnia/telemetry/idrac_telemetry/idrac_telemetry_receiver/iDRAC-Telemetry-Reference-Tools"
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 reference_tools_stable_commit: "3e78774"
 max_retries: 10
@@ -125,8 +126,11 @@ idrac_telemetry_receiver_env:
   HTTP_PROXY: ""
   HTTPS_PROXY: ""
 idrac_telemetry_receiver_container_success_msg: "The {{ idrac_telemetry_receiver_container_name }} container has been successfully deployed."
+idrac_telemetry_receiver_container_not_running_msg: |
+  The {{ idrac_telemetry_receiver_container_name }} container is not running. 
+  Please check podman logs {{ idrac_telemetry_receiver_container_name }} for more details.
 idrac_telemetry_receiver_container_failure_msg: |
   Deployment of {{ idrac_telemetry_receiver_container_name }} container failed.
-  To resolve this, check logs using 'podman logs {{ idrac_telemetry_receiver_container_name }}' from OIM
+  To resolve this, check logs using 'podman logs {{ activemq_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
   After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ idrac_telemetry_receiver_container_name }} container.
