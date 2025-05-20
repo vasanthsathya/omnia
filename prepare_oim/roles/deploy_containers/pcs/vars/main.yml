@@ -158,3 +158,43 @@ pcs_failed_resource_msg: |
   please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
   After the cleanup, you can re-run the original playbook to deploy the {{ pcs_container_name }} container
   and its resources.
+
+# Usage: pcs-container-resource-init.sh: idrac_telemetry
+# mysqldb
+telemetry_pcs_group: omnia_telemetry
+mysql_env_vars:
+  - "MYSQL_DATABASE={{ mysql_database }}"
+mysql_run_opts: >-
+  --restart=no
+  --network=host
+  --secret mysql_root_password,type=env,target=MYSQL_ROOT_PASSWORD
+  --secret mysql_user,type=env,target=MYSQL_USER
+  --secret mysql_user_password,type=env,target=MYSQL_PASSWORD
+  --env {{ mysql_env_vars | join(' ') }}
+  {{ mysqldb_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
+  --name {{ mysql_container_name }}
+  --entrypoint {{ mysql_entry_script }}
+  --detach
+
+# activemq
+activemq_run_opts: >-
+  --network=host
+  --volume activemq_log:/opt/activemq/data{{ selinux_option }}
+  --detach
+  --name {{ activemq_container_name }}
+
+# idrac_telemetry_receiver
+idrac_telemetry_receiver_run_opts: >-
+  --network=host
+  --secret mysql_user,type=env,target=MYSQL_USER
+  --secret mysql_user_password,type=env,target=MYSQL_PASSWORD
+  {% for volume in idrac_telemetry_receiver_volumes %}
+  --volume {{ volume }}
+  {% endfor %}
+  --workdir=/go/src/github.com/telemetry-reference-tools
+  {% for key, value in idrac_telemetry_receiver_env.items() %}
+  --env {{ key }}={{ value }}
+  {% endfor %}
+  --name {{ idrac_telemetry_receiver_container_name }}
+  --entrypoint {{ idrac_telemetry_receiver_entry_script }}
+  --detach

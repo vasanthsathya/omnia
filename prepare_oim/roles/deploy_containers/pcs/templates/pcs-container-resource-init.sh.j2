@@ -72,6 +72,42 @@ pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
  op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
 {% endif %}
 
+# Resource for idrac_telemetry containers
+{% if hostvars['localhost']['idrac_telemetry_support'] %}
+# Resource for MySQL container
+pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
+    name={{ mysql_container_name }} \
+    image={{ mysql_image }}:{{ mysql_image_tag }} \
+    reuse=true \
+    run_opts="{{ mysql_run_opts }}"  \
+    op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+    op start interval={{ start_interval }} timeout={{ start_timeout }} \
+    op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+    --group {{ telemetry_pcs_group }}
+
+# Resource for ActiveMQ container
+pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
+  name={{ activemq_container_name }} \
+  image={{ activemq_image }} \
+  reuse=true \
+  run_opts="{{ activemq_run_opts }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+
+# Resource for iDRAC-telemetry-receiver container
+pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:podman \
+  name={{ idrac_telemetry_receiver_container_name }} \
+  image={{ idrac_telemetry_receiver_go_image }} \
+  reuse=true \
+  run_opts="{{ idrac_telemetry_receiver_run_opts }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+{% endif %}
+
 # Create ordering constraints
 pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
 pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
@@ -96,6 +132,7 @@ pcs resource defaults update migration-threshold={{ ha_migration_threshold }}
 pcs resource defaults update failure-timeout={{ failure_timeout }}
 {% endif %}
 
+
 # Initialize the total sleep time
 total_sleep_time=0
 # Loop for a maximum of three minutes
@@ -114,6 +151,6 @@ for ((i=0; i<max_iterations; i++)); do
 done
 
 # Create a file which signifies the pcs resources were created.
-# This file also contains the resources and its state which ansible can check against. 
+# This file also contains the resources and its state which ansible can check against.
 echo "$(date): PCS Container Resources Have Been Created"
 pcs resource | awk -F' ' '{print $2 " " $4}' | sed 's/^\s*//;s/\s*$//' > {{ pcs_container_resources_finished }}
