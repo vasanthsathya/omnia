@@ -15,10 +15,19 @@ A typical hierarchical cluster consists of:
 .. image:: ../../images/xcat_hierarchical.png
     :width: 300px
 
-Omnia supports hierarchical cluster formation only when ``service_node`` role is defined in ``roles_config.yml`` input file under the ``/opt/omnia/input/project_default/`` directory, where compute nodes will be associated with their respective service node. 
-If ``service_node`` role is not defined then all nodes will be provisioned from the OIM. For more information, `click here <composable_roles.html>`_.
+Prerequisites
+--------------
 
-.. note:: To support hierarchical provisioning, all the SNs (active or passive) should be in booted state.
+1. Ensure that the ``/opt/omnia/input/project_default/software_config.json`` file contains ``service_node`` under the ``softwares`` list. ::
+
+    "softwares": [
+        
+        {"name": "service_node" },
+    ]
+
+2. Omnia supports hierarchical cluster formation only when ``service_node`` role is defined in ``roles_config.yml`` input file under the ``/opt/omnia/input/project_default/`` directory. If ``service_node`` role is not defined then all nodes will be provisioned from the OIM. For more information, `click here <composable_roles.html>`_.
+
+3. To support hierarchical provisioning, all the SNs (active or passive) should be in booted state.
 
 Playbook execution
 -------------------
