@@ -110,10 +110,10 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
 {% endif %}
 
 # Create ordering constraints
-pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
-pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
+# pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
+# pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
 {% if hostvars['localhost']['k8s_support'] %}
-pcs constraint order start {{ omnia_core_name }} then start {{ kubespray_name }}
+# pcs constraint order start {{ omnia_core_name }} then start {{ kubespray_name }}
 {% endif %}
 
 pcs resource defaults update migration-threshold={{ migration_threshold }}
