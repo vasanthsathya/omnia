@@ -74,6 +74,7 @@ pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
 
 # Resource for idrac_telemetry containers
 {% if hostvars['localhost']['idrac_telemetry_support'] %}
+pcs resource group add {{ telemetry_pcs_group }}
 # Resource for MySQL container
 pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     name={{ mysql_container_name }} \
