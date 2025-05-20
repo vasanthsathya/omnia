@@ -331,28 +331,29 @@ def validate_vip_address(
 
         # validate virtual_ip_address is in the admin subnet
         if not validation_utils.is_ip_in_subnet(oim_admin_ip, admin_netmaskbits, vip_address):
-           errors.append(create_error_msg(
+            errors.append(create_error_msg(
                 f"{config_type} virtual_ip_address",
                 vip_address,
                 en_us_validation_msg.virtual_ip_not_in_admin_subnet
             ))
 
 def validate_k8s_head_node_ha(
-    errors, config_type, 
-    ha_data, network_spec_data, 
+    errors, config_type,
+    ha_data, network_spec_data,
     roles_config_json,
-    all_service_tags, 
+    all_service_tags,
     ha_node_vip_list):
     """
     Validates Kubernetes HA (High Availability) head node configuration for potential issues.
     Args:
         errors (list): A list to which error messages will be appended.
-        config_type (str): A string representing the current configuration context or type, used in error reporting.
+        config_type (str): A string representing the configuration context or type
+        ,used in error reporting.
         ha_data (dict): Contains high availability configuration data, including:
             - 'external_loadbalancer_ip' (str): The IP of the external load balancer.
             - 'active_node_service_tag' (list): A list of service tags marked as active.
         network_spec_data (dict): Contains network specification data, including:
-            - 'admin_network' (dict): Includes 'static_range' and 'dynamic_range' for the admin network.
+            - 'admin_network' (dict): Includes 'static' and 'dynamic' for the admin network.
             - 'oim_admin_ip' (str): The OIM admin IP.
             - 'admin_uncorrelated_node_start_ip' (str): Starting IP for uncorrelated admin nodes.
         roles_config_json (dict): Reserved for future role-based validations (currently unused).
@@ -362,18 +363,15 @@ def validate_k8s_head_node_ha(
     Returns:
         None: Errors are collected in the provided `errors` list.
     """
-    
     #get network_spec data
     admin_network = network_spec_data['admin_network']
     admin_static_range = admin_network.get("static_range", "N/A")
     admin_dynamic_range = admin_network.get("dynamic_range","N/A")
     oim_admin_ip = network_spec_data['oim_admin_ip']
-    admin_uncorrelated_node_start_ip = network_spec_data['admin_uncorrelated_node_start_ip']
     does_overlap=[]
     external_loadbalancer_ip = ha_data.get("external_loadbalancer_ip")
     active_node_service_tags = ha_data.get('active_node_service_tag')
     # validate active_node_service_tag and passive_node_service_tag
-    #validate_service_tag(errors, config_type, all_service_tags, active_node_service_tag, passive_nodes)
     all_service_tags_set = set(all_service_tags)
     active_node_service_tags_set = set(active_node_service_tags)
 
@@ -384,18 +382,20 @@ def validate_k8s_head_node_ha(
     if common_tags:
         errors.append(
             create_error_msg(
-                f"{config_type}", 
-                common_tags, 
+                f"{config_type}",
+                common_tags,
                 en_us_validation_msg.duplicate_active_node_service_tag
             )
         )
-    
+
     if external_loadbalancer_ip:
         ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
         does_overlap, _ = validation_utils.check_overlap(ip_ranges)
 
     if does_overlap:
-        errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.ip_overlap_fail_msg))
+        errors.append(
+                create_error_msg
+                ("IP overlap -", None, en_us_validation_msg.ip_overlap_fail_msg))
 
 def validate_service_node_ha(
     errors, config_type,
@@ -652,7 +652,6 @@ def validate_high_availability_config(
             logger.error(f"Missing key in HA data: {e}")
             errors.append(f"Missing key in HA data: {e}")
 
-    
     ha_configs = [
         ("oim_ha", ["admin_virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
         ("service_node_ha", ["service_nodes"]),
