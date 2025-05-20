@@ -139,6 +139,22 @@ os_version_ranges = {
 
 # Dict of the file that can be encrypted and it's ansible vault key
 def get_vault_password(yaml_file):
+    """
+    Retrieves the vault password file name associated with a given YAML file.
+
+    This function maps a specific YAML file name to its corresponding Ansible Vault
+    password file. It is typically used to locate the decryption key required for
+    accessing encrypted configuration files.
+
+    Parameters:
+        yaml_file (str): The full path to the YAML configuration file.
+
+    Returns:
+        str: The name of the vault password file corresponding to the YAML file.
+
+    Raises:
+        KeyError: If the YAML file is not found in the predefined mapping.
+    """
     vault_passwords = {
         "omnia_config_credentials.yml": ".omnia_config_credentials_key",
     }

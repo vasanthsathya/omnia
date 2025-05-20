@@ -72,7 +72,10 @@ def validate_software_config(
     return errors
 
 # Below is a validation function for each file in the input folder
-def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_local_repo_config(
+        input_file_path, data, logger,
+        module, omnia_base_dir,
+        module_utils_base, project_name):
     """
     Validates local repository configuration based on the cluster OS type.
 
