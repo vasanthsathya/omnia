@@ -109,7 +109,7 @@ idrac_telemetry_receiver_directories:
   - { path: "{{ idrac_telemetry_reference_path }}", mode: "{{ dir_permissions_755 }}" }
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
 idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
-idrac_telemetry_receiver_entry_script: "/usr/local/bin/mysqldb_init.sh"
+idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
 idrac_telemetry_receiver_init_script:
   - template: "idrac_telemetry_receiver_init.sh.j2"
     dest: "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver_init.sh"

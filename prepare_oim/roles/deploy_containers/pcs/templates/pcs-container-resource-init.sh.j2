@@ -77,7 +77,7 @@ pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
 # Resource for MySQL container
 pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     name={{ mysql_container_name }} \
-    image={{ mysql_image }}:{{ mysql_image_tag }} \
+    image={{ mysql_docker_image }}:{{ mysql_image_tag }} \
     reuse=true \
     run_opts="{{ mysql_run_opts }}"  \
     op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
