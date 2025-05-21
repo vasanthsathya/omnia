@@ -63,6 +63,9 @@
     - name: Cleanup prometheus pump container
       ansible.builtin.import_tasks: cleanup_prometheus_pump.yml
 
+    - name: Cleanup prometheus container
+      ansible.builtin.import_tasks: cleanup_prometheus.yml
+
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true

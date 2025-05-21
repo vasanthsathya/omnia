@@ -55,10 +55,14 @@
       containers.podman.podman_container_info:
         name: "{{ activemq_container_name }}"
       register: activemq_container_status
+      until: activemq_container_status.containers | length > 0 and
+             activemq_container_status.containers[0].State.Status == 'running'
+      retries: "{{ max_retries }}"
+      delay: "{{ delay_count }}"
 
     - name: Notify user of ActiveMQ container deployment status
       ansible.builtin.debug:
-        msg: "{{ activemq_container_success_msg }}"
+        msg: "{{ activemq_container_success_msg.splitlines() | join(' ') }}"
       when:
         - activemq_container_status.containers | length > 0
         - activemq_container_status.containers[0].State.Status == 'running'
@@ -66,4 +70,4 @@
   rescue:
     - name: ActiveMQ container deployment failed
       ansible.builtin.fail:
-        msg: "{{ activemq_container_failure_msg }}"
+        msg: "{{ activemq_container_failure_msg.splitlines() | join(' ') }}"
