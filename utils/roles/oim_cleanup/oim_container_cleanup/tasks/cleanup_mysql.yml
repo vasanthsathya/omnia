@@ -53,7 +53,7 @@
         path: "{{ item }}"
         state: absent
       loop:
-        - "{{ mysqldb_data_dir }}"
+        - "{{ mysql_data_dir }}"
         - "{{ mysql_log_volume }}"
 
     - name: Remove telemetry directory
