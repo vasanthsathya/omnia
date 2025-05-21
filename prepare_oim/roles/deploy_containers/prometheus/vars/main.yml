@@ -15,7 +15,7 @@
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 dir_mode: "0755"
 file_mode: "0644"
-telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry/"
+telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 max_retries: 10
 delay_count: 5
