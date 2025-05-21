@@ -216,14 +216,10 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     # verify service_node entry present in sofwate_config.json
     # If no entry is present, then fail the input validator
     service_role_defined = False
-    service_node_entry_software_config = False
     if validation_utils.key_value_exists(roles, NAME, "service_node"):
         service_role_defined = True
-    if validate_service_node_in_software_config(input_file_path):
-        service_node_entry_software_config = True
-   
-    if service_role_defined and not service_node_entry_software_config:
-        errors.append(create_error_msg("software_config.yml", None, \
+        if not validate_service_node_in_software_config(input_file_path):
+            errors.append(create_error_msg("software_config.yml", None, \
                                        en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG))
 
     if len(errors) <= 0:
