@@ -3,6 +3,9 @@ import yaml
 import copy
 from pprint import pprint
 
+RPM_LIST_BASE = "rpm"
+REBOOT_KEY = "reboot"
+
 # Read JSON file
 def read_json_file(file_path):
     with open(file_path, 'r') as file:
@@ -18,9 +21,14 @@ def read_roles_config(file_path):
 
 def careful_merge(split_dict, split_key, value):
     val_d = split_dict.get(split_key, {})
+    # import pdb; pdb.set_trace()
     for key, val in value.items():
+        if key == REBOOT_KEY:
+            val_d[key] = val
+            continue
         got_existing_list = val_d.get(key, []) + val
-        val_d[key] = got_existing_list #TODO: Unique list
+        # Order matters?
+        val_d[key] = list(set(got_existing_list)) # remove duplicates 
     split_dict[split_key] = val_d
 
 def split_comma_keys(input_dict):
@@ -36,9 +44,11 @@ def get_type_dict(clust_list):
     for pkg_dict in clust_list:
         pkgtype = pkg_dict.get('type')
         if pkgtype == 'rpm_list':
-            type_dict[pkgtype] = type_dict.get(pkgtype, []) + pkg_dict.get('package_list')
+            type_dict[RPM_LIST_BASE] = type_dict.get(pkgtype, []) + pkg_dict.get('package_list')
         else:
             type_dict[pkgtype] = type_dict.get(pkgtype, []) + [pkg_dict.get('package')]
+        reboot_val = pkg_dict.get(REBOOT_KEY, False)
+        type_dict[REBOOT_KEY] = type_dict.get(REBOOT_KEY, False) or reboot_val
     return type_dict
 
 def modify_addl_software(addl_dict):
@@ -59,16 +69,19 @@ roles_dict = read_roles_config(roles_config)
 # print("additional_software Data:")
 # pprint(addl_soft_json_data)
 
-print("\ROLES Data:")
+print("###### ROLES Data:")
 pprint(roles_dict)
-
 print("")
+
+print("****** ADDL soft")
 addl_software_dict = modify_addl_software(addl_soft_json_data)
-# pprint(addl_software_dict)
+pprint(addl_software_dict)
+print("")
 
 print("Roles + groups split DATA")
 split_comma_dict = split_comma_keys(addl_software_dict)
 pprint(split_comma_dict)
+print("")
 
 # intersection of split_comma_dict and roles_yaml_data
 common_roles = split_comma_dict.keys() & roles_dict.keys()
