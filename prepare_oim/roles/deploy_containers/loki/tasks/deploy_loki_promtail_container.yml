@@ -1,0 +1,164 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+
+- name: Check if Loki container is present # noqa: name[template]
+  containers.podman.podman_container_info:
+    name: "{{ loki_container_name }}"
+  register: loki_container_info
+  failed_when: false
+
+- name: Check if Promtail container is present # noqa: name[template]
+  containers.podman.podman_container_info:
+    name: "{{ promtail_container_name }}"
+  register: promtail_container_info
+  failed_when: false
+
+- name: Deploy Loki container and check deployment status
+  when:
+    - loki_container_info.containers | length == 0 or loki_container_info.containers[0].State.Status != 'running'
+  block:
+    - name: Create Loki config directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ dir_permissions_755 }}"
+      loop: "{{ loki_podman_volumes }}"
+
+    - name: Create Podman bind-mounted volumes for Loki
+      containers.podman.podman_volume:
+        name: "{{ item.name }}"
+        state: present
+        driver: local
+        options:
+          - "o=bind"
+          - "type=none"
+          - "device={{ item.path }}"
+      loop: "{{ loki_podman_volumes }}"
+
+    - name: Download Loki config file
+      ansible.builtin.get_url:
+        url: "{{ loki_config_url }}"
+        dest: "{{ loki_config_file }}"
+        mode: '0644'
+ 
+    - name: Download Promtail config
+      ansible.builtin.get_url:
+        url: "{{ promtail_config_url }}"
+        dest: "{{ promtail_config_file }}"
+        mode: '0644'
+
+    - name: Pull Loki Podman image
+      containers.podman.podman_image:
+        name: "{{ loki_image }}"
+        tag: "{{ loki_image_tag }}"
+        state: present
+      register: loki_image_pull_result
+
+    - name: Fail if Loki image pull fails
+      ansible.builtin.fail:
+        msg: "{{ loki_image_pull_fail_msg }}"
+      when: loki_image_pull_result.failed
+
+    - name: Verify Loki image exists
+      containers.podman.podman_image_info:
+        name: "{{ loki_image }}:{{ loki_image_tag }}"
+      register: loki_image_facts
+
+    - name: Fail if Loki image not found
+      ansible.builtin.fail:
+        msg: "{{ loki_image_not_found_msg }}"
+      when: not loki_image_facts.images
+
+    - name: Pull Promtail Podman image
+      containers.podman.podman_image:
+        name: "{{ promtail_image }}"
+        tag: "{{ promtail_image_tag }}"
+        state: present
+      register: image_pull_result
+
+    - name: Fail if Promtail image pull fails
+      ansible.builtin.fail:
+        msg: "{{ promtail_image_pull_fail_msg }}"
+      when: image_pull_result.failed
+
+    - name: Verify Promtail image exists
+      containers.podman.podman_image_info:
+        name: "{{ promtail_image }}:{{ promtail_image_tag }}"
+      register: image_facts
+
+    - name: Fail if Promtail image not found
+      ansible.builtin.fail:
+        msg: "{{ promtail_image_not_found_msg }}"
+      when: not image_facts.images
+
+    - name: Deploy Loki container
+      containers.podman.podman_container:
+        name: "{{ loki_container_name }}"
+        image: "{{ loki_image }}:{{ loki_image_tag }}"
+        state: started
+        recreate: false
+        restart_policy: "no"
+        network_mode: host
+        volumes: "{{ loki_volumes }}"
+        etc_hosts:
+          loki: "127.0.0.1"
+          promtail: "127.0.0.1"
+        command:
+          - -config.file=/var/lib/loki/loki-config.yaml
+
+    - name: Check if Loki container is running after deployment
+      containers.podman.podman_container_info:
+        name: "{{ loki_container_name }}"
+      register: loki_container_status
+
+    - name: Notify user of Loki deployment status
+      ansible.builtin.debug:
+        msg: "{{ loki_container_success_msg }}"
+      when:
+        - loki_container_status.containers | length > 0
+        - loki_container_status.containers[0].State.Status == 'running'
+
+    - name: Deploy Promtail container
+      containers.podman.podman_container:
+        name: "{{ promtail_container_name }}"
+        image: "{{ promtail_image }}:{{ promtail_image_tag }}"
+        state: started
+        recreate: false
+        restart_policy: "no"
+        network_mode: host
+        volumes: "{{ loki_volumes }}"
+        etc_hosts:
+          loki: "127.0.0.1"
+          promtail: "127.0.0.1"
+        command: 
+          -config.file=/var/lib/loki/promtail-config.yaml
+ 
+
+    - name: Check if Promtail container is running after deployment
+      containers.podman.podman_container_info:
+        name: "{{ promtail_container_name }}"
+      register: promtail_container_status
+
+    - name: Notify user of Promtail deployment status
+      ansible.builtin.debug:
+        msg: "{{ promtail_container_success_msg }}"
+      when:
+        - promtail_container_status.containers | length > 0
+        - promtail_container_status.containers[0].State.Status == 'running'
+
+  rescue:
+    - name: Loki or Promtail container deployment failed
+      ansible.builtin.fail:
+        msg: "{{ container_failure_msg }}"
