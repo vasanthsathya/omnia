@@ -52,7 +52,7 @@
           - "type=none"
           - "device={{ item.path }}"
       loop: "{{ prometheus_podman_volumes }}"
-  
+
     - name: Deploy Prometheus container
       containers.podman.podman_container:
         name: "{{ prometheus_container_name }}"
@@ -83,12 +83,6 @@
         - prometheus_status.containers | length > 0
         - prometheus_status.containers[0].State.Status == 'running'
 
-    - name: Failure when {{ prometheus_container_name }} is not running
-      ansible.builtin.fail:
-        msg: "{{ prometheus_container_failure_msg.splitlines() | join(' ') }}"
-      when:
-        - prometheus_status.containers | length > 0
-        - prometheus_status.containers[0].State.Status != 'running'
   rescue:
     - name: Prometheus container deployment failed
       ansible.builtin.fail:

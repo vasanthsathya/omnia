@@ -127,7 +127,7 @@ idrac_telemetry_receiver_env:
   HTTPS_PROXY: ""
 idrac_telemetry_receiver_container_success_msg: "The {{ idrac_telemetry_receiver_container_name }} container has been successfully deployed."
 idrac_telemetry_receiver_container_not_running_msg: |
-  The {{ idrac_telemetry_receiver_container_name }} container is not running. 
+  The {{ idrac_telemetry_receiver_container_name }} container is not running.
   Please check podman logs {{ idrac_telemetry_receiver_container_name }} for more details.
 idrac_telemetry_receiver_container_failure_msg: |
   Deployment of {{ idrac_telemetry_receiver_container_name }} container failed.
