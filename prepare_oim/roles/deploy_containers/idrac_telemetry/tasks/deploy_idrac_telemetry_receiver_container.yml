@@ -48,6 +48,13 @@
         msg: "{{ idrac_git_clone_error_msg.splitlines() | join(' ') }}"
       when: clone_idrac_telemetry is failed
 
+- name: Copy iDRAC Telemetry receiver startup script and set executable permissions
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ idrac_telemetry_receiver_init_script }}"
+
 - name: Deploy iDRAC Telemtery Receiver container and check deployment status
   when: idrac_receiver_container_info.containers | length == 0 or idrac_receiver_container_info.containers[0].State.Status != 'running'
   block:
@@ -60,10 +67,13 @@
         hostname: "{{ idrac_telemetry_receiver_container_name }}"
         network_mode: host
         volumes: "{{ idrac_telemetry_receiver_volumes }}"
+        secrets:
+          - "{{ mysql_user }},type=env,target=MYSQL_USER"
+          - "{{ mysql_user_password }},type=env,target=MYSQL_PASSWORD"
         working_dir: "/go/src/github.com/telemetry-reference-tools"
         privileged: false
         env: "{{ idrac_telemetry_receiver_env }}"
-        command: /bin/sh -c "./scripts/example/idrac-telemetry-receiver.sh"
+        entrypoint: "{{ idrac_telemetry_receiver_entry_script }}"
 
     - name: Check if iDRAC Telemtery Receiver container is running after deployment
       containers.podman.podman_container_info:

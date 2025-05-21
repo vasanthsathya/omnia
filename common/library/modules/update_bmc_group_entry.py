@@ -121,7 +121,7 @@ def add_bmc_entries(nodes, existing_entries, bmc_creds, module, result):
         parent = node.get('parent', '')
 
         if bmc_ip and bmc_ip not in existing_entries:
-            if is_bmc_reachable_or_auth(bmc_ip, bmc_creds.username, bmc_creds.password, module):
+            if is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'), bmc_creds.get('password'), module):
                 existing_entries[bmc_ip] = {
                     'BMC_IP': bmc_ip,
                     'GROUP_NAME': group,

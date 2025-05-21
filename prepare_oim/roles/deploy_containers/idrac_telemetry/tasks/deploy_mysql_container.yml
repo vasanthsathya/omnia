@@ -42,6 +42,13 @@
           - "device={{ item.path }}"
       loop: "{{ mysqldb_podman_volumes }}"
 
+    - name: Copy MySQLDB  startup script and set executable permissions
+      ansible.builtin.template:
+        src: "{{ item.template }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ mysqldb_init_script }}"
+
     - name: Pull Podman image
       containers.podman.podman_image:
         name: "{{ mysql_docker_image }}"
@@ -83,15 +90,12 @@
         network_mode: host
         volumes: "{{ mysqldb_volumes }}"
         secrets:
-          - "{{ mysql_root_password }}"
-          - "{{ mysql_user }}"
-          - "{{ mysql_user_password }}"
+          - "{{ mysql_root_password }},type=env,target=MYSQL_ROOT_PASSWORD"
+          - "{{ mysql_user }},type=env,target=MYSQL_USER"
+          - "{{ mysql_user_password }},type=env,target=MYSQL_PASSWORD"
         env:
           MYSQL_DATABASE: "{{ mysql_database }}"
-        entrypoint: "{{ bin_sh }}"
-        command:
-          - -c
-          - "{{ mysql_entry_script }}"
+        entrypoint: "{{ mysql_entry_script }}"
       no_log: false
 
     - name: Check if MySQL container is running after deployment

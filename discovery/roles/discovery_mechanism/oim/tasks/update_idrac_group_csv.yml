@@ -15,10 +15,9 @@
 
 - name: Set fact for discovered nodes
   ansible.builtin.set_fact:
-    non_service_oim_nodes: >-
+    non_oim_nodes: >-
       {{
         discovered_nodes
-        | rejectattr('role', 'search', 'service_node')
         | rejectattr('role', 'search', 'oim_ha_node')
         | list
       }}
@@ -26,7 +25,7 @@
 - name: Update BMC entries with group details in CSV
   update_bmc_group_entry:
     csv_path: "{{ bmc_group_csv_path }}"
-    nodes: "{{ non_service_oim_nodes }}"
+    nodes: "{{ non_oim_nodes }}"
     bmc_username: "{{ bmc_username }}"
     bmc_password: "{{ bmc_password }}"
   register: bmc_result
