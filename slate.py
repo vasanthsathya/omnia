@@ -44,8 +44,8 @@ def get_type_dict(clust_list):
     for pkg_dict in clust_list:
         pkgtype = pkg_dict.get('type')
         if pkgtype == 'rpm_list':
-            type_dict[RPM_LIST_BASE] = type_dict.get(pkgtype, []) + pkg_dict.get('package_list')
-        else:
+            type_dict[RPM_LIST_BASE] = type_dict.get(RPM_LIST_BASE, []) + pkg_dict.get('package_list')
+        else: #image and rpm
             type_dict[pkgtype] = type_dict.get(pkgtype, []) + [pkg_dict.get('package')]
         reboot_val = pkg_dict.get(REBOOT_KEY, False)
         type_dict[REBOOT_KEY] = type_dict.get(REBOOT_KEY, False) or reboot_val
@@ -57,6 +57,7 @@ def modify_addl_software(addl_dict):
         clust_list = value.get('cluster', [])
         type_dict = get_type_dict(clust_list)
         new_dict[key] = type_dict
+        # import pdb; pdb.set_trace()
     return new_dict
 
 # Example usage:
@@ -66,9 +67,9 @@ roles_config = '/opt/omnia/input/project_default/roles_config.yml'
 addl_soft_json_data = read_json_file(addl_soft)
 roles_dict = read_roles_config(roles_config)
 
-# print("additional_software Data:")
-# pprint(addl_soft_json_data)
-
+print("additional_software Data:")
+pprint(addl_soft_json_data)
+print(" ")
 print("###### ROLES Data:")
 pprint(roles_dict)
 print("")
@@ -103,5 +104,6 @@ for key in split_comma_dict.keys():
     careful_merge(split_comma_dict, key, to_all)
 # split_comma_dict['additional_software'] = to_all
 
+print("  ")
 print("ALLLLLLL Roles + groups split DATA")
 pprint(split_comma_dict)

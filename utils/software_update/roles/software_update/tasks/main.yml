@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: Get the software organized by group
+  group_package_map:
+
+# WIP
+- name: Include software update variables
+  ansible.builtin.meta: end_play
 
 - name: Include software config variables
   ansible.builtin.include_tasks: include_software_config.yml
