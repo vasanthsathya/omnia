@@ -66,6 +66,9 @@
         command:
           - "--config.file=/config/prometheus.yml"
           - "--storage.tsdb.path=/prometheus"
+        log_driver: "k8s-file"
+        log_opt:
+          path: "{{ prometheus_logs_dir }}/prometheus.log"
 
     - name: Check if Prometheus container is running after deployment
       containers.podman.podman_container_info:
