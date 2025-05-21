@@ -24,7 +24,7 @@ def careful_merge(split_dict, split_key, value):
     # import pdb; pdb.set_trace()
     for key, val in value.items():
         if key == REBOOT_KEY:
-            val_d[key] = val
+            val_d[key] = val_d.get(key, False) or val
             continue
         got_existing_list = val_d.get(key, []) + val
         # Order matters?
@@ -88,13 +88,20 @@ common_roles = split_comma_dict.keys() & roles_dict.keys()
 
 for xrole in common_roles:
     print(xrole)
+    # pop out the role
     bundle = split_comma_dict.pop(xrole)
     # pprint(bundle)
+    # get groups from their role
     xgroup_list = roles_dict.get(xrole)
 
     pprint(xgroup_list)
     for xgroup in xgroup_list:
         careful_merge(split_comma_dict, xgroup, bundle)
+
+to_all = split_comma_dict.pop('additional_software', {})
+for key in split_comma_dict.keys():
+    careful_merge(split_comma_dict, key, to_all)
+# split_comma_dict['additional_software'] = to_all
 
 print("ALLLLLLL Roles + groups split DATA")
 pprint(split_comma_dict)
