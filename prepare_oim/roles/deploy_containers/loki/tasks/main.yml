@@ -14,7 +14,7 @@
 
 ---
 
-- name: Deploy grafana containers when idrac_telemetry_support is true
+- name: Deploy Loki and Promtail containers if visualization support is enabled
   when: hostvars['localhost']['visualization_support']
   block:
     - name: Deploy Grafana container

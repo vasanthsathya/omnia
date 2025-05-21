@@ -25,6 +25,7 @@
   register: promtail_container_info
   failed_when: false
 
+# ─── Block 1: Loki Deployment ───────────────────────────────────────
 - name: Deploy Loki container and check deployment status
   when:
     - loki_container_info.containers | length == 0 or loki_container_info.containers[0].State.Status != 'running'
@@ -52,12 +53,6 @@
         url: "{{ loki_config_url }}"
         dest: "{{ loki_config_file }}"
         mode: '0644'
- 
-    - name: Download Promtail config
-      ansible.builtin.get_url:
-        url: "{{ promtail_config_url }}"
-        dest: "{{ promtail_config_file }}"
-        mode: '0644'
 
     - name: Pull Loki Podman image
       containers.podman.podman_image:
@@ -80,28 +75,6 @@
       ansible.builtin.fail:
         msg: "{{ loki_image_not_found_msg }}"
       when: not loki_image_facts.images
-
-    - name: Pull Promtail Podman image
-      containers.podman.podman_image:
-        name: "{{ promtail_image }}"
-        tag: "{{ promtail_image_tag }}"
-        state: present
-      register: image_pull_result
-
-    - name: Fail if Promtail image pull fails
-      ansible.builtin.fail:
-        msg: "{{ promtail_image_pull_fail_msg }}"
-      when: image_pull_result.failed
-
-    - name: Verify Promtail image exists
-      containers.podman.podman_image_info:
-        name: "{{ promtail_image }}:{{ promtail_image_tag }}"
-      register: image_facts
-
-    - name: Fail if Promtail image not found
-      ansible.builtin.fail:
-        msg: "{{ promtail_image_not_found_msg }}"
-      when: not image_facts.images
 
     - name: Deploy Loki container
       containers.podman.podman_container:
@@ -130,6 +103,45 @@
         - loki_container_status.containers | length > 0
         - loki_container_status.containers[0].State.Status == 'running'
 
+  rescue:
+    - name: Loki container deployment failed
+      ansible.builtin.fail:
+        msg: "{{ loki_container_failure_msg }}"
+
+# ─── Block 2: Promtail Deployment ─────────────────────────────────────
+
+- name: Deploy Promtail container and check deployment status
+  when:
+    - promtail_container_info.containers | length == 0 or promtail_container_info.containers[0].State.Status != 'running'
+  block:
+    - name: Download Promtail config
+      ansible.builtin.get_url:
+        url: "{{ promtail_config_url }}"
+        dest: "{{ promtail_config_file }}"
+        mode: '0644'
+
+    - name: Pull Promtail Podman image
+      containers.podman.podman_image:
+        name: "{{ promtail_image }}"
+        tag: "{{ promtail_image_tag }}"
+        state: present
+      register: image_pull_result
+
+    - name: Fail if Promtail image pull fails
+      ansible.builtin.fail:
+        msg: "{{ promtail_image_pull_fail_msg }}"
+      when: image_pull_result.failed
+
+    - name: Verify Promtail image exists
+      containers.podman.podman_image_info:
+        name: "{{ promtail_image }}:{{ promtail_image_tag }}"
+      register: image_facts
+
+    - name: Fail if Promtail image not found
+      ansible.builtin.fail:
+        msg: "{{ promtail_image_not_found_msg }}"
+      when: not image_facts.images
+
     - name: Deploy Promtail container
       containers.podman.podman_container:
         name: "{{ promtail_container_name }}"
@@ -142,9 +154,8 @@
         etc_hosts:
           loki: "127.0.0.1"
           promtail: "127.0.0.1"
-        command: 
-          -config.file=/var/lib/loki/promtail-config.yaml
- 
+        command:
+          - -config.file=/var/lib/loki/promtail-config.yaml
 
     - name: Check if Promtail container is running after deployment
       containers.podman.podman_container_info:
@@ -159,6 +170,6 @@
         - promtail_container_status.containers[0].State.Status == 'running'
 
   rescue:
-    - name: Loki or Promtail container deployment failed
+    - name: Promtail container deployment failed
       ansible.builtin.fail:
-        msg: "{{ container_failure_msg }}"
+        msg: "{{ promtail_container_failure_msg }}"
