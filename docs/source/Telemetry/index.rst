@@ -15,8 +15,6 @@ To initiate telemetry support, fill out the following parameters in ``input/tele
    :header-rows: 1
    :keepspace:
 
-.. [1] Boolean values does not need double or single quotes.
-
 .. note:: The ``input/telemetry_config.yml`` file is encrypted during the execution of ``omnia.yml`` playbook. Use the below command to decrypt and edit the encrypted input files:
     ::
         ansible-vault edit telemetry_config.yml --vault-password-file .telemetry_vault_key
