@@ -131,12 +131,19 @@ def validate_layer_group_separation(logger, roles):
     return errors
 
 def validate_service_node_in_software_config(input_file_path):
+    """
+    verifies service_node entry present in sofwate config.json
+
+    Returns: 
+        True if service_node entry is present
+        False if no entry
+    """    
     #verify service_node  with sofwate config json
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
     softwares = software_config_json["softwares"]
     if validation_utils.contains_software(softwares, "service_node"):
-            return True
+        return True
     return False
 
 def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
@@ -204,16 +211,20 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     # Check maximum roles limit
     if roles and len(roles) > MAX_ROLES:
         errors.append(create_error_msg(ROLES, f'Current number of roles is {len(roles)}:', en_us_validation_msg.max_number_of_roles_msg))
-    
+
+    # Role Service_node is defined in roles_config.yml,
+    # verify service_node entry present in sofwate_config.json
+    # If no entry is present, then fail the input validator
     service_role_defined = False
     service_node_entry_software_config = False
     if validation_utils.key_value_exists(roles, NAME, "service_node"):
         service_role_defined = True
     if validate_service_node_in_software_config(input_file_path):
         service_node_entry_software_config = True
-        
+   
     if service_role_defined and not service_node_entry_software_config:
-        errors.append(create_error_msg("software_config.yml", None, en_us_validation_msg.service_node_entry_missing_roles_config_msg))
+        errors.append(create_error_msg("software_config.yml", None, \
+                                       en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG))
 
     if len(errors) <= 0:
         # List of groups which need to have their resource_mgr_id set
