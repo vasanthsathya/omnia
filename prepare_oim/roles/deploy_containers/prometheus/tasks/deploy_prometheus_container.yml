@@ -66,7 +66,7 @@
         command:
           - "--config.file=/config/prometheus.yml"
           - "--storage.tsdb.path=/prometheus"
-        log_driver: "k8s-file"
+        log_driver: "json-file"
         log_opt:
           path: "{{ prometheus_logs_dir }}/prometheus.log"
 
