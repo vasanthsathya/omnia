@@ -54,7 +54,7 @@ prometheus_image: "prom/prometheus:v2.36.0"
 prometheus_volumes:
  - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml:ro,Z"
  - "prometheus_data:/prometheus"
-#  - "prometheus_log:/prometheus/log"
+ - "prometheus_log:/prometheus/log"
 
 prometheus_env:
  PROMETHEUS_DB: "poweredge_telemetry_metrics"
