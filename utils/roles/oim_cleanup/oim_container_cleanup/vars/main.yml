@@ -125,8 +125,8 @@ prometheus_cleanup_directory:
   - "{{ omnia_nfs_share }}/telemetry/prometheus"
   - "{{ omnia_nfs_share }}/log/telemetry/prometheus"
 prometheus_podman_volumes:
- - { name: "prometheus_data", path: "{{ omnia_nfs_share }}/telemetry/prometheus/prometheus_data" }
- - { name: "prometheus_log", path: "{{ omnia_nfs_share }}/log/telemetry/prometheus" }
+  - { name: "prometheus_data", path: "{{ omnia_nfs_share }}/telemetry/prometheus/prometheus_data" }
+  - { name: "prometheus_log", path: "{{ omnia_nfs_share }}/log/telemetry/prometheus" }
 
 # Usage: cleanup_grafana.yml
 grafana_container_name: "grafana"
