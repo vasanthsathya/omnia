@@ -87,7 +87,7 @@
     - role: deploy_containers/idrac_telemetry  # noqa:role-name[path]
     - role: deploy_containers/grafana # noqa:role-name[path]
     - role: deploy_containers/prometheus  # noqa:role-name[path]
-    - role: deploy_containers/loki
+    - role: deploy_containers/loki  # noqa:role-name[path]
 
 - name: Add all containers to known hosts on omnia core
   hosts: localhost
