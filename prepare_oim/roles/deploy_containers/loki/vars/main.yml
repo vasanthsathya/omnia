@@ -31,7 +31,8 @@ loki_podman_volumes:
 loki_volumes:
   - "loki_log:/var/log/loki{{ selinux_option }}"
   - "loki_data:/var/lib/loki{{ selinux_option }}"
-
+max_retries: 10
+delay_count: 5
 loki_config_url: "https://raw.githubusercontent.com/grafana/loki/v{{ loki_image_tag }}/cmd/loki/loki-local-config.yaml" 
 promtail_config_url: "https://raw.githubusercontent.com/grafana/loki/v{{ promtail_image_tag }}/clients/cmd/promtail/promtail-docker-config.yaml"
 loki_config_file: "{{ loki_data_directory}}/loki-config.yaml"
@@ -62,7 +63,3 @@ loki_image_pull_fail_msg: |
 loki_image_not_found_msg: |
   The Loki image '{{ loki_image }}:{{ loki_image_tag }}' was not found after pull attempt.
   Please check if the image is available and re-run the playbook.
-
-container_failure_msg: "Loki or Promtail container deployment failed."
-loki_image_pull_fail_msg: "Failed to pull Loki image."
-loki_image_not_found_msg: "Loki image not found after pull."
