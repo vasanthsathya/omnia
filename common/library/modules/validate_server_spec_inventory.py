@@ -51,14 +51,18 @@ def validate_inventory(inventory_status ,category_list, hostvars):
 
         group_names = host_data.get('group_names', [])
         if len(group_names) > 1:
-            raise ValueError(f"Failed, host {host_ip} is part of multiple groups: {group_names}.\
-                              A host can only belong to one group.")
+            raise ValueError(
+                f"Failed, host {host_ip} is part of multiple groups: {group_names}."
+                 " A host can only belong to one group.")
         print(f"Host {host_ip} belongs to group: {group_names[0]}")
 
         # Validate categories in inventory with server_spec
         if 'Categories' in host_data.keys() and host_data['Categories'] not in category_list:
-            raise ValueError(f"Failed, {host_ip}: {host_data['Categories']} \
-                             category in additional nic inventory not found in server_spec.yml.")
+            raise ValueError(
+                f"Failed, {host_ip}: {host_data['Categories']} category in additional NIC inventory"
+                " not found in server_spec.yml."
+            )
+
 
 def main():
     """
