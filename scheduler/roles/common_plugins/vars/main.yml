@@ -64,7 +64,7 @@ pulp_container_name: "{{ admin_nic_ip }}:{{ pulp_registry_port }}"
 multus_config: "true"
 multus_deployment_template: "{{ role_path }}/templates/multus-daemonset.j2"
 multus_deployment_manifest: "{{ k8s_tmp_dir }}/multus-daemonset.yml"
-multus_deployment_manifest_path: "{{ hostvars['localhost']['offline_manifest_path'] }}/multus-daemonset/multus-daemonset.yml"
+multus_deployment_manifest_path: "{{ hostvars['localhost']['offline_manifest_path'] }}/{{ hostvars['localhost']['multus_daemonset_pkg'] }}/{{ hostvars['localhost']['multus_daemonset_pkg'] }}.yml" # noqa: yaml[line-length]
 multus_deployment_manifest_mode: "0644"
 multus_version: "v4.1.4-thick"
 memory_limit_kube_multus: "1Gi"

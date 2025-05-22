@@ -158,7 +158,7 @@
         xilinx_device_plugin_pkg: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'xilinx-device-plugin') | map(attribute='package') | join }}" # noqa: yaml[line-length]
         nfs_subdir_external_provisioner_pkg: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'tarball') | selectattr('package', 'search', 'nfs-subdir-external-provisioner') | map(attribute='package') | join }}" # noqa: yaml[line-length]
         whereabouts_pkg: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'git') | selectattr('package', 'search', 'whereabouts') | map(attribute='package') | join }}" # noqa: yaml[line-length]
-
+        multus_daemonset_pkg: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'multus-daemonset') | map(attribute='package') | join }}" # noqa: yaml[line-length]
     - name: Conditional logic for kubeadm, kubectl, and kubelet packages # noqa: no-jinja-when
       ansible.builtin.set_fact:
         kubeadm_package: "kubeadm-v{{ hostvars['localhost']['k8s_version'] }}"

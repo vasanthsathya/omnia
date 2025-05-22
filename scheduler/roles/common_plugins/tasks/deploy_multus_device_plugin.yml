@@ -26,6 +26,11 @@
   ansible.builtin.set_fact:
     admin_nic_ip: "{{ network_data.admin_network.primary_oim_admin_ip }}"
 
+- name: Delete existing Multus deployment manifest file
+  ansible.builtin.file:
+    path: "{{ multus_deployment_manifest }}"
+    state: absent
+
 - name: Deploy multus v4.1.4-thick from renedered template
   when: multus_config
   block:
