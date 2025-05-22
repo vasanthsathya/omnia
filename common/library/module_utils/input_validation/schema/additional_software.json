@@ -53,6 +53,5 @@
       "additionalProperties": false
     }
   },
-  "required": ["additional_software"],
   "additionalProperties": false
 }

@@ -22,6 +22,7 @@ create_error_msg = validation_utils.create_error_msg
 create_file_path = validation_utils.create_file_path
 contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
+flatten_sub_groups = validation_utils.flatten_sub_groups
 
 def validate_software_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
@@ -387,6 +388,41 @@ def validate_additional_software(
 
     """
     errors = []
-    additional_software = data["additional_software"]["cluster"]
-    logger.info(f"Additional software: {additional_software}")
+    # Get all keys in the data
+    sub_groups = flatten_sub_groups(list(data.keys()))
+
+    # Check if additional_software is not given in the config
+    if "additional_software" not in sub_groups:
+        errors.append(
+            create_error_msg(
+                "additional_software.json",
+                None,
+                en_us_validation_msg.ADDITIONAL_SOFTWARE_FAIL_MSG))
+        return errors
+
+    # Get the roles config file
+    roles_config_file_path = omnia_base_dir.replace("../", "")
+    roles_config_file_path = create_file_path(
+        roles_config_file_path, file_names["roles_config"])
+
+    roles_config_json = validation_utils.load_yaml_as_json(
+        roles_config_file_path, omnia_base_dir, project_name, logger, module)
+    valid_roles = roles_config_json['Roles']
+
+    # Set of unique role names
+    available_roles_and_groups = set(role['name'] for role in roles_config_json['Roles'])
+    available_roles_and_groups.add("additional_software")
+
+    # Add the set of all unique group names
+    available_roles_and_groups.update(group for role in valid_roles for group in role['groups'])
+
+    # Check if a role or group name is present in the roles config file
+    for sub_group in sub_groups:
+        if sub_group not in available_roles_and_groups:
+            errors.append(
+                create_error_msg(
+                    "additional_software.json",
+                    None,
+                    en_us_validation_msg.ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG.format(sub_group)))
+
     return errors
