@@ -76,8 +76,8 @@ def main():
 
     module_args = dict(
         inventory_status= {"type": "str", "required": False, "default": "false"},
-        category_list=dict(type='str', required=True),
-        hostvars=dict(type='dict', required=True)
+        hostvars=dict(type='dict', required=True),
+        category_list=dict(type='str', required=True)
     )
 
     module = AnsibleModule(
