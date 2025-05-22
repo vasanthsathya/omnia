@@ -117,7 +117,16 @@ idrac_telemetry_receiver_cleanup_directory:
 prometheus_pump_container_name: "prometheus_pump"
 prometheus_pump_cleanup_directory:
   - "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
-  - "{{ idrac_telemetry_dir }}/prometheus_pump"
+  - "{{ omnia_nfs_share }}/telemetry/prometheus_pump"
+
+# Usage: cleanup_prometheus.yml
+prometheus_container_name: "prometheus"
+prometheus_cleanup_directory:
+  - "{{ omnia_nfs_share }}/telemetry/prometheus"
+  - "{{ omnia_nfs_share }}/log/telemetry/prometheus"
+prometheus_podman_volumes:
+  - { name: "prometheus_data", path: "{{ omnia_nfs_share }}/telemetry/prometheus/prometheus_data" }
+  - { name: "prometheus_log", path: "{{ omnia_nfs_share }}/log/telemetry/prometheus" }
 
 # Usage: cleanup_grafana.yml
 grafana_container_name: "grafana"
