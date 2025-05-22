@@ -16,6 +16,7 @@ import re
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
+from ansible.module_utils.local_repo.common_functions import load_yaml_file
 import json
 import multiprocessing
 from ansible.module_utils.local_repo.config import (
@@ -260,7 +261,92 @@ def create_container_distribution(repo_name,package_content,logger):
     except Exception as e:
         logger.error(f"Error creating distribution {repo_name}: {e}")
 
-def process_image(package, repo_store_path, status_file_path, cluster_os_type, cluster_os_version, version_variables, logger):
+def check_image_in_registry(host, image, tag, cacert, key, username, password, logger):
+    """
+    Check if a container image exists in a user registry using Docker Registry HTTP API v2.
+
+    Args:
+        host (str): Registry hostname.
+        image (str): Image name (e.g., library/nginx).
+        tag (str): Image tag (e.g., 1.25.2-alpine).
+        cacert (str): Path to the CA certificate file.
+        key (str): Path to the client key file.
+        username (str): Registry username.
+        password (str): Registry password.
+        logger (logging.Logger): Logger instance.
+
+    Returns:
+        bool: True if image exists, False otherwise.
+    """
+    image_url = f"https://{host}/v2/{image}/manifests/{tag}"
+    logger.info(f"Checking image existence at: {image_url}")
+
+    try:
+        response = requests.get(
+            image_url,
+            auth=HTTPBasicAuth(username, password),
+            cert=(key, cacert),
+            verify=cacert,
+            timeout=10
+        )
+
+        if response.status_code == 200:
+            logger.info(f"Image '{image}:{tag}' exists in registry '{host}'")
+            return True
+        else:
+            logger.warning(f"Image not found (HTTP {response.status_code}) in registry '{host}'")
+            return False
+
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to connect to registry '{host}': {e}")
+        return False
+
+def process_user_iso(package, host, package_content, logger):
+
+
+def handle_user_image_registry(package, package_content, version_variables, user_regisrty, logger):
+    logger.info("#" * 30 + f" {handle_user_image_registry.__name__} start " + "#" * 30)
+    result = False
+    try:
+        # Render tag using Jinja2
+        tag_template = Template(package["tag"])
+        tag_val = tag_template.render(**version_variables)
+        image_name = package["name"]
+
+        for registry in user_registry:
+            host = registry.get("host")
+            cacert = registry.get("cacert_path")
+            key = registry.get("key_path")
+            username = registry.get("username")
+            password = registry.get("password")
+
+            if not all([host, cacert, key, username, password]):
+                logger.info(f"Skipping registry with missing fields: {registry}")
+                continue
+
+            logger.info(f"Checking image {image_name}:{tag_val} in registry {host}")
+            image_found = check_image_in_registry(
+                host=host,
+                image=image_name,
+                tag=tag_val,
+                cacert=cacert,
+                key=key,
+                username=username,
+                password=password,
+                logger=logger
+            )
+
+            if image_found:
+                logger.info(f"Image '{image_name}:{tag_val}' found in registry '{host}'")
+                result = process_user_iso(package, host, package_content, logger)
+                break
+
+    except Exception as e:
+        logger.error(f"Exception in {handle_user_image_registry.__name__}: {e}")
+    finally:
+        return result
+
+def process_image(package, status_file_path, version_variables, user_registry, logger):
     """
     Process an image.
 
@@ -270,6 +356,7 @@ def process_image(package, repo_store_path, status_file_path, cluster_os_type, c
         status_file_path (str): The path to the status file.
         cluster_os_type (str): The type of the cluster operating system.
         cluster_os_version (str): The version of the cluster operating system.
+        user_registry_flag (bool): if image needs to be processed from user_registry
         logger (Logger): The logger.
 
     Returns:
@@ -277,50 +364,59 @@ def process_image(package, repo_store_path, status_file_path, cluster_os_type, c
     """
     logger.info("#" * 30 + f" {process_image.__name__} start " + "#" * 30)
     status = "Success"
+    result =False
+    policy_type = "immediate"
+    base_url, package_content = get_repo_url_and_content(package['package'])
+    if user_registry:
+        result = handle_user_image_registry(package, package_content, version_variables, user_registry, logger)
 
-    try:
-        policy_type = "immediate"
-        base_url, package_content = get_repo_url_and_content(package['package'])
-        repo_name_prefix = "container_repo_"
-        repository_name = f"{repo_name_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
-        remote_name = f"remote_{package['package'].replace('/', '_')}"
-        package_identifier = package['package']
+    # If user registry not found or no user registry given, proceed with public registry
+    if not result:
+        try:
+            repo_name_prefix = "container_repo_"
+            repository_name = f"{repo_name_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
+            remote_name = f"remote_{package['package'].replace('/', '_')}"
+            package_identifier = package['package']
 
-        # Create container repository
-        with repository_creation_lock:
-            result = create_container_repository(repository_name, logger)
-        if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
-            raise Exception(f"Failed to create repository: {repository_name}")
-            
-        # Process digest or tag
-        if "digest" in package:
-            package_identifier += f":{package['digest']}"
-            result = create_container_remote_digest(remote_name, base_url, package_content, policy_type, logger)
+            # Create container repository
+            with repository_creation_lock:
+                result = create_container_repository(repository_name, logger)
             if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
-                raise Exception(f"Failed to create remote digest: {remote_name}")
+                raise Exception(f"Failed to create repository: {repository_name}")
 
-        elif "tag" in package:
-            tag_template = Template(package.get('tag', None))  # Use Jinja2 Template for URL
-            tag_val = tag_template.render(**version_variables)
-            package_identifier += f":{package['tag']}"
-            with remote_creation_lock:  # Locking for single execution
-                result = create_container_remote(remote_name, base_url, package_content, policy_type, tag_val, logger)
+            # Process digest or tag
+            if "digest" in package:
+                package_identifier += f":{package['digest']}"
+                result = create_container_remote_digest(remote_name, base_url, package_content, policy_type, logger)
+                if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
+                    raise Exception(f"Failed to create remote digest: {remote_name}")
 
+            elif "tag" in package:
+                tag_template = Template(package.get('tag', None))  # Use Jinja2 Template for URL
+                tag_val = tag_template.render(**version_variables)
+                package_identifier += f":{package['tag']}"
+                with remote_creation_lock:  # Locking for single execution
+                    result = create_container_remote(remote_name, base_url, package_content, policy_type, tag_val, logger)
+
+                if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
+                    raise Exception(f"Failed to create remote: {remote_name}")
+
+
+            # Sync and distribute container repository
+            result = sync_container_repository(repository_name, remote_name, package_content,logger)
             if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
-                raise Exception(f"Failed to create remote: {remote_name}")
+                raise Exception(f"Failed to sync repository: {repository_name}")
 
+        except Exception as e:
+            status = "Failed"
+            logger.error(f"Failed to process image: {package_identifier}. Error: {e}")
+        finally:
+            # Write status to file
+            write_status_to_file(status_file_path, package_identifier, package['type'], status, logger)
+            logger.info("#" * 30 + f" {process_image.__name__} end " + "#" * 30)
+            return status
 
-        # Sync and distribute container repository
-        result = sync_container_repository(repository_name, remote_name, package_content,logger)
-        if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
-            raise Exception(f"Failed to sync repository: {repository_name}")
-
-    except Exception as e:
-        status = "Failed"
-        logger.error(f"Failed to process image: {package_identifier}. Error: {e}")
-    finally:
-        # Write status to file
+    else:
         write_status_to_file(status_file_path, package_identifier, package['type'], status, logger)
         logger.info("#" * 30 + f" {process_image.__name__} end " + "#" * 30)
         return status
-
