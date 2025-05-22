@@ -38,7 +38,7 @@
             grafana_user: "{{ hostvars['localhost']['grafana_username'] }}"
             grafana_password: "{{ hostvars['localhost']['grafana_password'] }}"
             ds_type: "loki"
-            ds_url: "http://127.0.0.1:{{ loki_port}}"
+            ds_url: "http://127.0.0.1:{{ loki_port }}"
             use_proxy: false
           no_log: true
           register: create_loki_datasource
