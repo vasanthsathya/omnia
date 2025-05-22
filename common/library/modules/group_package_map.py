@@ -1,26 +1,66 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright: Contributors to the Ansible project
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 import json
 import yaml
-import os
 from ansible.module_utils.basic import AnsibleModule
 
 RPM_LIST_BASE = "rpm"
 REBOOT_KEY = "reboot"
 
 # Read JSON file
+
+
 def read_json_file(file_path):
-    with open(file_path, 'r') as file:
+    """
+    Reads a JSON file and returns its data.
+
+    Args:
+        file_path (str): The path to the JSON file.
+
+    Returns:
+        dict: The loaded JSON data.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
     return data
 
 # Read YAML file
+
+
 def read_roles_config(file_path):
-    with open(file_path, 'r') as file:
+    """
+    Reads a YAML file containing roles configuration and
+     returns the roles configuration and all groups.
+
+    Args:
+        file_path (str): The path to the YAML file.
+
+    Returns:
+        tuple: A tuple containing a dictionary of roles configuration and a list of all groups.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
         data = yaml.safe_load(file)
     role_cfg = {item['name']: item['groups'] for item in data.get('Roles', [])}
     all_groups = list(data.get('Groups', {}).keys())
     return role_cfg, all_groups
 
+
 def careful_merge(split_dict, split_key, value):
+    """
+    Carefully merges a dictionary with a given key and value.
+
+    Args:
+        split_dict (dict): The dictionary to merge into.
+        split_key (str): The key to merge into the dictionary.
+        value (dict): The dictionary to merge.
+
+    Returns:
+        None
+    """
     val_d = split_dict.get(split_key, {})
     for key, val in value.items():
         if key == REBOOT_KEY:
@@ -28,10 +68,20 @@ def careful_merge(split_dict, split_key, value):
             continue
         got_existing_list = val_d.get(key, []) + val
         # Order matters?
-        val_d[key] = list(set(got_existing_list)) # remove duplicates 
+        val_d[key] = list(set(got_existing_list))  # remove duplicates
     split_dict[split_key] = val_d
 
+
 def split_comma_keys(input_dict):
+    """
+    Splits a dictionary's keys by commas and merges the values into a new dictionary.
+
+    Args:
+        input_dict (dict): The input dictionary with comma-separated keys.
+
+    Returns:
+        dict: A new dictionary with split keys and merged values.
+    """
     split_dict = {}
     for key, value in input_dict.items():
         split_keys = [k.strip() for k in key.split(',')]
@@ -39,19 +89,42 @@ def split_comma_keys(input_dict):
             careful_merge(split_dict, split_key, value)
     return split_dict
 
+
 def get_type_dict(clust_list):
+    """
+    Returns a dictionary of package types and their corresponding package lists.
+
+    Args:
+        clust_list (list): A list of dictionaries containing package information.
+
+    Returns:
+        dict: A dictionary of package types and their corresponding package lists.
+    """
     type_dict = {}
     for pkg_dict in clust_list:
         pkgtype = pkg_dict.get('type')
         if pkgtype == 'rpm_list':
-            type_dict[RPM_LIST_BASE] = type_dict.get(RPM_LIST_BASE, []) + pkg_dict.get('package_list')
-        else: #image and rpm
-            type_dict[pkgtype] = type_dict.get(pkgtype, []) + [pkg_dict.get('package')]
+            type_dict[RPM_LIST_BASE] = type_dict.get(
+                RPM_LIST_BASE, []) + pkg_dict.get('package_list')
+        else:  # image and rpm
+            type_dict[pkgtype] = type_dict.get(
+                pkgtype, []) + [pkg_dict.get('package')]
         reboot_val = pkg_dict.get(REBOOT_KEY, False)
         type_dict[REBOOT_KEY] = type_dict.get(REBOOT_KEY, False) or reboot_val
     return type_dict
 
+
 def modify_addl_software(addl_dict):
+    """
+    Modifies the additional software dictionary by generating
+      a type dictionary for each cluster list.
+
+    Args:
+        addl_dict (dict): A dictionary of additional software.
+
+    Returns:
+        dict: A dictionary of package types and their corresponding package lists.
+    """
     new_dict = {}
     for key, value in addl_dict.items():
         clust_list = value.get('cluster', [])
@@ -59,7 +132,23 @@ def modify_addl_software(addl_dict):
         new_dict[key] = type_dict
     return new_dict
 
+
 def main():
+    """
+    The main function is the entry point for the Ansible module.
+     It processes the input parameters and returns the group package map.
+
+    Args:
+        software_bundle (path): The path to the software bundle.
+        roles_config (path): The path to the roles configuration file.
+        software_config (path): The path to the software configuration file.
+        input_path (path): The path to the input path.
+        software_bundle_key (str): The key for the software bundle.
+        Defaults to 'additional_software'.
+
+    Returns:
+        dict: A dictionary containing the group package map.
+    """
     module = AnsibleModule(
         argument_spec={
             'software_bundle': {'type': 'path'},
@@ -81,12 +170,13 @@ def main():
         ],
         supports_check_mode=True
     )
-    
+
     inp_path = module.params.get('input_path')
     addl_key = module.params['software_bundle_key']
     if inp_path:
         inp_path = inp_path.rstrip('/')
-        #TODO: check if inp_path exists and is directory else ,module.fail_json
+        # TODO: check if inp_path exists and is directory else
+        # ,module.fail_json
         sw_cfg_path = inp_path + '/software_config.json'
         sw_cfg_data = read_json_file(sw_cfg_path)
         addl_soft = f"{inp_path}/config/{sw_cfg_data['cluster_os_type']}/{sw_cfg_data['cluster_os_version']}/{addl_key}.json"
@@ -94,16 +184,21 @@ def main():
     else:
         addl_soft = module.params.get('software_bundle')
         roles_config = module.params.get('roles_config')
-        sw_cfg_data =  read_json_file(module.params.get('software_config'))
+        sw_cfg_data = read_json_file(module.params.get('software_config'))
 
     sw_list = [sw_dict.get('name') for sw_dict in sw_cfg_data.get('softwares')]
     if addl_key not in sw_list:
-        module.exit_json(msg=f"{addl_key} not found in {sw_list}", grp_pkg_map={})
-    req_addl_soft_list = [sub_group.get('name') for sub_group in sw_cfg_data.get(addl_key, [])]
-    req_addl_soft_list.append(addl_key) # add the additional_software key
+        module.exit_json(
+            msg=f"{addl_key} not found in {sw_list}",
+            grp_pkg_map={})
+    req_addl_soft_list = [
+        sub_group.get('name') for sub_group in sw_cfg_data.get(
+            addl_key, [])]
+    req_addl_soft_list.append(addl_key)  # add the additional_software key
 
     addl_soft_json_data = read_json_file(addl_soft)
-    req_addl_soft = {sub_group: addl_soft_json_data.get(sub_group) for sub_group in req_addl_soft_list}
+    req_addl_soft = {sub_group: addl_soft_json_data.get(
+        sub_group) for sub_group in req_addl_soft_list}
 
     roles_dict, all_groups = read_roles_config(roles_config)
     temp_addl_pkgs = req_addl_soft.pop(addl_key, {})
@@ -121,7 +216,11 @@ def main():
             careful_merge(split_comma_dict, xgroup, bundle)
 
     changed = True
-    module.exit_json(changed=changed, grp_pkg_map=split_comma_dict, msg="Successfully fetched and mapped groups and packages")
+    module.exit_json(
+        changed=changed,
+        grp_pkg_map=split_comma_dict,
+        msg="Successfully fetched and mapped groups and packages")
+
 
 if __name__ == "__main__":
     main()
