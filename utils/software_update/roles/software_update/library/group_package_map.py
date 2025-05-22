@@ -1,5 +1,6 @@
 import json
 import yaml
+import os
 from ansible.module_utils.basic import AnsibleModule
 
 RPM_LIST_BASE = "rpm"
@@ -62,32 +63,54 @@ def modify_addl_software(addl_dict):
 def main():
     module = AnsibleModule(
         argument_spec={
-        }
+            'software_bundle': {'type': 'path'},
+            'roles_config': {'type': 'path'},
+            'software_config': {'type': 'path'},
+            'input_path': {'type': 'path'},
+            'software_bundle_key': {'type': 'str', 'default': 'additional_software'}
+        },
+        mutually_exclusive=[
+            ('input_path', 'software_config'),
+            ('input_path', 'roles_config'),
+            ('input_path', 'software_bundle')
+        ],
+        required_one_of=[
+            ('input_path', 'software_config', 'roles_config', 'software_bundle')
+        ],
+        required_together=[
+            ('software_config', 'roles_config', 'software_bundle')
+        ]
     )
-# Example usage:
-    addl_soft = '/opt/omnia/input/project_default/config/rhel/9.4/additional_software.json'
-    roles_config = '/opt/omnia/input/project_default/roles_config.yml'
+    changed = False
+    inp_path = module.params.get('input_path')
+    addl_key = module.params['software_bundle_key']
+    if inp_path:
+        inp_path = inp_path.rstrip('/')
+        #TODO: check if inp_path exists and is directory else ,module.fail_json
+        sw_cfg_path = inp_path + '/software_config.json'
+        sw_cfg_data = read_json_file(sw_cfg_path)
+        addl_soft = f"{inp_path}/config/{sw_cfg_data['cluster_os_type']}/{sw_cfg_data['cluster_os_version']}/{addl_key}.json"
+        roles_config = f"{inp_path}/roles_config.yml"
+    else:
+        addl_soft = module.params.get('software_bundle')
+        roles_config = module.params.get('roles_config')
+        sw_cfg_data =  read_json_file(module.params.get('software_config'))
+
+    sw_list = [sw_dict.get('name') for sw_dict in sw_cfg_data.get('softwares')]
+    if addl_key not in sw_list:
+        module.fail_json(msg=f"{addl_key} not found in {sw_list}")
+    req_addl_soft_list = [sub_group.get('name') for sub_group in sw_cfg_data.get(addl_key, [])]
+    req_addl_soft_list.append(addl_key)
 
     addl_soft_json_data = read_json_file(addl_soft)
-    roles_dict = read_roles_config(roles_config)
+    req_addl_soft = {sub_group: addl_soft_json_data.get(sub_group) for sub_group in req_addl_soft_list}
+    # module.exit_json(changed=changed, groups=req_addl_soft)
 
-    print("additional_software Data:")
-    # pprint(addl_soft_json_data)
-    print(" ")
-    print("###### ROLES Data:")
-    # pprint(roles_dict)
-    print("")
-
-    print("****** ADDL soft")
-    addl_software_dict = modify_addl_software(addl_soft_json_data)
-    # pprint(addl_software_dict)
-    print("")
-
-    print("Roles + groups split DATA")
+    addl_software_dict = modify_addl_software(req_addl_soft)
     split_comma_dict = split_comma_keys(addl_software_dict)
-    # pprint(split_comma_dict)
-    print("")
+    # module.exit_json(groups=split_comma_dict)
 
+    roles_dict = read_roles_config(roles_config)
     # intersection of split_comma_dict and roles_yaml_data
     common_roles = split_comma_dict.keys() & roles_dict.keys()
 

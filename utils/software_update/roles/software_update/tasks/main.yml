@@ -14,6 +14,7 @@
 ---
 - name: Get the software organized by group
   group_package_map:
+    input_path: "/opt/omnia/input/project_default"
 
 # WIP
 - name: Include software update variables
