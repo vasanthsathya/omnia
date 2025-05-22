@@ -57,6 +57,7 @@ grafana_image_not_found_msg: |
   Please check if the image is available and re-run the playbook.
 
 # Usage: configure_datasource.yml
+url_retries: 10
 grafana_url_unreachable_fail_msg: |
   Failed. grafana url http://127.0.0.1:{{ grafana_port }} is not reachable.
   Please retry after grafana url is reachable. If facing this issue again, please utility/oim_cleanup.yml playbook to clean up existing OIM resources.
