@@ -75,6 +75,23 @@ xcat_firewall_ports:
   - "162/tcp"
   - "162/udp"
   - "2240/tcp"
+  - "5432/tcp"
+  - "5432/udp"
+
+idrac_firewall_ports:
+  - "61613/tcp"
+  - "8161/tcp"
+  - "3306/tcp"
+  - "3000/tcp"
+
+prometheus_firewall_ports:
+  - "2112/tcp"
+  - "9090/tcp"
+
+visualization_firewall_ports:
+  - "3000/tcp"
+  - "3001/tcp"
+  - "5000/tcp"
 
 # Usage: cleanup_kubespray.yml
 kubespray_image_tag: "{{ hostvars['localhost']['kubespray_version'] }}"
@@ -106,6 +123,21 @@ activemq_cleanup_directory:
   - "{{ idrac_telemetry_dir }}/activemq"
 activemq_podman_volumes:
   - { name: "activemq_log", path: "{{ omnia_nfs_share }}/log/telemetry/activemq" }
+
+idrac_firewall_ports:
+  - "61613/tcp"
+  - "8161/tcp"
+  - "3306/tcp"
+  - "3000/tcp"
+
+prometheus_firewall_ports:
+  - "2112/tcp"
+  - "9090/tcp"
+
+visualization_firewall_ports:
+  - "3000/tcp"
+  - "3001/tcp"
+  - "5000/tcp"
 
 # Usage: cleanup_idrac_receiver.yml
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
