@@ -17,7 +17,7 @@ This module is used to validate server specification inventory.
 """
 
 import ipaddress
-from ansible.module_utils.basic import AnsibleModule # type: ignore
+from ansible.module_utils.basic import AnsibleModule
 
 def validate_inventory(inventory_status ,category_list, hostvars):
     """
