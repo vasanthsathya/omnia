@@ -104,17 +104,12 @@ def main():
 
     addl_soft_json_data = read_json_file(addl_soft)
     req_addl_soft = {sub_group: addl_soft_json_data.get(sub_group) for sub_group in req_addl_soft_list}
-    # module.exit_json(groups=req_addl_soft)
-    roles_dict, all_groups = read_roles_config(roles_config)
-    # module.exit_json(roles_dict=roles_dict, all_groups=all_groups)
 
+    roles_dict, all_groups = read_roles_config(roles_config)
     temp_addl_pkgs = req_addl_soft.pop(addl_key, {})
     req_addl_soft[','.join(all_groups)] = temp_addl_pkgs
-    # module.exit_json(groups=req_addl_soft)
     addl_software_dict = modify_addl_software(req_addl_soft)
     split_comma_dict = split_comma_keys(addl_software_dict)
-    # module.exit_json(groups=split_comma_dict)
-
 
     # intersection of split_comma_dict and roles_yaml_data
     common_roles = split_comma_dict.keys() & roles_dict.keys()
@@ -125,10 +120,6 @@ def main():
         for xgroup in xgroup_list:
             careful_merge(split_comma_dict, xgroup, bundle)
 
-    # module.exit_json(groups=split_comma_dict)
-    # to_all = split_comma_dict.pop(addl_key, {})
-    # for key in split_comma_dict.keys():
-    #     careful_merge(split_comma_dict, key, to_all)
     changed = True
     module.exit_json(changed=changed, grp_pkg_map=split_comma_dict, msg="Successfully fetched and mapped groups and packages")
 

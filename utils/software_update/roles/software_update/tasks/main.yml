@@ -14,7 +14,10 @@
 ---
 - name: Get the software organized by group
   group_package_map:
-    input_path: "/opt/omnia/input/project_default"
+    # input_path: "/opt/omnia/input/project_default"
+    software_bundle: "/opt/omnia/input/project_default/config/rhel/9.4/additional_software.json"
+    roles_config: "/opt/omnia/input/project_default/roles_config.yml"
+    software_config: "/opt/omnia/input/project_default/software_config.json"
 
 # WIP
 - name: Include software update variables
