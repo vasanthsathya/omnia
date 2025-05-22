@@ -16,7 +16,6 @@ import re
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
-from ansible.module_utils.local_repo.common_functions import load_yaml_file
 import json
 import multiprocessing
 from ansible.module_utils.local_repo.config import (
@@ -302,11 +301,42 @@ def check_image_in_registry(host, image, tag, cacert, key, username, password, l
         return False
 
 def process_user_iso(package, host, package_content, logger):
+    user_reg_prefix = "user_reg_"
+    repository_name = f"{user_reg_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
+    remote_name = f"remote_{package['package'].replace('/', '_')}"
+    package_identifier = package['package']
+    policy_type = "immediate"
+    base_url = f"https://{host}/"
+    with repository_creation_lock:
+        result = create_container_repository(repository_name, logger)
+    if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
+        return False, package_identifier
 
+    if "digest" in package:
+        package_identifier += f":{package['digest']}"
+        result = create_container_remote_digest(remote_name, base_url, package_content, policy_type, logger)
+        if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
+            return False, package_identifier
+
+    elif "tag" in package:
+        tag_template = Template(package.get('tag', None))  # Use Jinja2 Template for URL
+        tag_val = tag_template.render(**version_variables)
+        package_identifier += f":{package['tag']}"
+        with remote_creation_lock:  # Locking for single execution
+            result = create_container_remote(remote_name, base_url, package_content, policy_type, tag_val, logger)
+        if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
+            return False, package_identifier
+    
+    result = sync_container_repository(repository_name, remote_name, package_content,logger)
+    if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
+        return False, package_identifier
+        
+    return True, package_identifier
 
 def handle_user_image_registry(package, package_content, version_variables, user_regisrty, logger):
     logger.info("#" * 30 + f" {handle_user_image_registry.__name__} start " + "#" * 30)
     result = False
+    package_info = None
     try:
         # Render tag using Jinja2
         tag_template = Template(package["tag"])
@@ -338,15 +368,15 @@ def handle_user_image_registry(package, package_content, version_variables, user
 
             if image_found:
                 logger.info(f"Image '{image_name}:{tag_val}' found in registry '{host}'")
-                result = process_user_iso(package, host, package_content, logger)
+                result, package_info = process_user_iso(package, host, package_content, logger)
                 break
 
     except Exception as e:
         logger.error(f"Exception in {handle_user_image_registry.__name__}: {e}")
     finally:
-        return result
+        return result, package_info
 
-def process_image(package, status_file_path, version_variables, user_registry, logger):
+def process_image(package, status_file_path, version_variables, user_registries, logger):
     """
     Process an image.
 
@@ -367,8 +397,8 @@ def process_image(package, status_file_path, version_variables, user_registry, l
     result =False
     policy_type = "immediate"
     base_url, package_content = get_repo_url_and_content(package['package'])
-    if user_registry:
-        result = handle_user_image_registry(package, package_content, version_variables, user_registry, logger)
+    if user_registries:
+        result, package_identifier = handle_user_image_registry(package, package_content, version_variables, user_registries, logger)
 
     # If user registry not found or no user registry given, proceed with public registry
     if not result:
