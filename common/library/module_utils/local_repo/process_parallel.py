@@ -19,9 +19,6 @@ import time
 import threading
 from jinja2 import Template
 from ansible.module_utils.local_repo.common_functions import load_yaml_file
-from ansible.module_utils.local_repo.config import (
-    LOCAL_REPO_CONFIG_PATH_DEFAULT
-)
 # Global lock for logging synchronization
 log_lock = multiprocessing.Lock()
 
@@ -210,7 +207,7 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
         result_queue.put({"task": task, "status": "FAILED", "output": "", "error": str(e)})
 
     
-def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_file_path,log_dir, user_data, version_variables, standard_logger, timeout):
+def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_file_path,log_dir, user_data, version_variables, standard_logger, timeout, local_repo_config_path):
     
     """
     Executes a list of tasks in parallel using multiple worker processes.
@@ -224,7 +221,7 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
         log_dir (str): Directory where log files for the worker processes will be saved.
         standard_logger (logging.Logger): A shared logger for overall task execution.
         timeout (float, optional): The maximum time allowed for all tasks to execute. If `None`, no timeout is enforced.
-
+        local_repo_config_path (str): Path for local_repo_config.yml
     Returns:
         tuple: A tuple containing:
             - overall_status (str): The overall status of task execution ("SUCCESS", "FAILED", "PARTIAL", "TIMEOUT").
@@ -236,7 +233,7 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
     with log_lock:
         standard_logger.info("Starting parallel task execution.")  # Log the start of parallel execution
 
-    config = load_yaml_file(LOCAL_REPO_CONFIG_PATH_DEFAULT)
+    config = load_yaml_file(local_repo_config_path)
     user_registries = config.get("user_registry", [])
 
     # Create a pool of worker processes to handle the tasks
