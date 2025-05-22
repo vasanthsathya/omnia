@@ -12,15 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import sys
 import ipaddress
-import json
-from distutils.util import strtobool
+from ansible.module_utils.basic import AnsibleModule
 
-inventory_status = bool(strtobool(sys.argv[1]))
-
-def validate_inventory(category_list, hostvars):
+def validate_inventory(inventory_status ,category_list, hostvars):
     """
 	Validates the inventory file against the server specification.
 
@@ -35,11 +30,6 @@ def validate_inventory(category_list, hostvars):
 		SystemExit: If the inventory file is invalid.
 	"""
 
-    # Remove localhost from inventory
-    hostvars.pop('localhost','none')
-    hostvars.pop('omnia_provision','none')
-    hostvars.pop('service_nodes','none')
-
     # Validate hosts in inventory file
     for host, host_data in hostvars.items():
         if not inventory_status:
@@ -48,28 +38,27 @@ def validate_inventory(category_list, hostvars):
             else:
                 host_ip = host_data['inventory_hostname']
             if len(host_ip.split('.')) != 4:
-                sys.exit(f"Failed, invalid host-ip in inventory: {host_ip}")
+                raise ValueError(f"Failed, invalid host-ip in inventory: {host_ip}") 
             if not ipaddress.ip_address(host_ip):
-                sys.exit(f"Failed, invalid host-ip in inventory: {host_ip}")
+                raise ValueError(f"Failed, invalid host-ip in inventory: {host_ip}")
         else:
             host_ip = host
 
-    for host, host_data in hostvars.items():
         if 'Categories' not in host_data.keys():
-            sys.exit(f"Failed, Categories not provided in inventory for host: {host}")
+            raise ValueError(f"Failed, Categories not provided in inventory for host: {host}")
         if len(host_data['Categories']) == 0:
-            sys.exit(f"Failed, Categories not provided in inventory for host: {host}")
+            raise ValueError(f"Failed, Categories not provided in inventory for host: {host}")
 
-       # Check if host is part of multiple groups
         group_names = host_data.get('group_names', [])
         if len(group_names) > 1:
-            sys.exit(f"Failed, host {host_ip} is part of multiple groups: {group_names}. A host can only belong to one group.")
+            raise ValueError(f"Failed, host {host_ip} is part of multiple groups: {group_names}.\
+                              A host can only belong to one group.")
         print(f"Host {host_ip} belongs to group: {group_names[0]}")
 
-    # Validate categories in inventory with server_spec
-    for host, host_data in hostvars.items():
+        # Validate categories in inventory with server_spec
         if 'Categories' in host_data.keys() and host_data['Categories'] not in category_list:
-            sys.exit(f"Failed, {host_ip}: {host_data['Categories']} category in additional nic inventory not found in server_spec.yml.")
+            raise ValueError(f"Failed, {host_ip}: {host_data['Categories']} \
+                             category in additional nic inventory not found in server_spec.yml.")
 
 def main():
     """
@@ -85,12 +74,29 @@ def main():
 	- None
 	"""
 
-    category_list = os.environ.get('category_list')
-    hostvars_str = os.environ.get('host_data')
-    if not category_list or not hostvars_str:
-        sys.exit("Failed, invalid input")
-    hostvars = json.loads(hostvars_str)
-    validate_inventory(category_list, hostvars)
+    module_args = dict(
+        inventory_status= {"type": "str", "required": False, "default": "false"},
+        category_list=dict(type='str', required=True),
+        hostvars=dict(type='dict', required=True)
+    )
 
-if __name__ == "__main__":
+    module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=True
+     )
+
+    inventory_status = module.params['inventory_status']
+    category_list = module.params['category_list']
+    hostvars = module.params['hostvars']
+
+    if not category_list or not hostvars:
+        module.fail_json(msg="Failed, invalid input: category_list or hostvars missing")
+
+    try:
+        validate_inventory(inventory_status, category_list, hostvars)
+        module.exit_json(changed=False)
+    except ValueError as e:
+        module.fail_json(msg=f"Validation failed: {str(e)}")
+
+if __name__ == '__main__':
     main()
