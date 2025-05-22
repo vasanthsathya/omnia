@@ -87,8 +87,8 @@
         network_mode: host
         volumes: "{{ loki_volumes }}"
         etc_hosts:
-          loki: "{{ etchostsip | quote }}"
-          promtail: "{{ etchostsip | quote }}"
+          loki: "127.0.0.1"
+          promtail: "127.0.0.1"
         command:
           - -config.file=/var/lib/loki/loki-config.yaml
 
@@ -159,8 +159,8 @@
         network_mode: host
         volumes: "{{ loki_volumes }}"
         etc_hosts:
-          loki: "{{ etchostsip | quote }}"
-          promtail: "{{ etchostsip | quote }}"
+          loki: "127.0.0.1"
+          promtail: "127.0.0.1"
         command:
           - -config.file=/var/lib/loki/promtail-config.yaml
 
