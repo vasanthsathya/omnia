@@ -52,7 +52,8 @@ from ansible.module_utils.local_repo.config import (
     DEFAULT_STATUS_FILENAME,
     SOFTWARE_CSV_FILENAME,
     SOFTWARE_CSV_HEADER,
-    STATUS_CSV_HEADER
+    STATUS_CSV_HEADER,
+    LOCAL_REPO_CONFIG_PATH_DEFAULT
 )
 
 def update_status_csv(csv_dir, software, overall_status):
@@ -223,6 +224,7 @@ def main():
         "repo_store_path": {"type": "str", "required": False, "default": DEFAULT_REPO_STORE_PATH},
         "software": {"type": "list", "elements": "str", "required": True},
         "user_json_file": {"type": "str", "required": False, "default": USER_JSON_FILE_DEFAULT},
+        "local_repo_config_path": {"type": "str", "required": False, "default": LOCAL_REPO_CONFIG_PATH_DEFAULT}
     }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -237,7 +239,7 @@ def main():
     repo_store_path = module.params["repo_store_path"]
     software = module.params["software"]
     user_json_file = module.params["user_json_file"]
-
+    local_repo_config_path = module.params["local_repo_config_path"]
     # Initialize standard logger.
     slogger = setup_standard_logger(slog_file)
     result = {"changed": False, "task_results": []}
