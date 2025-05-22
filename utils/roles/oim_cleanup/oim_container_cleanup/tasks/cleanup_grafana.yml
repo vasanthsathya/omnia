@@ -57,6 +57,14 @@
         - "{{ grafana_data_dir }}"
         - "{{ grafana_logs_dir }}"
 
+    - name: Remove visualization ports on host firewalld
+      ansible.posix.firewalld:
+        port: "{{ item }}"
+        state: disabled
+        permanent: true
+      loop: "{{ visualization_firewall_ports }}"
+      changed_when: true
+
   rescue:
     - name: Grafana container removal failed
       ansible.builtin.fail:
