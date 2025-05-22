@@ -12,8 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+"""
+This module is used to validate server specification inventory.
+"""
+
 import ipaddress
-from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.basic import AnsibleModule # type: ignore
 
 def validate_inventory(inventory_status ,category_list, hostvars):
     """
@@ -38,7 +42,7 @@ def validate_inventory(inventory_status ,category_list, hostvars):
             else:
                 host_ip = host_data['inventory_hostname']
             if len(host_ip.split('.')) != 4:
-                raise ValueError(f"Failed, invalid host-ip in inventory: {host_ip}") 
+                raise ValueError(f"Failed, invalid host-ip in inventory: {host_ip}")
             if not ipaddress.ip_address(host_ip):
                 raise ValueError(f"Failed, invalid host-ip in inventory: {host_ip}")
         else:
