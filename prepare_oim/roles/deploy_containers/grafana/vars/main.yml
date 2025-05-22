@@ -58,6 +58,8 @@ grafana_image_not_found_msg: |
 
 # Usage: configure_datasource.yml
 url_retries: 10
+prometheus_port: 9090
+loki_port: 3000
 grafana_url_unreachable_fail_msg: |
   Failed. grafana url http://127.0.0.1:{{ grafana_port }} is not reachable.
   Please retry after grafana url is reachable. If facing this issue again, please utility/oim_cleanup.yml playbook to clean up existing OIM resources.
