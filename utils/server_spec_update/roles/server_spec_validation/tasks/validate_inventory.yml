@@ -43,7 +43,7 @@
 - name: Validate inventory file
   block:
     - name: Validate using custom module
-      validate_inventory:
+      validate_server_spec_inventory:
         inventory_status: "{{ inventory_status | default(false) | string | upper }}"
         host_data: "{{ filtered_hostvars }}"
         category_list: "{{ category_list }}"
