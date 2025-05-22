@@ -111,7 +111,7 @@ def update_status_csv(csv_dir, software, overall_status):
         f.write("\n".join(final_lines))
 
 
-def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registry):
+def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries):
 
     """
     Determines the appropriate function and its arguments to process a given task.
@@ -159,7 +159,7 @@ def determine_function(task, repo_store_path, csv_file_path, user_data, version_
         if task_type == "pip_module":
             return process_pip, [task, repo_store_path, status_file]
         if task_type == "image":
-            return process_image, [task, status_file, version_variables, user_registry]
+            return process_image, [task, status_file, version_variables, user_registries]
         if task_type == "rpm":
             return process_rpm, [task, repo_store_path, status_file,
                                  cluster_os_type, cluster_os_version]
@@ -264,7 +264,7 @@ def main():
 
         overall_status, task_results = execute_parallel(
             tasks, determine_function, nthreads, repo_store_path, csv_file_path,
-            log_dir, user_data, version_variables, slogger, timeout
+            log_dir, user_data, version_variables, slogger, timeout, local_repo_config_path
         )
 
         end_time = datetime.now()
