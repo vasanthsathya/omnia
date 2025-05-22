@@ -48,11 +48,12 @@
           - "device={{ item.path }}"
       loop: "{{ loki_podman_volumes }}"
 
-    - name: Download Loki config file
-      ansible.builtin.get_url:
-        url: "{{ loki_config_url }}"
-        dest: "{{ loki_config_file }}"
-        mode: '0644'
+    - name: Copy Loki config file
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ loki_config_file_path }}"
 
     - name: Pull Loki Podman image
       containers.podman.podman_image:
@@ -86,8 +87,8 @@
         network_mode: host
         volumes: "{{ loki_volumes }}"
         etc_hosts:
-          loki: "127.0.0.1"
-          promtail: "127.0.0.1"
+          loki: "{{ etchostsip | quote }}"
+          promtail: "{{ etchostsip | quote }}"
         command:
           - -config.file=/var/lib/loki/loki-config.yaml
 
@@ -119,11 +120,12 @@
   when:
     - promtail_container_info.containers | length == 0 or promtail_container_info.containers[0].State.Status != 'running'
   block:
-    - name: Download Promtail config
-      ansible.builtin.get_url:
-        url: "{{ promtail_config_url }}"
-        dest: "{{ promtail_config_file }}"
-        mode: '0644'
+    - name: Copy Promtail config file 
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ promtail_config_file_path }}"
 
     - name: Pull Promtail Podman image
       containers.podman.podman_image:
@@ -157,8 +159,8 @@
         network_mode: host
         volumes: "{{ loki_volumes }}"
         etc_hosts:
-          loki: "127.0.0.1"
-          promtail: "127.0.0.1"
+          loki: "{{ etchostsip | quote }}"
+          promtail: "{{ etchostsip | quote }}"
         command:
           - -config.file=/var/lib/loki/promtail-config.yaml
 

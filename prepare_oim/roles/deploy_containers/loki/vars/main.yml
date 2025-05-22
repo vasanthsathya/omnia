@@ -33,10 +33,11 @@ loki_volumes:
   - "loki_data:/var/lib/loki{{ selinux_option }}"
 max_retries: 10
 delay_count: 5
-loki_config_url: "https://raw.githubusercontent.com/grafana/loki/v{{ loki_image_tag }}/cmd/loki/loki-local-config.yaml" 
-promtail_config_url: "https://raw.githubusercontent.com/grafana/loki/v{{ promtail_image_tag }}/clients/cmd/promtail/promtail-docker-config.yaml"
-loki_config_file: "{{ loki_data_directory}}/loki-config.yaml"
-promtail_config_file: "{{ loki_data_directory}}/promtail-config.yaml"
+loki_config_file_path:
+  - { src: "files/loki-config.yaml", dest: "{{ loki_data_directory}}", mode: "0644" }
+promtail_config_file_path:
+  - { src: "files/promtail-config.yaml", dest: "{{ loki_data_directory}}", mode: "0644" }
+etchostsip: "127.0.0.1"
 promtail_container_success_msg: "The Promtail container '{{ promtail_container_name }}' container has been successfully deployed."
 promtail_container_failure_msg: |
   The deployment of the {{ promtail_container_name }} container has failed.
