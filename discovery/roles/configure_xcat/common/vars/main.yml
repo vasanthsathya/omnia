@@ -54,3 +54,4 @@ delete_misc_networks: "{{ provision_shared_library_path }}/common/delete_network
 # Usage: configure_service_role_xcat_details.yml
 xcat_start_fail_msg: "Failed to start xcatd services"
 service_retries: 3
+xcatd_service: "xcatd.service"

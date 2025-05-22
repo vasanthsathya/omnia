@@ -79,13 +79,9 @@
   ansible.builtin.command: "{{ xcat_path }}/chdef -t site domain=\"{{ domain_name }}\""
   changed_when: true
 
-# As we don't want to mount tftpboot form MN to SN
+# As we don't want to mount tftpboot and install dir form MN to SN
 - name: Set sharedtftp in clustersite
-  ansible.builtin.command: "{{ xcat_path }}/chdef -t site clustersite sharedtftp=0"
-  changed_when: true
-# As we don't want to mount install form MN to SN
-- name: Set install location in clustersite
-  ansible.builtin.command: "{{ xcat_path }}/chdef -t site clustersite installloc=''"
+  ansible.builtin.command: "{{ xcat_path }}/chdef -t site clustersite sharedtftp=0 installloc=''"
   changed_when: true
 
 - name: Configure service_node role related details
