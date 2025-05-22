@@ -104,7 +104,7 @@
 
     - name: Notify user of Loki deployment status
       ansible.builtin.debug:
-        msg: "{{ loki_container_success_msg.splitlines() | join(' ')  }}"
+        msg: "{{ loki_container_success_msg.splitlines() | join(' ') }}"
       when:
         - loki_container_status.containers | length > 0
         - loki_container_status.containers[0].State.Status == 'running'
