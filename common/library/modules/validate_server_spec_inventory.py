@@ -82,11 +82,11 @@ def main():
 	- None
 	"""
 
-    module_args = dict(
-        inventory_status={"type": "str", "required": False, "default": "false"},
-        host_data=dict(type='dict', required=True),
-        category_list=dict(type='str', required=True)
-    )
+    module_args = {
+        "inventory_status": {"type": "str", "required": False, "default": "false"},
+        "host_data": {"type": "dict", "required": True},
+        "category_list": {"type": "str", "required": True}
+    }
 
     module = AnsibleModule(
         argument_spec=module_args,
