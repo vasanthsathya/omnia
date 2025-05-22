@@ -18,7 +18,10 @@ import multiprocessing
 import time
 import threading
 from jinja2 import Template
-
+from ansible.module_utils.local_repo.common_functions import load_yaml_file
+from ansible.module_utils.local_repo.config import (
+    LOCAL_REPO_CONFIG_PATH_DEFAULT
+)
 # Global lock for logging synchronization
 log_lock = multiprocessing.Lock()
 
@@ -101,7 +104,7 @@ def execute_task(task, determine_function, user_data, version_variables, repo_st
             logger.info(f"### {execute_task.__name__} start ###")  # Log task start
 
         # Determine the function and its arguments using the provided `determine_function`
-        function, args = determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registry)
+        function, args = determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries)
 
         while True:
             elapsed_time = time.time() - start_time  # Calculate elapsed time
@@ -154,7 +157,7 @@ def execute_task(task, determine_function, user_data, version_variables, repo_st
             "error": str(e)  # Include the error message
         }
 
-def worker_process(task, determine_function, user_data,version_variables, repo_store_path, csv_file_path, log_dir, result_queue, timeout, user_registry):
+def worker_process(task, determine_function, user_data,version_variables, repo_store_path, csv_file_path, log_dir, result_queue, timeout, user_registries):
 
     """
     Executes a task in a separate worker process, logs the process execution, and puts the result in a result queue.
@@ -187,7 +190,7 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
            logger.info(f"Worker process {os.getpid()} started  execution.")
 
         # Execute the task by calling the `execute_task` function and passing necessary arguments
-        result = execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, logger, timeout, user_registry)
+        result = execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, logger, timeout, user_registries)
 
         result["logname"] = f"package_status_{os.getpid()}.log"
         # Put the result of the task execution into the result_queue for further processing
