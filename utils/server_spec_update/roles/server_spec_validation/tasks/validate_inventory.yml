@@ -26,7 +26,7 @@
         msg: "{{ server_spec_syntax_fail_msg }} Error: {{ include_server_spec.message }}"
 
 - name: Prepare filtered hostvars without excluded hosts
-  set_fact:
+  ansible.builtin.set_fact:
     filtered_hostvars: >-
       {{
         hostvars
