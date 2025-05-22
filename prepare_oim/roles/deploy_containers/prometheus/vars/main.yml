@@ -39,7 +39,7 @@ prometheus_pump_container_failure_msg: |
   Deployment of {{ prometheus_pump_container_name }} container failed.
   To resolve this, check logs using 'podman logs {{ prometheus_pump_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ prometheus_pump_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ prometheus_pump_container_name }} container.
 
 # Usage: deploy_prometheus_container.yml
 prometheus_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus"
@@ -64,4 +64,4 @@ prometheus_container_failure_msg: |
   Deployment of {{ prometheus_container_name }} container failed.
   To resolve this, check logs using 'podman logs {{ prometheus_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ prometheus_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ prometheus_container_name }} container.

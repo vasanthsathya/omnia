@@ -31,7 +31,7 @@ mysql_container_failure_msg: |
   Deployment of {{ mysql_container_name }} container failed.
   To resolve this, check logs using 'podman logs {{ mysql_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ mysql_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ mysql_container_name }} container.
 mysql_image_not_found_msg: |
   MySQL image {{ mysql_container_name }}:{{ mysql_image_tag }} not found.
   Please check if image is available and re-run the playbook.
@@ -89,7 +89,7 @@ activemq_container_failure_msg: |
   Deployment of {{ activemq_container_name }} container failed.
   To resolve this, check logs using 'podman logs {{ activemq_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ activemq_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ activemq_container_name }} container.
 
 # Usage: deploy_idrac_telemetry_receiver_container.yml
 idrac_telemetry_receiver_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
@@ -135,4 +135,4 @@ idrac_telemetry_receiver_container_failure_msg: |
   Deployment of {{ idrac_telemetry_receiver_container_name }} container failed.
   To resolve this, check logs using 'podman logs {{ idrac_telemetry_receiver_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ idrac_telemetry_receiver_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ idrac_telemetry_receiver_container_name }} container.

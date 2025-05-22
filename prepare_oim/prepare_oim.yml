@@ -16,6 +16,7 @@
 - name: Set_fact for fetch omnia config credentials
   hosts: localhost
   connection: local
+  tags: always
   tasks:
     - name: Set dynamic run tags including 'prepare_oim'
       when: not config_file_status | default(false) | bool
@@ -23,8 +24,10 @@
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['prepare_oim']) | unique }}"
         cacheable: true
 
+
 - name: Invoke validate_config.yml to perform L1 and L2 validations with prepare_oim tag
   ansible.builtin.import_playbook: ../input_validation/validate_config.yml
+  tags: always
 
 - name: Invoke get_config_credentials.yml
   ansible.builtin.import_playbook: ../utils/credential_utility/get_config_credentials.yml
@@ -32,17 +35,21 @@
 - name: Include input project directory
   when: not project_dir_status | default(false) | bool
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
+  tags: always
 
 - name: Create oim group and provision group
   ansible.builtin.import_playbook: ../utils/create_container_group.yml
   vars:
     oim_group: true
     omnia_provision_group: true
+  tags: always
+
 
 - name: Prepare OIM Validation and Configure Known Hosts
   hosts: localhost
   connection: local
   gather_facts: false
+  tags: always
   tasks:
     - name: Include prepare_oim_validation role  # noqa:role-name[path]
       ansible.builtin.include_role:
@@ -61,14 +68,16 @@
   hosts: oim
   connection: ssh
   gather_facts: false
-  tags: deploy_containers
   roles:
     - role: deploy_containers/common  # noqa:role-name[path]
+      tags: always
     - role: deploy_containers/pcs  # noqa:role-name[path]
+      tags: pcs
 
 - name: Configure admin_ip with VIP if high availability is enabled
   hosts: localhost
   connection: local
+  tags: always
   tasks:
     - name: Configure virtual IP as admin_ip task # noqa:role-name[path]
       ansible.builtin.include_role:
@@ -79,19 +88,25 @@
   hosts: oim
   connection: ssh
   gather_facts: false
-  tags: deploy_containers
   roles:
     - role: deploy_containers/provision  # noqa:role-name[path]
+      tags: provision
     - role: deploy_containers/pulp  # noqa:role-name[path]
+      tags: pulp
     - role: deploy_containers/kubespray  # noqa:role-name[path]
+      tags: kubespray
     - role: deploy_containers/idrac_telemetry  # noqa:role-name[path]
+      tags: idrac_telemetry
     - role: deploy_containers/prometheus  # noqa:role-name[path]
+      tags: prometheus
     - role: deploy_containers/grafana # noqa:role-name[path]
+      tags: grafana
 
 - name: Add all containers to known hosts on omnia core
   hosts: localhost
   connection: local
   gather_facts: false
+  tags: always
   tasks:
     - name: Add provision container host keys to known_hosts of omnia_core  # noqa:role-name[path]
       ansible.builtin.include_role:
@@ -110,6 +125,7 @@
 - name: Configure Pulp container
   hosts: localhost
   connection: local
+  tags: pulp
   tasks:
     - name: Configure Pulp container based on protocol
       block:
@@ -128,6 +144,7 @@
 - name: Reload pulp nginx
   hosts: oim
   connection: ssh
+  tags: pulp
   tasks:
     - name: Reload pulp nginx # noqa:role-name[path]
       ansible.builtin.include_role:
@@ -138,15 +155,27 @@
 - name: Configure provision container
   hosts: omnia_provision
   connection: ssh
+  tags: provision
   tasks:
     - name: Configure provision container and Omnia DB creation  # noqa:role-name[path]
       ansible.builtin.include_role:
         name: deploy_containers/provision
         tasks_from: configure_provision_container.yml
 
+- name: Configure grafana datasource
+  hosts: oim
+  connection: ssh
+  tags: grafana
+  tasks:
+    - name: Configure grafana datasource # noqa:role-name[path]
+      ansible.builtin.include_role:
+        name: deploy_containers/grafana
+        tasks_from: configure_datasource.yml
+
 - name: Deploy PCS container resources
   hosts: oim
   connection: ssh
+  tags: pcs
   tasks:
     - name: Create all PCS container resources # noqa:role-name[path]
       ansible.builtin.include_role:
@@ -157,6 +186,7 @@
   hosts: oim
   connection: ssh
   gather_facts: false
+  tags: always
   roles:
     - role: save_container_images  # noqa:role-name[path]
       when: >
@@ -169,6 +199,7 @@
 - name: Prepare oim completion
   hosts: localhost
   connection: local
+  tags: always
   tasks:
     - name: Prepare oim has completed  # noqa:role-name[path]
       ansible.builtin.include_role:
