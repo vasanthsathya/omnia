@@ -76,7 +76,7 @@ def setup_logger(log_dir,log_file_path):
 
     return logger
 
-def execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path,logger, timeout=None, user_registry):
+def execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path,logger, timeout=None, user_registries):
 
     """
     Executes a task by determining the appropriate function to call, managing execution time, 
@@ -90,6 +90,7 @@ def execute_task(task, determine_function, user_data, version_variables, repo_st
         csv_file_path (str): Path to a CSV file to be processed as part of the task.
         logger (logging.Logger): The logger instance for logging the task's execution.
         timeout (float, optional): The maximum time allowed for the task to execute. If `None`, no timeout is enforced.
+        user_registries (str): List of user registries 
 
     Returns:
         dict: A dictionary containing the task information, its execution status, any output, and any errors.
@@ -167,6 +168,7 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
         log_dir (str): Directory where log files for the worker process should be saved.
         result_queue (multiprocessing.Queue): Queue for putting the result of the task execution (used for inter-process communication).
         timeout (float): The maximum allowed time for the task execution.
+        user_registries (str): List of user registries
 
     Returns:
         None: The result is placed into the `result_queue`, so no return value is needed.
