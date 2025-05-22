@@ -51,4 +51,4 @@
   rescue:
     - name: Failed to validate inventory file
       ansible.builtin.fail:
-        msg: "{{ inventory_fail_msg }} Error: {{ script_output.stderr }}"
+        msg: "{{ inventory_fail_msg }} Error: {{ script_output }}"
