@@ -75,8 +75,8 @@ def main():
 	"""
 
     module_args = dict(
-        inventory_status= {"type": "str", "required": False, "default": "false"},
-        hostvars=dict(type='dict', required=True),
+        inventory_status={"type": "str", "required": False, "default": "false"},
+        host_data=dict(type='dict', required=True),
         category_list=dict(type='str', required=True)
     )
 
@@ -87,7 +87,7 @@ def main():
 
     inventory_status = module.params['inventory_status']
     category_list = module.params['category_list']
-    hostvars = module.params['hostvars']
+    hostvars = module.params['host_data']
 
     if not category_list or not hostvars:
         module.fail_json(msg="Failed, invalid input: category_list or hostvars missing")
