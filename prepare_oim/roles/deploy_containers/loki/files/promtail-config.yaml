@@ -11,8 +11,8 @@ clients:
 scrape_configs:
   - job_name: system
     static_configs:
-     - targets:
+      - targets:
          - localhost
-       labels:
-         job: varlogs
-         __path__: /var/log/*log
+        labels:
+          job: varlogs
+          __path__: /var/log/*log
