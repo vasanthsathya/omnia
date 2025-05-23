@@ -164,6 +164,8 @@
               - -c
               - "nohup go run cmd/redfishread/redfishread.go &"
           changed_when: false
+          delegate_to: oim
+          connection: ssh
 
     - name: Create and update telemetry report from template
       block:
