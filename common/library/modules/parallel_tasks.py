@@ -52,8 +52,7 @@ from ansible.module_utils.local_repo.config import (
     DEFAULT_STATUS_FILENAME,
     SOFTWARE_CSV_FILENAME,
     SOFTWARE_CSV_HEADER,
-    STATUS_CSV_HEADER,
-    LOCAL_REPO_CONFIG_PATH_DEFAULT
+    STATUS_CSV_HEADER
 )
 
 def update_status_csv(csv_dir, software, overall_status):
@@ -224,7 +223,7 @@ def main():
         "repo_store_path": {"type": "str", "required": False, "default": DEFAULT_REPO_STORE_PATH},
         "software": {"type": "list", "elements": "str", "required": True},
         "user_json_file": {"type": "str", "required": False, "default": USER_JSON_FILE_DEFAULT},
-        "local_repo_config_path": {"type": "str", "required": False, "default": LOCAL_REPO_CONFIG_PATH_DEFAULT}
+        "local_repo_config_path": {"type": "str", "required": True}
     }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -264,7 +263,7 @@ def main():
 
         overall_status, task_results = execute_parallel(
             tasks, determine_function, nthreads, repo_store_path, csv_file_path,
-            log_dir, user_data, version_variables, slogger, timeout, local_repo_config_path
+            log_dir, user_data, version_variables, slogger, local_repo_config_path, timeout
         )
 
         end_time = datetime.now()

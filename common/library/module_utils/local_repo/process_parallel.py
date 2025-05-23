@@ -76,7 +76,7 @@ def setup_logger(log_dir,log_file_path):
 
     return logger
 
-def execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path,logger, timeout=None, user_registries):
+def execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path,logger, user_registries, timeout=None):
 
     """
     Executes a task by determining the appropriate function to call, managing execution time, 
@@ -155,7 +155,7 @@ def execute_task(task, determine_function, user_data, version_variables, repo_st
             "error": str(e)  # Include the error message
         }
 
-def worker_process(task, determine_function, user_data,version_variables, repo_store_path, csv_file_path, log_dir, result_queue, timeout, user_registries):
+def worker_process(task, determine_function, user_data,version_variables, repo_store_path, csv_file_path, log_dir, result_queue, user_registries, timeout):
 
     """
     Executes a task in a separate worker process, logs the process execution, and puts the result in a result queue.
@@ -189,7 +189,7 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
            logger.info(f"Worker process {os.getpid()} started  execution.")
 
         # Execute the task by calling the `execute_task` function and passing necessary arguments
-        result = execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, logger, timeout, user_registries)
+        result = execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, logger,  user_registries, timeout)
 
         result["logname"] = f"package_status_{os.getpid()}.log"
         # Put the result of the task execution into the result_queue for further processing
@@ -209,7 +209,7 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
         result_queue.put({"task": task, "status": "FAILED", "output": "", "error": str(e)})
 
     
-def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_file_path,log_dir, user_data, version_variables, standard_logger, timeout, local_repo_config_path):
+def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_file_path,log_dir, user_data, version_variables, standard_logger, local_repo_config_path, timeout):
     
     """
     Executes a list of tasks in parallel using multiple worker processes.
@@ -247,7 +247,7 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
             package_template = Template(task.get('package', None))
             package_name = package_template.render(**version_variables)
             task['package'] = package_name
-            task_results.append(pool.apply_async(worker_process, (task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, log_dir, result_queue, timeout, user_registries)))
+            task_results.append(pool.apply_async(worker_process, (task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, log_dir, result_queue, user_registries, timeout)))
 
         pool.close()  # Close the pool to new tasks once all have been submitted
 

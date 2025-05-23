@@ -17,6 +17,8 @@ from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
 import json
+import requests
+from requests.auth import HTTPBasicAuth
 import multiprocessing
 from ansible.module_utils.local_repo.config import (
     pulp_container_commands
@@ -284,8 +286,8 @@ def check_image_in_registry(host, image, tag, cacert, key, username, password, l
         response = requests.get(
             image_url,
             auth=HTTPBasicAuth(username, password),
-            cert=(key, cacert),
-            verify=cacert,
+            cert=(cacert, key),
+            verify=False,
             timeout=10
         )
 
@@ -300,7 +302,7 @@ def check_image_in_registry(host, image, tag, cacert, key, username, password, l
         logger.error(f"Failed to connect to registry '{host}': {e}")
         return False
 
-def process_user_iso(package, host, package_content, logger):
+def process_user_iso(package, host, package_content, version_variables, logger):
     user_reg_prefix = "user_reg_"
     repository_name = f"{user_reg_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
     remote_name = f"remote_{package['package'].replace('/', '_')}"
@@ -333,7 +335,7 @@ def process_user_iso(package, host, package_content, logger):
         
     return True, package_identifier
 
-def handle_user_image_registry(package, package_content, version_variables, user_regisrty, logger):
+def handle_user_image_registry(package, package_content, version_variables, user_registries, logger):
     logger.info("#" * 30 + f" {handle_user_image_registry.__name__} start " + "#" * 30)
     result = False
     package_info = None
@@ -341,9 +343,9 @@ def handle_user_image_registry(package, package_content, version_variables, user
         # Render tag using Jinja2
         tag_template = Template(package["tag"])
         tag_val = tag_template.render(**version_variables)
-        image_name = package["name"]
+        image_name = package_content
 
-        for registry in user_registry:
+        for registry in user_registries:
             host = registry.get("host")
             cacert = registry.get("cacert_path")
             key = registry.get("key_path")
@@ -368,7 +370,7 @@ def handle_user_image_registry(package, package_content, version_variables, user
 
             if image_found:
                 logger.info(f"Image '{image_name}:{tag_val}' found in registry '{host}'")
-                result, package_info = process_user_iso(package, host, package_content, logger)
+                result, package_info = process_user_iso(package, host, package_content, version_variables, logger)
                 break
 
     except Exception as e:
@@ -398,6 +400,7 @@ def process_image(package, status_file_path, version_variables, user_registries,
     policy_type = "immediate"
     base_url, package_content = get_repo_url_and_content(package['package'])
     if user_registries:
+        logger.info(f"user registry exist {user_registries}")
         result, package_identifier = handle_user_image_registry(package, package_content, version_variables, user_registries, logger)
 
     # If user registry not found or no user registry given, proceed with public registry
