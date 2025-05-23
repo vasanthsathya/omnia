@@ -40,17 +40,24 @@ class RestClient:
             "Content-type": "application/json",
             "Authorization": f"Basic {auth_encoded}"
         }
-
+    
     def get_connection(self):
         """
-        Creates an HTTPS connection to the server with SSL verification disabled.
-
+        Creates an HTTP or HTTPS connection to the server.
+        For HTTPS, SSL verification is disabled.
+ 
         Returns:
-            http.client.HTTPSConnection: An HTTPS connection instance.
+            http.client.HTTPConnection or http.client.HTTPSConnection: A connection instance.
         """
         parsed_url = urlparse(self.base_url)
-        context = ssl._create_unverified_context()
-        return http.client.HTTPSConnection(parsed_url.hostname, parsed_url.port, context=context, timeout=60)
+ 
+        if parsed_url.scheme == 'https':
+            context = ssl._create_unverified_context()
+            return http.client.HTTPSConnection(parsed_url.hostname, parsed_url.port, context=context, timeout=60)
+        elif parsed_url.scheme == 'http':
+            return http.client.HTTPConnection(parsed_url.hostname, parsed_url.port, timeout=60)
+        else:
+            return None
 
     def post(self, uri, data):
         """
