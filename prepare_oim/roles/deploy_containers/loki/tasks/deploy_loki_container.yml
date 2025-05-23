@@ -13,7 +13,7 @@
 # limitations under the License.
 ---
 
-- name: Check if Loki container is present # noqa: name[template]
+- name: Check if Loki container is present
   containers.podman.podman_container_info:
     name: "{{ loki_container_name }}"
   register: loki_container_info
@@ -93,7 +93,6 @@
              loki_container_status.containers[0].State.Status == 'running'
       retries: "{{ max_retries }}"
       delay: "{{ delay_count }}"
-
 
     - name: Notify user of Loki deployment status
       ansible.builtin.debug:
