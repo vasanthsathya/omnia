@@ -220,11 +220,11 @@ def main():
     # intersection of split_comma_dict and roles_yaml_data
     common_roles = split_comma_dict.keys() & roles_dict.keys()
 
-    for xrole in common_roles:
-        bundle = split_comma_dict.pop(xrole)
-        xgroup_list = roles_dict.get(xrole)
-        for xgroup in xgroup_list:
-            careful_merge(split_comma_dict, xgroup, bundle)
+    for role in common_roles:
+        bundle = split_comma_dict.pop(role)
+        group_list = roles_dict.get(role)
+        for grp in group_list:
+            careful_merge(split_comma_dict, grp, bundle)
 
     changed = True
     module.exit_json(
