@@ -163,7 +163,7 @@
             argv:
               - -c
               - "nohup go run cmd/redfishread/redfishread.go &"
-          changed_when: false
+          changed_when: true
           delegate_to: oim
           connection: ssh
 
