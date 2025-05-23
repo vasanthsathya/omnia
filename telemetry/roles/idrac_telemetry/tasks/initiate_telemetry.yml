@@ -166,7 +166,6 @@
           changed_when: false
 
     - name: Create and update telemetry report from template
-      when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
       block:
         - name: Create telemetry report
           ansible.builtin.template:
