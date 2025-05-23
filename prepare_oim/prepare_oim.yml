@@ -70,7 +70,6 @@
   gather_facts: false
   roles:
     - role: deploy_containers/common  # noqa:role-name[path]
-      tags: always
     - role: deploy_containers/pcs  # noqa:role-name[path]
       tags: pcs
 
