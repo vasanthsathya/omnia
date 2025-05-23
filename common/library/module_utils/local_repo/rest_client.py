@@ -18,7 +18,6 @@ import ssl
 import base64
 from urllib.parse import urlparse
 
-
 class RestClient:
     """
     REST client to interact with HTTP(S) endpoints using JSON-based POST and GET requests.
@@ -40,17 +39,23 @@ class RestClient:
             "Content-type": "application/json",
             "Authorization": f"Basic {auth_encoded}"
         }
-
+        
     def get_connection(self):
         """
-        Creates an HTTPS connection to the server with SSL verification disabled.
-
+        Creates an HTTP or HTTPS connection to the server.
+        For HTTPS, SSL verification is disabled.
+ 
         Returns:
-            http.client.HTTPSConnection: An HTTPS connection instance.
+            http.client.HTTPConnection or http.client.HTTPSConnection: A connection instance.
         """
         parsed_url = urlparse(self.base_url)
-        context = ssl._create_unverified_context()
-        return http.client.HTTPSConnection(parsed_url.hostname, parsed_url.port, context=context, timeout=60)
+ 
+        if parsed_url.scheme == 'https':
+            context = ssl._create_unverified_context()
+            return http.client.HTTPSConnection(parsed_url.hostname, parsed_url.port, context=context, timeout=60)
+        elif parsed_url.scheme == 'http':
+            return http.client.HTTPConnection(parsed_url.hostname, parsed_url.port, timeout=60)
+        return None
 
     def post(self, uri, data):
         """
@@ -70,7 +75,7 @@ class RestClient:
             if response.status != 202:
                 return None
             return json.loads(response.read())
-        except Exception as e:
+        except Exception:
             return None
         finally:
             conn.close()
@@ -92,7 +97,7 @@ class RestClient:
             if response.status != 200:
                 return None
             return json.loads(response.read())
-        except Exception as e:
+        except Exception:
             return None
         finally:
             conn.close()
@@ -111,5 +116,5 @@ class RestClient:
         try:
             conn.request("GET", uri, headers=self.headers)
             return conn.getresponse()
-        except Exception as e:
+        except Exception:
             return None
