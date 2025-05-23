@@ -56,8 +56,7 @@ class RestClient:
             return http.client.HTTPSConnection(parsed_url.hostname, parsed_url.port, context=context, timeout=60)
         elif parsed_url.scheme == 'http':
             return http.client.HTTPConnection(parsed_url.hostname, parsed_url.port, timeout=60)
-        else:
-            return None
+        return None
 
     def post(self, uri, data):
         """
@@ -77,7 +76,7 @@ class RestClient:
             if response.status != 202:
                 return None
             return json.loads(response.read())
-        except Exception as e:
+        except Exception:
             return None
         finally:
             conn.close()
@@ -99,7 +98,7 @@ class RestClient:
             if response.status != 200:
                 return None
             return json.loads(response.read())
-        except Exception as e:
+        except Exception:
             return None
         finally:
             conn.close()
@@ -118,5 +117,5 @@ class RestClient:
         try:
             conn.request("GET", uri, headers=self.headers)
             return conn.getresponse()
-        except Exception as e:
+        except Exception:
             return None
