@@ -17,5 +17,5 @@
 - name: Deploy Loki and Promtail containers if visualization support is enabled
   when: hostvars['localhost']['visualization_support']
   block:
-    - name: Deploy Grafana container
+    - name: Deploy Loki and Promtail containers container
       ansible.builtin.include_tasks: deploy_loki_promtail_container.yml
