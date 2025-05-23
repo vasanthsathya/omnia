@@ -64,6 +64,10 @@ pcs_firewall_services:
   - "http"
   - "https"
 
+internal_nfs_services:
+  - nfs
+  - rpc-bind
+
 squid_firewall_ports:
   - "{{ squid_proxy_port }}/tcp"
 
@@ -78,3 +82,6 @@ retry_count: "5"
 delay_time: "10"
 podman_login_fail_msg: "Podman login failed. Please ensure the podman login credentials in the input/omnia_config_credentials.yml are valid.
 If they are, this error can occur due to a pull limit issue or multiple requests. Please try running the playbook again after waiting for a while."
+
+# Usage: add_known_hosts.yml
+ssh_config: "/root/.ssh/config"
