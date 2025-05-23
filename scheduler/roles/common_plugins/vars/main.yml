@@ -60,8 +60,8 @@ network_spec_syntax_fail_msg: "Failed. Syntax errors present in network_spec.yml
 input_dir: "{{ hostvars['localhost']['input_project_dir'] }}"
 project_name: "{{ hostvars['localhost']['project_name'] }}"
 network_spec_path: "{{ input_dir }}/network_spec.yml"
-pulp_container_name: "{{ admin_nic_ip }}:{{ pulp_registry_port }}"
-multus_config: "true"
+#pulp_container_name: "{{ admin_nic_ip }}:{{ pulp_registry_port }}"
+multus_config: true
 multus_deployment_template: "{{ role_path }}/templates/multus-daemonset.j2"
 multus_deployment_manifest: "{{ k8s_tmp_dir }}/multus-daemonset.yml"
 multus_deployment_manifest_path: "{{ hostvars['localhost']['offline_manifest_path'] }}/{{ hostvars['localhost']['multus_daemonset_pkg'] }}/{{ hostvars['localhost']['multus_daemonset_pkg'] }}.yml" # noqa: yaml[line-length]
