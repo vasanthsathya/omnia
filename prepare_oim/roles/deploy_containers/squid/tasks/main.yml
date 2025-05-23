@@ -13,14 +13,6 @@
 #  limitations under the License.
 ---
 
-- name: Verify slurm is running
-  ansible.builtin.include_tasks: pre_requisites.yml
-
-- name: Fetch software_config.json and check for amd_benchmarks support
-  ansible.builtin.include_tasks: fetch_software_config.yml
-
-- name: Install packages
-  ansible.builtin.include_tasks: fetch_compute_nodes.yml
-
-- name: Configure slurm
-  ansible.builtin.include_tasks: configure_slurm.yml
+- name: Deploy squid container tasks
+  ansible.builtin.include_tasks: deploy_squid_container.yml
+  when: hostvars['localhost']['enable_routed_internet']

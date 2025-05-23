@@ -13,14 +13,14 @@
 #  limitations under the License.
 ---
 
-- name: Verify slurm is running
-  ansible.builtin.include_tasks: pre_requisites.yml
+- name: Reload "{{ slurm_service_type }}"
+  ansible.builtin.systemd_service:
+    name: "{{ slurm_service_type }}"
+    state: reloaded
+    daemon_reload: true
+    enabled: true
 
-- name: Fetch software_config.json and check for amd_benchmarks support
-  ansible.builtin.include_tasks: fetch_software_config.yml
-
-- name: Install packages
-  ansible.builtin.include_tasks: fetch_compute_nodes.yml
-
-- name: Configure slurm
-  ansible.builtin.include_tasks: configure_slurm.yml
+- name: Restart "{{ slurm_service_type }}"
+  ansible.builtin.systemd_service:
+    name: "{{ slurm_service_type }}"
+    state: restarted

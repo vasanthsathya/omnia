@@ -112,6 +112,9 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
 def software_mandatory_fail_msg(software_name):
     return f"in software_config.json. Please add the corresponding field '{software_name}' to the JSON. Look at /examples/template_ubuntu_software_config.json for an example"
 
+def json_file_mandatory(file_path):
+     return f"is present in software_config.json. Please make sure that the corresponding JSON file is present at location '{file_path}'"
+
 # network_spec.json
 range_ip_check_fail_msg = "Failed. IP range should be in valid format (Example: 192.168.1.1-192.168.1.254)"
 range_ip_check_overlap_msg = "Static range and dynamic range in admin_network must not overlap"

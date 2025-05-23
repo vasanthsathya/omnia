@@ -16,6 +16,13 @@ import json
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
+from ansible.module_utils.local_repo.software_utils import (
+    load_json,
+    set_version_variables,
+    get_subgroup_dict,
+    get_software_names,
+    get_json_file_path
+)
 
 file_names = config.files
 create_error_msg = validation_utils.create_error_msg
@@ -29,6 +36,11 @@ def validate_software_config(input_file_path, data, logger, module, omnia_base_d
     cluster_os_version = data["cluster_os_version"]
     os_version_ranges = config.os_version_ranges
 
+    # Check if the OS type matches the system level OS value
+    oim_os = validation_utils.get_os_type()
+    if oim_os.lower() != cluster_os_type.lower():
+        errors.append(create_error_msg("oim_os", oim_os, en_us_validation_msg.os_type_fail_msg(cluster_os_type,oim_os)))
+    
     if cluster_os_type.lower() in os_version_ranges:
         version_range = os_version_ranges[cluster_os_type.lower()]
         if cluster_os_type.lower() in ["rhel", "rocky"]:
@@ -42,35 +54,39 @@ def validate_software_config(input_file_path, data, logger, module, omnia_base_d
     not_valid_iso_msg = validation_utils.verify_iso_file(iso_file_path, cluster_os_type, cluster_os_version)
     if not_valid_iso_msg:
         errors.append(create_error_msg("iso_file_path", iso_file_path, not_valid_iso_msg))
-    softwares = data["softwares"]
-    need_additional_software_info = ["bcm_roce", "amdgpu", "vllm", "pytorch", "tensorflow", "intelgaudi"]
-    filtered_softwares = [item for item in softwares if item.get("name") in need_additional_software_info]
 
-    for software_name in filtered_softwares:
-        name = software_name["name"]
-        if not data.get(name):
-            errors.append(create_error_msg(f"{name}", None, en_us_validation_msg.software_mandatory_fail_msg(name)))
+    #software groups and subgroups l2 validation
 
-    return errors
+    #create the subgroups and softwares dictionary with version details
+    software_json_data = load_json(input_file_path)
+    subgroup_dict, software_names = get_subgroup_dict(software_json_data)
+    version_variables = set_version_variables(software_json_data, software_names, cluster_os_version)
 
-# Below is a validation function for each file in the input folder
-def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
-    # check to make sure associated os info is filled out
-    errors = []
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    cluster_os_type = software_config_json["cluster_os_type"]
+    #check if the corresponding json files for softwares and subgroups exists in config folder
+    software_list = get_software_names(input_file_path)
+    validation_results = []
+    failures=[]
+    for software in software_list:
+        json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
+        # Check if json_path is None or if the JSON syntax is invalid
+        if json_path is None:
+            errors.append(create_error_msg("Validation Error: ", None ,en_us_validation_msg.json_file_mandatory(json_path)))
+        else:
+            try: 
+                subgroup_softwares = subgroup_dict.get(software, None)
+                #for each subgroup for a software check for corresponding entry in software.json
+                #eg: for amd the amd.json should contain both amd and rocm entries
+                with open(json_path, 'r') as file:
+                    json_data = json.load(file)
+                for subgroup_software in subgroup_softwares:
+                    result, fail_data = validation_utils.validate_softwaresubgroup_entries(subgroup_software,json_path,json_data,validation_results,failures)
+            
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                errors.append(create_error_msg("Error opening or reading JSON file:", json_path, str(e)))
 
-    ubuntu_os_url = data["ubuntu_os_url"]
-    if cluster_os_type == "ubuntu":
-        if validation_utils.is_string_empty(ubuntu_os_url):
-            errors.append(create_error_msg("ubuntu_os_url", ubuntu_os_url, en_us_validation_msg.ubuntu_os_url_msg))
-
-    rhel_os_url = data["rhel_os_url"]
-    if cluster_os_type == "rhel":
-        if validation_utils.is_string_empty(rhel_os_url):
-            errors.append(create_error_msg("rhel_os_url", rhel_os_url, en_us_validation_msg.rhel_os_url_msg))
-
+    if fail_data:
+        errors.append(create_error_msg("Software config subgroup validation failed for",fail_data,"Please resolve the issues first before proceeding."))
+    
     return errors
 
 def validate_security_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
