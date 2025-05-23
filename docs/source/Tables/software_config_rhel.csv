@@ -3,7 +3,7 @@
 
 ``string``
 
-Required","* The operating system running on the cluster.
+Required","* The operating system running on the OIM.
 * **Value**: ``rhel``"
 "**cluster_os_version**
 
@@ -22,10 +22,9 @@ Required","* Path where the user has placed the ``<OS>.iso`` image that needs to
 
 ``string``
 
-Required","* When the value is set to ``always``, Omnia creates a local Pulp repository on the OIM and stores all the packages/images required for the cluster in that repository.
-* When the value is set to ``partial``, Omnia creates a local Pulp repository on the OIM and stores all packages and images except those specified under ``user_repo_url`` or ``user_registry`` in the ``input/local_repo_config.yml`` file.
+Required","* When the value is set to ``always`` or ``partial``, Omnia creates a local Pulp repository on the OIM and stores all the packages/images required for the cluster in that repository.
 * **Accepted value**: ``always``, ``partial``
-* **Default value**: ``partial``
+* **Default value**: ``always``
 
 .. note:: Repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.	"
 "**softwares**

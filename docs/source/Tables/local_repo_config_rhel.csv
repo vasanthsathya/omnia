@@ -4,7 +4,7 @@
 ``JSON List``
 
 Optional","* This variable accepts the repository urls from which the software packages/images will be downloaded and accessed by the cluster.
-* Omnia downloads the software packages/images the given list of URLs and stores them into a Pulp container, present on the NFS share. These packages/images are then accessed by the cluster nodes from that NFS share.
+* Omnia downloads the software packages from the given list of URLs and stores them into a local Pulp container. These packages are then accessed by the cluster nodes from that Pulp container.
 * ``url`` defines the baseurl for the repository.
 * ``gpgkey`` defines gpgkey for the repository. If ``gpgkey`` is omitted then ``gpgcheck=0`` is set for that repository.
 * ``name`` defines the name of the software ``.rpm`` package.
@@ -17,9 +17,10 @@ Optional","* This variable accepts the repository urls from which the software p
 
 ``JSON List``
 
-Optional","* This variable accepts the URL and port of the registry containing the software images, required for the cluster nodes. This ``user_registry`` is configured based on the value provided for ``repo_config`` in the ``/opt/omnia/input/project_default/software_config.json``.
-* When ``repo_config`` is ``always``, Omnia downloads the images from the URLs mentioned in the ``user_registry`` and then stores them in a local Pulp repository on the OIM. These images  are then accessed by the cluster nodes.
-* When ``repo_config`` is ``partial``, a local repository is created on the OIM only for images that are not present in the ``user_registry``. Compute nodes can directly mirror images from the URLs listed in the ``user_registry``, using ``http_proxy``.
+Optional","* This variable accepts the URL and port of the user's own software image registry. 
+* Omnia sets up local repositories by downloading the software images mentioned in the ``software_config.json`` from the internet, and storing them in a local Pulp container on the OIM. If you have your own repository where the desired software images are stored and want Omnia to access them, you can provide the URL and port for it via this variable. Omnia compares the ``software_config.json`` with the URLs mentioned in the ``user_registry`` and downloads only the ones not present in the ``user_registry``.
+* When ``repo_config`` is ``always``, Omnia downloads the images only from the URLs mentioned in the ``user_registry``.
+* When ``repo_config`` is ``partial``, Omnia only downloads the images that are not present in the ``user_registry``. Compute nodes can directly mirror images from the URLs listed in the ``user_registry``, using ``http_proxy``.
 * When ``repo_config`` is ``never``, no local repository is created and images are directly downloaded from the Internet  on each cluster node.
 * **Format**: ``- { host: <URL>:<port>, cert_path: ""<certificate path>"" }``
 * ``host`` captures the URL and port of the ``user_registry``.
@@ -68,6 +69,6 @@ Required","* This variable accepts a list of all the repo urls from where ``.rpm
 
 ``Boolean``
 
-Mandatory","* If ``repo_config`` is set to ``partial`` or ``never``, then ``enable_routed_internet`` must be set to ``true``. When ``enable_routed_internet`` is set to true, a Squid container is deployed on the OIM to act as a proxy, enabling clusters with limited or no direct internet access to download packages from the Internet.
-* It is recommended to set ``enable_routed_internet`` to ``false`` if the cluster has direct internet access or if the ``repo_config`` is set to  ``always``, to ensure that packages are accesssed from the Omnia repository instead of external sources.
+Mandatory","* When ``enable_routed_internet`` is set to true, a Squid container is deployed on the OIM to act as a proxy, enabling clusters with limited or no direct internet access to download packages from the Internet.
+* It is recommended to set ``enable_routed_internet`` to ``false`` if the cluster has direct internet access.
 * **Default value**: ``true``"

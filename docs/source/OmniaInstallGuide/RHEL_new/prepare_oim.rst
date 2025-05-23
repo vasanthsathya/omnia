@@ -7,7 +7,7 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
 * Sets up the Provision container: ``omnia_provision``
 * Sets up the Pulp container: ``pulp``
-* Sets up the Squid container (if ``enabled_routed_internet`` is ``true`` in ``/opt/omnia/input/project_default/local_repo_config.yml``): ``squid``
+* Sets up the Squid container (if ``enable_routed_internet`` is ``true`` in ``/opt/omnia/input/project_default/local_repo_config.yml``): ``squid``
 
 Input files for the playbook
 ------------------------------
