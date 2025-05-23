@@ -111,12 +111,8 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
     return f"For OS type '{cluster_os_type}', the version must be {min_version}."
 def software_mandatory_fail_msg(software_name):
     return f"in software_config.json. Please add the corresponding field '{software_name}' to the JSON. Look at /examples/template_ubuntu_software_config.json for an example"
-
 def json_file_mandatory(file_path):
      return f"is present in software_config.json. Please make sure that the corresponding JSON file is present at location '{file_path}'"
-
-def os_type_fail_msg(os_type,os_name):
-    return f"The OS name mentioned in software_config.json {os_type} is different from the OIM OS {os_name}. Please cross verify"
 
 # network_spec.json
 range_ip_check_fail_msg = "Failed. IP range should be in valid format (Example: 192.168.1.1-192.168.1.254)"
