@@ -23,6 +23,8 @@ Required","* Path where the user has placed the ``<OS>.iso`` image that needs to
 ``string``
 
 Required","* When the value is set to ``always`` or ``partial``, Omnia creates a local Pulp repository on the OIM and stores all the packages/images required for the cluster in that repository.
+* In case of ""always"", Omnia downloads the all packages from the internet even if you have provided your own repository or registry details via ``user_repo_url`` or ``user_registry`` in ``local_repo_config.yml``.
+* In case of ``partial``, Omnia first checks the ``user_repo_url`` or ``user_registry`` and downloads all the packages from the URLs listed there. The packages that are not listed are then downloaded from the internet.
 * **Accepted value**: ``always``, ``partial``
 * **Default value**: ``always``
 

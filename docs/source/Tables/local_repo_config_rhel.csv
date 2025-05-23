@@ -18,10 +18,8 @@ Optional","* This variable accepts the repository urls from which the software p
 ``JSON List``
 
 Optional","* This variable accepts the URL and port of the user's own software image registry. 
-* Omnia sets up local repositories by downloading the software images mentioned in the ``software_config.json`` from the internet, and storing them in a local Pulp container on the OIM. If you have your own repository where the desired software images are stored and want Omnia to access them, you can provide the URL and port for it via this variable. Omnia compares the ``software_config.json`` with the URLs mentioned in the ``user_registry`` and downloads only the ones not present in the ``user_registry``.
-* When ``repo_config`` is ``always``, Omnia downloads the images only from the URLs mentioned in the ``user_registry``.
-* When ``repo_config`` is ``partial``, Omnia only downloads the images that are not present in the ``user_registry``. Compute nodes can directly mirror images from the URLs listed in the ``user_registry``, using ``http_proxy``.
-* When ``repo_config`` is ``never``, no local repository is created and images are directly downloaded from the Internet  on each cluster node.
+* If you have your own registry and want Omnia to use it, you can specify its URL and port using this variable. If the package is available there, Omnia will pull the image from the ``user_registry`` instead of the Internet.
+* Compute nodes can directly mirror images from the URLs listed in the ``user_registry``, using ``http_proxy``.
 * **Format**: ``- { host: <URL>:<port>, cert_path: ""<certificate path>"" }``
 * ``host`` captures the URL and port of the ``user_registry``.
 * ``cert_path`` captures the absolute path of the security certificates for each registry. If this path is not provided, insecure registries are configured.
