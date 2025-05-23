@@ -23,6 +23,8 @@ slurm_telemetry_support: false
 # Usage: include_provision_config.yml
 provision_config_file: "{{ role_path }}/../../../input/provision_config.yml"
 fail_msg_provision_config_file: "provision_config.yml file doesn't exist."
+telemetry_config_file: "{{ input_project_dir }}/telemetry_config.yml"
+fail_msg_telemetry_config_file: "telemetry_config.yml file doesn't exist."
 
 # Usage: validate_telemetry_config.yml
 success_msg_k8s_pod_network_cidr: "Appliance k8s pod network cidr validated"
