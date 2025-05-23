@@ -23,18 +23,14 @@
     msg: "{{ bmc_group_data_file_not_found_msg }}"
   when: not bmc_group_data_stat.stat.exists
 
-- name: Read the first line of the CSV file
-  command: "head -n 1 {{ bmc_group_data_filename }}"
-  register: csv_header
+- name: Read BMC group data
+  ansible.builtin.set_fact:
+    bmc_group_data: "{{ lookup('file', bmc_group_data_filename).splitlines() }}"
 
 - name: Validate BMC group data headers
   ansible.builtin.fail:
     msg: "{{ bmc_group_data_invalid_msg }}'"
-  when: csv_header.stdout != bmc_group_data_headers
-
-- name: Read BMC group data
-  ansible.builtin.set_fact:
-    bmc_group_data: "{{ lookup('file', bmc_group_data_filename).splitlines() }}"
+  when: bmc_group_data[0] != bmc_group_data_headers
 
 - name: Extract BMC_IP values
   ansible.builtin.set_fact:
