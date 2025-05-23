@@ -43,5 +43,5 @@
 - name: Validate each BMC IP
   ansible.builtin.fail:
     msg: "{{ bmc_group_data_invalid_ip_msg }} : {{ item }}"
-  when: item is not ipaddr
+  when: item is not ansible.netcommon.ipaddr
   loop: "{{ bmc_ips }}"
