@@ -49,28 +49,20 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  tags: always
   tasks:
     - name: Include prepare_oim_validation role  # noqa:role-name[path]
       ansible.builtin.include_role:
         name: prepare_oim_validation
-        apply:
-          tags: install
-      tags: always
 
     - name: Include create_inventory role  # noqa:role-name[path]
       ansible.builtin.include_role:
         name: create_inventory
-        apply:
-          tags: install
-      tags: provision
 
     - name: Add OIM to known hosts  # noqa:role-name[path]
       ansible.builtin.include_role:
         name: deploy_containers/common
         tasks_from: add_known_hosts.yml
-        apply:
-          tags: install
-      tags: always
 
 - name: Deploy the PCS container
   hosts: oim
