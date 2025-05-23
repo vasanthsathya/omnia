@@ -77,7 +77,7 @@
 - name: Configure admin_ip with VIP if high availability is enabled
   hosts: localhost
   connection: local
-  tags: always
+  tags: oim_ha
   tasks:
     - name: Configure virtual IP as admin_ip task # noqa:role-name[path]
       ansible.builtin.include_role:
@@ -101,6 +101,8 @@
       tags: prometheus
     - role: deploy_containers/grafana # noqa:role-name[path]
       tags: grafana
+    - role: deploy_containers/loki  # noqa:role-name[path]
+      tags: loki
 
 - name: Add all containers to known hosts on omnia core
   hosts: localhost
@@ -186,7 +188,7 @@
   hosts: oim
   connection: ssh
   gather_facts: false
-  tags: always
+  tags: oim_ha
   roles:
     - role: save_container_images  # noqa:role-name[path]
       when: >

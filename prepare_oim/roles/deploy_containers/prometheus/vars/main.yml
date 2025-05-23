@@ -52,7 +52,7 @@ prometheus_podman_volumes:
 prometheus_container_name: "prometheus"
 prometheus_image: "prom/prometheus:v2.36.0"
 prometheus_volumes:
- - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml:ro,Z"
+ - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml{{ selinux_option }}"
  - "prometheus_data:/prometheus"
  - "prometheus_log:/prometheus/log"
 
