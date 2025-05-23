@@ -23,21 +23,27 @@ loki_container_name: "loki"
 loki_image: docker.io/grafana/loki
 loki_image_tag: "3.4.1"
 
+promtail_log_dir: "{{ omnia_nfs_share }}/log/telemetry/promtail"
 loki_log_directory: "{{ omnia_nfs_share }}/log/telemetry/loki"
-loki_data_directory: "{{ omnia_nfs_share }}/telemetry/loki"
+config_dir: "{{ omnia_nfs_share }}/telemetry/loki_promtail"
 loki_podman_volumes:
   - { name: "loki_log", path: "{{ loki_log_directory }}" }
-  - { name: "loki_data", path: "{{ loki_data_directory }}" }
+  - { name: "loki_promtail_config", path: "{{ config_dir }}" }
+promtail_podman_volume:
+  - { name: "promtail_log", path: "{{ promtail_log_dir }}" }
+container_config_mnt: "/mnt/config"
 loki_volumes:
   - "loki_log:/var/log/loki{{ selinux_option }}"
-  - "loki_data:/var/lib/loki{{ selinux_option }}"
+  - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
+promtail_volumes:
+  - "promtail_log:/var/log/promtail{{ selinux_option }}"
+  - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
 max_retries: 10
 delay_count: 5
 loki_config_file_path:
-  - { src: "files/loki-config.yaml", dest: "{{ loki_data_directory }}", mode: "0644" }
+  - { src: "files/loki-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
 promtail_config_file_path:
-  - { src: "files/promtail-config.yaml", dest: "{{ loki_data_directory }}", mode: "0644" }
-etchostsip: "127.0.0.1"
+  - { src: "files/promtail-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
 promtail_container_success_msg: "The Promtail container '{{ promtail_container_name }}' container has been successfully deployed."
 promtail_container_failure_msg: |
   The deployment of the {{ promtail_container_name }} container has failed.
