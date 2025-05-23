@@ -53,36 +53,6 @@ if [ "$nmcli_available" = true ]; then
     log "INFO: Showing nmcli connection show output:"
     log "$(nmcli connection show)"
 
-    # Get the NIC name from the variable
-    admin_nic="{{ hostvars['omnia_provision']['admin_nic'] }}"
-    oim_admin_ip="{{ hostvars['omnia_provision']['admin_nic_ip'] }}"
-    log "INFO: Verifying default route for admin NIC $admin_nic..."
-    # Count the number of default routes
-    default_routes=$(ip route show default | wc -l)
-
-    # If there are multiple default routes, remove the one for the specified NIC
-    if [ "$default_routes" -gt 1 ]; then
-        # Find and delete the route for the specific NIC
-        ip route show default | grep "dev $admin_nic" | while read -r line; do
-            log "DEBUG: Deleting route- $line"
-            ip route del $line
-        done
-
-        # Persist the change by modifying the appropriate network configuration file
-        # Get the active connection name for the admin NIC
-        conn_name=$(nmcli connection show --active | grep $admin_nic | awk '{print $1}')
-        if [ -n "$conn_name" ]; then
-            log "INFO: Setting never-default to yes for $conn_name"
-            nmcli connection modify "$conn_name" ipv4.never-default yes
-            nmcli connection up "$conn_name"
-            log "INFO: Modified default route for $admin_nic from NetworkManager"
-            log "INFO: Showing 'ip route show default': $(ip route show default)"
-        fi
-    else
-        log "INFO: Only one default route found, no action needed."
-    fi
-    log "INFO: Finished processing default routes. Restarting NetworkManager..."
-    systemctl restart NetworkManager
     log "INFO: Current default route:"
     log "$(ip route show default)"
 else
