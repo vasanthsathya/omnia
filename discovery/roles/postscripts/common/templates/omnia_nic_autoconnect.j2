@@ -36,20 +36,11 @@ if [ "$nmcli_available" = true ]; then
         if [ "$state" = "up" ]; then
             log "INFO: Interface $iface is UP, checking corresponding .nmconnection file..."
 
-            conn_file="/etc/NetworkManager/system-connections/${iface}.nmconnection"
-
-            if [ -f "$conn_file" ]; then
-                log "INFO: Found connection file: $conn_file"
-
-                # Check if link is detected (physical connection)
-                if ethtool "$iface" | grep -E -i "Link detected.*yes" >/dev/null 2>&1; then
-                    log "INFO: Link detected for $iface, modifying autoconnect..."
-
-                    # Modify autoconnect
-                    sed -i 's/autoconnect=false/autoconnect=true/' "$conn_file"
-                else
-                    log "INFO: Link NOT detected for $iface, skipping modification..."
-                fi
+            # Check if link is detected (physical connection)
+            if ethtool "$iface" | grep -E -i "Link detected.*yes" >/dev/null 2>&1; then
+                log "INFO: Link detected for $iface, modifying autoconnect..."
+                nmcli connection modify "$iface" connection.autoconnect yes
+                nmcli connection up "$iface"
             else
                 log "INFO: Connection file for $iface does not exist, skipping..."
             fi
@@ -68,6 +59,7 @@ if [ "$nmcli_available" = true ]; then
 
     # Get the NIC name from the variable
     admin_nic="{{ hostvars['omnia_provision']['admin_nic'] }}"
+    oim_admin_ip="{{ hostvars['omnia_provision']['admin_nic_ip'] }}"
     log "INFO: Verifying default route for admin NIC $admin_nic..."
     # Count the number of default routes
     default_routes=$(ip route show default | wc -l)
