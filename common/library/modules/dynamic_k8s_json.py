@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import shutil
+# import subprocess
 import tempfile
 from subprocess import PIPE, Popen
 from urllib.parse import urlparse
@@ -675,24 +676,48 @@ def clone_kubespray(repo_url, tag_name, clone_to_path):
 #                              Parse image list to process kubespary images
 # ============================================================================================
 def extract_image_name_and_tag(url):
-    """Extract image name and tag from URL"""
+    """
+    Extract image name and tag from a URL.
+
+    Parameters:
+        url (str): Image URL (e.g., 'registry/repo/image:tag').
+
+    Returns:
+        tuple: (image_name, image_tag)
+    """
     try:
         parsed_url = urlparse(url)
         path = parsed_url.path
         filename = os.path.basename(path)
 
         if ':' in filename:
-            image_name, image_tag = filename.split(':')
+            image_name, image_tag = filename.split(':', 1)
         else:
             image_name, image_tag = filename, 'latest'
 
         return image_name, image_tag
-    except Exception as e:
-        logger.error(f"Error extracting image name and tag from {url}: {str(e)}")
-        raise InvalidInputError(f"Error parsing image URL: {str(e)}")
+
+    except (AttributeError, ValueError, TypeError) as e:
+        logger.error("Error extracting image name and tag from %s: %s", url, str(e))
+        raise InvalidInputError(f"Error parsing image URL: {str(e)}") from e
+
 
 def get_k8s_data(k8_file_type, k8_file_path, package_types):
-    """Get Kubernetes data from JSON file"""
+    """
+    Load and validate Kubernetes package data from a JSON file.
+
+    Parameters:
+        k8_file_type (str): Specific package type to extract (e.g., 'image').
+        k8_file_path (str): Path to the Kubernetes JSON file.
+        package_types (list): Valid list of expected package types.
+
+    Returns:
+        list|dict|bool: Filtered list by type, full dict, or False if validation fails.
+
+    Raises:
+        FileOperationError: If loading or processing fails.
+        InvalidInputError: If an invalid type is passed.
+    """
     try:
         filetype_inv = {
             "rpm": [],
@@ -702,66 +727,86 @@ def get_k8s_data(k8_file_type, k8_file_path, package_types):
             "manifest": [],
             "pip_module": [],
             "git": []
-
         }
         error_data = []
 
         if k8_file_type and k8_file_type not in package_types:
-            logger.error(f"Not valid package type: {k8_file_type}")
+            logger.error("Not valid package type: %s", k8_file_type)
             raise InvalidInputError(f"Invalid package type: {k8_file_type}")
 
         k8_json_data = load_json(k8_file_path, 'r')
         if not k8_json_data:
             raise FileOperationError(f"Failed to load JSON data from {k8_file_path}")
 
-        for package_info in k8_json_data['k8s']['cluster']:
+        for package_info in k8_json_data.get('k8s', {}).get('cluster', []):
             package_type = package_info.get("type")
             package_name = package_info.get("package")
 
             if package_type not in package_types:
-                logger.warning(f"Package type {package_type} for package {package_name} is not in the allowed types: {package_types}.")
+                logger.warning(
+                    "Package type %s for package %s is not in the allowed types: %s",
+                    package_type, package_name, package_types
+                )
                 error_data.append({package_type: package_info})
+            else:
+                filetype_inv[package_type].append(package_info)
 
-            filetype_inv[package_type].append(package_info)
-
-        if len(error_data) != 0:
+        if error_data:
             logger.error("Found packages with invalid types")
             return False
 
         if k8_file_type:
-            return filetype_inv[k8_file_type]
+            return filetype_inv.get(k8_file_type, [])
 
         return filetype_inv
-    except Exception as e:
-        logger.error(f"Error processing k8s data: {str(e)}")
-        raise FileOperationError(f"Error processing k8s data: {str(e)}")
+
+    except (OSError, TypeError, KeyError, ValueError) as e:
+        logger.error("Error processing k8s data: %s", str(e))
+        raise FileOperationError(f"Error processing k8s data: {str(e)}") from e
+
 
 def extract_version_from_url(url):
-    """Extract version from URL using a single optimized regex pattern"""
-    try:
-        # Combined optimized regex pattern
-        pattern = r'(?:v|/|-|_|\.)([\d]+(?:\.[\d]+)+)(?=[/-_.]|$)'
+    """
+    Extract the version string from a URL using a regex pattern.
 
+    Parameters:
+        url (str): The URL containing a version string.
+
+    Returns:
+        str|None: Extracted version string or None if no version is found.
+
+    Raises:
+        InvalidInputError: If URL parsing fails unexpectedly.
+    """
+    try:
+        # Regex to match common semantic version formats
+        pattern = r'(?:v|/|-|_|\.)([\d]+(?:\.[\d]+)+)(?=[/-_.]|$)'
 
         helm_match = re.search(r'v(\d+\.\d+\.\d+)', url)
         if helm_match:
             return helm_match.group(1)
 
         match = re.search(pattern, url)
-
         if match:
             version = match.group(1).strip('.')
-            logger.debug(f"Extracted version {version} from {url}")
+            logger.debug("Extracted version %s from %s", version, url)
             return version
 
-        logger.warning(f"Could not extract version from URL: {url}")
+        logger.warning("Could not extract version from URL: %s", url)
         return None
-    except Exception as e:
-        logger.error(f"Error extracting version from URL {url}: {str(e)}")
-        raise InvalidInputError(f"Error extracting version from URL: {str(e)}")
+
+    except (re.error, AttributeError, TypeError) as e:
+        logger.error("Error extracting version from URL %s: %s", url, str(e))
+        raise InvalidInputError(f"Error extracting version from URL: {str(e)}") from e
+
 
 def print_not_found_packages(not_found_packages):
-    """Print packages not found in a pretty table"""
+    """
+    Print a formatted table of packages not found.
+
+    Parameters:
+        not_found_packages (list): List of dicts with 'package' and 'url' keys.
+    """
     try:
         table = PrettyTable()
         table.field_names = ["package_name", "url"]
@@ -771,29 +816,51 @@ def print_not_found_packages(not_found_packages):
             url = package.get('url')
             table.add_row([package_name, url])
 
-        logger.info("\nPackages not found:\n" + str(table))
-    except Exception as e:
-        logger.error(f"Error printing not found packages: {str(e)}")
+        logger.info("\nPackages not found:\n%s", table)
+
+    except Exception as e:  # Justified use of generic catch for table formatting
+        logger.error("Error printing not found packages: %s", str(e))
         raise
 
+
 def print_not_found_images(not_found_images):
-    """Print images not found in a pretty table"""
+    """
+    Print a formatted table of images not found.
+
+    Parameters:
+        not_found_images (list): List of dicts with 'package' and 'tag' keys.
+    """
     try:
         table = PrettyTable()
         table.field_names = ["package_name", "tag"]
 
         for package in not_found_images:
-            package_name = package.get('package').split('/')[-1]
+            package_name = package.get('package', '').split('/')[-1]
             tag = package.get('tag')
             table.add_row([package_name, tag])
 
-        logger.info("\nImages not found:\n" + str(table))
-    except Exception as e:
-        logger.error(f"Error printing not found images: {str(e)}")
+        logger.info("\nImages not found:\n%s", table)
+
+    except Exception as e:  # Justified use of generic catch for display logic
+        logger.error("Error printing not found images: %s", str(e))
         raise
 
+
 def process_file_list(files_list_path, filetype_inv, final_k8s_data):
-    """Process file list and update tarball information"""
+    """
+    Process the list of tarball file URLs and update filetype_inv and final_k8s_data accordingly.
+
+    Parameters:
+        files_list_path (str): Path to the file containing tarball URLs.
+        filetype_inv (list): List of expected tarball packages to update.
+        final_k8s_data (dict): Dictionary to append updated package data to.
+
+    Returns:
+        bool: True if processing is successful.
+
+    Raises:
+        FileOperationError: If file cannot be read or processing fails.
+    """
     try:
         file_type = "tarball"
         updated_packages = []
@@ -811,47 +878,68 @@ def process_file_list(files_list_path, filetype_inv, final_k8s_data):
                 continue
 
             if 'archive' in url_split_data:
-                package_name = url_split_data[url_split_data.index('archive')-1] + '.archive-' + url_split_data[-1].replace('.tar.gz', '').replace('.tgz', '')
+                index = url_split_data.index('archive')
+                package_name = (
+                    url_split_data[index - 1] +
+                    '.archive-' +
+                    url_split_data[-1]
+                        .replace('.tar.gz', '')
+                        .replace('.tgz', '')
+                )
             else:
-                package_name = url_split_data[-1].replace('.tar.gz', '').replace('.tgz', '')
+                package_name = url_split_data[-1] \
+                    .replace('.tar.gz', '') \
+                    .replace('.tgz', '')
 
-            if '-' in package_name:
-                search_name = package_name.split('-')[0]
-            else:
-                search_name = package_name
+            search_name = package_name.split('-')[0] if '-' in package_name else package_name
 
             version = extract_version_from_url(url)
             if not version:
-                logger.warning(f"Could not extract version from URL: {url}")
+                logger.warning("Could not extract version from URL: %s", url)
                 continue
 
             for item in filetype_inv:
-                if item.get('package').split('-')[0] == search_name:
+                if item.get('package', '').split('-')[0] == search_name:
                     item['url'] = url
                     item['package'] = f"{search_name}-v{version}"
                     updated_packages.append({
                         'package': item['package'],
-                        'type': 'tarball',
+                        'type': file_type,
                         'url': url
                     })
                     tarball_count += 1
                     break
 
-        logger.info(f"Processed {tarball_count} tarballs from {len(filetype_inv)} expected")
+        logger.info("Processed %d tarballs from %d expected", tarball_count, len(filetype_inv))
 
         final_k8s_data["k8s"]["cluster"].extend(filetype_inv)
-        diff_in_list1 = [item for item in filetype_inv if item not in updated_packages]
 
+        diff_in_list1 = [item for item in filetype_inv if item not in updated_packages]
         if diff_in_list1:
             print_not_found_packages(diff_in_list1)
 
         return True
-    except Exception as e:
-        logger.error(f"Error processing file list: {str(e)}")
-        raise FileOperationError(f"Error processing file list: {str(e)}")
+
+    except (OSError, IOError, KeyError, TypeError) as e:
+        logger.error("Error processing file list: %s", str(e))
+        raise FileOperationError(f"Error processing file list: {str(e)}") from e
+
 
 def process_image_list(images_list_path, filetype_inv, final_k8s_data):
-    """Process image list and update image information"""
+    """
+    Process the image list and update `filetype_inv` and `final_k8s_data` with image metadata.
+
+    Parameters:
+        images_list_path (str): Path to the file containing image URLs.
+        filetype_inv (list): List of expected images to be updated.
+        final_k8s_data (dict): Main output structure to store results under 'k8s.cluster'.
+
+    Returns:
+        bool: True if image processing was successful.
+
+    Raises:
+        FileOperationError: If file cannot be read or processing fails.
+    """
     try:
         file_type = "image"
         updated_images = []
@@ -867,11 +955,8 @@ def process_image_list(images_list_path, filetype_inv, final_k8s_data):
             image_name, image_tag = extract_image_name_and_tag(image)
             images_list_dict[image_name] = image_tag
 
-
-
-
         for item in filetype_inv:
-            image_name = item["package"].split('/')[-1]
+            image_name = item.get("package", "").split('/')[-1]
 
             if image_name in images_list_dict:
                 if item["package"] in SKIP_PACKAGES:
@@ -880,22 +965,24 @@ def process_image_list(images_list_path, filetype_inv, final_k8s_data):
                 updated_images.append({
                     'package': item['package'],
                     'tag': item['tag'],
-                    'type': 'image'
+                    'type': file_type
                 })
                 image_count += 1
 
-        logger.info(f"Processed {image_count} images from {len(filetype_inv)} expected")
+        logger.info("Processed %d images from %d expected", image_count, len(filetype_inv))
 
         final_k8s_data["k8s"]["cluster"].extend(filetype_inv)
-        diff_in_list1 = [item for item in filetype_inv if item not in updated_images]
 
+        diff_in_list1 = [item for item in filetype_inv if item not in updated_images]
         if diff_in_list1:
             print_not_found_images(diff_in_list1)
 
         return True
-    except Exception as e:
-        logger.error(f"Error processing image list: {str(e)}")
-        raise FileOperationError(f"Error processing image list: {str(e)}")
+
+    except (OSError, KeyError, TypeError) as e:
+        logger.error("Error processing image list: %s", str(e))
+        raise FileOperationError(f"Error processing image list: {str(e)}") from e
+
 
 def generate_k8_jsons_for_version(kube_version, base_path, repo_url, package_types, k8s_json_path, arch, n_latest, mode="clone"):
     """
