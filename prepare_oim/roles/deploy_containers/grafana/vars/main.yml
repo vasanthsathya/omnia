@@ -31,7 +31,6 @@ grafana_volumes:
   - "grafana_data:/var/lib/grafana{{ selinux_option }}"
   - "grafana_log:/var/log/grafana{{ selinux_option }}"
 grafana_port: 5000
-# container_secret_path: "/run/secrets/"
 grafana_user: "grafana_user"
 grafana_user_password: "grafana_user_password"
 grafana_secrets:
