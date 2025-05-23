@@ -160,7 +160,7 @@
           containers.podman.podman_container_exec:
             name: "{{ idrac_telemetry_container }}"
             command: "nohup go run cmd/redfishread/redfishread.go &"
-          changed_when: true
+            detach: true
           delegate_to: oim
           connection: ssh
 
