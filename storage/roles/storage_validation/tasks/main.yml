@@ -23,15 +23,7 @@
 - name: Fetch omnia_config.yml
   ansible.builtin.include_tasks: fetch_omnia_config.yml
 
-- name: Set dynamic run tags - 'storage'
-  ansible.builtin.set_fact:
-    omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['storage']) | unique }}"
-    cacheable: true
-
-- name: Invoke validate_config.yml to perform L1 and L2 validations
-  ansible.builtin.import_playbook: input_validation/validate_config.yml
-
-- name: Fe  tch software_config.json and check for beegfs and nfs support
+- name: Fetch software_config.json and check for beegfs and nfs support
   ansible.builtin.include_tasks: fetch_software_config.yml
 
 - name: Validate beegfs variables

@@ -13,6 +13,32 @@
 #  limitations under the License.
 ---
 
+- name: Initializing variables for NFS bolt on support
+  ansible.builtin.set_fact:
+    nfs_client_support: false
+    nfs_server_support: false
+
+- name: Updating nfs_client_support value
+  ansible.builtin.set_fact:
+    nfs_client_support: true
+  when:
+    - item.server_ip | default("", true) | length > 1 or
+      item.server_share_path | default("", true) | length > 1 or
+      item.client_share_path | default("", true) | length > 1 or
+      item.client_mount_options | default("", true) | length > 1
+
+- name: Fail if nfs_client_support is false
+  ansible.builtin.fail:
+    msg: "{{ nfs_client_support_failure_msg }}"
+  when: not nfs_client_support
+
+- name: Updating nfs_server_support value
+  ansible.builtin.set_fact:
+    nfs_server_support: true
+  when:
+    - item.nfs_server is defined
+    - item.nfs_server
+
 - name: Initialize variables
   ansible.builtin.set_fact:
     nfs_client_declaration: false
