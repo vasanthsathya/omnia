@@ -46,7 +46,7 @@ grafana_container_failure_msg: |
   The deployment of the {{ grafana_container_name }} container has failed.
   To resolve this, check logs using 'podman logs {{ grafana_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ grafana_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ grafana_container_name }} container.
 grafana_image_pull_fail_msg: |
   The pull of the Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
@@ -54,3 +54,12 @@ grafana_image_pull_fail_msg: |
 grafana_image_not_found_msg: |
   The Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' was not found after pull attempt.
   Please check if the image is available and re-run the playbook.
+
+# Usage: configure_datasource.yml
+url_retries: 10
+prometheus_port: 9090
+loki_port: 3000
+grafana_url_unreachable_fail_msg: |
+  Failed. grafana url http://127.0.0.1:{{ grafana_port }} is not reachable.
+  Please retry after grafana url is reachable. If facing this issue again, please utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ grafana_container_name }} container.
