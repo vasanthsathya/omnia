@@ -113,7 +113,7 @@
         - name: Enable telemetry collection on iDRACs
           ansible.builtin.command: >-
             "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
-            -u "{{ idrac_username }}" -p "{{ idrac_password }}" -s Enabled
+            -u "{{ bmc_username }}" -p "{{ bmc_password }}" -s Enabled
           args:
             chdir: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
           with_items: "{{ telemetry_idrac }}"
