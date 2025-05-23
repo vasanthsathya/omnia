@@ -20,6 +20,12 @@ import yaml
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
 from ansible.module_utils.input_validation.common_utils import config
 
+def get_os_type():
+    with open("/etc/os-release") as f:
+        for line in f:
+            if line.startswith("ID="):
+                return line.strip().split("=")[1].strip('"')
+
 def load_yaml_as_json(yaml_file, omnia_base_dir, project_name, logger, module):
     try:
         if is_file_encrypted(yaml_file):
@@ -391,3 +397,62 @@ def is_ip_in_subnet(admin_oim_ip, netmask_bits, vip_address):
     subnet = ipaddress.IPv4Network(f"{admin_oim_ip}/{netmask_bits}", strict=False)
     ip = ipaddress.IPv4Address(vip_address)
     return ip in subnet
+=======
+def validate_cluster_items(cluster_items, json_file_path):
+    failures = []
+    successes = []
+
+    for item in cluster_items:
+        item_type = item.get('type')
+        required_fields = config.TYPE_REQUIREMENTS.get(item_type)
+
+        if not required_fields:
+            failures.append(f"Failed. Unknown type '{item_type}' in file '{json_file_path}'.")
+            continue
+
+        # Handle types with either/or fields (like tag/digest for image)
+        if any(isinstance(field, list) for field in required_fields):
+            # Separate flat and alternative fields
+            flat_fields = [f for f in required_fields if isinstance(f, str)]
+            alt_fields_groups = [f for f in required_fields if isinstance(f, list)]
+
+            missing_flat = [f for f in flat_fields if f not in item]
+            has_one_alt = any(any(alt in item for alt in group) for group in alt_fields_groups)
+
+            if missing_flat or not has_one_alt:
+                failures.append(f"Failed. Missing required properties for '{item_type}' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid '{item_type}' item in file '{json_file_path}'.")
+        else:
+            missing_fields = [field for field in required_fields if field not in item]
+            if missing_fields:
+                failures.append(f"Failed. Missing {missing_fields} for '{item_type}' in file '{json_file_path}'.")
+            else:
+                successes.append(f"Success. Valid '{item_type}' item in file '{json_file_path}'.")
+
+    return successes, failures
+
+def validate_softwaresubgroup_entries(software_name, json_path, json_data, validation_results, failures):
+    try:
+        #check for the key in software.json
+        if software_name in json_data:
+            validation_results.append((json_path, True))
+            if 'cluster' in json_data[software_name]:
+                cluster_items = json_data[software_name]['cluster']
+                item_successes, item_failures = validate_cluster_items(cluster_items, json_path)
+                if item_failures:
+                    failures.append(f"{item_failures}")
+            else:
+                failures.append(f"Failed. Invalid JSON format for: '{software_name}' in file '{json_path}'. Cluster property is missing")    
+        else:
+            validation_results.append((json_path, False))
+            failures.append(f"Failed. Invalid software name: '{software_name}' in file '{json_path}'.")
+
+    except KeyError as e:
+        failures.append(f"Failed. Missing key {str(e)} in file '{json_path}'.")
+    except TypeError as e:
+        failures.append(f"Failed. Type error in file '{json_path}': {str(e)}")
+    except Exception as e:
+        failures.append(f"Failed. Unexpected error in file '{json_path}': {str(e)}")
+
+    return validation_results, failures
