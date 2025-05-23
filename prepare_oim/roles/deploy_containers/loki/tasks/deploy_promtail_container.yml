@@ -14,17 +14,6 @@
         state: directory
         mode: "{{ dir_permissions_755 }}"
 
-    - name: Create Podman bind-mounted volumes for Loki
-      containers.podman.podman_volume:
-        name: "{{ item.name }}"
-        state: present
-        driver: local
-        options:
-          - "o=bind"
-          - "type=none"
-          - "device={{ item.path }}"
-      loop: "{{ promtail_podman_volume }}"
-
     - name: Copy Promtail config file
       ansible.builtin.copy:
         src: "{{ item.src }}"

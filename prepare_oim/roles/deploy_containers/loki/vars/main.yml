@@ -15,33 +15,41 @@
 
 # Usage: deploy_loki_container.yml
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
-promtail_container_name: "promtail"
-promtail_image: docker.io/grafana/promtail
-promtail_image_tag: "3.4.1"
 dir_permissions_755: "0755"
 loki_container_name: "loki"
 loki_image: docker.io/grafana/loki
 loki_image_tag: "3.4.1"
-
-promtail_log_dir: "{{ omnia_nfs_share }}/log/telemetry/promtail"
-loki_log_directory: "{{ omnia_nfs_share }}/log/telemetry/loki"
 config_dir: "{{ omnia_nfs_share }}/telemetry/loki_promtail"
-loki_podman_volumes:
-  - { name: "loki_log", path: "{{ loki_log_directory }}" }
-  - { name: "loki_promtail_config", path: "{{ config_dir }}" }
-promtail_podman_volume:
-  - { name: "promtail_log", path: "{{ promtail_log_dir }}" }
 container_config_mnt: "/mnt/config"
+loki_podman_volumes:
+  - { name: "loki_promtail_config", path: "{{ config_dir }}" }
 loki_volumes:
-  - "loki_log:/var/log/loki{{ selinux_option }}"
   - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
-promtail_volumes:
-  - "promtail_log:/var/log/promtail{{ selinux_option }}"
-  - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
-max_retries: 10
-delay_count: 5
 loki_config_file_path:
   - { src: "files/loki-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
+loki_container_success_msg: "The Loki container '{{ loki_container_name }}' container has been successfully deployed."
+loki_container_failure_msg: |
+  The deployment of the {{ loki_container_name }} container has failed.
+  To resolve this, check logs using 'podman logs {{ loki_container_name }}' from OIM
+  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ loki_container_name }} container.
+loki_image_pull_fail_msg: |
+  The pull of the Loki image '{{ loki_image }}:{{ loki_image_tag }}' has failed.
+  To resolve this, please check the following error: {{ image_pull_result.msg }}.
+  After addressing the issue, you can re-run the playbook to successfully pull the Loki image.
+loki_image_not_found_msg: |
+  The Loki image '{{ loki_image }}:{{ loki_image_tag }}' was not found after pull attempt.
+  Please check if the image is available and re-run the playbook.
+max_retries: 10
+delay_count: 5
+
+# Usage: deploy_promtail_container.yml
+promtail_container_name: "promtail"
+promtail_image: docker.io/grafana/promtail
+promtail_image_tag: "3.4.1"
+promtail_volumes:
+  - "{{ omnia_nfs_share }}/log:/var/log{{ selinux_option }}"
+  - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
 promtail_config_file_path:
   - { src: "files/promtail-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
 promtail_container_success_msg: "The Promtail container '{{ promtail_container_name }}' container has been successfully deployed."
@@ -56,17 +64,4 @@ promtail_image_pull_fail_msg: |
   After addressing the issue, you can re-run the playbook to successfully pull the Promtail image.
 promtail_image_not_found_msg: |
   The Promtail image '{{ promtail_image }}:{{ promtail_image_tag }}' was not found after pull attempt.
-  Please check if the image is available and re-run the playbook.
-loki_container_success_msg: "The Loki container '{{ loki_container_name }}' container has been successfully deployed."
-loki_container_failure_msg: |
-  The deployment of the {{ loki_container_name }} container has failed.
-  To resolve this, check logs using 'podman logs {{ loki_container_name }}' from OIM
-  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ loki_container_name }} container.
-loki_image_pull_fail_msg: |
-  The pull of the Loki image '{{ loki_image }}:{{ loki_image_tag }}' has failed.
-  To resolve this, please check the following error: {{ image_pull_result.msg }}.
-  After addressing the issue, you can re-run the playbook to successfully pull the Loki image.
-loki_image_not_found_msg: |
-  The Loki image '{{ loki_image }}:{{ loki_image_tag }}' was not found after pull attempt.
   Please check if the image is available and re-run the playbook.

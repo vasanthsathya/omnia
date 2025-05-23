@@ -9,10 +9,138 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: system
+  - job_name: varlogs
     static_configs:
       - targets:
           - localhost
         labels:
           job: varlogs
           __path__: /var/log/*log
+
+  - job_name: Omnia logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Omnia logs
+          __path__: /var/log/core/playbooks.log
+
+  - job_name: accelerator logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: accelerator logs
+          __path__: /var/log/core/playbooks/accelerator.log
+
+  - job_name: discovery logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: discovery logs
+          __path__: /var/log/core/playbooks/discovery.log
+
+  - job_name: local_repo log
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: local_repo log
+          __path__: /var/log/core/playbooks/local_repo.log
+
+  - job_name: network logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: network logs
+          __path__: /var/log/core/playbooks/network.log
+
+  - job_name: prepre_oim log
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: prepre_oim log
+          __path__: /var/log/core/playbooks/prepare_oim.log
+
+  - job_name: provision logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: provision logs
+          __path__: /var/log/core/playbooks/provision.log
+
+  - job_name: scheduler logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: scheduler logs
+          __path__: /var/log/core/playbooks/scheduler.log
+
+  - job_name: security logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: security logs
+          __path__: /var/log/core/playbooks/security.log
+
+  - job_name: storage logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: storage logs
+          __path__: /var/log/core/playbooks/storage.log
+
+  - job_name: server_spec_update logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: server_spec_update logs
+          __path__: /var/log/core/playbooks/server_spec_update.log
+
+  - job_name: telemetry logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: telemetry logs
+          __path__: /var/log/core/playbooks/telemetry.log
+
+  - job_name: tools logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: tools logs
+          __path__: /var/log/core/playbooks/tools.log
+
+  - job_name: utils logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: utils logs
+          __path__: /var/log/core/playbooks/utils.log
+
+  - job_name: software_update logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: software_update logs
+          __path__: /var/log/core/playbooks/software_update.log
+
+  - job_name: benchmarks log messages
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: benchmarks log messages
+          __path__: /var/log/core/playbooks/benchmarks.log
