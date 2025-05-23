@@ -159,10 +159,7 @@
         - name: Initiate telemetry-collector
           containers.podman.podman_container_exec:
             name: "{{ idrac_telemetry_container }}"
-            command: sh
-            argv:
-              - -c
-              - "nohup go run cmd/redfishread/redfishread.go &"
+            command: "nohup go run cmd/redfishread/redfishread.go &"
           changed_when: true
           delegate_to: oim
           connection: ssh
