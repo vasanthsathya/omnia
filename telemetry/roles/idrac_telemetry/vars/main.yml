@@ -28,7 +28,7 @@ mysqldb_container_port: 3306
 filemode: "0644"
 mysqldb_host: "127.0.0.1"
 telemetry_report: |
-  ===== Telemetry Summary Report =====
+  ===== Telemetry playbook execution Summary =====
 
   Total IPs Found: {{ idrac_ip_count }}
   IPs List:
@@ -47,5 +47,7 @@ telemetry_report: |
     {% for item in telemetry_idrac %}
     - {{ item }}
     {% endfor %}
+
+  Check the report file at {{ telemetry_report_path }} for all Telemetry Activated IPs.
 
   =====================================
