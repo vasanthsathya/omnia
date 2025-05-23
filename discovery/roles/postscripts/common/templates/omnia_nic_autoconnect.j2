@@ -49,10 +49,6 @@ if [ "$nmcli_available" = true ]; then
         fi
     done
 
-    # Restart NetworkManager to apply changes
-    log "INFO: Restarting NetworkManager service..."
-    systemctl restart NetworkManager
-
     # Show active connections after restart
     log "INFO: Showing nmcli connection show output:"
     log "$(nmcli connection show)"
@@ -85,6 +81,10 @@ if [ "$nmcli_available" = true ]; then
     else
         log "INFO: Only one default route found, no action needed."
     fi
+    log "INFO: Finished processing default routes. Restarting NetworkManager..."
+    systemctl restart NetworkManager
+    log "INFO: Current default route:"
+    log "$(ip route show default)"
 else
     log "ERROR: -- nmcli not available, exiting --"
     exit 1
