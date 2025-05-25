@@ -167,17 +167,12 @@
   when: "'additional_software' in software_names"
 
 - name: Fetch additional software packages
-  fetch_additional_sw_packages:
+  group_package_map:
     input_path: "{{ hostvars['localhost']['input_project_dir'] }}"
   register: group_to_additional_sw_package_map
   when: additional_software_packages
 
-- name: New Print groups_additional_sw_packages
-  debug:
-    msg: "{{ group_to_additional_sw_package_map | to_nice_json }}"
-  when: additional_software_packages
-
 - name: Set fact for group_to_additional_sw_package_map
-  set_fact:
+  ansible.builtin.set_fact:
     group_to_additional_sw_package_map: "{{ group_to_additional_sw_package_map.grp_pkg_map }}"
   when: additional_software_packages

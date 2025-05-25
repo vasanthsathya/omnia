@@ -23,4 +23,4 @@
   rescue:
     - name: Warn about missing group
       ansible.builtin.debug:
-        msg: "{{ unique_role_not_found_msg }}"
+        msg: "{{ group_with_add_sw_not_found_msg }}"
