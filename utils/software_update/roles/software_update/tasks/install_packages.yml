@@ -12,15 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-- debug:
-    var: grp.key
-
-- debug:
-    var: grp.value
-
-- debug:
-    var: grouped_packages.grp_pkg_map[grp.key]
-
 # Install packages on nodes
 - name: Install rpm packages on node by node loop
   ansible.builtin.include_tasks: _rpm_reboot.yml

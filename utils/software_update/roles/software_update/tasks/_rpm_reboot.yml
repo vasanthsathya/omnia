@@ -1,15 +1,13 @@
 ---
-- name: Test node
-  ansible.builtin.shell: "hostname"
+- name: DNF install the rpms
+  ansible.builtin.dnf:
+    name: "{{ grouped_packages.grp_pkg_map[grp.key].rpm }}"
+    state: present
   delegate_to: "{{ node }}"
 
-# - name: DNF install the rpms
-#   ansible.builtin.dnf:
-#     name: "{{ grouped_packages.grp_pkg_map[grp.key].rpm }}"
-#     state: present
-#   delegate_to: "{{ node }}"
-
-# - name: Reboot node (This task will take some time)
-#   ansible.builtin.reboot:
-#   when: grouped_packages.grp_pkg_map[grp.key].reboot
-#   delegate_to: "{{ node }}"
+- name: Reboot node (This task will take some time)
+  ansible.builtin.reboot:
+  when:
+    - grouped_packages.grp_pkg_map[grp.key].reboot
+    - (hostvars['localhost']['reboot_required'] | default(false))
+  delegate_to: "{{ node }}"
