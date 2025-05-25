@@ -60,7 +60,6 @@ network_spec_syntax_fail_msg: "Failed. Syntax errors present in network_spec.yml
 input_dir: "{{ hostvars['localhost']['input_project_dir'] }}"
 project_name: "{{ hostvars['localhost']['project_name'] }}"
 network_spec_path: "{{ input_dir }}/network_spec.yml"
-#pulp_container_name: "{{ admin_nic_ip }}:{{ pulp_registry_port }}"
 multus_config: true
 multus_deployment_template: "{{ role_path }}/templates/multus-daemonset.j2"
 multus_deployment_manifest: "{{ k8s_tmp_dir }}/multus-daemonset.yml"
@@ -89,6 +88,7 @@ git_permissions: "0644"
 # Usage: pod_status.yml
 retries_count: "30"
 delay_time: "5"
+track_file_path: "/tmp/deployment_track.json"
 k8s_not_accessible_msg: "Kubernetes not found or not accessible: {{ k8s_status.msg }}"
 k8s_namespace_error_msg: "Namespace error: {{ k8s_status.namespace_error }}"
 k8s_node_not_ready: "Some nodes are NotReady: {{ k8s_status.not_ready_nodes }}"

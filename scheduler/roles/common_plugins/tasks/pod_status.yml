@@ -18,7 +18,7 @@
     retries: "{{ retries_count }}"
     delay: "{{ delay_time }}"
     track_module_name: "{{ track_module_name }}"
-    track_file_path: "/tmp/deployment_track.json"
+    track_file_path: "{{ track_file_path }}"
   register: k8s_status
   failed_when: false
 
