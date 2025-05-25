@@ -16,6 +16,7 @@ import re
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
+from ansible.module_utils.local_repo.user_image_utility import handle_user_image_registry
 import json
 import requests
 from requests.auth import HTTPBasicAuth
