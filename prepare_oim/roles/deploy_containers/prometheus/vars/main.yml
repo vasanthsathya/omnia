@@ -16,8 +16,6 @@ omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 dir_mode: "0755"
 file_mode: "0644"
 telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
-idrac_telemetry_receiver_dir_path: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry/idrac_telemetry_receiver"
-idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 max_retries: 10
 delay_count: 5
 
@@ -27,6 +25,8 @@ prometheus_pump_dir: "{{ telemetry_dir_path }}/prometheus_pump"
 prometheus_pump_directories:
  - { path: "{{ prometheus_pump_logs_dir }}", mode: "0755" }
  - { path: "{{ prometheus_pump_dir }}", mode: "0755" }
+idrac_telemetry_receiver_dir_path: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry/idrac_telemetry_receiver"
+idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 prometheus_pump_volumes:
  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
 prometheus_pump_container_name: "prometheus_pump"
