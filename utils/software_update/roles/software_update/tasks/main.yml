@@ -12,23 +12,96 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: Get the software organized by group
+  group_package_map:
+    input_path: "{{ hostvars['localhost']['input_project_dir'] }}"
+    # software_bundle: "/opt/omnia/input/project_default/config/rhel/9.4/additional_software.json"
+    # roles_config: "/opt/omnia/input/project_default/roles_config.yml"
+    # software_config: "/opt/omnia/input/project_default/software_config.json"
+  register: grouped_packages
 
-- name: Include software config variables
-  ansible.builtin.include_tasks: include_software_config.yml
-  when: hostvars['localhost']['softwares_list_status']
+- name: Include software update variables
+  ansible.builtin.meta: end_play
 
-- name: Update repo cache
-  ansible.builtin.include_tasks: update_repo_cache.yml
+- name: Get all discovered nodes from DB
+  community.postgresql.postgresql_query:
+    login_db: omniadb
+    login_user: postgres
+    query: |
+      SELECT node,hostname,admin_ip,role,group_name,service_tag
+      FROM cluster.nodeinfo
+      WHERE node!='oim';
+    login_password: "{{ hostvars['localhost']['postgresdb_password'] }}"
+  register: db_result
+  delegate_to: omnia_provision
 
-- name: Install packages from softwares_list
-  ansible.builtin.include_tasks: package_installation_softwares_list.yml
-  when: hostvars['localhost']['softwares_list_status']
-  with_items: "{{ hostvars['localhost']['softwares_list'] }}"
+- debug:
+    var: db_result.query_result
 
-- name: Install packages from package_list
-  ansible.builtin.include_tasks: package_installation_package_list.yml
-  when: hostvars['localhost']['package_list_status']
+# - name: Include software update variables
+#   ansible.builtin.meta: end_play
 
-- name: Reboot nodes if required
-  ansible.builtin.include_tasks: reboot_nodes.yml
-  when: hostvars['localhost']['reboot_required']
+- name: Ping
+  ansible.builtin.ping:
+  loop:
+    - 10.20.30.55
+    - 10.20.30.11
+    - node2.omnia.test
+    - node3.omnia.test
+
+- name: Add to group
+  ansible.builtin.add_host:
+    name: "{{ item }}"
+    # ansible_host: "{{ item }}"
+    # groups: "grp1"
+  loop:
+    - 10.20.30.11
+    - node2.omnia.test
+    - node3.omnia.test
+
+- name: test node connect
+  ansible.builtin.command: "hostname"
+  delegate_to: "{{ item }}"
+  loop:
+    # - 10.20.30.11
+    - node2.omnia.test
+    # - node3.omnia.test
+
+# - name: Group nodes by group_name
+#   ansible.builtin.set_fact:
+#     grouped_nodes: "{{ grouped_nodes | default({})
+#      | combine({ item.group_name: (grouped_nodes[item.group_name] | default([]))
+#       + [item.admin_ip] }) }}"
+#   loop: "{{ db_result.query_result }}"
+
+# - name: Install the rpm for group
+#   ansible.builtin.include_tasks: install_packages.yml
+#   loop: "{{ grouped_nodes | default({}) | dict2items }}"
+#   loop_control:
+#     loop_var: grp
+
+# # WIP
+# - name: Include software update variables
+#   ansible.builtin.meta: end_play
+
+
+
+# - name: Include software config variables
+#   ansible.builtin.include_tasks: include_software_config.yml
+#   when: hostvars['localhost']['softwares_list_status']
+
+# - name: Update repo cache
+#   ansible.builtin.include_tasks: update_repo_cache.yml
+
+# - name: Install packages from softwares_list
+#   ansible.builtin.include_tasks: package_installation_softwares_list.yml
+#   when: hostvars['localhost']['softwares_list_status']
+#   with_items: "{{ hostvars['localhost']['softwares_list'] }}"
+
+# - name: Install packages from package_list
+#   ansible.builtin.include_tasks: package_installation_package_list.yml
+#   when: hostvars['localhost']['package_list_status']
+
+# - name: Reboot nodes if required
+#   ansible.builtin.include_tasks: reboot_nodes.yml
+#   when: hostvars['localhost']['reboot_required']
