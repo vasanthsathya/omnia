@@ -51,7 +51,7 @@ prometheus_podman_volumes:
  - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
  - { name: "prometheus_log", path: "{{ prometheus_logs_dir }}" }
 prometheus_container_name: "prometheus"
-prometheus_image: "prom/prometheus:v2.36.0"
+prometheus_image: "docker.io/prom/prometheus:v2.36.0"
 prometheus_volumes:
  - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml{{ selinux_option }}"
  - "prometheus_data:/prometheus"

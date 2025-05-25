@@ -101,7 +101,7 @@
     - role: deploy_containers/grafana # noqa:role-name[path]
       tags: grafana
     - role: deploy_containers/loki  # noqa:role-name[path]
-      tags: grafana
+      tags: loki
 
 - name: Add all containers to known hosts on omnia core
   hosts: localhost
