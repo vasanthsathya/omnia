@@ -24,6 +24,8 @@
 
 - name: Get the additional software organized by group
   hosts: localhost
+  vars:
+    reboot_required: true
   roles:
     - software_update
   post_tasks:

@@ -13,6 +13,7 @@
 # limitations under the License.
 ---
 # Install packages on nodes
+# TODO: Add support for deb and deb_list
 - name: Install rpm packages on node by node loop
   ansible.builtin.include_tasks: _rpm_reboot.yml
   loop: "{{ grp.value }}"
