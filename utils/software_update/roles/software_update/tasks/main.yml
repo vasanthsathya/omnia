@@ -17,9 +17,6 @@
     input_path: "{{ hostvars['localhost']['input_project_dir'] }}"
   register: grouped_packages
 
-- name: Include software update variables
-  ansible.builtin.meta: end_play
-
 - name: Get all discovered nodes from DB
   community.postgresql.postgresql_query:
     login_db: omniadb
