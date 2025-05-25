@@ -32,8 +32,8 @@
 - name: Group nodes by group_name
   ansible.builtin.set_fact:
     grouped_nodes: "{{ grouped_nodes | default({})
-     | combine({ item.group_name: (grouped_nodes[item.group_name] | default([]))
-      + [item.admin_ip] }) }}" # admin_ip is the IP address of the node
+     | combine({item.group_name: (grouped_nodes[item.group_name] | default([]))
+      + [item.admin_ip]}) }}" # admin_ip is the IP address of the node
   loop: "{{ db_result.query_result }}"
 
 - name: Install the rpm for group
