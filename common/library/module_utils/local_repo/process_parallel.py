@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# pylint: disable=import-error,no-name-in-module,line-too-long
 import os
 import logging
 import multiprocessing
@@ -27,7 +28,6 @@ def log_table_output(table_output, log_file):
     Args:
         table_output (str): The table output to be written to the log file.
         log_file (str): The path of the log file where the table output should be written.
-
     Raises:
         RuntimeError: If there is an error during the file writing process or directory creation.
     """
@@ -47,7 +47,6 @@ def setup_logger(log_dir,log_file_path):
     Sets up and configures a logger to write logs to a specified file.
     Args:
         log_file_path (str): The path where the log file will be saved.
-
     Returns:
         logging.Logger: The configured logger instance.
     """
@@ -68,7 +67,6 @@ def setup_logger(log_dir,log_file_path):
     return logger
 
 def execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path,logger, user_registries, timeout=None):
-
     """
     Executes a task by determining the appropriate function to call, managing execution time, 
     handling timeouts, and logging the results.
@@ -147,7 +145,6 @@ def execute_task(task, determine_function, user_data, version_variables, repo_st
 def worker_process(task, determine_function, user_data,version_variables, repo_store_path, csv_file_path, log_dir, result_queue, user_registries, timeout):
     """
     Executes a task in a separate worker process, logs the process execution, and puts the result in a result queue.
-
     Args:
         task (dict): The task to be processed, containing details like the package to be processed.
         determine_function (function): A function that determines the function to call and its arguments for the task.
@@ -187,13 +184,12 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
         result_queue.put({"task": task, "status": "FAILED", "output": "", "error": str(e)})
 
 def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_file_path,log_dir, user_data, version_variables, standard_logger, local_repo_config_path, timeout):
-    
     """
     Executes a list of tasks in parallel using multiple worker processes.
-
     Args:
         tasks (list): A list of tasks (dictionaries) that need to be processed in parallel.
-        determine_function (function): A function that determines which function to execute and its arguments for each task.
+        determine_function (function): A function that determines which function to 
+        execute and its arguments for each task.
         nthreads (int): The number of worker processes to run in parallel.
         repo_store_path (str): Path to the repository where task-related files are stored.
         csv_file_path (str): Path to a CSV file that may be needed for processing some tasks.
@@ -208,13 +204,11 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
     """
     # Create a shared queue for collecting task results from worker processes
     result_queue = multiprocessing.Manager().Queue()
-
     with log_lock:
         standard_logger.info("Starting parallel task execution.")  # Log the start of parallel execution
 
     config = load_yaml_file(local_repo_config_path)
     user_registries = config.get("user_registry", [])
-
     # Create a pool of worker processes to handle the tasks
     with multiprocessing.Pool(processes=nthreads) as pool:
         task_results = []  # List to hold references to the async results of the tasks
@@ -227,10 +221,8 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
             task_results.append(pool.apply_async(worker_process, (task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, log_dir, result_queue, user_registries, timeout)))
 
         pool.close()  # Close the pool to new tasks once all have been submitted
-
         start_time = time.time()  # Start time for overall task execution
         tasks_are_not_completed = False  # Flag to track if timeout occurred before all tasks completed
-
         # Check the status of the tasks periodically and enforce the timeout if necessary
         while task_results:
             elapsed_time = time.time() - start_time  # Calculate elapsed time
@@ -259,10 +251,8 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
         # Check if all tasks failed, all succeeded, or if there was a mix (partial success)
         all_failed = all(result["status"] == "FAILED" for result in task_results_data)
         overall_status = "FAILED" if all_failed else "SUCCESS" if all(result["status"] == "SUCCESS" for result in task_results_data) else "PARTIAL"
-
     # Log the final status of task execution
     with log_lock:
         standard_logger.info(f"Task execution finished with overall status: {overall_status}")
-
     # Return the overall status and the results of each task
     return overall_status, task_results_data
