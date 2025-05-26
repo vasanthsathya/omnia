@@ -24,7 +24,6 @@
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['prepare_oim']) | unique }}"
         cacheable: true
 
-
 - name: Invoke validate_config.yml to perform L1 and L2 validations with prepare_oim tag
   ansible.builtin.import_playbook: ../input_validation/validate_config.yml
   tags: always
@@ -43,7 +42,6 @@
     oim_group: true
     omnia_provision_group: true
   tags: always
-
 
 - name: Prepare OIM Validation and Configure Known Hosts
   hosts: localhost
