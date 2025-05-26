@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=import-error,no-name-in-module,line-too-long
 import re
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
@@ -53,7 +54,6 @@ def create_container_remote(remote_name, remote_url, package, policy_type, tag, 
     try:
         # Check if the remote exists
         remote_exists = execute_command(pulp_container_commands["show_container_remote"] % remote_name, logger)
-
         if not remote_exists:
             # If remote does not exist, create it with the provided tag
             command = pulp_container_commands["create_container_remote"] % (
@@ -68,24 +68,19 @@ def create_container_remote(remote_name, remote_url, package, policy_type, tag, 
                 return False
         else:
             logger.info(f"Remote '{remote_name}' already exists. Updating include_tags.")
-
             # Retrieve existing tags
             existing_tags = extract_existing_tags(remote_name, logger)
-
             # If the tag already exists, no update is needed
             if tag in existing_tags:
                 logger.info(f"Tag '{tag}' already exists for remote '{remote_name}'. No update needed.")
                 return True
-
             # Append new tag and update
             new_tags = existing_tags + [tag]
             tags_json = json.dumps(new_tags)  # Ensuring proper JSON formatting
-
             update_command = pulp_container_commands["update_container_remote"] % (
                 remote_name, remote_url, package, policy_type, tags_json
             )
             result = execute_command(update_command, logger)
-
             if result:
                 logger.info(f"Remote '{remote_name}' updated successfully with tags: {new_tags}")
                 return True
@@ -100,16 +95,13 @@ def create_container_remote(remote_name, remote_url, package, policy_type, tag, 
 def create_container_remote_digest(remote_name, remote_url, package, policy_type, logger):
     """
     Creates a container remote for a given package.
-
     Args:
         remote_name (str): The name of the remote.
         remote_url (str): The URL of the remote.
         package (str): The package to create the remote for.
         policy_type (str): The policy type for the remote.
-
     Returns:
         bool: True if the remote was created or updated successfully, False otherwise.
-
     Raises:
         Exception: If there was an error creating or updating the remote.
     """
@@ -132,13 +124,10 @@ def create_container_remote_digest(remote_name, remote_url, package, policy_type
 def get_repo_url_and_content(package):
     """
     Get the repository URL and content from a given package.
-
     Parameters:
         package (str): The package to extract the URL and content from.
-
     Returns:
         tuple: A tuple containing the repository URL and content.
-
     Raises:
         ValueError: If the package prefix is not supported.
     """
@@ -151,7 +140,6 @@ def get_repo_url_and_content(package):
          r"^(public\.ecr\.aws)(/.+)": "https://public.ecr.aws",
          r"^(gcr\.io)(/.+)": "https://gcr.io"
     }
-
     for pattern, repo_url in patterns.items():
         match = re.match(pattern, package)
         if match:
@@ -164,7 +152,6 @@ def get_repo_url_and_content(package):
 def process_image(package, status_file_path, version_variables, user_registries, logger):
     """
     Process an image.
-
     Args:
         package (dict): The package to process.
         repo_store_path (str): The path to the repository store.
@@ -173,7 +160,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
         cluster_os_version (str): The version of the cluster operating system.
         user_registry_flag (bool): if image needs to be processed from user_registry
         logger (Logger): The logger.
-
     Returns:
         str: "Success" if the image was processed successfully, "Failed" otherwise.
     """
@@ -186,7 +172,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
 
     if user_registries:
         result, package_identifier = handle_user_image_registry(package, package_content, version_variables, user_registries, logger)
-
     # If user registry not found or no user registry given, proceed with public registry
     if not result:
         try:
@@ -194,13 +179,11 @@ def process_image(package, status_file_path, version_variables, user_registries,
             repository_name = f"{repo_name_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
             remote_name = f"remote_{package['package'].replace('/', '_')}"
             package_identifier = package['package']
-
             # Create container repository
             with repository_creation_lock:
                 result = create_container_repository(repository_name, logger)
             if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
                 raise Exception(f"Failed to create repository: {repository_name}")
-
             # Process digest or tag
             if "digest" in package:
                 package_identifier += f":{package['digest']}"
@@ -217,8 +200,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
 
                 if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
                     raise Exception(f"Failed to create remote: {remote_name}")
-
-
             # Sync and distribute container repository
             result = sync_container_repository(repository_name, remote_name, package_content,logger)
             if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
