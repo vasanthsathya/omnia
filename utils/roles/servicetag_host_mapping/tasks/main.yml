@@ -18,7 +18,7 @@
     msg: "{{ empty_inventory_fail_msg }}"
   when:
     - groups['all'] is defined
-    - (groups['all'] | length == 0)
+    - groups['all'] | difference(filter_groups | map('extract', groups) | list | flatten) | length == 0
 
 - name: Check discovery_provision.yml execution status
   ansible.builtin.include_tasks: check_provision_status.yml
