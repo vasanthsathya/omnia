@@ -20,12 +20,14 @@ pcs_container_name: "omnia_pcs"
 read_write_mode: "0644"
 read_write_execute_mode: "0744"
 pcs_container_dir: "{{ oim_shared_path }}/omnia/pcs"
-pcs_container_log_dir: "{{ oim_shared_path }}/omnia/log/pcs"
+pcs_container_corosync_log_dir: "{{ oim_shared_path }}/omnia/log/pcs/corosync"
+pcs_container_pacemaker_log_dir: "{{ oim_shared_path }}/omnia/log/pcs/pacemaker"
 container_systemd_dir: "/etc/containers/systemd"
 network_spec: "{{ hostvars['localhost']['input_project_dir'] }}/network_spec.yml"
 network_spec_syntax_fail_msg: "Failed. Syntax errors present in network_spec.yml. Fix errors and re-run playbook again."
 pcs_directories:
-  - { path: "{{ pcs_container_log_dir }}", mode: "{{ read_write_mode }}" }
+  - { path: "{{ pcs_container_corosync_log_dir }}", mode: "{{ read_write_execute_mode }}" }
+  - { path: "{{ pcs_container_pacemaker_log_dir }}", mode: "{{ read_write_execute_mode }}" }
   - { path: "{{ pcs_container_dir }}/corosync", mode: "{{ read_write_execute_mode }}" }
   - { path: "{{ container_systemd_dir }}", mode: "{{ read_write_mode }}" }
 
@@ -51,7 +53,8 @@ pcs_volumes:
   - /run/podman/podman.sock:/run/podman/podman.sock:ro
   - "{{ pcs_container_dir }}/pcs-start.sh:{{ pcs_resource_script_path }}{{ selinux_option }}"
   - "{{ pcs_container_dir }}/corosync:/etc/corosync{{ selinux_option }}"
-  - "{{ pcs_container_log_dir }}:/var/log/cluster{{ selinux_option }}"
+  - "{{ pcs_container_corosync_log_dir }}:/var/log/cluster{{ selinux_option }}"
+  - "{{ pcs_container_pacemaker_log_dir }}:/var/log/pacemaker{{ selinux_option }}"
   - "{{ oim_shared_path }}/omnia:/opt/omnia{{ selinux_option }}"
 
 pcs_container_success_msg: "The {{ pcs_container_name }} container has been successfully deployed."

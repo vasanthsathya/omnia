@@ -144,3 +144,27 @@ scrape_configs:
         labels:
           job: benchmarks log messages
           __path__: /var/log/core/playbooks/benchmarks.log
+
+  - job_name: Cluster Provisioning Logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Cluster Provisioning Logs
+          __path__: /var/log/provision/xcat/*log
+
+  - job_name: PCS container - pacemaker logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: PCS container - pacemaker logs
+          __path__: /var/log/pcs/pacemaker/*log
+
+  - job_name: PCS container - corosync logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: PCS container - corosync logs
+          __path__: /var/log/pcs/corosync/*log
