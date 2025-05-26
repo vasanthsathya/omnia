@@ -65,6 +65,6 @@ grafana_url_unreachable_fail_msg: |
   Failed. grafana url http://127.0.0.1:{{ grafana_port }} is not reachable.
   Please retry after grafana url is reachable. If facing this issue again, please utility/oim_cleanup.yml playbook to clean up existing OIM resources.
   After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ grafana_container_name }} container.
-loki_dashboard_file_path: 
+loki_dashboard_file_path:
   - { src: "{{ role_path }}/files/loki_dashboard.json", dest: "{{ grafana_dashboard_dir }}", mode: "0644" }
 loki_dashboard_config_path: "{{ grafana_dashboard_dir }}/loki_dashboard.json"
