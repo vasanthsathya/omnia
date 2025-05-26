@@ -111,7 +111,7 @@ def validate_network_config(input_file_path, data, logger, module, omnia_base_di
 
 def validate_storage_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
-        software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
     softwares = software_config_json["softwares"]
     for software in softwares:
