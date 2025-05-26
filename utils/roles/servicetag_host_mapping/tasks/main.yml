@@ -21,7 +21,8 @@
     - groups['all']
         | difference(
             filter_groups
-            | map('extract', groups, default=[])
+            | select('in', groups.keys() | list)
+            | map('extract', groups)
             | list
             | flatten
           )
