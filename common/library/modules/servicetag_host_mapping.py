@@ -69,11 +69,11 @@ def service_tag_host_mapping():
         # Iterate through all inventory files and modify them
         for inventory_file_path in inventory_sources_list:
             inventory_file_path = os.path.abspath(inventory_file_path.strip("'| "))
-            module.log(f"Inventory file path: {inventory_file_path}")
+            module.warn(f"Inventory file path: {inventory_file_path}")
 
             # If inventory file don't exist ignore.
             if not os.path.exists(inventory_file_path) or not os.path.basename(inventory_file_path):
-                module.log(f"Inventory file: {inventory_file_path} does not exist.")
+                module.warn(f"Inventory file: {inventory_file_path} does not exist.")
                 continue
 
             # Write file only if content is modified.
