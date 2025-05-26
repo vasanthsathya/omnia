@@ -13,6 +13,8 @@
 # limitations under the License.
 ---
 
-- name: Update registry on compute nodes
-  ansible.builtin.include_tasks: update_registry.yml
-  when: hostvars['127.0.0.1']['k8s_support']
+- name: Reload squid
+  containers.podman.podman_container_exec:
+    name: "{{ squid_container_name }}"
+    command: "{{ reload_squid_cmd }}"
+  register: result
