@@ -20,9 +20,6 @@
 - name: Local local_repo_access.yml file
   ansible.builtin.include_vars: "{{ local_repo_access_dest_path }}"
 
-- name: Fetch omnia_config.yml
-  ansible.builtin.include_tasks: fetch_omnia_config.yml
-
 - name: Fetch software_config.json and check for beegfs and nfs support
   ansible.builtin.include_tasks: fetch_software_config.yml
 

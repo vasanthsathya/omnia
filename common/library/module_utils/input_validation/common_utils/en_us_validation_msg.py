@@ -135,7 +135,13 @@ def tls_ext_fail_msg(valid_extensions):
     return f"should have {extensions_list} extension"
 
 # storage
+beegfs_version_fail_msg = "Failed, Ensure version of beegfs is mentioned in software_config.json"
 client_mount_options_fail_msg = "should only contain nosuid,rw,sync,hard as options"
+slurm_share_fail_msg = "Exactly one entry should be present in nfs_client_params with slurm_share as true in storage_config.yml"
+k8s_share_fail_msg = "Exactly one entry should be present in nfs_client_params with k8s_share as true in storage_config.yml"
+benchmark_tools_fail_msg = "Atleast one out of k8s_share or slurm_share in storage_config.yml should be true \
+  when ucx/openmpi mentioned in software_config.json."
+mult_share_fail_msg = "Exactly one entry should be present in nfs_client_params with slurm_share as true or k8s_share as true in storage_config.yml"
 beegfs_unmount_client_fail_msg = "should be set to true since beegfs_mounts value has been changed"
 
 # server_spec
