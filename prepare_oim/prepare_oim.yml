@@ -163,15 +163,15 @@
         name: deploy_containers/provision
         tasks_from: configure_provision_container.yml
 
-- name: Configure grafana datasource
+- name: Configure grafana datasource and dashboards
   hosts: oim
   connection: ssh
   tags: grafana
   tasks:
-    - name: Configure grafana datasource # noqa:role-name[path]
+    - name: Configure grafana datasource and dashboards # noqa:role-name[path]
       ansible.builtin.include_role:
         name: deploy_containers/grafana
-        tasks_from: configure_datasource.yml
+        tasks_from: configure_grafana.yml
 
 - name: Deploy PCS container resources
   hosts: oim

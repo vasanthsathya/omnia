@@ -68,7 +68,13 @@
           ansible.builtin.fail:
             msg: "Error: {{ create_prometheus_datasource.msg }}"
 
-        
+    - name: Copy dashboard to grafana
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ loki_dashboard_file_path }}"
+
     - name: Import loki dashboard in grafana
       block:
         - name: Import loki dashboard in grafana
@@ -79,7 +85,7 @@
             state: present
             commit_message: Updated by ansible
             overwrite: true
-            path: "{{ role_path }}/files/loki_dashboard.json"
+            path: "{{ loki_dashboard_config_path }}"
             use_proxy: false
           no_log: true
           register: import_loki_dashboard
