@@ -16,6 +16,8 @@ import json
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
+from ansible.module_utils.input_validation.validation_flows import scheduler_validation
+
 from ansible.module_utils.local_repo.software_utils import (
     load_json,
     set_version_variables,
@@ -30,24 +32,90 @@ create_file_path = validation_utils.create_file_path
 contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
 
-def validate_software_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_software_config(
+    input_file_path, data,
+    logger, module, omnia_base_dir,
+    module_utils_base, project_name):
     errors = []
     cluster_os_type = data["cluster_os_type"]
     cluster_os_version = data["cluster_os_version"]
     os_version_ranges = config.os_version_ranges
-
+    
     if cluster_os_type.lower() in os_version_ranges:
         version_range = os_version_ranges[cluster_os_type.lower()]
         if cluster_os_type.lower() in ["rhel", "rocky"]:
             if float(cluster_os_version) != float(version_range[0]):
-                errors.append(create_error_msg("cluster_os_version", cluster_os_version, en_us_validation_msg.os_version_fail_msg(cluster_os_type, version_range[0], None)))
+                errors.append(
+                    create_error_msg(
+                        "cluster_os_version", cluster_os_version,
+                        en_us_validation_msg.os_version_fail_msg(
+                            cluster_os_type, version_range[0], None)))
         elif cluster_os_type.lower() == "ubuntu":
             if cluster_os_version not in version_range:
-                errors.append(create_error_msg("cluster_os_version", cluster_os_version, en_us_validation_msg.os_version_fail_msg(cluster_os_type, version_range[0], version_range[1])))
+                errors.append(
+                    create_error_msg(
+                        "cluster_os_version", cluster_os_version,
+                        en_us_validation_msg.os_version_fail_msg(
+                            cluster_os_type, version_range[0], version_range[1])))
 
     iso_file_path = data.get("iso_file_path", "")
-    not_valid_iso_msg = validation_utils.verify_iso_file(iso_file_path, cluster_os_type, cluster_os_version)
+    not_valid_iso_msg = validation_utils.verify_iso_file(
+                            iso_file_path, cluster_os_type, cluster_os_version)
     if not_valid_iso_msg:
+        errors.append(
+            create_error_msg(
+                "iso_file_path", iso_file_path, not_valid_iso_msg))
+    softwares = data["softwares"]
+    need_additional_software_info = ["bcm_roce", "amdgpu", "vllm", "pytorch", "tensorflow", "intelgaudi"]
+    filtered_softwares = [item for item in softwares if item.get("name") in need_additional_software_info]
+
+    for software_name in filtered_softwares:
+        name = software_name["name"]
+        if not data.get(name):
+            errors.append(
+                create_error_msg(
+                    f"{name}", None,
+                    en_us_validation_msg.software_mandatory_fail_msg(name)))
+
+    return errors
+
+# Below is a validation function for each file in the input folder
+def validate_local_repo_config(
+        input_file_path, data, logger,
+        module, omnia_base_dir,
+        module_utils_base, project_name):
+    """
+    Validates local repository configuration based on the cluster OS type.
+
+    Checks whether the appropriate OS URL (`ubuntu_os_url` or `rhel_os_url`) is provided
+    in the input data based on the detected cluster OS type from the software config file.
+
+    Args:
+        input_file_path (str): Path to the main input file.
+        data (dict): Input data containing OS URLs.
+        logger: Logger object for logging (not used here).
+        module: Ansible module object (not used here).
+        omnia_base_dir (str): Base directory for Omnia (not used here).
+        module_utils_base (str): Base directory for module utilities (not used here).
+        project_name (str): Project name (not used here).
+
+    Returns:
+        list: A list of error messages if validation fails.
+    """
+    errors = []
+    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+    software_config_json = json.load(open(software_config_file_path, "r"))
+    cluster_os_type = software_config_json["cluster_os_type"]
+
+    ubuntu_os_url = data["ubuntu_os_url"]
+    if cluster_os_type == "ubuntu":
+        if validation_utils.is_string_empty(ubuntu_os_url):
+            errors.append(create_error_msg("ubuntu_os_url", ubuntu_os_url, en_us_validation_msg.ubuntu_os_url_msg))
+
+    rhel_os_url = data["rhel_os_url"]
+    if cluster_os_type == "rhel":
+        if validation_utils.is_string_empty(rhel_os_url):
+            errors.append(create_error_msg("rhel_os_url", rhel_os_url, en_us_validation_msg.rhel_os_url_msg))
         errors.append(create_error_msg("iso_file_path", iso_file_path, not_valid_iso_msg))
 
     #software groups and subgroups l2 validation
@@ -136,51 +204,6 @@ def validate_storage_config(input_file_path, data, logger, module, omnia_base_di
         beegfs_unmount_client = data["beegfs_unmount_client"]
         if not beegfs_unmount_client:
             errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.beegfs_unmount_client_fail_msg))
-
-    return errors
-
-def validate_high_availability_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
-    errors = []
-
-    def validate_ha_config(ha_data, mandatory_fields, errors, config_type=None):
-        try:
-            check_mandatory_fields(mandatory_fields, ha_data, errors)
-
-            # Special handling for OIM HA
-            if config_type == "oim_ha":
-                # Validate passive nodes with node_service_tags
-                if 'passive_nodes' in ha_data:
-                    for node in ha_data['passive_nodes']:
-                        check_mandatory_fields(["node_service_tags"], node, errors)
-            # Standard passive nodes validation for other HA types
-            elif 'passive_nodes' in ha_data:
-                for passive_node in ha_data['passive_nodes']:
-                    check_mandatory_fields(["node_service_tags"], passive_node, errors)
-
-        except KeyError as e:
-            logger.error(f"Missing key in HA data: {e}")
-            errors.append(f"Missing key in HA data: {e}")
-
-    ha_configs = [
-        ("oim_ha", ["virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
-        ("service_node_ha", ["service_nodes"]),
-        ("slurm_head_node_ha", ["virtual_ip_address", "active_node_service_tags", "passive_nodes"]),
-        ("k8s_head_node_ha", ["virtual_ip_address", "active_node_service_tags"])
-    ]
-
-    for config_name, mandatory_fields in ha_configs:
-        ha_data = data.get(config_name)
-        if ha_data:
-            ha_data = ha_data[0] if isinstance(ha_data, list) else ha_data
-            enable_key = f'enable_{config_name.split("_")[0]}_ha'
-            if ha_data.get(enable_key):
-                if config_name == "service_node_ha":
-                    for service_node in ha_data['service_nodes']:
-                        validate_ha_config(service_node, ["virtual_ip_address", "active_node_service_tag", "passive_nodes"], errors)
-                else:
-                    validate_ha_config(ha_data, mandatory_fields, errors, config_type=config_name)
-        else:
-            logger.warning(f"Configuration for {config_name} not found.")
 
     return errors
 
@@ -278,7 +301,7 @@ def validate_server_spec(input_file_path, data, logger, module, omnia_base_dir, 
 
 def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name):
     network_spec_file_path = create_file_path(input_file_path, file_names["network_spec"])
-    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, module_utils_base, project_name, logger, module)
+    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, project_name, logger, module)
     admin_bmc_networks = {}
 
     for network in network_spec_json["Networks"]:
@@ -294,6 +317,9 @@ def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, modu
 
 def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
+    results=[]
+    tag_names = eval(module.params["tag_names"])
+
     admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
     admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
     admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
@@ -302,6 +328,11 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
     pod_external_ip_range = data["pod_external_ip_range"]
     k8s_service_addresses = data["k8s_service_addresses"]
     k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
+
+    if 'k8s' in tag_names:
+        results= scheduler_validation.validate_k8s_parameters(admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr)
+        if results:
+            errors.append(create_error_msg("IP overlap -", results, en_us_validation_msg.ip_overlap_fail_msg))
 
     run_intel_gaudi_tests = data["run_intel_gaudi_tests"]
     csi_powerscale_driver_secret_file_path = data["csi_powerscale_driver_secret_file_path"]

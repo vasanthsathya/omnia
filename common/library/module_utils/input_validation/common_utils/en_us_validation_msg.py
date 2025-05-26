@@ -111,6 +111,7 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
     return f"For OS type '{cluster_os_type}', the version must be {min_version}."
 def software_mandatory_fail_msg(software_name):
     return f"in software_config.json. Please add the corresponding field '{software_name}' to the JSON. Look at /examples/template_ubuntu_software_config.json for an example"
+
 def json_file_mandatory(file_path):
      return f"is present in software_config.json. Please make sure that the corresponding JSON file is present at location '{file_path}'"
 
