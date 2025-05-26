@@ -43,12 +43,12 @@
         "sortOrder": "Descending",
         "wrapLogMessage": false
       },
-      "pluginVersion": "8.3.2",
+      "pluginVersion": "9.2.2",
       "targets": [
         {
           "datasource": {
             "type": "loki",
-            "uid": "oim-node-loki"
+            "uid": "oim-loki"
           },
           "expr": "{filename=\"/var/log/core/playbooks/omnia.log\",job=\"Omnia logs\"}",
           "queryType": "randomWalk",
@@ -56,6 +56,40 @@
         }
       ],
       "title": "omnia.log",
+      "type": "logs"
+    },
+    {
+      "datasource": "oim-loki",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "9.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "oim-loki"
+          },
+          "expr": "{filename=\"/var/log/pcs/pacemaker/pacemaker.log\",job=\"syslog\"}",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "title": "PCS container - pacemaker logs",
       "type": "logs"
     }
   ],
