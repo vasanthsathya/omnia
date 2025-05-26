@@ -50,7 +50,7 @@
             "type": "loki",
             "uid": "oim-loki"
           },
-          "expr": "{filename=\"/var/log/core/playbooks/omnia.log\",job=\"Omnia logs\"}",
+          "expr": "{job=\"Omnia logs\"}",
           "queryType": "randomWalk",
           "refId": "A"
         }
@@ -84,7 +84,7 @@
             "type": "loki",
             "uid": "oim-loki"
           },
-          "expr": "{filename=\"/var/log/pcs/pacemaker/pacemaker.log\",job=\"syslog\"}",
+          "expr": "{job=\"PCS container - pacemaker logs\"}",
           "queryType": "randomWalk",
           "refId": "A"
         }
