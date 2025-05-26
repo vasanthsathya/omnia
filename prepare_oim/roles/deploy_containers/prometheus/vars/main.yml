@@ -23,9 +23,9 @@ delay_count: 5
 prometheus_pump_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
 prometheus_pump_dir: "{{ telemetry_dir_path }}/prometheus_pump"
 prometheus_pump_init_script:
-  - template: "{{ role_path }}/templates/prometheus_pump_init.sh.j2"
-    dest: "{{ prometheus_pump_dir }}/prometheus_pump.sh"
-    mode: "{{ dir_mode }}"
+ - template: "{{ role_path }}/templates/prometheus_pump_init.sh.j2"
+   dest: "{{ prometheus_pump_dir }}/prometheus_pump.sh"
+   mode: "{{ dir_mode }}"
 prometheus_pump_entry_script: "/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh"
 prometheus_pump_directories:
  - { path: "{{ prometheus_pump_logs_dir }}", mode: "0755" }
