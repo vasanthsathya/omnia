@@ -34,7 +34,7 @@ idrac_telemetry_receiver_dir_path: "{{ omnia_nfs_share }}/telemetry/idrac_teleme
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 prometheus_pump_volumes:
  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
- - "{{ prometheus_pump_dir }}:/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh{{ selinux_option }}"
+ - "{{ prometheus_pump_dir }}:/opt/omnia/telemetry/prometheus_pump{{ selinux_option }}"
 prometheus_pump_container_name: "prometheus_pump"
 prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_receiver_env:
