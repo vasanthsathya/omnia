@@ -61,12 +61,11 @@ def service_tag_host_mapping():
     try:
         # Create a database connection
         inventory_sources_list = []
+        any_changes = False
         if INVENTORY_SOURCES_STR:
             # Get the list of inventory files
             inventory_sources_list = INVENTORY_SOURCES_STR[1:-1].split(',')
 
-
-        # inventory_sources_list : "/root/inv", "inventory"
         # Iterate through all inventory files and modify them
         for inventory_file_path in inventory_sources_list:
             inventory_file_path = os.path.abspath(inventory_file_path.strip("'| "))
@@ -94,18 +93,29 @@ def service_tag_host_mapping():
                     inventory_file_path, lines, result_lines, is_content_modified)
 
             if is_content_modified:
+                any_changes = True
                 # Write the modified lines back to the file
                 with open(inventory_file_path, 'w', encoding='utf-8') as f:
                     for line in result_lines:
                         f.write(f"{line}\n")
 
         # Close the cursor and connection
-        CURSOR.close()
-        CONNECTION.close()
+        if CURSOR:
+            CURSOR.close()
+        if CONNECTION:
+            CONNECTION.close()
+
+        if not any_changes:
+            module.exit_json(changed=False, msg="No changes made to inventory files.")
+        else:
+            module.exit_json(changed=True, msg="Inventory updated successfully.")
+
     except (ValueError, OSError) as err:
         # Close the cursor and connection
-        CURSOR.close()
-        CONNECTION.close()
+        if CURSOR:
+            CURSOR.close()
+        if CONNECTION:
+            CONNECTION.close()
         module.fail_json(msg=f"servicetag_host_mapping: {type(err).__name__}: {err}")
 
 def update_inventory_file_entries(
@@ -149,7 +159,7 @@ def update_inventory_file_entries(
         result_lines.append(next_line.strip())
     return result_lines, is_content_modified
 
-def host_ip_update(row, group_status, token):
+def host_ip_update(row, host, group_status, token):
     """
     Updates a host IP based on a given row, group status, and token.
 
@@ -193,7 +203,7 @@ def get_host_admin_ip(host, group_status, token):
     row = CURSOR.fetchone()
 
     if row:
-        return host_ip_update(row, group_status, token)
+        return host_ip_update(row, host, group_status, token)
     # Try to get IP using hostname
     query = "SELECT admin_ip FROM cluster.nodeinfo WHERE hostname=%s"
     params = (host,)
@@ -201,19 +211,14 @@ def get_host_admin_ip(host, group_status, token):
     row = CURSOR.fetchone()
 
     if row:
-        return host_ip_update(row, group_status, token)
+        return host_ip_update(row, host, group_status, token)
 
     return None, False
-
-
 
 if __name__ == "__main__":
     CONNECTION = omniadb.create_connection()
     CURSOR = CONNECTION.cursor()
     try:
         service_tag_host_mapping()
-        module.exit_json(changed=True, msg="Inventory updated successfully.")
     except ValueError as e:
         module.fail_json(msg=f"servicetag_host_mapping: {str(e)}")
-    except Exception as e:
-        module.fail_json(msg=f"Unexpected error: {str(e)}")
