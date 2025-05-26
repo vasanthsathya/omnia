@@ -168,3 +168,83 @@ scrape_configs:
         labels:
           job: PCS container - corosync logs
           __path__: /var/log/pcs/corosync/*log
+
+  - job_name: iDRAC Telemetry - activemq container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: iDRAC Telemetry - activemq container logs
+          __path__: /var/log/telemetry/activemq/*log
+
+  - job_name: iDRAC Telemetry - mysqldb container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: iDRAC Telemetry - mysqldb container logs
+          __path__: /var/log/telemetry/mysqldb/*log
+
+  - job_name: iDRAC Telemetry - idrac_telemetry_receiver container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: iDRAC Telemetry - idrac_telemetry_receiver container logs
+          __path__: /var/log/telemetry/idrac_telemetry_receiver/*log
+
+  - job_name: Telemetry - prometheus container logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Telemetry - prometheus container logs
+          __path__: /var/log/telemetry/prometheus/*log
+
+  - job_name: Telemetry - prometheus_pump container logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Telemetry - prometheus_pump container logs
+          __path__: /var/log/telemetry/prometheus_pump/*log
+
+  - job_name: Visualization - grafana container logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Visualization - grafana container logs
+          __path__: /var/log/telemetry/grafana/*log
+
+  - job_name: Pulp container logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Pulp container logs
+          __path__: /var/log/pulp/*log
+  
+  - job_name: Local repo logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Local repo logs
+          __path__: /var/log/local_repo/*log
+
+  - job_name: Kubespray logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Kubespray logs
+          __path__: /var/log/kubespray/*log
+
+  - job_name: Core container logs 
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Core container logs
+          __path__: /var/log/core/container/*log
