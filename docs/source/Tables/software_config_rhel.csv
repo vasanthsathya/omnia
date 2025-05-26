@@ -3,7 +3,7 @@
 
 ``string``
 
-Required","* The operating system running on the OIM.
+Required","* Specify the operating system running on the OIM and the one to be provisioned on the compute nodes.
 * **Value**: ``rhel``"
 "**cluster_os_version**
 
