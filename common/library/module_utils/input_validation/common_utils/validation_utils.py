@@ -397,7 +397,7 @@ def is_ip_in_subnet(admin_oim_ip, netmask_bits, vip_address):
     subnet = ipaddress.IPv4Network(f"{admin_oim_ip}/{netmask_bits}", strict=False)
     ip = ipaddress.IPv4Address(vip_address)
     return ip in subnet
-=======
+
 def validate_cluster_items(cluster_items, json_file_path):
     failures = []
     successes = []
