@@ -13,13 +13,12 @@
 # limitations under the License.
 
 #!/usr/bin/python
-
+# pylint: disable=import-error,no-name-in-module,line-too-long
 import os
 import re
 from datetime import datetime
 from prettytable import PrettyTable
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible.module_utils.local_repo.process_parallel import execute_parallel, log_table_output
 from ansible.module_utils.local_repo.download_common import (
     process_manifest,
@@ -39,7 +38,6 @@ from ansible.module_utils.local_repo.software_utils import (
     set_version_variables,
     get_subgroup_dict
 )
-
 from ansible.module_utils.local_repo.config import (
     DEFAULT_NTHREADS,
     DEFAULT_TIMEOUT,
@@ -111,7 +109,6 @@ def update_status_csv(csv_dir, software, overall_status):
 
 
 def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries):
-
     """
     Determines the appropriate function and its arguments to process a given task.
 
@@ -187,7 +184,6 @@ def generate_pretty_table(task_results, total_duration, overall_status):
     table.add_row(["Overall Status", overall_status, ""])
     return table.get_string()
 
-
 def main():
     """
     Executes a list of tasks in parallel using multiple worker processes.
@@ -203,12 +199,10 @@ def main():
         repo_store_path (str): The path to the repository where task-related files are stored.
         software (list): A list of software names.
         user_json_file (str): The path to the JSON file containing user data.
-
     Returns:
         tuple: A tuple containing:
             - overall_status (str): The overall status of task execution ("SUCCESS", "FAILED", "PARTIAL", "TIMEOUT").
             - task_results_data (list): A list of dictionaries, each containing the result of an individual task.
-
     Raises:
         Exception: If an error occurs during execution.
     """
@@ -225,9 +219,7 @@ def main():
         "user_json_file": {"type": "str", "required": False, "default": USER_JSON_FILE_DEFAULT},
         "local_repo_config_path": {"type": "str", "required": True}
     }
-
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
-
     tasks = module.params["tasks"]
     nthreads = module.params["nthreads"]
     log_dir = module.params["log_dir"]
@@ -242,7 +234,6 @@ def main():
     # Initialize standard logger.
     slogger = setup_standard_logger(slog_file)
     result = {"changed": False, "task_results": []}
-
     # Record start time.
     start_time = datetime.now()
     formatted_start_time = start_time.strftime("%I:%M:%S %p")
@@ -250,7 +241,6 @@ def main():
     slogger.info(f"Task list: {tasks}")
     slogger.info(f"Number of threads: {nthreads}")
     slogger.info(f"Timeout: {timeout}")
-
     try:
         user_data = load_json(user_json_file)
         cluster_os_type = user_data['cluster_os_type']
@@ -300,7 +290,6 @@ def main():
         result["table_output"] = table_output if "table_output" in locals() else "No table generated."
         slogger.error(f"Execution failed: {str(e)}")
         module.fail_json(msg=f"Error during execution: {str(e)}", **result)
-
-
+        
 if __name__ == "__main__":
     main()
