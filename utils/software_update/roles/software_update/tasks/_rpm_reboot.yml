@@ -24,5 +24,4 @@
   when:
     - dnf_install.changed
     - grouped_packages.grp_pkg_map[grp.key].reboot
-    - reboot_required | default(false)
   delegate_to: "{{ node }}"
