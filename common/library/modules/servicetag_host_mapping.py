@@ -206,10 +206,14 @@ def get_host_admin_ip(host, group_status, token):
     return None, False
 
 
+
 if __name__ == "__main__":
     CONNECTION = omniadb.create_connection()
     CURSOR = CONNECTION.cursor()
     try:
         service_tag_host_mapping()
+        module.exit_json(changed=True, msg="Inventory updated successfully.")
     except ValueError as e:
         module.fail_json(msg=f"servicetag_host_mapping: {str(e)}")
+    except Exception as e:
+        module.fail_json(msg=f"Unexpected error: {str(e)}")
