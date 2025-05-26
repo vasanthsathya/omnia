@@ -11,23 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# pylint: disable=import-error,no-name-in-module,line-too-long
 import multiprocessing
 from ansible.module_utils.local_repo.parse_and_download import execute_command
 from ansible.module_utils.local_repo.config import (
     pulp_container_commands
 )
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
-
 remote_creation_lock = multiprocessing.Lock()
 repository_creation_lock = multiprocessing.Lock()
 
 def create_container_repository(repo_name,logger):
     """
     Creates a container repository.
-
     Args:
         repo_name (str): The name of the repository.
-
     Returns:
         bool: True if the repository was created successfully or already exists, False if there was an error.
     """
@@ -47,10 +46,8 @@ def create_container_repository(repo_name,logger):
 def extract_existing_tags(remote_name, logger):
     """
     Extracts existing include_tags from a container remote.
-
     Args:
         remote_name (str): The name of the remote.
-
     Returns:
         list: A list of existing tags, or an empty list if an error occurs.
     """
@@ -76,19 +73,15 @@ def extract_existing_tags(remote_name, logger):
 def create_container_distribution(repo_name,package_content,logger):
     """
     Create or update a distribution for a repository.
-
     Args:
         repo_name (str): The name of the repository.
         package_content (str): The content of the package.
         logger (logging.Logger): The logger instance.
-
     Returns:
         bool: True if the distribution is created or updated successfully, False otherwise.
-
     Raises:
         Exception: If there is an error creating or updating the distribution.
     """
-
     try:
         if not execute_command(pulp_container_commands["show_container_distribution"] % (repo_name), logger):
             command = pulp_container_commands["distribute_container_repository"] % (repo_name, repo_name, package_content)
@@ -100,16 +93,13 @@ def create_container_distribution(repo_name,package_content,logger):
         logger.error(f"Error creating distribution {repo_name}: {e}")
         return False
 
-
 def sync_container_repository(repo_name, remote_name, package_content, logger):
     """
     Synchronizes and distribute container repository with a remote.
-
     Args:
         repo_name (str): The name of the repository.
         remote_name (str): The name of the remote.
         package_content (str): Upstream name.
-
     Returns:
         bool: True if the synchronization is successful, False otherwise.
     """
