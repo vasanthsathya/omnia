@@ -262,18 +262,14 @@ def process_user_registry(
                 logger.error(f"Failed to render tag template: {exc}")
                 return False, package_identifier
 
-        result = create_user_remote_container(
-            remote_name, base_url, package_content, policy_type, cacert, key, logger, tag_val
-        )
+        with remote_creation_lock:
+            result = create_user_remote_container(
+                remote_name, base_url, package_content, policy_type, cacert, key, logger, tag_val
+            )
         if not result:
             return False, package_identifier
-
-    else:
-        logger.error("Neither digest nor tag found in package.")
-        return False, package_identifier
-
-    with remote_creation_lock:
-        sync_result = sync_container_repository(repository_name, logger)
+    
+    sync_result = sync_container_repository(repository_name, remote_name, package_content, logger)
 
     if sync_result is False or (isinstance(sync_result, dict) and sync_result.get("returncode", 1) != 0):
         return False, package_identifier
