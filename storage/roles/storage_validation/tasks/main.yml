@@ -23,7 +23,7 @@
 - name: Fetch software_config.json and check for beegfs and nfs support
   ansible.builtin.include_tasks: fetch_software_config.yml
 
-- name: validate beegfs inputs
+- name: Validate beegfs inputs
   ansible.builtin.include_tasks: fetch_beegfs_inputs.yml
   when: beegfs_support
 
