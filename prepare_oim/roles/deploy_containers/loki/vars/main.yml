@@ -32,7 +32,7 @@ loki_container_failure_msg: |
   The deployment of the {{ loki_container_name }} container has failed.
   To resolve this, check logs using 'podman logs {{ loki_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ loki_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ loki_container_name }} container.
 loki_image_pull_fail_msg: |
   The pull of the Loki image '{{ loki_image }}:{{ loki_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
@@ -57,7 +57,7 @@ promtail_container_failure_msg: |
   The deployment of the {{ promtail_container_name }} container has failed.
   To resolve this, check logs using 'podman logs {{ promtail_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ promtail_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ promtail_container_name }} container.
 promtail_image_pull_fail_msg: |
   The pull of the Promtail image '{{ promtail_image }}:{{ promtail_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
