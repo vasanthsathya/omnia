@@ -28,13 +28,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install ansible pylint kubernetes prettytable requests
 
-    - name: Get changed Python files
+    - name: Get changed Python files (excluding deleted)
       id: changed-files
       run: |
         git fetch origin ${{ github.base_ref }}
-        FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD -- '*.py' || true)
-        FILES="${FILES//$'\n'/ }"  # Convert newlines to space-separated string
-        echo "files=$FILES" >> "$GITHUB_OUTPUT"
+        # Get changed *.py files between base and HEAD
+        CHANGED=$(git diff --diff-filter=d --name-only origin/${{ github.base_ref }} HEAD -- '*.py' || true)
+        if [ -z "$CHANGED" ]; then
+          echo "files="
+        else
+          # Filter only existing files (just in case)
+          FILES=""
+          for f in $CHANGED; do
+            if [ -f "$f" ]; then
+              FILES="$FILES $f"
+            fi
+          done
+          # Trim leading whitespace
+          FILES="${FILES#"${FILES%%[![:space:]]*}"}"
+          echo "files=$FILES"
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Run pylint on changed files
       if: steps.changed-files.outputs.files != ''
