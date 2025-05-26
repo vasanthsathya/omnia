@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: DNF install the rpms
+  ansible.builtin.dnf:
+    name: "{{ grouped_packages.grp_pkg_map[grp.key].rpm }}"
+    state: present
+  register: dnf_install
+  delegate_to: "{{ node }}"
 
-- name: Update repo - Ubuntu
-  ansible.builtin.command: apt update
-  changed_when: false
-  when: ansible_distribution | lower == os_supported_ubuntu
-
-- name: Update repo - RHEL/Rocky
-  ansible.builtin.command: dnf clean all
-  changed_when: false
+- name: Reboot node (This task will take some time)
+  ansible.builtin.reboot:
   when:
-    - ansible_distribution | lower == os_supported_rhel or
-      ansible_distribution | lower == os_supported_rocky
+    - dnf_install.changed
+    - grouped_packages.grp_pkg_map[grp.key].reboot
+  delegate_to: "{{ node }}"

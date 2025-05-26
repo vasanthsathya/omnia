@@ -160,5 +160,6 @@
 - name: Update software versions from software_config.json (subgroup)
   ansible.builtin.include_tasks: validate_software_config_subgroup_json.yml
   with_dict: "{{ subgroup_softwares }}"
+  when: subgroup_softwares is defined
   loop_control:
     loop_var: subgroup
