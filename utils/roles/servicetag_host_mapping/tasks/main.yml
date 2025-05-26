@@ -29,8 +29,6 @@
     dest: "{{ host_mapping_inventory.dest }}"
     force: yes
     mode: "{{ host_mapping_inventory.mode }}"
-  delegate_to: localhost
-  connection: local
 
 - name: Apply service tag mapping for inventory
   ansible.builtin.include_tasks: service_tag_mapping.yml
