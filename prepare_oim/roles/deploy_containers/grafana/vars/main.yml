@@ -67,4 +67,4 @@ grafana_url_unreachable_fail_msg: |
   After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ grafana_container_name }} container.
 loki_dashboard_file_path: 
   - { src: "{{ role_path }}/files/loki_dashboard.json", dest: "{{ grafana_dashboard_dir }}", mode: "0644" }
-loki_dashboard_config_path: /opt/grafana/dashboards/loki_dashboard.json
+loki_dashboard_config_path: "{{ grafana_dashboard_dir }}/loki_dashboard.json"
