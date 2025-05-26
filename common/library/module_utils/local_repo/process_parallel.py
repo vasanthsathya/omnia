@@ -168,7 +168,7 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
         # Log the start of the worker process execution
         with log_lock:
            # logger.info(f"Worker process {multiprocessing.current_process().name} started  execution.")
-           logger.info(f"Worker process {os.getpid()} started  execution.")
+            logger.info(f"Worker process {os.getpid()} started  execution.")
         # Execute the task by calling the `execute_task` function and passing necessary arguments
         result = execute_task(task, determine_function, user_data, version_variables, repo_store_path, csv_file_path, logger,  user_registries, timeout)
         result["logname"] = f"package_status_{os.getpid()}.log"
