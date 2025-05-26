@@ -40,6 +40,9 @@ invalid_switch_ports_msg = "Please provide any port ranges as start-end (example
 duplicate_group_name_msg = "Duplicate group names are not allowed."
 empty_or_syntax_error_roles_config_msg = "File is either empty or contains syntax errors. File must contain valid YAML with 'Roles' and 'Groups' sections along with valid syntax. Check the file content and ensure proper YAML formatting."
 duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
+SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = "The role service_node defined in roles_config.yml," \
+    " but service_node entry missing in sofware_config.json, " \
+    "Please rerun local repo with service_node entry in software_config.json to deploy service nodes successfully"
 
 # provision_config.yml
 default_lease_time_fail_msg = "Please provide a valid default_lease_time."
@@ -111,6 +114,9 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
     return f"For OS type '{cluster_os_type}', the version must be {min_version}."
 def software_mandatory_fail_msg(software_name):
     return f"in software_config.json. Please add the corresponding field '{software_name}' to the JSON. Look at /examples/template_ubuntu_software_config.json for an example"
+
+def json_file_mandatory(file_path):
+     return f"is present in software_config.json. Please make sure that the corresponding JSON file is present at location '{file_path}'"
 
 # network_spec.json
 range_ip_check_fail_msg = "Failed. IP range should be in valid format (Example: 192.168.1.1-192.168.1.254)"
