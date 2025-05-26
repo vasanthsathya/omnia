@@ -19,31 +19,43 @@ max_number_of_roles_msg = "A max of 100 roles can be supported."
 min_number_of_groups_msg = "At least 1 group is required."
 min_number_of_roles_msg = "At least 1 role is required."
 max_number_of_roles_per_group_msg = "Groups can support a maximum of 5 roles."
-resource_mgr_id_msg = "The resource_mgr_id is mandatory if the group is mapped to kube_node or slurm_node roles."
+resource_mgr_id_msg = "The resource_mgr_id is mandatory if the group is mapped to kube_node or \
+    slurm_node roles."
 grp_exist_msg = "A valid group must be provided."
 invalid_switch_ip_msg = "Please provide a valid switch IPv4 address (example: 10.5.0.1)."
 grp_role_msg = "Please associate this group with a role."
-parent_service_node_msg = "Group is associated with login, compiler_node, service_node, kube_control_plane, slurm_control_plane role(s)."
+parent_service_node_msg = "Group is associated with login, compiler_node, service_node, \
+    kube_control_plane, slurm_control_plane role(s)."
 parent_service_role_dne_msg = "A service_node role must be present when the parent is provided."
-parent_service_role_msg = "A service_node role does not exist, the parent should be empty for any group associated with worker or default roles."
-bmc_static_range_invalid_msg = "Static range should be in the following format: IPv4Start-IPv4End (example: 10.5.0.1-10.5.0.200)."
+parent_service_role_msg = "A service_node role does not exist, the parent should be empty \
+    for any group associated with worker or default roles."
+bmc_static_range_invalid_msg = "Static range should be in the following format: \
+    IPv4Start-IPv4End (example: 10.5.0.1-10.5.0.200)."
 overlapping_static_range = "bmc_detail's static_range is overlapping with other static ranges."
 duplicate_switch_ip_port_msg = "Please remove duplicate ports."
-switch_details_incomplete_msg = "If providing switch details, please provide both the IP and Ports fields."
-switch_details_no_bmc_details_msg = "If switch details are provided then bmc_detail's static_range must also be provided."
+switch_details_incomplete_msg = "If providing switch details, please provide both the IP and \
+    Ports fields."
+switch_details_no_bmc_details_msg = "If switch details are provided then bmc_detail's \
+    static_range must also be provided."
 invalid_group_name_msg = "Groups must be defined in the form of grp<n> where n is 0-99."
-invalid_location_id_msg = "location_id must follow the format SU-<n>.RACK-<n> where n is 0-99. This input is case-sensitive. Please use uppercase letters only."
-invalid_attributes_role_msg = "Please provide valid attributes for the role, both 'name' and 'groups' are mandatory."
+invalid_location_id_msg = "location_id must follow the format SU-<n>.RACK-<n> where n is 0-99.\
+     This input is case-sensitive. Please use uppercase letters only."
+invalid_attributes_role_msg = "Please provide valid attributes for the role, both 'name' and \
+    'groups' are mandatory."
 no_groups_msg = "Outer Group object was probably not defined."
 no_roles_msg = "Outer Role object was probably not defined."
 invalid_switch_ports_msg = "Please provide any port ranges as start-end (example: 0-15,4:4,51-53)."
 duplicate_group_name_msg = "Duplicate group names are not allowed."
-empty_or_syntax_error_roles_config_msg = "File is either empty or contains syntax errors. File must contain valid YAML with 'Roles' and 'Groups' sections along with valid syntax. Check the file content and ensure proper YAML formatting."
-duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
+empty_or_syntax_error_roles_config_msg = "File is either empty or contains syntax errors. File \
+    must contain valid YAML with 'Roles' and 'Groups' sections along with valid syntax. Check the \
+        file content and ensure proper YAML formatting."
+duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute \
+    layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
 
 # provision_config.yml
 default_lease_time_fail_msg = "Please provide a valid default_lease_time."
-timezone_fail_msg = "Unsupported Timezone. Please check the timezone.txt file for a list of valid timezones."
+timezone_fail_msg = "Unsupported Timezone. Please check the timezone.txt file for a list of \
+    valid timezones."
 enable_switch_based_fail_msg = "enable_switch_based must be set to either true or false."
 language_fail_msg = "Only en-US language supported"
 language_empty_msg = "Language setting cannot be empty"
@@ -62,11 +74,15 @@ rhel_os_url_msg = "is empty. Please provide a rhel_os_url value."
 ubuntu_os_url_msg = "ubuntu_os_url is empty. Please provide a ubuntu_os_url value."
 
 # omnia_config.yml
-invalid_password_msg = "Provided password is invalid. Password must meet the specified requirements: should not be empty, must have a length of at least 8 characters, and should not contain the following characters: '-', '\', "'", or '"'"
+invalid_password_msg = "Provided password is invalid. Password must meet the specified requirements: \
+    should not be empty, must have a length of at least 8 characters, and should not contain the following characters: '-', '\', "'", or '"'"
 k8s_cni_fail_msg = "k8s_cni is empty or invalid. k8s_cni must be set to either calico or flannel. "
-pod_external_ip_range_fail_msg = "pod_external_ip_range value is either empty or invalid. Please provide one of the following acceptable formats: '10.11.0.100-10.11.0.150' (range between start and end IP addresses) or '10.11.0.0/16' (CIDR notation)."
-slurm_installation_type_fail_msg = "slurm_installation_type is empty or invalid. slurm_installation_type_fail_msg must either be set to nfs_share or configless."
-restart_slurm_services_fail_msg = "restart_slurm_services is empty or invalid. restart_slurm_services must be set to either true or false."
+pod_external_ip_range_fail_msg = "pod_external_ip_range value is either empty or invalid. Please \
+    provide one of the following acceptable formats: '10.11.0.100-10.11.0.150' (range between start and end IP addresses) or '10.11.0.0/16' (CIDR notation)."
+slurm_installation_type_fail_msg = "slurm_installation_type is empty or invalid. \
+    slurm_installation_type_fail_msg must either be set to nfs_share or configless."
+restart_slurm_services_fail_msg = "restart_slurm_services is empty or invalid. \
+    restart_slurm_services must be set to either true or false."
 k8s_service_addresses_fail_msg = "k8s_service_addresses are empty. Please provide k8s_service_addresses value."
 k8s_pod_network_cidr_fail_msg = "k8s_pod_network_cidr is empty. Please provide a k8s_pod_network_cidr value."
 intel_gaudi_fail_msg = "should not be false as intel_gaudi exists in software_config.json"
@@ -141,7 +157,8 @@ slurm_share_fail_msg = "Exactly one entry should be present in nfs_client_params
 k8s_share_fail_msg = "Exactly one entry should be present in nfs_client_params with k8s_share as true in storage_config.yml"
 benchmark_tools_fail_msg = "Atleast one out of k8s_share or slurm_share in storage_config.yml should be true \
   when ucx/openmpi mentioned in software_config.json."
-mult_share_fail_msg = "Exactly one entry should be present in nfs_client_params with slurm_share as true or k8s_share as true in storage_config.yml"
+mult_share_fail_msg = "Exactly one entry should be present in nfs_client_params with slurm_share as true or \
+    k8s_share as true in storage_config.yml"
 beegfs_unmount_client_fail_msg = "should be set to true since beegfs_mounts value has been changed"
 
 # server_spec
