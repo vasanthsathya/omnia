@@ -185,7 +185,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
     package_identifier = None
 
     if user_registries:
-        logger.info(f"user registry exist {user_registries}")
         result, package_identifier = handle_user_image_registry(package, package_content, version_variables, user_registries, logger)
 
     # If user registry not found or no user registry given, proceed with public registry
