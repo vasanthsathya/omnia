@@ -147,7 +147,8 @@ TYPE_REQUIREMENTS = {
     "tarball": ["package", "url"],
     "shell": ["package", "url"],
     "iso": ["package", "url"],
-    "manifest": ["package", "url"]
+    "manifest": ["package", "url"],
+    "pip_module":["package"]
 }
 
 # Dict of the file that can be encrypted and it's ansible vault key
