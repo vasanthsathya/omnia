@@ -17,7 +17,7 @@ The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the foll
 * ``network_spec.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the necessary configurations for the cluster network.
 * ``provision_config_credentials.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the necessary passwords required for provisioning the cluster.
 * ``software_config.json``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the software packages which are to be installed on the cluster.
-* ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the cluster.
+* ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the Pulp container present on the OIM.
 
 1. ``network_spec.yml``
 ------------------------
