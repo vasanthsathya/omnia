@@ -23,13 +23,15 @@ grafana_image_tag: "9.2.2"
 grafana_container_name: "grafana"
 dir_permissions_755: "0755"
 grafana_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/grafana"
-grafana_data_dir: "{{ omnia_nfs_share }}/telemetry/grafana"
+grafana_data_dir: "{{ omnia_nfs_share }}/telemetry/grafana/data"
+grafana_dashboard_dir: "{{ omnia_nfs_share }}/telemetry/grafana/dashboards"
 grafana_podman_volumes:
   - { name: "grafana_data", path: "{{ grafana_data_dir }}" }
   - { name: "grafana_log", path: "{{ grafana_logs_dir }}" }
 grafana_volumes:
   - "grafana_data:/var/lib/grafana{{ selinux_option }}"
   - "grafana_log:/var/log/grafana{{ selinux_option }}"
+  - "{{ grafana_dashboard_dir }}:/opt/grafana/dashboards{{ selinux_option }}"
 grafana_port: 5000
 grafana_user: "grafana_user"
 grafana_user_password: "grafana_user_password"
@@ -46,7 +48,7 @@ grafana_container_failure_msg: |
   The deployment of the {{ grafana_container_name }} container has failed.
   To resolve this, check logs using 'podman logs {{ grafana_container_name }}' from OIM
   and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the preparep_oim playbook to successfully deploy the {{ grafana_container_name }} container.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ grafana_container_name }} container.
 grafana_image_pull_fail_msg: |
   The pull of the Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
@@ -54,3 +56,15 @@ grafana_image_pull_fail_msg: |
 grafana_image_not_found_msg: |
   The Grafana image '{{ grafana_image }}:{{ grafana_image_tag }}' was not found after pull attempt.
   Please check if the image is available and re-run the playbook.
+
+# Usage: configure_grafana.yml
+url_retries: 10
+prometheus_port: 9090
+loki_port: 3100
+grafana_url_unreachable_fail_msg: |
+  Failed. grafana url http://127.0.0.1:{{ grafana_port }} is not reachable.
+  Please retry after grafana url is reachable. If facing this issue again, please utility/oim_cleanup.yml playbook to clean up existing OIM resources.
+  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ grafana_container_name }} container.
+loki_dashboard_file_path:
+  - { src: "{{ role_path }}/files/loki_dashboard.json", dest: "{{ grafana_dashboard_dir }}", mode: "0644" }
+loki_dashboard_config_path: "{{ grafana_dashboard_dir }}/loki_dashboard.json"

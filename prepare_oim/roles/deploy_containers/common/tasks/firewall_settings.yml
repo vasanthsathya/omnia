@@ -19,6 +19,7 @@
       ansible.builtin.dnf:
         name: firewalld
         state: present
+      tags: always
 
   rescue:
     - name: Failed to install firewalld
@@ -30,6 +31,7 @@
     name: firewalld
     state: started
     enabled: true
+  tags: always
 
 - name: Add xCAT-related ports on host firewalld
   ansible.posix.firewalld:
@@ -37,6 +39,7 @@
     state: enabled
     permanent: true
   loop: "{{ xcat_firewall_ports }}"
+  tags: provision
 
 - name: Add PCS-related ports on host firewalld
   ansible.posix.firewalld:
@@ -44,6 +47,7 @@
     state: enabled
     permanent: true
   loop: "{{ pcs_firewall_ports }}"
+  tags: pcs
 
 - name: Add iDRAC-telemetry related ports on host firewalld
   ansible.posix.firewalld:
@@ -52,6 +56,7 @@
     permanent: true
   loop: "{{ idrac_firewall_ports }}"
   when: hostvars['localhost']['idrac_telemetry_support']
+  tags: idrac_telemetry
 
 - name: Add Prometheus-related ports on host firewalld
   ansible.posix.firewalld:
@@ -62,6 +67,7 @@
   when:
     - hostvars['localhost']['idrac_telemetry_support']
     - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
+  tags: prometheus
 
 - name: Add visualization-related ports on host firewalld
   ansible.posix.firewalld:
@@ -70,6 +76,7 @@
     permanent: true
   loop: "{{ visualization_firewall_ports }}"
   when: hostvars['localhost']['visualization_support']
+  tags: grafana
 
 - name: Enable PCS-related services
   ansible.posix.firewalld:
@@ -77,6 +84,7 @@
     state: enabled
     permanent: true
   loop: "{{ pcs_firewall_services }}"
+  tags: pcs
 
 - name: Enable NFS-related services
   ansible.posix.firewalld:
@@ -87,11 +95,14 @@
   when:
     - omnia_share_option == 'NFS'
     - nfs_type == 'internal'
+  tags: always
 
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true
+  tags: always
 
 - name: Display open ports for verification
   ansible.builtin.command: firewall-cmd --list-all
   changed_when: true
+  tags: always
