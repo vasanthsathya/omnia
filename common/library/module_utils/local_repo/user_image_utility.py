@@ -226,7 +226,7 @@ def process_user_registry(
     """
     logger.info("#" * 30 + f" {process_user_registry.__name__} start " + "#" * 30)
 
-    user_reg_prefix = "user_reg_"
+    user_reg_prefix = "container_repo_"
     repository_name = (
         f"{user_reg_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
     )
