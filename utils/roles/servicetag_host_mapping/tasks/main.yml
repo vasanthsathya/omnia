@@ -29,6 +29,8 @@
     dest: "{{ host_mapping_inventory.dest }}"
     force: yes
     mode: "{{ host_mapping_inventory.mode }}"
+  delegate_to: localhost
+  connection: local
 
 - name: Apply service tag mapping for inventory
   ansible.builtin.include_tasks: service_tag_mapping.yml
@@ -36,6 +38,8 @@
 - name: Update user inventory with host ip changes
   ansible.builtin.copy:
     src: "{{ host_mapping_inventory.dest }}"
-    dest: "{{ ansible_inventory_sources }}"
+    dest: "{{ ansible_inventory_sources[0] }}"
     force: yes
     mode: "{{ host_mapping_inventory.mode }}"
+  delegate_to: localhost
+  connection: local
