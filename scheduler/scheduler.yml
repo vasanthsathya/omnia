@@ -118,6 +118,13 @@
   roles:
     - update_containerd_config
 
+- name: Pull k8s images
+  hosts: kube_control_plane, kube_node, etcd
+  gather_facts: false
+  any_errors_fatal: true
+  roles:
+    - k8s_prepare_images
+
 - name: Deploy plugins on kube control nodes
   hosts: kube_control_plane[0]
   gather_facts: false
