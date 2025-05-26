@@ -23,7 +23,7 @@ scrape_configs:
           - localhost
         labels:
           job: Omnia logs
-          __path__: /var/log/core/playbooks.log
+          __path__: /var/log/core/playbooks/omnia.log
 
   - job_name: accelerator logs
     static_configs:

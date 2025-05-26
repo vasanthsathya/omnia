@@ -67,3 +67,23 @@
         - name: Create prometheus datasource in grafana failed
           ansible.builtin.fail:
             msg: "Error: {{ create_prometheus_datasource.msg }}"
+
+        
+    - name: Import loki dashboard in grafana
+      block:
+        - name: Import loki dashboard in grafana
+          community.grafana.grafana_dashboard:
+            grafana_url: "http://127.0.0.1:{{ grafana_port }}"
+            grafana_user: "{{ hostvars['localhost']['grafana_username'] }}"
+            grafana_password: "{{ hostvars['localhost']['grafana_password'] }}"
+            state: present
+            commit_message: Updated by ansible
+            overwrite: true
+            path: "{{ role_path }}/files/loki_dashboard.json"
+            use_proxy: false
+          no_log: true
+          register: import_loki_dashboard
+      rescue:
+        - name: Import loki datasource in grafana failed
+          ansible.builtin.fail:
+            msg: "Error: {{ import_loki_dashboard.msg }}"
