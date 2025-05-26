@@ -161,7 +161,7 @@ scrape_configs:
           job: PCS container - pacemaker logs
           __path__: /var/log/pcs/pacemaker/*log
 
-  - job_name: PCS container - corosync logs 
+  - job_name: PCS container - corosync logs
     static_configs:
       - targets:
           - localhost
@@ -193,7 +193,7 @@ scrape_configs:
           job: iDRAC Telemetry - idrac_telemetry_receiver container logs
           __path__: /var/log/telemetry/idrac_telemetry_receiver/*log
 
-  - job_name: Telemetry - prometheus container logs 
+  - job_name: Telemetry - prometheus container logs
     static_configs:
       - targets:
           - localhost
@@ -201,7 +201,7 @@ scrape_configs:
           job: Telemetry - prometheus container logs
           __path__: /var/log/telemetry/prometheus/*log
 
-  - job_name: Telemetry - prometheus_pump container logs 
+  - job_name: Telemetry - prometheus_pump container logs
     static_configs:
       - targets:
           - localhost
@@ -209,7 +209,7 @@ scrape_configs:
           job: Telemetry - prometheus_pump container logs
           __path__: /var/log/telemetry/prometheus_pump/*log
 
-  - job_name: Visualization - grafana container logs 
+  - job_name: Visualization - grafana container logs
     static_configs:
       - targets:
           - localhost
@@ -217,15 +217,15 @@ scrape_configs:
           job: Visualization - grafana container logs
           __path__: /var/log/telemetry/grafana/*log
 
-  - job_name: Pulp container logs 
+  - job_name: Pulp container logs
     static_configs:
       - targets:
           - localhost
         labels:
           job: Pulp container logs
           __path__: /var/log/pulp/*log
-  
-  - job_name: Local repo logs 
+
+  - job_name: Local repo logs
     static_configs:
       - targets:
           - localhost
@@ -233,7 +233,7 @@ scrape_configs:
           job: Local repo logs
           __path__: /var/log/local_repo/*log
 
-  - job_name: Kubespray logs 
+  - job_name: Kubespray logs
     static_configs:
       - targets:
           - localhost
@@ -241,7 +241,7 @@ scrape_configs:
           job: Kubespray logs
           __path__: /var/log/kubespray/*log
 
-  - job_name: Core container logs 
+  - job_name: Core container logs
     static_configs:
       - targets:
           - localhost
