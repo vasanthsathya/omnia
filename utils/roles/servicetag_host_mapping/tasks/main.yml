@@ -35,7 +35,7 @@
   ansible.builtin.copy:
     src: "{{ ansible_inventory_sources[0] }}"
     dest: "{{ host_mapping_inventory.dest }}"
-    force: yes
+    force: true
     mode: "{{ host_mapping_inventory.mode }}"
 
 - name: Apply service tag mapping for inventory
@@ -45,7 +45,7 @@
   ansible.builtin.copy:
     src: "{{ host_mapping_inventory.dest }}"
     dest: "{{ ansible_inventory_sources[0] }}"
-    force: yes
+    force: true
     mode: "{{ host_mapping_inventory.mode }}"
   delegate_to: localhost
   connection: local

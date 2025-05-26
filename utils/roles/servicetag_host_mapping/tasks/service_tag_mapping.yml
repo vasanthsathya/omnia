@@ -14,7 +14,7 @@
 ---
 
 - name: Servicetag Host mapping
-  servicetag_host_mapping: 
+  servicetag_host_mapping:
     inventory_sources: "{{ [host_mapping_inventory.dest] }}"
 
 - name: Clear facts
