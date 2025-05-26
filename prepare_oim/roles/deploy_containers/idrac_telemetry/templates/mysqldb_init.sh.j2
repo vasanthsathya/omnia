@@ -25,6 +25,7 @@ MYSQL_DATA_DIR="/var/lib/mysql"
 # Check if MySQL is already initialized (look for system tables)
 if [ -d "$MYSQL_DATA_DIR/mysql" ] && [ "$(ls -A $MYSQL_DATA_DIR/mysql)" ]; then
   echo "MySQL data directory already initialized."
+  exec /usr/local/bin/docker-entrypoint.sh mysqld
 else
   echo "MySQL data directory not found or empty. Proceeding with initialization."
   exec /usr/local/bin/docker-entrypoint.sh mysqld
