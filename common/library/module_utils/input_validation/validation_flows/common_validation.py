@@ -116,7 +116,7 @@ def validate_storage_config(input_file_path, data, logger, module, omnia_base_di
     softwares = software_config_json["softwares"]
     for software in softwares:
         if software.get('name') == 'beegfs' and 'version' not in software:
-            errors.append(create_error_msg("beegfs", "", en_us_validation_msg.beegfs_version_fail_msg))
+            errors.append(create_error_msg("beegfs", "", en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
 
     allowed_options = {"nosuid", "rw", "sync", "hard", "intr"}
     slurm_share_val = False
@@ -127,7 +127,7 @@ def validate_storage_config(input_file_path, data, logger, module, omnia_base_di
         client_mount_options = nfs_client_params["client_mount_options"]
         client_mount_options_set = set(client_mount_options.split(","))
         if not (client_mount_options_set.issubset(allowed_options)):
-            errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.client_mount_options_fail_msg))
+            errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.CLIENT_MOUNT_OPTIONS_FAIL_MSG))
         if nfs_client_params["slurm_share"] == "true":
             if not slurm_share_val:
                 slurm_share_val = True
@@ -141,22 +141,22 @@ def validate_storage_config(input_file_path, data, logger, module, omnia_base_di
                 multiple_k8s_share_val = True
 
     if (contains_software(softwares, "slurm") and not slurm_share_val) or multiple_slurm_share_val:
-        errors.append(create_error_msg("slurm_share", slurm_share_val, en_us_validation_msg.slurm_share_fail_msg))
+        errors.append(create_error_msg("slurm_share", slurm_share_val, en_us_validation_msg.SLURM_SHARE_FAIL_MSG))
 
     if (contains_software(softwares, "k8s") and not k8s_share_val) or multiple_k8s_share_val:
-        errors.append(create_error_msg("k8s_share", k8s_share_val, en_us_validation_msg.k8s_share_fail_msg))
+        errors.append(create_error_msg("k8s_share", k8s_share_val, en_us_validation_msg.K8S_SHARE_FAIL_MSG))
 
     if contains_software(softwares, "ucx") or contains_software(softwares, "openmpi"):
         if not k8s_share_val or not slurm_share_val:
-            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.benchmark_tools_fail_msg))
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.BENCHMARK_TOOLS_FAIL_MSG))
         elif multiple_slurm_share_val or multiple_k8s_share_val:
-            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.mult_share_fail_msg))
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.MULT_SHARE_FAIL_MSG))
 
     beegfs_mounts = data["beegfs_mounts"]
     if beegfs_mounts != "/mnt/beegfs":
         beegfs_unmount_client = data["beegfs_unmount_client"]
         if not beegfs_unmount_client:
-            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.beegfs_unmount_client_fail_msg))
+            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.BEEGFS_UMOUNT_CLIENT_FAIL_MSG))
 
     return errors
 
