@@ -42,12 +42,12 @@
         dest: "{{ prometheus_dir }}/prometheus.yml"
         mode: "{{ file_mode }}"
 
-    - name: Copy prometheus_pump startup script and set executable permissions
-      ansible.builtin.template:
-        src: "{{ item.template }}"
-        dest: "{{ item.dest }}"
-        mode: "{{ item.mode }}"
-      loop: "{{ prometheus_init_script }}"
+    # - name: Copy prometheus_pump startup script and set executable permissions
+    #   ansible.builtin.template:
+    #     src: "{{ item.template }}"
+    #     dest: "{{ item.dest }}"
+    #     mode: "{{ item.mode }}"
+    #   loop: "{{ prometheus_init_script }}"
 
     - name: Create Podman bind-mounted volumes for Prometheus
       containers.podman.podman_volume:
@@ -70,7 +70,9 @@
         network_mode: host
         env: "{{ prometheus_env }}"
         volumes: "{{ prometheus_volumes }}"
-        entrypoint: "{{ prometheus_entry_script }}"
+        command:
+          - "--config.file=/config/prometheus.yml"
+          - "--storage.tsdb.path=/prometheus"
         log_driver: "json-file"
         log_opt:
           path: "{{ prometheus_logs_dir }}/prometheus.log"
