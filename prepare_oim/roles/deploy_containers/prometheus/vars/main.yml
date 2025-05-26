@@ -22,6 +22,11 @@ delay_count: 5
 # Usage: deploy_prometheus_pump_container.yml
 prometheus_pump_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
 prometheus_pump_dir: "{{ telemetry_dir_path }}/prometheus_pump"
+prometheus_pump_init_script:
+  - template: "{{ role_path }}/templates/prometheus_pump_init.sh.j2"
+    dest: "{{ prometheus_pump_dir }}/prometheus_pump.sh"
+    mode: "{{ dir_mode }}"
+prometheus_pump_entry_script: "/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh"
 prometheus_pump_directories:
  - { path: "{{ prometheus_pump_logs_dir }}", mode: "0755" }
  - { path: "{{ prometheus_pump_dir }}", mode: "0755" }
@@ -29,6 +34,7 @@ idrac_telemetry_receiver_dir_path: "{{ omnia_nfs_share }}/telemetry/idrac_teleme
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 prometheus_pump_volumes:
  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
+ - "{{ prometheus_pump_dir }}:/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh{{ selinux_option }}"
 prometheus_pump_container_name: "prometheus_pump"
 prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_receiver_env:
@@ -47,6 +53,11 @@ prometheus_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus"
 prometheus_data_dir: "{{ telemetry_dir_path }}/prometheus/prometheus_data"
 prometheus_dir: "{{ telemetry_dir_path }}/prometheus"
 proemetheus_yml_temp_src: "{{ role_path }}/templates/prometheus_yml.j2"
+prometheus_init_script:
+  - template: "{{ role_path }}/templates/prometheus_init.sh.j2"
+    dest: "{{ prometheus_dir }}/run_prometheus.sh"
+    mode: "{{ dir_mode }}"
+prometheus_entry_script: "/opt/omnia/telemetry/prometheus/run_prometheus.sh"
 prometheus_podman_volumes:
  - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
  - { name: "prometheus_log", path: "{{ prometheus_logs_dir }}" }
@@ -56,7 +67,7 @@ prometheus_volumes:
  - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml{{ selinux_option }}"
  - "prometheus_data:/prometheus"
  - "prometheus_log:/prometheus/log"
-
+ - "{{ prometheus_dir }}:/opt/omnia/telemetry/prometheus{{ selinux_option }}"
 prometheus_env:
  PROMETHEUS_DB: "poweredge_telemetry_metrics"
  node.name: "127.0.0.1"

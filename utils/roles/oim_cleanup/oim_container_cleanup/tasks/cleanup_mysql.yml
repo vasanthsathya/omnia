@@ -56,12 +56,6 @@
         - "{{ mysql_data_dir }}"
         - "{{ mysql_log_volume }}"
 
-    - name: Remove telemetry directory
-      ansible.builtin.file:
-        path: "{{ idrac_telemetry_dir }}"
-        state: absent
-        force: true
-
   rescue:
     - name: Container MySQL removal failed
       ansible.builtin.fail:
