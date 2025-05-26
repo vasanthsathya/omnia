@@ -212,6 +212,7 @@ prometheus_pump_run_opts: >-
   --volume {{ volume }}
   {% endfor %}
   --name {{ prometheus_pump_container_name }}
+  -w /go/src/github.com/telemetry-reference-tools
   --entrypoint {{ prometheus_pump_entry_script }}
   --detach
 
