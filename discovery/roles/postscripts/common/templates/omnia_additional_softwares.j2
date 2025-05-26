@@ -15,7 +15,8 @@ ALL_PACKAGES=(
 
 # Install all packages in one command
 if ! dnf install -y "${ALL_PACKAGES[@]}" >> "$LOGFILE" 2>&1; then
-    echo "WARNING: Some packages failed to install. Check $LOGFILE for details." >> "$LOGFILE"
+    echo "ERROR: Some packages failed to install. Check $LOGFILE for details." >> "$LOGFILE"
+    exit 1
 else
     echo "SUCCESS: All packages installed successfully!" >> "$LOGFILE"
 fi
