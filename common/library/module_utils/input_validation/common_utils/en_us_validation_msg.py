@@ -50,7 +50,7 @@ empty_or_syntax_error_roles_config_msg = "File is either empty or contains synta
 duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
 SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = "The role service_node defined in roles_config.yml," \
     " but service_node entry missing in sofware_config.json, " \
-    "Please rerun local repo with service_node entry in software_config.json to deploy service nodes successfull
+    "Please rerun local repo with service_node entry in software_config.json to deploy service nodes successfull"
 
 # provision_config.yml
 default_lease_time_fail_msg = "Please provide a valid default_lease_time."
