@@ -308,7 +308,7 @@ def handle_user_image_registry(package, package_content, version_variables, user
 
         for registry in user_registries:
             host = registry.get("host")
-            cacert = registry.get("cacert_path")
+            cacert = registry.get("cert_path")
             key = registry.get("key_path")
             username = registry.get("username")
             password = registry.get("password")
