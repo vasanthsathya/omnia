@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=missing-module-docstring,import-error,no-name-in-module,line-too-long,broad-exception-caught,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-return-statements
+# pylint: disable=import-error,no-name-in-module,line-too-long
 
 import json
 import requests
