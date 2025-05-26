@@ -26,7 +26,7 @@ playbook or role.
 
 import os
 from ansible.module_utils.basic import AnsibleModule
-import  ansible.module_utils.discovery.omniadb_connection as omniadb # type: ignore
+import  ansible.module_utils.discovery.omniadb_connection as omniadb # pylint: disable=all
 
 module = AnsibleModule(argument_spec={
     'inventory_sources': {'type': 'str', 'required': True}
@@ -100,10 +100,8 @@ def service_tag_host_mapping():
                         f.write(f"{line}\n")
 
         # Close the cursor and connection
-        if CURSOR:
-            CURSOR.close()
-        if CONNECTION:
-            CONNECTION.close()
+        CURSOR.close()
+        CONNECTION.close()
 
         if not any_changes:
             module.exit_json(changed=False, msg="No changes made to inventory files.")
