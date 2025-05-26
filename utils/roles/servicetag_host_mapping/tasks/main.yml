@@ -25,7 +25,7 @@
 
 - name: Transfer inventory shared temp folder
   ansible.builtin.copy:
-    src: "{{ ansible_inventory_sources }}"
+    src: "{{ ansible_inventory_sources[0] }}"
     dest: "{{ host_mapping_inventory.dest }}"
     force: yes
     mode: "{{ host_mapping_inventory.mode }}"
