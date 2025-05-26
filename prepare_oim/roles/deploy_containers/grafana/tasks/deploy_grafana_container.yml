@@ -19,6 +19,7 @@
   register: grafana_container_info
   failed_when: false
 
+
 - name: Deploy Grafana container and check deployment status
   when:
     - grafana_container_info.containers | length == 0 or grafana_container_info.containers[0].State.Status != 'running'
@@ -85,16 +86,13 @@
         network_mode: host
         volumes: "{{ grafana_volumes }}"
         secrets:
-          - "{{ grafana_user }}"
-          - "{{ grafana_user_password }}"
+          - "{{ grafana_user }},type=env,target=GF_SECURITY_ADMIN_USER"
+          - "{{ grafana_user_password }},type=env,target=GF_SECURITY_ADMIN_PASSWORD"
         env:
           GF_SERVER_HTTP_PORT: "{{ grafana_port }}"
           GF_USERS_ALLOW_SIGN_UP: "false"
           GF_USERS_ALLOW_ORG_CREATE: "false"
-        entrypoint: "{{ bin_sh }}"
-        command:
-          - -c
-          - "{{ grafana_entry_script }}"
+        entrypoint: "{{ grafana_entrypoint }}"
       no_log: false
 
     - name: Check if Grafana container is running after deployment

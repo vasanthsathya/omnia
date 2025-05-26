@@ -104,4 +104,4 @@
   rescue:
     - name: Loki container deployment failed
       ansible.builtin.fail:
-        msg: "{{ loki_container_failure_msg.splitlines() | join(' ') }}"
+        msg: "{{ loki_container_failure_msg.splitlines() | join(' ') }}"        

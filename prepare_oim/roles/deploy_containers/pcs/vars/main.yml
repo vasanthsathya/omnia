@@ -201,3 +201,51 @@ idrac_telemetry_receiver_run_opts: >-
   --name {{ idrac_telemetry_receiver_container_name }}
   --entrypoint {{ idrac_telemetry_receiver_entry_script }}
   --detach
+
+# Usage: pcs-container-resource-init.sh: visualization
+visualization_pcs_group: omnia_visualization
+grafana_port: 5000
+# grafana
+grafana_run_opts: >-
+  --network=host
+  --secret {{ grafana_user }},type=env,target=GF_SECURITY_ADMIN_USER
+  --secret {{ grafana_user_password }},type=env,target=GF_SECURITY_ADMIN_PASSWORD
+  --env GF_SERVER_HTTP_PORT={{ grafana_port }}
+  --env GF_USERS_ALLOW_SIGN_UP=false
+  --env GF_USERS_ALLOW_ORG_CREATE=false
+  {{ grafana_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
+  --detach
+  --name {{ grafana_container_name }}
+  --entrypoint {{ grafana_entrypoint }}
+
+# loki
+container_config_mnt: "/mnt/config"
+loki_run_opts: >-
+  --network=host
+  --restart=no
+  --volume loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}
+  --add-host=loki:127.0.0.1
+  --add-host=promtail:127.0.0.1
+  --detach
+
+loki_run_cmd: >-
+  --config.file={{ container_config_mnt }}/loki-config.yaml
+
+loki_monitor_cmd:
+  /usr/bin/loki -version
+
+# promtail
+promtail_run_opts: >-
+  --network=host
+  --restart=no
+  --add-host=loki:127.0.0.1
+  --add-host=promtail:127.0.0.1
+  --volume loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}
+  --detach
+  --name {{ promtail_container_name }}
+  --entrypoint {{ promtail_entrypoint }}
+
+promtail_run_cmd: >-
+  -- config.file={{ container_config_mnt }}/promtail-config.yaml
+
+promtail_monitor_cmd: "/usr/bin/promtail -version"
