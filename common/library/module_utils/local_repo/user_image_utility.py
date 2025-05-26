@@ -65,7 +65,7 @@ def check_image_in_registry(
             image_url,
             auth=HTTPBasicAuth(username, password),
             cert=(cacert, key),
-            verify=cacert,
+            verify=False,
             timeout=10,
         )
 
@@ -83,7 +83,6 @@ def check_image_in_registry(
         logger.exception(f"Unexpected error while checking image: {e}")
 
     return False
-
 
 def create_user_remote_container(
     remote_name,
