@@ -21,6 +21,8 @@ module_log_dir = {
     "input_validator_log": input_validator_log + "/_"+ datetime.now().strftime('_%d-%m-%Y.log')
 }
 
+input_validator_log_path = '/opt/omnia/log/core/playbooks/'
+
 # dict to hold the file names. If any file's name changes just change it here.
 files = {
     "k8s_access_config": "k8s_access_config.yml",
@@ -48,7 +50,8 @@ input_file_inventory = {
         files["provision_config"],
         files["network_spec"],
         files["software_config"],
-        files["roles_config"]
+        files["roles_config"],
+        files["high_availability_config"]
     ],
     "server_spec": [files["server_spec"]],
     "security": [

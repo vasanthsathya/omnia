@@ -45,7 +45,7 @@ FRESH_INSTALLATION_STATUS = True
 # Used by software_utils.py
 # ----------------------------
 PACKAGE_TYPES = ['rpm', 'deb', 'tarball', 'image', 'manifest', 'git',
-                 'pip_module', 'deb', 'shell', 'ansible_galaxy_collection', 'iso']
+                 'pip_module', 'deb', 'shell', 'ansible_galaxy_collection', 'iso', 'rpm_list']
 CSV_COLUMNS = {"column1": "name", "column2": "status"}
 SOFTWARE_CONFIG_SUBDIR = "config"
 RPM_LABEL_TEMPLATE = "RPMs for {key}"
@@ -69,8 +69,12 @@ pulp_file_commands = {
     "distribution_create": "pulp file distribution create --name %s --base-path %s --repository %s",
     "distribution_update": "pulp file distribution update --name %s --base-path %s --repository %s",
 }
-
-
+CLI_FILE_PATH = "/root/.config/pulp/cli.toml"
+POST_TIMEOUT = 3600
+TAR_POLL_VAL = 3
+FILE_POLL_VAL = 1
+ISO_POLL_VAL = 15
+FILE_URI = "/pulp/api/v3/content/file/files/"
 # ----------------------------
 # Used by download_image.py
 # ----------------------------

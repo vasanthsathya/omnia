@@ -73,6 +73,13 @@ service_node_not_found_msg: |
 oim_ha_node_not_found_msg: |
   "Service role not defiened in roles_config.yml but enable_service_ha is made as True.
   Kindly define service_node role in roles config and rerun the playbook."
+nfs_internal_warning_msg: |
+  "WARNING: It is recommended to use External NFS for hierarchical cluster.
+  If you must use Internal NFS, ensure OIM has enough storage space and sufficient hardware resources."
+ha_nfs_error_msg: |
+  ERROR: Internal NFS is not supported with HA OIM or Service HA.
+  Please configure External NFS for HA capabilities.
+warning_wait_time_10s: 10
 
 # Usage: include_local_repo_config.yml
 local_repo_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/local_repo_config.yml"
@@ -169,6 +176,12 @@ management_layer_discovery_mechanism_fail_msg: |
   For bmc discovery, please provide the bmc_details in the roles_config.yml file."
 default_layer_discovery_mechanism_fail_msg: |
   "Failed. Please provide valid details either for mapping, bmc or switch_based discovery mechanism for the nodes and re-run the playbook.
+  For mapping discovery, please provide the pxe_mapping_file_path in the provision_config.yml file.
+  For bmc static discovery, please provide the bmc_details in the roles_config.yml file.
+  For bmc dynamic discovery, please provide the bmc_network details in the network_spec.yml file.
+  For switch_based discovery, provide bmc_details and switch_details in roles_config.yml"
+invalid_groups_msg: |
+  "Failed, all discovery mechanism invalid for groups: [{{ failed_groups | list | join(', ') }}]
   For mapping discovery, please provide the pxe_mapping_file_path in the provision_config.yml file.
   For bmc static discovery, please provide the bmc_details in the roles_config.yml file.
   For bmc dynamic discovery, please provide the bmc_network details in the network_spec.yml file.

@@ -20,6 +20,7 @@ omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
 oim_os_repo_fail_msg: |
   Failed to install firewalld. This could be due to the OS repository not being configured on OIM.
   Please configure the OS repository on OIM and rerun the playbook.
+squid_proxy_port: "3128"
 xcat_firewall_ports:
   - "3001/tcp"
   - "3001/udp"
@@ -63,6 +64,13 @@ pcs_firewall_services:
   - "http"
   - "https"
 
+internal_nfs_services:
+  - nfs
+  - rpc-bind
+
+squid_firewall_ports:
+  - "{{ squid_proxy_port }}/tcp"
+
 # Usage:
 prepare_oim_completion_msg: |
   The playbook prepare_oim.yml has completed successfully. To create the offline repositories and
@@ -74,3 +82,6 @@ retry_count: "5"
 delay_time: "10"
 podman_login_fail_msg: "Podman login failed. Please ensure the podman login credentials in the input/omnia_config_credentials.yml are valid.
 If they are, this error can occur due to a pull limit issue or multiple requests. Please try running the playbook again after waiting for a while."
+
+# Usage: add_known_hosts.yml
+ssh_config: "/root/.ssh/config"
