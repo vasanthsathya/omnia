@@ -330,7 +330,7 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
     k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
 
     if 'k8s' in tag_names:
-        results= scheduler_validation.validate_k8s_parameters(admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr)
+        results= scheduler_validation.validate_k8s_parameters(admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, k8s_service_addresses, k8s_pod_network_cidr)
         if results:
             errors.append(create_error_msg("IP overlap -", results, en_us_validation_msg.ip_overlap_fail_msg))
 
@@ -359,7 +359,7 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
             errors.append(create_error_msg("csi_powerscale_driver_values_file_path", csi_powerscale_driver_values_file_path, en_us_validation_msg.csi_driver_values_fail_msg))
 
     # Check IP range overlap between omnia IPs, admin network, and bmc network
-    ip_ranges = [admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr]
+    ip_ranges = [admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, k8s_service_addresses, k8s_pod_network_cidr]
     does_overlap, _ = validation_utils.check_overlap(ip_ranges)
 
     if does_overlap:
