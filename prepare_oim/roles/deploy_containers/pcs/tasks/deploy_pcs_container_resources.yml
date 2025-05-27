@@ -27,12 +27,12 @@
 - name: Include grafana vars file
   ansible.builtin.include_vars: "{{ role_path }}/../grafana/vars/main.yml"
   when:
-    - hostvars['localhost']['omnia_visualization_support']
+    - hostvars['localhost']['visualization_support']
 
 - name: Include loki and promtail vars file
   ansible.builtin.include_vars: "{{ role_path }}/../loki/vars/main.yml"
   when:
-    - hostvars['localhost']['omnia_visualization_support']
+    - hostvars['localhost']['visualization_support']
 
 - name: Run pulp status command on omnia_core container
   ansible.builtin.command: /usr/local/bin/pulp status
