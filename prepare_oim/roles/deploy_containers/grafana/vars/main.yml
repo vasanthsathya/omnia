@@ -38,10 +38,7 @@ grafana_user_password: "grafana_user_password"
 grafana_secrets:
   - { name: "{{ grafana_user }}", value: "{{ hostvars['localhost']['grafana_username'] }}" }
   - { name: "{{ grafana_user_password }}", value: "{{ hostvars['localhost']['grafana_password'] }}" }
-bin_sh: "/bin/sh"
 grafana_entrypoint: "/run.sh"
-grafana_entry_script: >-
-  export GF_SECURITY_ADMIN_USER=$(cat /run/secrets/grafana_user) && export GF_SECURITY_ADMIN_PASSWORD=$(cat /run/secrets/grafana_user_password) && /run.sh
 wait_time: 30
 grafana_container_success_msg: "The Grafana container '{{ grafana_container_name }}' container has been successfully deployed."
 grafana_container_failure_msg: |
