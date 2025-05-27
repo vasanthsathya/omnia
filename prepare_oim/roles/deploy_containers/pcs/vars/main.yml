@@ -202,6 +202,32 @@ idrac_telemetry_receiver_run_opts: >-
   --entrypoint {{ idrac_telemetry_receiver_entry_script }}
   --detach
 
+# prometheus_pump
+prometheus_pump_run_opts: >-
+  --network=host
+  {% for key, value in prometheus_pump_receiver_env.items() %}
+  --env {{ key }}={{ value }}
+  {% endfor %}
+  {% for volume in prometheus_pump_volumes %}
+  --volume {{ volume }}
+  {% endfor %}
+  --name {{ prometheus_pump_container_name }}
+  -w /go/src/github.com/telemetry-reference-tools
+  --entrypoint {{ prometheus_pump_entry_script }}
+  --detach
+
+# prometheus
+prometheus_run_opts: >-
+  --network=host
+  {% for key, value in prometheus_env.items() %}
+  --env {{ key }}={{ value }}
+  {% endfor %}
+  {% for volume in prometheus_volumes %}
+  --volume {{ volume }}
+  {% endfor %}
+  --name {{ prometheus_container_name }}
+  --detach
+
 # Usage: pcs-container-resource-init.sh: visualization
 visualization_pcs_group: omnia_visualization
 # grafana
@@ -240,3 +266,4 @@ promtail_run_opts: >-
 promtail_run_cmd: >-
   --config.file={{ container_config_mnt }}/promtail-config.yaml
 promtail_monitor_cmd: "/usr/bin/promtail -version"
+

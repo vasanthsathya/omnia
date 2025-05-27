@@ -14,19 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/sh
-
-# Script to initialize MySQL database for telemetry data collection
-
-
-# Path to MySQL data directory inside the container
-MYSQL_DATA_DIR="/var/lib/mysql"
-
-# Check if MySQL is already initialized (look for system tables)
-if [ -d "$MYSQL_DATA_DIR/mysql" ] && [ "$(ls -A $MYSQL_DATA_DIR/mysql)" ]; then
-  echo "MySQL data directory already initialized."
-  exec /usr/local/bin/docker-entrypoint.sh mysqld
-else
-  echo "MySQL data directory not found or empty. Proceeding with initialization."
-  exec /usr/local/bin/docker-entrypoint.sh mysqld
-fi
+go run /go/src/github.com/telemetry-reference-tools/cmd/prometheuspump/prometheuspump.go
