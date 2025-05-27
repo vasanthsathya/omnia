@@ -14,7 +14,9 @@
 
 #!/usr/bin/python
 
+"""Ansible module for omnia for group package mapping"""
 
+import os
 import json
 import yaml
 from ansible.module_utils.basic import AnsibleModule
@@ -25,7 +27,7 @@ REBOOT_KEY = "reboot"
 # Read JSON file
 
 
-def read_json_file(file_path):
+def read_json_file(file_path, module):
     """
     Reads a JSON file and returns its data.
 
@@ -35,14 +37,19 @@ def read_json_file(file_path):
     Returns:
         dict: The loaded JSON data.
     """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
+    if not os.path.exists(file_path):
+        module.exit_json(failed=True, msg=f"File not found: {file_path}")
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+    except json.JSONDecodeError as exc:
+        module.exit_json(failed=True, msg=f"Error loading JSON {file_path}: {exc}")
     return data
 
 # Read YAML file
 
 
-def read_roles_config(file_path):
+def read_roles_config(file_path, module):
     """
     Reads a YAML file containing roles configuration and
      returns the roles configuration and all groups.
@@ -53,8 +60,13 @@ def read_roles_config(file_path):
     Returns:
         tuple: A tuple containing a dictionary of roles configuration and a list of all groups.
     """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = yaml.safe_load(file)
+    if not os.path.exists(file_path):
+        module.exit_json(failed=True, msg=f"File not found: {file_path}")
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = yaml.safe_load(file)
+    except yaml.YAMLError as exc:
+        module.exit_json(failed=True, msg=f"Error loading YAML {file_path}: {exc}")
     role_cfg = {item['name']: item['groups'] for item in data.get('Roles', [])}
     all_groups = list(data.get('Groups', {}).keys())
     return role_cfg, all_groups
@@ -186,16 +198,16 @@ def main():
     addl_key = module.params['software_bundle_key']
     if inp_path:
         inp_path = inp_path.rstrip('/')
-        # TODO: check if inp_path exists and is directory else
-        # ,module.fail_json
+        if not os.path.isdir(inp_path):
+            module.exit_json(failed=True, msg=f"{inp_path} is not a directory")
         sw_cfg_path = inp_path + '/software_config.json'
-        sw_cfg_data = read_json_file(sw_cfg_path)
+        sw_cfg_data = read_json_file(sw_cfg_path, module)
         addl_soft = f"{inp_path}/config/{sw_cfg_data['cluster_os_type']}/{sw_cfg_data['cluster_os_version']}/{addl_key}.json"
         roles_config = f"{inp_path}/roles_config.yml"
     else:
         addl_soft = module.params.get('software_bundle')
         roles_config = module.params.get('roles_config')
-        sw_cfg_data = read_json_file(module.params.get('software_config'))
+        sw_cfg_data = read_json_file(module.params.get('software_config'), module)
 
     sw_list = [sw_dict.get('name') for sw_dict in sw_cfg_data.get('softwares')]
     if addl_key not in sw_list:
@@ -207,11 +219,11 @@ def main():
             addl_key, [])]
     req_addl_soft_list.append(addl_key)  # add the additional_software key
 
-    addl_soft_json_data = read_json_file(addl_soft)
+    addl_soft_json_data = read_json_file(addl_soft, module)
     req_addl_soft = {sub_group: addl_soft_json_data.get(
         sub_group) for sub_group in req_addl_soft_list}
 
-    roles_dict, all_groups = read_roles_config(roles_config)
+    roles_dict, all_groups = read_roles_config(roles_config, module)
     temp_addl_pkgs = req_addl_soft.pop(addl_key, {})
     req_addl_soft[','.join(all_groups)] = temp_addl_pkgs
     addl_software_dict = modify_addl_software(req_addl_soft)
