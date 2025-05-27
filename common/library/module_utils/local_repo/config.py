@@ -45,7 +45,7 @@ FRESH_INSTALLATION_STATUS = True
 # Used by software_utils.py
 # ----------------------------
 PACKAGE_TYPES = ['rpm', 'deb', 'tarball', 'image', 'manifest', 'git',
-                 'pip_module', 'deb', 'shell', 'ansible_galaxy_collection', 'iso']
+                 'pip_module', 'deb', 'shell', 'ansible_galaxy_collection', 'iso', 'rpm_list']
 CSV_COLUMNS = {"column1": "name", "column2": "status"}
 SOFTWARE_CONFIG_SUBDIR = "config"
 RPM_LABEL_TEMPLATE = "RPMs for {key}"
@@ -69,8 +69,12 @@ pulp_file_commands = {
     "distribution_create": "pulp file distribution create --name %s --base-path %s --repository %s",
     "distribution_update": "pulp file distribution update --name %s --base-path %s --repository %s",
 }
-
-
+CLI_FILE_PATH = "/root/.config/pulp/cli.toml"
+POST_TIMEOUT = 3600
+TAR_POLL_VAL = 3
+FILE_POLL_VAL = 1
+ISO_POLL_VAL = 15
+FILE_URI = "/pulp/api/v3/content/file/files/"
 # ----------------------------
 # Used by download_image.py
 # ----------------------------
@@ -80,6 +84,10 @@ pulp_container_commands = {
     "show_container_repo": "pulp container repository show --name %s",
     "create_container_remote": "pulp container remote create --name %s --url %s --upstream-name %s --policy %s --include-tags '[\"%s\"]'",
     "create_container_remote_for_digest": "pulp container remote create --name %s --url %s --upstream-name %s --policy %s",
+    "create_user_remote_tag": "pulp container remote create --name %s --url %s --upstream-name %s --policy %s --include-tags '[\"%s\"]' --ca-cert %s --client-key %s --tls-validation false",
+    "update_user_remote_tag": "pulp container remote update --name %s --url %s --upstream-name %s --policy %s --include-tags '%s' --ca-cert %s --client-key %s --tls-validation false",
+    "update_user_remote_digest": "pulp container remote update --name %s --url %s --upstream-name %s --policy %s  --ca-cert %s --client-key %s --tls-validation false",
+    "create_user_remote_digest": "pulp container remote create --name %s --url %s --upstream-name %s --policy %s --ca-cert %s --client-key %s --tls-validation false",
     "update_remote_for_digest": "pulp container remote update --name %s --url %s --upstream-name %s --policy %s",
     "update_container_remote": "pulp container remote update --name %s --url %s --upstream-name %s --policy %s --include-tags '%s'",
     "show_container_remote": "pulp container remote show --name %s",
