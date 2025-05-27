@@ -56,6 +56,7 @@ def process_rpm(package, repo_store_path, status_file_path, cluster_os_type, clu
                 status = "Failed"
         else:
             status = "Success"
+            logger.info(f"RPM wont be downloaded when repo_config is partial or never")
     except Exception as e:
         logger.error(f"Error processing rpm packages: {str(e)}")
         status = "Failed"

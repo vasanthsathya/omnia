@@ -281,7 +281,7 @@ def parse_repo_urls(repo_config, local_repo_config_path, version_variables, vaul
         url = repo.get("url", "")
         gpgkey = repo.get("gpgkey")
         version = version_variables.get(f"{name}_version")
-        policy_given = url_.get("policy", repo_config)
+        policy_given = repo.get("policy", repo_config)
         policy = REPO_CONFIG.get(policy_given)
         try:
             rendered_url = Template(url).render(version_variables)
