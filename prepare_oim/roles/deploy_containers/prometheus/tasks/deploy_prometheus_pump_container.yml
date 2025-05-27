@@ -30,6 +30,14 @@
 - name: Deploy Prometheus Pump container and check deployment status
   when: prometheus_pump_container_info.containers | length == 0 or prometheus_pump_container_info.containers[0].State.Status != 'running'
   block:
+
+    - name: Copy prometheus_pump startup script and set executable permissions
+      ansible.builtin.template:
+        src: "{{ item.template }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ prometheus_pump_init_script }}"
+
     - name: Deploy the Prometheus Pump container
       containers.podman.podman_container:
         name: "{{ prometheus_pump_container_name }}"
@@ -41,7 +49,7 @@
         volumes: "{{ prometheus_pump_volumes }}"
         working_dir: "/go/src/github.com/telemetry-reference-tools"
         env: "{{ prometheus_pump_receiver_env }}"
-        command: ["/bin/sh", "-c", "go run cmd/prometheuspump/prometheuspump.go"]
+        entrypoint: "{{ prometheus_pump_entry_script }}"
 
     - name: Check if Prometheus Pump container is running after deployment
       containers.podman.podman_container_info:

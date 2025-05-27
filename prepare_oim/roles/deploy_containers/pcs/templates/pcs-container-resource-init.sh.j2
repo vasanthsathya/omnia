@@ -109,6 +109,33 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
   --group {{ telemetry_pcs_group }}
 {% endif %}
 
+# Resource for prometheus and prometheus_pump
+{% if hostvars['localhost']['idrac_telemetry_support'] and hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus" %}
+pcs resource group add {{ telemetry_pcs_group }}
+# Resource for prometheus pump container
+pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
+  name={{ prometheus_pump_container_name }} \
+  image={{ prometheus_pump_image }} \
+  reuse=true \
+  run_opts="{{ prometheus_pump_run_opts }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+
+# Resource for prometheus container
+pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
+  name={{ prometheus_container_name }} \
+  image={{ prometheus_image }} \
+  reuse=true \
+  run_opts="{{ prometheus_run_opts }}" \
+  run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+{% endif %}
+
 # Create ordering constraints
 # pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
 # pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
