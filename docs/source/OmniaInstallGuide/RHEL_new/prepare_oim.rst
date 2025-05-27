@@ -15,7 +15,6 @@ Input files for the playbook
 The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the following input files:
 
 * ``network_spec.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the necessary configurations for the cluster network.
-* ``provision_config_credentials.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the necessary passwords required for provisioning the cluster.
 * ``software_config.json``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the software packages which are to be installed on the cluster.
 * ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the Pulp container present on the OIM.
 
@@ -94,17 +93,8 @@ A sample of the ``network_spec.yml`` where nodes are discovered using **BMC disc
             network_gateway: ""
             MTU: "1500"
 
-2. ``provision_config_credentials.yml``
------------------------------------------
 
-Add necessary inputs to the ``/opt/omnia/input/project_default/provision_config_credentials.yml`` file for seamless authentication during cluster provisioning. Use the below table as reference while doing so:
-
-.. csv-table:: provision_config_credentials.yml
-   :file: ../../Tables/Provision_creds.csv
-   :header-rows: 1
-   :keepspace:
-
-3. ``software_config.json``
+2. ``software_config.json``
 -------------------------------
 
 The ``/opt/omnia/input/project_default/software_config.json`` file lists all the software packages to be installed on the OIM. Edit the ``software_config.json`` file based on the software stack you want on the OIM. Use the below table as reference while doing so:
@@ -165,7 +155,7 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
         ]
     }
 
-4. ``local_repo_config.yml``
+3. ``local_repo_config.yml``
 -------------------------------
 
 Add necessary inputs to the ``local_repo_config.yml`` file for the local repositories to be created on the Pulp container present on the OIM. Use the below table as reference while doing so:

@@ -30,27 +30,19 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
 
 ::
 
-    ansible-playbook telemetry.yml -i <inventory_filepath>
+    ansible-playbook telemetry.yml
 
 .. note::
 
+    * After ``discovery_provision.yml`` playbook has been executed, an inventory file called ``bmc_group_data.csv`` file is created under the ``/opt/omnia/telemetry/`` directory. This file acts as the default inventory for the ``telemetry.yml`` playbook. If you want to add an external node for ``idrac_telemetry`` acquisition, you can do so by editing the ``bmc_group_data.csv`` file manually and then re-running the ``telemetry.yml`` playbook. Sample: ::
+
+        BMC_IP,GROUP_NAME,PARENT
+        11.11.11.11,test1,abc
+        22.22.22.22,test2,xyz
+    
     * To run the ``telemetry.yml`` playbook independently from the ``omnia.yml`` playbook on nodes with **Intel Gaudi** accelerators, first execute the ``performance_profile.yml`` playbook. Once that’s done, you can run the ``telemetry.yml`` playbook separately.
 
-    * Depending on the type of telemetry initiated, include the following possible groups in the inventory:
-
-        * omnia_telemetry: ``slurm_control_node``, ``slurm_node``, ``login``, ``kube_control_plane``, ``kube_node``, ``etcd``, ``auth_server``
-
-        * idrac_telemetry: ``idrac``
-
-        * k8s_telemetry on Prometheus: ``kube_control_plane``, ``kube_node``, ``etcd``
-
     * To take a local backup of the telemetry data stored in timescaleDB, use the `timescaledb utility <../Utils/timescaledb_utility.html>`_.
-
-    * After the inventory is up and running, you can use the ``add_idrac_node.yml`` playbook to add new iDRAC nodes for ``idrac_telemetry`` acquisition. To execute the playbook, execute the following command:
-        
-        ::
-
-            ansible-playbook add_idrac_node.yml -i <inventory_filepath>
 
 Modifying telemetry data collection
 -------------------------------------
