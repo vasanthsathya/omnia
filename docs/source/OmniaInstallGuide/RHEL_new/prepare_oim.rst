@@ -19,6 +19,7 @@ The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the foll
 * ``network_spec.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the necessary configurations for the cluster network.
 * ``software_config.json``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the software packages which are to be installed on the cluster.
 * ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the Pulp container present on the OIM.
+* ``telemetry_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about running the iDRAC telemetry service on the cluster.
 
 1. ``network_spec.yml``
 ------------------------
@@ -164,6 +165,16 @@ Add necessary inputs to the ``local_repo_config.yml`` file for the local reposit
 
 .. csv-table:: local_repo_config.yml
    :file: ../../Tables/local_repo_config_rhel.csv
+   :header-rows: 1
+   :keepspace:
+
+4. ``telemetry_config.yml``
+-----------------------------
+
+Add necessary inputs to the ``telemetry_config.yml`` file for the telemetry service. Use the below table as reference while doing so:
+
+.. csv-table:: telemetry_config.yml
+   :file: ../../Tables/telemetry_config.csv
    :header-rows: 1
    :keepspace:
 

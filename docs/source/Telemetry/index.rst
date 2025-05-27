@@ -8,7 +8,7 @@ The telemetry feature in Omnia allows you to set up a telemetry service that col
 Prerequisites
 ---------------
 
-To initiate telemetry support, fill out the following parameters in ``opt/omnia/project_default/input/telemetry_config.yml``:
+To initiate telemetry support, fill out the following parameters in ``/opt/omnia/project_default/input/telemetry_config.yml``:
 
 .. csv-table:: Parameters
    :file: ../Tables/telemetry_config.csv
