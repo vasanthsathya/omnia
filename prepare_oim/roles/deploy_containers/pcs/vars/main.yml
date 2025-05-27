@@ -215,7 +215,6 @@ grafana_run_opts: >-
   --env GF_USERS_ALLOW_ORG_CREATE=false
   {{ grafana_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
   --detach
-  --name {{ grafana_container_name }}
   --entrypoint {{ grafana_entrypoint }}
 
 # loki
@@ -231,8 +230,7 @@ loki_run_opts: >-
 loki_run_cmd: >-
   --config.file={{ container_config_mnt }}/loki-config.yaml
 
-loki_monitor_cmd:
-  /usr/bin/loki -version
+loki_monitor_cmd: "/usr/bin/loki -version"
 
 # promtail
 promtail_run_opts: >-
@@ -242,10 +240,7 @@ promtail_run_opts: >-
   --add-host=promtail:127.0.0.1
   --volume loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}
   --detach
-  --name {{ promtail_container_name }}
-  --entrypoint {{ promtail_entrypoint }}
-
+ 
 promtail_run_cmd: >-
-  -- config.file={{ container_config_mnt }}/promtail-config.yaml
-
+  --config.file={{ container_config_mnt }}/promtail-config.yaml
 promtail_monitor_cmd: "/usr/bin/promtail -version"
