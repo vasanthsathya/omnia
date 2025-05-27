@@ -13,18 +13,14 @@
 #  limitations under the License.
 ---
 
-- name: Download MPI Operator manifest
-  ansible.builtin.get_url:
-    url: "{{ mpi_operator_yaml_url }}"
-    dest: "{{ mpi_operator_dest_url }}"
-    mode: "{{ file_mode }}"
+- name: Reload "{{ slurm_service_type }}"
+  ansible.builtin.systemd_service:
+    name: "{{ slurm_service_type }}"
+    state: reloaded
+    daemon_reload: true
+    enabled: true
 
-- name: Install MPI Operator from URL
-  kubernetes.core.k8s:
-    state: present
-    src: "{{ mpi_operator_dest_url }}"
-
-- name: Include pod status
-  ansible.builtin.include_tasks: pod_status.yml
-  vars:
-    track_module_name: "mpi-operator"
+- name: Restart "{{ slurm_service_type }}"
+  ansible.builtin.systemd_service:
+    name: "{{ slurm_service_type }}"
+    state: restarted

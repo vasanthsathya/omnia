@@ -40,6 +40,9 @@ invalid_switch_ports_msg = "Please provide any port ranges as start-end (example
 duplicate_group_name_msg = "Duplicate group names are not allowed."
 empty_or_syntax_error_roles_config_msg = "File is either empty or contains syntax errors. File must contain valid YAML with 'Roles' and 'Groups' sections along with valid syntax. Check the file content and ensure proper YAML formatting."
 duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
+SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = "The role service_node defined in roles_config.yml," \
+    " but service_node entry missing in sofware_config.json, " \
+    "Please rerun local repo with service_node entry in software_config.json to deploy service nodes successfully"
 
 # provision_config.yml
 default_lease_time_fail_msg = "Please provide a valid default_lease_time."

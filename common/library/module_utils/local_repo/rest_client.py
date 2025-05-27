@@ -39,7 +39,7 @@ class RestClient:
             "Content-type": "application/json",
             "Authorization": f"Basic {auth_encoded}"
         }
-        
+
     def get_connection(self):
         """
         Creates an HTTP or HTTPS connection to the server.

@@ -13,18 +13,23 @@
 #  limitations under the License.
 ---
 
-- name: Download MPI Operator manifest
-  ansible.builtin.get_url:
-    url: "{{ mpi_operator_yaml_url }}"
-    dest: "{{ mpi_operator_dest_url }}"
-    mode: "{{ file_mode }}"
+- name: Install packages on control nodes
+  ansible.builtin.include_tasks: install_packages.yml
 
-- name: Install MPI Operator from URL
-  kubernetes.core.k8s:
-    state: present
-    src: "{{ mpi_operator_dest_url }}"
+- name: Get list of slurm compute nodes
+  ansible.builtin.command: sinfo -h -r --format="%n"
+  register: sinfo_output
+  delegate_to: "{{  groups['slurm_control_node'] | first }}"
+  failed_when: false
+  changed_when: false
+  run_once: true
 
-- name: Include pod status
-  ansible.builtin.include_tasks: pod_status.yml
-  vars:
-    track_module_name: "mpi-operator"
+- name: Install packages on compute nodes
+  ansible.builtin.include_tasks: install_packages.yml
+  args:
+    apply:
+      delegate_to: "{{ compute_node }}"
+  run_once: true
+  loop: "{{ sinfo_output.stdout_lines }}"
+  loop_control:
+    loop_var: compute_node

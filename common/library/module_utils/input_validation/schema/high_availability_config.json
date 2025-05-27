@@ -298,7 +298,17 @@
           "type": "boolean"
         },
         "virtual_ip_address": {
-          "type": "string"
+          "type": "string",
+          "format": "ipv4"
+        },
+        "external_loadbalancer_ip": {
+          "type": "string",
+          "description": "Specify this to use an external load balancer instead of kube-vip as LB.",
+          "format": "ipv4"
+        },
+        "loadbalancer_port": {
+          "type": ["integer", "null"],
+          "description": "The port must not be in use and cannot be 6443."
         },
         "active_node_service_tags": {
           "type": "array",
@@ -339,6 +349,20 @@
                 }
               }
             }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "external_loadbalancer_ip": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": ["external_loadbalancer_ip"]
+          },
+          "then": {
+            "required": ["loadbalancer_port"]
           }
         }
       ]

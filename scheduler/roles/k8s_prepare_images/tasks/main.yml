@@ -13,18 +13,8 @@
 #  limitations under the License.
 ---
 
-- name: Download MPI Operator manifest
-  ansible.builtin.get_url:
-    url: "{{ mpi_operator_yaml_url }}"
-    dest: "{{ mpi_operator_dest_url }}"
-    mode: "{{ file_mode }}"
-
-- name: Install MPI Operator from URL
-  kubernetes.core.k8s:
-    state: present
-    src: "{{ mpi_operator_dest_url }}"
-
-- name: Include pod status
-  ansible.builtin.include_tasks: pod_status.yml
-  vars:
-    track_module_name: "mpi-operator"
+- name: Prepare images for k8s
+  when: hostvars['127.0.0.1']['k8s_support']
+  block:
+    - name: Tasks for downloading k8s images
+      ansible.builtin.include_tasks: download_service_images.yml
