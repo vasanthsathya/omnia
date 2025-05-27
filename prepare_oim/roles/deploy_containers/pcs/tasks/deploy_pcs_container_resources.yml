@@ -20,21 +20,11 @@
 - name: Include prometheus vars file
   ansible.builtin.include_vars: "{{ role_path }}/../prometheus/vars/main.yml"
 
-- name: Include prometheus vars file
-  ansible.builtin.include_vars: "{{ role_path }}/../prometheus/vars/main.yml"
-  when:
-    - hostvars['localhost']['idrac_telemetry_support']
-    - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
-
 - name: Include grafana vars file
   ansible.builtin.include_vars: "{{ role_path }}/../grafana/vars/main.yml"
-  when:
-    - hostvars['localhost']['visualization_support']
 
 - name: Include loki and promtail vars file
   ansible.builtin.include_vars: "{{ role_path }}/../loki/vars/main.yml"
-  when:
-    - hostvars['localhost']['visualization_support']
 
 - name: Run pulp status command on omnia_core container
   ansible.builtin.command: /usr/local/bin/pulp status
