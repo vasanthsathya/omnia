@@ -311,9 +311,10 @@
           "description": "The port must not be in use and cannot be 6443."
         },
         "active_node_service_tags": {
-          "type": "array",
+          "type": ["array", "null"],
           "items": {
             "type": "string",
+            "minItems": 0,
             "pattern": "^[a-zA-Z0-9]+$"
           }
         }
