@@ -230,7 +230,7 @@ def process_user_registry(
     repository_name = (
         f"{user_reg_prefix}{package['package'].replace('/', '_').replace(':', '_')}"
     )
-    remote_name = f"remote_{package['package'].replace('/', '_')}"
+    remote_name = f"user_remote_{package['package'].replace('/', '_')}"
     package_identifier = package["package"]
     policy_type = "immediate"
     base_url = f"https://{host}/"
