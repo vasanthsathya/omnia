@@ -12,16 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-- name: DNF install the rpms
-  ansible.builtin.dnf:
-    name: "{{ grouped_packages.grp_pkg_map[grp.key].rpm }}"
-    state: present
-  register: dnf_install
-  delegate_to: "{{ node }}"
+- name: Install rpms and reboot if required
+  block:
+    - name: DNF install the rpms {{ node }}
+      ansible.builtin.dnf:
+        name: "{{ grouped_packages.grp_pkg_map[grp.key].rpm }}"
+        state: latest
+        update_only: true
+      register: dnf_install
+      delegate_to: "{{ node }}"
 
-- name: Reboot node (This task will take some time)
-  ansible.builtin.reboot:
-  when:
-    - dnf_install.changed
-    - grouped_packages.grp_pkg_map[grp.key].reboot
-  delegate_to: "{{ node }}"
+    # This task will take some time
+    - name: Reboot node {{ node }}
+      ansible.builtin.reboot:
+      when:
+        - dnf_install.changed
+        - grouped_packages.grp_pkg_map[grp.key].reboot
+      delegate_to: "{{ node }}"
+
+  rescue:
+    - name: Failed to install rpm on {{ node }}
+      ansible.builtin.fail:
+        msg: "The task '{{ ansible_failed_task.name }}' has failed.
+         Please make sure local_repo.yml was successfully run and
+         Re-run the playbook again."
