@@ -53,11 +53,6 @@ prometheus_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/prometheus"
 prometheus_data_dir: "{{ telemetry_dir_path }}/prometheus/prometheus_data"
 prometheus_dir: "{{ telemetry_dir_path }}/prometheus"
 proemetheus_yml_temp_src: "{{ role_path }}/templates/prometheus_yml.j2"
-# prometheus_init_script:
-#   - template: "{{ role_path }}/templates/prometheus_init.sh.j2"
-#     dest: "{{ prometheus_dir }}/run_prometheus.sh"
-#     mode: "{{ dir_mode }}"
-# prometheus_entry_script: "/opt/prometheus/run_prometheus.sh"
 prometheus_podman_volumes:
  - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
  - { name: "prometheus_log", path: "{{ prometheus_logs_dir }}" }
@@ -67,7 +62,6 @@ prometheus_volumes:
  - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml{{ selinux_option }}"
  - "prometheus_data:/prometheus"
  - "prometheus_log:/prometheus/log"
-#  - "{{ prometheus_dir }}/run_prometheus.sh:/opt/prometheus{{ selinux_option }}"
 prometheus_env:
  PROMETHEUS_DB: "poweredge_telemetry_metrics"
  node.name: "127.0.0.1"
