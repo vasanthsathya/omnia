@@ -47,22 +47,10 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
 Modifying telemetry data collection
 -------------------------------------
 
-* To modify how data is collected from the cluster nodes, update the required parameter in ``omnia/input/telemetry_config.yml`` and re-run the ``telemetry.yml`` playbook. Use the below table as reference:
-
-    +--------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-    | Parameters                           | Details                                                                                                                   |
-    +======================================+===========================================================================================================================+
-    | ``omnia_telemetry_support``          | * **Type**: boolean                                                                                                       |
-    |                                      | * If value is set to ``false``, telemetry data collection will be stopped for all nodes mentioned in the inventory file.  |
-    |                                      | * If value is set to ``true``, telemetry data collection will be restarted for all nodes mentioned in the inventory file. |
-    +--------------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-
-* To start or stop the collection of regular metrics, health check metrics, or GPU metrics, update the values of ``collect_regular_metrics``, ``collect_health_check_metrics``, or ``collect_gpu_metrics``. For a list of all metrics collected, `click here <TelemetryMetrics.html>`_.
+To start or stop the collection of regular metrics, health check metrics, or GPU metrics, update the values of ``collect_regular_metrics``, ``collect_health_check_metrics``, or ``collect_gpu_metrics``. For a list of all metrics collected, `click here <TelemetryMetrics.html>`_.
  
 .. note::
     * Currently, changing the ``grafana_username`` and ``grafana_password`` values is not supported via ``telemetry.yml``.
-    * The passed inventory should have an iDRAC group, if ``idrac_telemetry_support`` is true.
-    * If ``omnia_telemetry_support`` is true, then the inventory should have OIM and cluster node groups (as specified in the sample files) along with optional login group.
     * If a subsequent run of ``telemetry.yml`` fails, the ``telemetry_config.yml`` file will be unencrypted.
 
 Access the Grafana UI
@@ -70,7 +58,7 @@ Access the Grafana UI
 
 **Prerequisite**
 
-``visualisation_support`` should be set to ``true`` during ``telemetry.yml`` or ``omnia.yml`` playbook execution.
+``visualization_support`` should be set to ``true`` during ``telemetry.yml`` or ``omnia.yml`` playbook execution.
 
 **Steps**
 
@@ -157,7 +145,7 @@ View telemetry data in Grafana
 Visualizations
 ----------------
 
-When ``idrac_telemetry_support`` and ``visualisation_support`` is set to ``true``, Parallel Coordinate graphs in Grafana can be used to view system statistics.
+When ``idrac_telemetry_support`` and ``visualization_support`` is set to ``true``, Parallel Coordinate graphs in Grafana can be used to view system statistics.
 
 .. toctree::
     Visualizations/index
