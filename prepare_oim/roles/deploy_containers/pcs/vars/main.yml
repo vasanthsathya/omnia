@@ -204,7 +204,6 @@ idrac_telemetry_receiver_run_opts: >-
 
 # Usage: pcs-container-resource-init.sh: visualization
 visualization_pcs_group: omnia_visualization
-grafana_port: 5000
 # grafana
 grafana_run_opts: >-
   --network=host
