@@ -22,13 +22,14 @@ Required","* Path where the user has placed the ``<OS>.iso`` image that needs to
 
 ``string``
 
-Required","* When the value is set to ``always`` or ``partial``, Omnia creates a local Pulp repository on the OIM and stores all the packages/images required for the cluster in that repository.
-* In case of ""always"", Omnia downloads the all packages from the internet even if you have provided your own repository or registry details via ``user_repo_url`` or ``user_registry`` in ``local_repo_config.yml``.
-* In case of ``partial``, Omnia first checks the ``user_repo_url`` or ``user_registry`` and downloads all the packages from the URLs listed there. The packages that are not listed are then downloaded from the internet.
-* **Accepted value**: ``always``, ``partial``
+Required","* When the value is set to ``always`` or ``partial``, Omnia creates a local Pulp repository on the OIM and downloads all the packages/images required for the cluster in that repository. 
+* In case of ``always``, Omnia downloads all the required packages from the internet when the ``local_repo.yml`` is executed. Once downloaded, these packages are cached for future use.
+* In case of ``partial``, during ``local_repo.yml`` playbook execution, Omnia first checks the ``user_repo_url`` or ``user_registry`` and downloads all the packages from the URLs listed there. The packages that are not listed are then downloaded from the internet. But, the packages are not cached, they are discarded afterwards.
+* In case of ``never``, Omnia does not store any packages locally. The Pulp container purely acts as a proxy - streaming required packages from the source URLs everytime.
+* **Accepted value**: ``always``, ``partial``, ``never``
 * **Default value**: ``always``
 
-.. note:: Repositories that are not available as images, debian packages, or RPMs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.	"
+.. note:: Repositories that are not available as images, debian packages, RPMs, manifests, iso, or tarballs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.	"
 "**softwares**
 
 ``JSON list``
