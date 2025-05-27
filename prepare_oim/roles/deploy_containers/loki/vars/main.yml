@@ -25,7 +25,6 @@ loki_podman_volumes:
   - { name: "loki_promtail_config", path: "{{ config_dir }}" }
 loki_volumes:
   - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
-  - "{{ omnia_nfs_share }}/log:/var/log{{ selinux_option }}"
 loki_config_file_path:
   - { src: "files/loki-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
 loki_container_success_msg: "The Loki container '{{ loki_container_name }}' container has been successfully deployed."
