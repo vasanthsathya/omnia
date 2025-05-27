@@ -23,12 +23,16 @@
               },
               {
                 "properties": {
-                  "package": { "type": "string", "minLength": 1 },
+                  "package_list": {
+                    "type": "array",
+                    "items": { "type": "string", "minLength": 1 },
+                    "minItems": 1
+                  },
                   "type": { "const": "rpm_list" },
                   "repo_name": { "type": "string", "minLength": 1 },
                   "reboot_required": { "type": "string", "minLength": 1, "enum": ["true", "false"] }
                 },
-                "required": ["package", "type", "repo_name"],
+                "required": ["package_list", "type", "repo_name"],
                 "additionalProperties": false
               },
               {

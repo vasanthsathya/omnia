@@ -41,7 +41,7 @@ def validate_software_config(
     cluster_os_type = data["cluster_os_type"]
     cluster_os_version = data["cluster_os_version"]
     os_version_ranges = config.os_version_ranges
-    
+
     if cluster_os_type.lower() in os_version_ranges:
         version_range = os_version_ranges[cluster_os_type.lower()]
         if cluster_os_type.lower() in ["rhel", "rocky"]:
@@ -136,7 +136,7 @@ def validate_local_repo_config(
         if json_path is None:
             errors.append(create_error_msg("Validation Error: ", None ,en_us_validation_msg.json_file_mandatory(json_path)))
         else:
-            try: 
+            try:
                 subgroup_softwares = subgroup_dict.get(software, None)
                 #for each subgroup for a software check for corresponding entry in software.json
                 #eg: for amd the amd.json should contain both amd and rocm entries
@@ -144,13 +144,13 @@ def validate_local_repo_config(
                     json_data = json.load(file)
                 for subgroup_software in subgroup_softwares:
                     result, fail_data = validation_utils.validate_softwaresubgroup_entries(subgroup_software,json_path,json_data,validation_results,failures)
-            
+
             except (FileNotFoundError, json.JSONDecodeError) as e:
                 errors.append(create_error_msg("Error opening or reading JSON file:", json_path, str(e)))
 
     if fail_data:
         errors.append(create_error_msg("Software config subgroup validation failed for",fail_data,"Please resolve the issues first before proceeding."))
-    
+
     return errors
 
 def validate_security_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
@@ -488,9 +488,9 @@ def validate_additional_software(
         return errors
 
     # Get the roles config file
-    roles_config_file_path = omnia_base_dir.replace("../", "")
+    config_file_path = omnia_base_dir.replace("../", "")
     roles_config_file_path = create_file_path(
-        roles_config_file_path, file_names["roles_config"])
+        config_file_path, file_names["roles_config"])
 
     roles_config_json = validation_utils.load_yaml_as_json(
         roles_config_file_path, omnia_base_dir, project_name, logger, module)
@@ -511,5 +511,22 @@ def validate_additional_software(
                     "additional_software.json",
                     None,
                     en_us_validation_msg.ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG.format(sub_group)))
+
+    # Validate subgroups defined for additional_software in software_config.json
+    # also present in additioanl_software.json
+    software_config_file_path = create_file_path(config_file_path, file_names["software_config"])
+    software_config_json = json.load(open(software_config_file_path, "r"))
+
+    sub_groups_in_software_config = list(sub_group['name'] for sub_group in
+                                            software_config_json["additional_software"])
+
+    # Check for the additional_software key in software_config.json
+    for sub_group in sub_groups_in_software_config:
+        if sub_group not in sub_groups:
+            errors.append(
+                create_error_msg(
+                    "software_config.json",
+                    None,
+                    en_us_validation_msg.MISSING_IN_ADDITIONAL_SOFTWARE_MSG.format(sub_group)))
 
     return errors

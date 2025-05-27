@@ -170,6 +170,8 @@ def user_name_duplicate(duplicate_usernames):
 ADDITIONAL_SOFTWARE_FAIL_MSG = "The additional_software is mandatory in additional_software.json"
 ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG = ("The role or group name, [{0}] is present in subgroup "
                                          "but not present in roles_config.yml")
+MISSING_IN_ADDITIONAL_SOFTWARE_MSG = ("The role or group name is present in software_config.json, "
+                                     "but [{0}] is not present in additional_software.yml")
 
 # login_node_security
 def restrict_softwares_fail_msg(software):
