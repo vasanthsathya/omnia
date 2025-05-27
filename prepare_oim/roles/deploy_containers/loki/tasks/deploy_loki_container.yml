@@ -30,6 +30,13 @@
         mode: "{{ dir_permissions_755 }}"
       loop: "{{ loki_podman_volumes }}"
 
+    - name: Copy Promtail config file
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ promtail_config_file_path }}"
+
     - name: Create Podman bind-mounted volumes for Loki
       containers.podman.podman_volume:
         name: "{{ item.name }}"
