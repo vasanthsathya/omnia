@@ -23,13 +23,6 @@
   when:
     - promtail_container_info.containers | length == 0 or promtail_container_info.containers[0].State.Status != 'running'
   block:
-    - name: Copy Promtail config file
-      ansible.builtin.copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        mode: "{{ item.mode }}"
-      loop: "{{ promtail_config_file_path }}"
-
     - name: Pull Promtail Podman image
       containers.podman.podman_image:
         name: "{{ promtail_image }}"
