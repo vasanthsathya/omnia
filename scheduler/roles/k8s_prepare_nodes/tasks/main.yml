@@ -13,7 +13,7 @@
 #  limitations under the License.
 ---
 
-- name: Perform nerdctl login
+- name: Prepare k8s nodes
   when: hostvars['127.0.0.1']['k8s_support']
   block:
     - name: Generate k8s var file
@@ -24,6 +24,9 @@
 
     - name: Prepare hosts file
       ansible.builtin.include_tasks: prepare_hosts_file.yml
+
+    - name: Install prereq
+      ansible.builtin.include_tasks: prereq.yml
 
     - name: Configure firewalld
       ansible.builtin.include_tasks: configure_firewall.yml
