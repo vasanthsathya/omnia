@@ -18,6 +18,8 @@ Prerequisites
 
 * Ensure that the passive OIM nodes have ``oim_ha_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
 
+* Ensure that the passive OIM node has two dedicated NICs. One of them is used to connect to the Internet whereas the other one is used to communicate internally within the cluster.
+
 * For enabling HA functionality on the OIM, ensure that the Omnia shared path is set to an external NFS server.
 
 * To enable and configure HA for OIM, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Once the config file is updated, run the ``prepare_oim.yml`` playbook.
