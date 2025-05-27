@@ -159,6 +159,7 @@ pulp_run_opts_https: >-
 
 # Usage: pcs-start.sh.j2: squid
 squid_container_name: "squid"
+squid_name: "squid"
 squid_image: "docker.io/ubuntu/squid"
 squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:{{ hostvars['oim']['squid_proxy_port'] }}:{{ hostvars['oim']['squid_proxy_port'] }}"
 squid_share: "{{ omnia_nfs_share }}/squid"
@@ -171,7 +172,6 @@ squid_run_opts: >-
 pcs_resources:
   - "{{ pulp_container_name }}"
   - "{{ provision_container_name }}"
-  - "{{ squid_container_name }}"
   - "{{ omnia_core_name }}"
 pcs_start_container_finished: "/opt/omnia/pcs/pcs-start.finished"
 pcs_start_shared_finished: "{{ pcs_container_dir }}/pcs-start.finished"

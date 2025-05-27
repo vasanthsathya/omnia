@@ -72,6 +72,7 @@ pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
  op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
 {% endif %}
 
+{% if hostvars['localhost']['enable_routed_internet'] %}
 pcs resource create {{ squid_container_name }} ocf:heartbeat:podman \
  name={{ squid_container_name }} \
  image={{ squid_image }} \
@@ -80,6 +81,7 @@ pcs resource create {{ squid_container_name }} ocf:heartbeat:podman \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
  op start interval={{ start_interval }} timeout={{ start_timeout }} \
  op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+{% endif %}
 
 # Create ordering constraints
 pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
@@ -87,7 +89,9 @@ pcs constraint order start {{ omnia_core_name }} then start {{ provision_contain
 {% if hostvars['localhost']['k8s_support'] %}
 pcs constraint order start {{ omnia_core_name }} then start {{ kubespray_name }}
 {% endif %}
+{% if hostvars['localhost']['enable_routed_internet'] %}
 pcs constraint order start {{ omnia_core_name }} then start {{ squid_container_name }}
+{% endif %}
 
 pcs resource defaults update migration-threshold={{ migration_threshold }}
 
