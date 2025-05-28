@@ -66,59 +66,6 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
-    softwares = data["softwares"]
-    need_additional_software_info = ["bcm_roce", "amdgpu", "vllm", "pytorch", "tensorflow", "intelgaudi"]
-    filtered_softwares = [item for item in softwares if item.get("name") in need_additional_software_info]
-
-    for software_name in filtered_softwares:
-        name = software_name["name"]
-        if not data.get(name):
-            errors.append(
-                create_error_msg(
-                    f"{name}", None,
-                    en_us_validation_msg.software_mandatory_fail_msg(name)))
-
-    return errors
-
-# Below is a validation function for each file in the input folder
-def validate_local_repo_config(
-        input_file_path, data, logger,
-        module, omnia_base_dir,
-        module_utils_base, project_name):
-    """
-    Validates local repository configuration based on the cluster OS type.
-
-    Checks whether the appropriate OS URL (`ubuntu_os_url` or `rhel_os_url`) is provided
-    in the input data based on the detected cluster OS type from the software config file.
-
-    Args:
-        input_file_path (str): Path to the main input file.
-        data (dict): Input data containing OS URLs.
-        logger: Logger object for logging (not used here).
-        module: Ansible module object (not used here).
-        omnia_base_dir (str): Base directory for Omnia (not used here).
-        module_utils_base (str): Base directory for module utilities (not used here).
-        project_name (str): Project name (not used here).
-
-    Returns:
-        list: A list of error messages if validation fails.
-    """
-    errors = []
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    cluster_os_type = software_config_json["cluster_os_type"]
-
-    ubuntu_os_url = data["ubuntu_os_url"]
-    if cluster_os_type == "ubuntu":
-        if validation_utils.is_string_empty(ubuntu_os_url):
-            errors.append(create_error_msg("ubuntu_os_url", ubuntu_os_url, en_us_validation_msg.ubuntu_os_url_msg))
-
-    rhel_os_url = data["rhel_os_url"]
-    if cluster_os_type == "rhel":
-        if validation_utils.is_string_empty(rhel_os_url):
-            errors.append(create_error_msg("rhel_os_url", rhel_os_url, en_us_validation_msg.rhel_os_url_msg))
-        errors.append(create_error_msg("iso_file_path", iso_file_path, not_valid_iso_msg))
-
     #software groups and subgroups l2 validation
 
     #create the subgroups and softwares dictionary with version details
