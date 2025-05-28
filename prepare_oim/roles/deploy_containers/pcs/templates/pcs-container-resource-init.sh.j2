@@ -34,7 +34,8 @@ pcs property set no-quorum-policy=ignore
 
 pcs resource group add {{ pcs_group }}
 pcs resource group add {{ vip_group }}
-
+pcs constraint colocation add omnia_vip with omnia INFINITY
+ 
 pcs resource create {{ omnia_core_name }} ocf:heartbeat:podman \
  image={{ omnia_core_image }} \
  name={{ omnia_core_name }} \

@@ -34,6 +34,7 @@ pcs property set no-quorum-policy=ignore
 
 pcs resource group add {{ pcs_group }}
 pcs resource group add {{ vip_group }}
+pcs constraint colocation add omnia_vip with omnia INFINITY
 
 pcs resource defaults update migration-threshold={{ migration_threshold }}
 pcs resource defaults update failure-timeout={{ failure_timeout }}
