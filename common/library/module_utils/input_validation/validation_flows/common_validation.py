@@ -77,6 +77,7 @@ def validate_software_config(
     software_list = get_software_names(input_file_path)
     validation_results = []
     failures=[]
+    fail_data=[]
     for software in software_list:
         json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
         # Check if json_path is None or if the JSON syntax is invalid
