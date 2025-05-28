@@ -30,15 +30,16 @@ Required","* Omnia sets up a local Pulp repository on the OIM and downloads all 
 * **Default value**: ``always``
 
 ..note:: The following packages will always be downloaded from the local Pulp repository, regardless of the value of ``repo_config``:
-* debian packages
-* RPMs
-* pip modules
-* manifests
-* tarballs
-* container images
-* AMD GPU drivers
-* OFED
-* CUDA"
+
+       * debian packages
+       * RPMs
+       * pip modules
+       * manifests
+       * tarballs
+       * container images
+       * AMD GPU drivers
+       * OFED
+       * CUDA"
 "**softwares**
 
 ``JSON list``
