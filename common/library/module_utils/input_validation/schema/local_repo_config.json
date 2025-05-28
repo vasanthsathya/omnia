@@ -3,26 +3,38 @@
   "type": "object",
   "properties": {
     "user_repo_url": {
-      "type": ["object", "null"],
-      "minProperties": 2,
-      "properties": {
-        "gpgkey": {
-          "type": "string",
-          "format": "uri",
-          "pattern": "^(?!\\s*$).+",
-          "minLength": 1
-        },
-        "url": {
-          "type": "string",
-          "format": "uri",
-          "pattern": "^(?!\\s*$).+",
-          "minLength": 1
-        }
+  "type": ["array", "null"],
+  "items": {
+    "type": "object",
+    "properties": {
+      "gpgkey": {
+        "type": "string",
+        "pattern": "^(|https?:\\/\\/\\S.+)$"
+
       },
-      "required": ["gpgkey", "url"]
+      "url": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^(?!\\s*$).+",
+        "minLength": 1
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?!\\s*$).+"
+      },
+      "policy": {
+        "type": "string",
+        "enum": ["always", "partial", "never"]
+      }
     },
+    "required": ["gpgkey", "url", "name"],
+    "additionalProperties": false
+  }
+},
+
     "user_registry": {
-      "type": ["object", "null"],
+      "type": ["array", "null"],
       "minProperties": 2,
         "properties": {
           "cert_path": {
@@ -45,14 +57,13 @@
     },
     "rhel_os_url": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 2,
       "items": {
           "type": "object",
           "properties": {
           "gpgkey": {
             "type": "string",
-            "format": "uri",
-            "pattern": "^(https?:\\/\\/(?!\\s*$).+)?$"  
+            "pattern": "^(|https?:\\/\\/\\S.+)$" 
           },
           "url": {
             "type": "string",
@@ -64,6 +75,9 @@
             "type": "string",
             "minLength": 1,
             "pattern": "^(?!\\s*$).+"  
+          },
+          "policy": {
+          "enum": ["always", "partial", "never"]
           }
           },
 	    "required": ["gpgkey", "url", "name"],
@@ -82,7 +96,7 @@
           },
           "gpgkey": {
             "type": "string",
-            "pattern": "^(https?:\\/\\/(?!\\s*$).+)?$"
+            "pattern": "^(|https?:\\/\\/\\S.+)$"
           },
           "sslcacert": {
             "type": ["string","null"]
@@ -99,7 +113,7 @@
             "minLength": 1
           },
           "policy": {
-            "enum": ["always", "partial", "never", "", "null"]
+            "enum": ["always", "partial", "never"]
           }
         },
         "required": [
