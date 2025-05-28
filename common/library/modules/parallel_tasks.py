@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=import-error,no-name-in-module,line-too-long
 #!/usr/bin/python
 # pylint: disable=import-error,no-name-in-module,line-too-long
 import os
@@ -184,6 +185,13 @@ def generate_pretty_table(task_results, total_duration, overall_status):
     table.add_row(["Overall Status", overall_status, ""])
     return table.get_string()
 
+def generate_software_status_table(status_dict):
+    table = PrettyTable()
+    table.field_names = ["Name", "Status"]
+    for name, status in status_dict.items():
+        table.add_row([name, str(status).lower()])
+    return table.get_string()
+
 def main():
     """
     Executes a list of tasks in parallel using multiple worker processes.
@@ -198,7 +206,9 @@ def main():
         csv_file_path (str): The path to a CSV file that may be needed for processing some tasks.
         repo_store_path (str): The path to the repository where task-related files are stored.
         software (list): A list of software names.
-        user_json_file (str): The path to the JSON file containing user data.
+        user_json_file (str): The path to the JSON file containing use
+        show_softwares_status (bool): Whether to display the software status; optional, defaults to False.  
+        overall_status_dict (dict): A dictionary containing overall software status information; optional, defaults to an empty dictionary.
     Returns:
         tuple: A tuple containing:
             - overall_status (str): The overall status of task execution ("SUCCESS", "FAILED", "PARTIAL", "TIMEOUT").
@@ -217,6 +227,8 @@ def main():
         "repo_store_path": {"type": "str", "required": False, "default": DEFAULT_REPO_STORE_PATH},
         "software": {"type": "list", "elements": "str", "required": True},
         "user_json_file": {"type": "str", "required": False, "default": USER_JSON_FILE_DEFAULT},
+        "show_softwares_status": {"type": "bool", "required": False, "default": False},
+        "overall_status_dict": {"type": "dict", "required": False, "default": {}},
         "local_repo_config_path": {"type": "str", "required": True}
     }
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -230,7 +242,10 @@ def main():
     repo_store_path = module.params["repo_store_path"]
     software = module.params["software"]
     user_json_file = module.params["user_json_file"]
+    show_softwares_status = module.params["show_softwares_status"]
+    overall_status_dict = module.params['overall_status_dict']
     local_repo_config_path = module.params["local_repo_config_path"]
+
     # Initialize standard logger.
     slogger = setup_standard_logger(slog_file)
     result = {"changed": False, "task_results": []}
@@ -241,6 +256,15 @@ def main():
     slogger.info(f"Task list: {tasks}")
     slogger.info(f"Number of threads: {nthreads}")
     slogger.info(f"Timeout: {timeout}")
+    slogger.info(f"overall_status_dict: {overall_status_dict}")
+    slogger.info(f"show_softwares_status: {show_softwares_status}")
+
+    # Check if the flag to show software status is enabled
+    if show_softwares_status:
+        # Generate a formatted status table from the overall_status_dict parameter
+        status_table = generate_software_status_table(module.params['overall_status_dict'])
+        module.exit_json(changed=False, msg=status_table)
+
     try:
         user_data = load_json(user_json_file)
         cluster_os_type = user_data['cluster_os_type']

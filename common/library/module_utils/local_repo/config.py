@@ -123,3 +123,8 @@ STANDARD_LOG_FILE_PATH = "/opt/omnia/log/local_repo/standard.log"
 # Used by cert_vault_handle.py
 # ----------------------------
 CERT_KEYS = ["sslcacert", "sslclientkey", "sslclientcert"]
+
+# ----------------------------
+# Used by process_metadata.py
+# ----------------------------
+metadata_rerun_file_path = "/opt/omnia/offline_repo/.data/localrepo_rerun_metadata.yml"
