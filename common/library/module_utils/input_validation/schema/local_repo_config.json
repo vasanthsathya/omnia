@@ -56,8 +56,7 @@
       "description": "URL for Ubuntu OS packages, mandatory when cluster_os_type is Ubuntu."
     },
     "rhel_os_url": {
-      "type": "object",
-      "minItems": 2,
+      "type": "array",
       "items": {
           "type": "object",
           "properties": {
