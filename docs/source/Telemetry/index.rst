@@ -22,8 +22,8 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
     * After ``discovery_provision.yml`` playbook has been executed, an inventory file called ``bmc_group_data.csv`` file is created under the ``/opt/omnia/telemetry/`` directory. This file acts as the default inventory for the ``telemetry.yml`` playbook. If you want to add an external node for ``idrac_telemetry`` acquisition, you can do so by editing the ``bmc_group_data.csv`` file manually and then re-running the ``telemetry.yml`` playbook. Sample: ::
 
         BMC_IP,GROUP_NAME,PARENT
-        10.5.0.101,service,9XK3FZ2
-        10.5.1.102,compute,5D4N8Q3
+        10.5.0.101,grp0,ABCD123
+        10.5.1.102,grp1,EFGH456
     
     * To run the telemetry services on nodes with **Intel Gaudi** accelerators, first execute the ``performance_profile.yml`` playbook followed by the ``telemetry.yml`` playbook.
 
