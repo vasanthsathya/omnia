@@ -74,6 +74,7 @@ migration_threshold: 0
 ha_migration_threshold: 1
 failure_timeout: "60s"
 pcs_group: omnia
+vip_group: omnia_vip
 
 # Usage: pcs-start.sh.j2: omnia_core
 omnia_core_name: "omnia_core"
