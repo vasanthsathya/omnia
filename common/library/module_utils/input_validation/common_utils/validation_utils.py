@@ -209,7 +209,7 @@ def check_overlap(ip_list):
 
     # Convert IP ranges and CIDR to ipaddress objects
     for item in ip_list:
-        if (item == ''):
+        if item == '' or item== 'N/A':
             continue
         if "-" in item:
             start_ip, end_ip = item.split("-")
@@ -391,6 +391,22 @@ def is_ip_in_subnet(admin_oim_ip, netmask_bits, vip_address):
     subnet = ipaddress.IPv4Network(f"{admin_oim_ip}/{netmask_bits}", strict=False)
     ip = ipaddress.IPv4Address(vip_address)
     return ip in subnet
+
+def flatten_sub_groups(sub_groups):
+    """
+    Flattens a list of sub-groups,
+        where each sub-group can contain multiple groups separated by commas.
+
+    Args:
+        sub_groups (list): A list of sub-groups.
+
+    Returns:
+        list: A flattened list of individual groups.
+    """
+    result = []
+    for group in sub_groups:
+        result.extend(group.split(','))
+    return result
 
 def validate_cluster_items(cluster_items, json_file_path):
     failures = []
