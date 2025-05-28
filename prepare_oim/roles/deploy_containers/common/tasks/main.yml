@@ -18,10 +18,12 @@
   ansible.builtin.include_vars: "{{ omnia_metadata_file }}"
   register: include_metadata
   no_log: true
+  tags: always
 
 - name: Initialize SELinux policy
   ansible.builtin.set_fact:
     selinux_option: ":z"
+  tags: always
 
 - name: Set SELinux policy
   ansible.builtin.set_fact:
@@ -29,13 +31,15 @@
   when:
     - omnia_share_option == 'NFS'
     - nfs_type == 'external'
+  tags: always
 
 - name: Get oim node name
   ansible.builtin.command: hostname -s
   register: oim_node_name
   changed_when: false
+  tags: always
 
-- name: Set facts
+- name: Set variables for containers deployment
   ansible.builtin.set_fact:
     admin_nic: "{{ hostvars['localhost']['admin_nic'] }}"
     admin_nic_ip: "{{ hostvars['localhost']['admin_nic_ip'] }}"
@@ -46,6 +50,7 @@
     docker_username: "{{ hostvars['localhost']['docker_username'] }}"
     docker_password: "{{ hostvars['localhost']['docker_password'] }}"
   no_log: true
+  tags: always
 
 - name: Export firewall ports for pcs container
   ansible.builtin.include_tasks: firewall_settings.yml
@@ -53,3 +58,4 @@
 - name: Run podman login command
   ansible.builtin.include_tasks: podman_login.yml
   when: docker_username | length > 1 and docker_password | length > 1
+  tags: always

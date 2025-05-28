@@ -8,6 +8,7 @@ on:
       - pub/telemetry
       - pub/composable_software_roles
       - pub/local_repo
+      - pub/telemetry_restructure
 
 jobs:
   build:
