@@ -89,7 +89,6 @@ software_config.json for RHEL
                 {"name": "pytorch"},
                 {"name": "tensorflow"},
                 {"name": "vllm"},
-                {"name": "telemetry"},
                 {"name": "intel_benchmarks", "version": "2024.1.0"},
                 {"name": "amd_benchmarks"},
                 {"name": "utils"},

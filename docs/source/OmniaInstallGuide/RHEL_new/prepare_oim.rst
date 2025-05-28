@@ -9,7 +9,7 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the Pulp container: ``pulp``
 * Sets up the Squid container (if ``enable_routed_internet`` is ``true`` in ``/opt/omnia/input/project_default/local_repo_config.yml``): ``squid``
 * Sets up the containers required for iDRAC telemetry service (if ``idrac_telemetry_support`` is ``true`` in ``opt/omnia/input/project/defaut/telemetry_config.yml``): ``idrac_telemetry_receiver``, ``mysqldb``, and ``activemq``
-* Sets up the containers required for visualizing iDRAC telemetry metrics using the Prometheus toolkit (If ``idrac_telemetry_service`` is set to ``true`` and ``idrac_telemetry_collection_type`` is ``prometheus``): ``prometheus`` and ``prometheus_pump`` 
+* Sets up the containers required for collecting iDRAC telemetry metrics using the Prometheus toolkit (If ``idrac_telemetry_service`` is set to ``true`` and ``idrac_telemetry_collection_type`` is ``prometheus``): ``prometheus`` and ``prometheus_pump`` 
 
 Input files for the playbook
 ------------------------------

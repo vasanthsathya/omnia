@@ -1,28 +1,17 @@
 Telemetry and visualizations
 ==============================
 
-The telemetry feature in Omnia allows you to set up a telemetry service that collects telemetry data from the eligible iDRACs in the cluster. It also facilitates the installation of `Grafana <https://grafana.com/>`_ and `Loki <https://grafana.com/oss/loki/>`_ as Kubernetes pods.
-
-.. note:: In order to enable telemetry feature in Omnia, ensure to add ``telemetry`` in the ``/opt/omnia/input/project_default/software_config.json``.
+The telemetry feature in Omnia allows you to set up a telemetry service that collects telemetry data from the eligible iDRACs in the cluster. It also facilitates the installation of `Grafana <https://grafana.com/>`_ and `Loki <https://grafana.com/oss/loki/>`_ as Podman containers.
 
 Prerequisites
 ---------------
 
-To initiate telemetry support, fill out the following parameters in ``/opt/omnia/project_default/input/telemetry_config.yml``:
-
-.. csv-table:: Parameters
-   :file: ../Tables/telemetry_config.csv
-   :header-rows: 1
-   :keepspace:
+To enable telemetry support, set ``idrac_telemetry_support`` to ``true`` and ``idrac_telemetry_collection_type`` to ``prometheus`` in the ``telemetry_config.yml`` file. Then, run the ``prepare_oim.yml`` playbook, which deploys the containers necessary for the telemetry service. For more information, `click here <../OmniaInstallGuide/RHEL_new/prepare_oim.html#telemetry-config-yml>`_.
 
 Playbook execution
 -------------------
 
-Once the cluster nodes have been provisioned using the ``discovery_provision.yml`` playbook, you can initiate telemetry service on the cluster using the ``omnia.yml`` or the ``telemetry.yml`` playbook. To invoke the playbooks, use the below commands:
-
-::
-    
-    ansible-playbook omnia.yml -i <inventory_filepath>
+Once the cluster nodes have been provisioned using the ``discovery_provision.yml`` playbook, you can initiate telemetry service on the cluster using the ``telemetry.yml`` playbook. To invoke the playbooks, use the below commands:
 
 ::
 
@@ -36,25 +25,16 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
         10.5.0.101,service,9XK3FZ2
         10.5.1.102,compute,5D4N8Q3
     
-    * To run the ``telemetry.yml`` playbook independently from the ``omnia.yml`` playbook on nodes with **Intel Gaudi** accelerators, first execute the ``performance_profile.yml`` playbook. Once that’s done, you can run the ``telemetry.yml`` playbook separately.
+    * To run the ``telemetry.yml`` playbook on nodes with **Intel Gaudi** accelerators, first execute the ``performance_profile.yml`` playbook. Once that’s done, you can run the ``telemetry.yml`` playbook separately.
 
     * To take a local backup of the telemetry data stored in timescaleDB, use the `timescaledb utility <../Utils/timescaledb_utility.html>`_.
-
-Modifying telemetry data collection
--------------------------------------
-
-To start or stop the collection of regular metrics, health check metrics, or GPU metrics, update the values of ``collect_regular_metrics``, ``collect_health_check_metrics``, or ``collect_gpu_metrics``. For a list of all metrics collected, `click here <TelemetryMetrics.html>`_.
- 
-.. note::
-    * Currently, changing the ``grafana_username`` and ``grafana_password`` values is not supported via ``telemetry.yml``.
-    * If a subsequent run of ``telemetry.yml`` fails, the ``telemetry_config.yml`` file will be unencrypted.
 
 Access the Grafana UI
 -------------------------
 
 **Prerequisite**
 
-``visualization_support`` should be set to ``true`` during ``telemetry.yml`` or ``omnia.yml`` playbook execution.
+``visualization_support`` should be set to ``true`` during ``telemetry.yml`` playbook execution.
 
 **Steps**
 
@@ -145,8 +125,6 @@ When ``idrac_telemetry_support`` and ``visualization_support`` is set to ``true`
 
 .. toctree::
     Visualizations/index
-    TelemetryMetrics
-    MetricInfo
     TimescaleDB
     Prometheus_k8s
     Gaudi_metrics
