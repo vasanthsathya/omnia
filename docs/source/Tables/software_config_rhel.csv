@@ -29,7 +29,7 @@ Required","* Omnia sets up a local Pulp repository on the OIM and downloads all 
 * **Accepted value**: ``always``, ``partial``, ``never``
 * **Default value**: ``always``
 
-..note:: The following packages will always be downloaded from the local Pulp repository, regardless of the value of ``repo_config``:
+.. note:: The following packages will always be downloaded from the local Pulp repository, regardless of the value of ``repo_config``:
 
        * debian packages
        * RPMs
