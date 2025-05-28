@@ -132,6 +132,7 @@ def determine_function(task, repo_store_path, csv_file_path, user_data, version_
         os.makedirs(csv_file_path, exist_ok=True)
         cluster_os_type = user_data['cluster_os_type']
         cluster_os_version = user_data['cluster_os_version']
+        repo_config_value = user_data.get("repo_config")
 
         # Construct the status file path using DEFAULT_STATUS_FILENAME.
         status_file = os.path.join(csv_file_path, DEFAULT_STATUS_FILENAME)
@@ -159,7 +160,7 @@ def determine_function(task, repo_store_path, csv_file_path, user_data, version_
             return process_image, [task, status_file, version_variables, user_registries]
         if task_type == "rpm":
             return process_rpm, [task, repo_store_path, status_file,
-                                 cluster_os_type, cluster_os_version]
+                                 cluster_os_type, cluster_os_version, repo_config_value]
 
         raise ValueError(f"Unknown task type: {task_type}")
     except Exception as e:

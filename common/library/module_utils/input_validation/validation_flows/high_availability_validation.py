@@ -370,7 +370,7 @@ def validate_k8s_head_node_ha(
     oim_admin_ip = network_spec_data['oim_admin_ip']
     does_overlap=[]
     external_loadbalancer_ip = ha_data.get("external_loadbalancer_ip")
-    active_node_service_tags = ha_data.get('active_node_service_tag')
+    active_node_service_tags = ha_data.get('active_node_service_tags')
     # validate active_node_service_tag and passive_node_service_tag
     all_service_tags_set = set(all_service_tags)
     active_node_service_tags_set = set(active_node_service_tags)

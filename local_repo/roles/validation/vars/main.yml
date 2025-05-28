@@ -80,7 +80,7 @@ repo_config_fail_msg: "Failed. The supported values of repo_config is always, pa
 valid_cluster_os_type:
   - 'fedora'
 rhel_valid_os_versions:
-  - '9.4'
+  - '9.6'
 rocky_valid_os_versions:
   - '9.4'
 
