@@ -53,7 +53,7 @@ OMNIA_REPO_KEY = "omnia_repo_url_rhel"
 RHEL_OS_URL = "rhel_os_url"
 SOFTWARES_KEY = "softwares"
 USER_REPO_URL = "user_repo_url"
-REPO_CONFIG = { "always": "immediate", "partial": "on_demand", "never": "streamed" }
+REPO_CONFIG = { "always": "on_demand", "partial": "on_demand", "never": "streamed" }
 
 # ----------------------------
 # Used by download_common.py
@@ -69,8 +69,12 @@ pulp_file_commands = {
     "distribution_create": "pulp file distribution create --name %s --base-path %s --repository %s",
     "distribution_update": "pulp file distribution update --name %s --base-path %s --repository %s",
 }
-
-
+CLI_FILE_PATH = "/root/.config/pulp/cli.toml"
+POST_TIMEOUT = 3600
+TAR_POLL_VAL = 3
+FILE_POLL_VAL = 1
+ISO_POLL_VAL = 15
+FILE_URI = "/pulp/api/v3/content/file/files/"
 # ----------------------------
 # Used by download_image.py
 # ----------------------------
