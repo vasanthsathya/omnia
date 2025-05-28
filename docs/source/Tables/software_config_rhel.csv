@@ -25,14 +25,13 @@ Required","* Path where the user has placed the ``<OS>.iso`` image that needs to
 Required","* Omnia sets up a local Pulp repository on the OIM and downloads all the necessary packages or images for the cluster into this repository. The behavior of the Pulp container varies depending on the value of the ``repo_config`` parameter.
 * In case of ``always``, packages are downloaded and cached on OIM during ``local_repo.yml`` execution; compute nodes get the packages from OIM. Caching these packages allow them to be reused in future operations without needing to download them again.
 * In case of ``partial``, packages are not pre-downloaded or cached. OIM downloads from upstream URLs when needed.
-* In case of ``never``, the Pulp container functions solely as a proxy, streaming the required packages directly from the source URLs. Packages are not downloaded or cached.
+* In case of ``never``, the packages are not downloaded or cached, but streamed directly from the source URLs.
 * **Accepted value**: ``always``, ``partial``, ``never``
 * **Default value**: ``always``
 
 .. note:: The following packages will always be downloaded from the local Pulp repository, regardless of the value of ``repo_config``:
 
-       * debian packages
-       * RPMs
+       * ISOs
        * pip modules
        * manifests
        * tarballs

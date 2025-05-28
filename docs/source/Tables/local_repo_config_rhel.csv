@@ -9,8 +9,9 @@ Optional","* This variable accepts the repository urls from which the software p
 * ``gpgkey`` defines gpgkey for the repository. If ``gpgkey`` is omitted then ``gpgcheck=0`` is set for that repository.
 * ``name`` defines the name of the software ``.rpm`` package.
 * If you are using SSL certificates for encryption, include the ``sslcacert``, ``sslclientkey``, and ``sslclientcert`` fields, and ensure each is populated with the correct certificate or key data. Omit these fields entirely if SSL is not in use.
+* Irresprective of the value set to ``repo_config`` in ``/opt/omnia/input/project_default/software_config.json``, you can set policies (``always``, ``partial``, ``never``) for each user repository individually. To do so, add the ``policy`` key and provide the desired value while providing the repository URLs.
 
-* **Example**: ``- { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", sslcacert: """", sslclientkey: """", sslclientcert: """" }``
+* **Example**: ``- { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", sslcacert: """", sslclientkey: """", sslclientcert: """", policy: """" }``
 
 .. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<user_repo_name>``. The certificate files are encypted post ``local_repo.yml`` playbook execution. Execute the ``ansible-vault decrypt <certificate_file> --vault-password-file /opt/omnia/input/project_default/.local_repo_credentials_key`` command to decrypt the files. "
 "**user_registry**
@@ -35,7 +36,8 @@ Required","* Mandatory when ``cluster_os_type`` is ``rhel`` in ``/opt/omnia/inpu
 * ``url`` defines the baseurl for the repository where the OS package is hosted.
 * ``gpgkey`` defines the gpgkey for the repository. If ``gpgkey`` is omitted, then ``gpgcheck=0`` is set for that repository.
 * ``name`` defines the name of the OS package.
-* **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ``- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY"", name: """"}``
+* Irresprective of the value set to ``repo_config`` in ``/opt/omnia/input/project_default/software_config.json``, you can set  an individual policy (``always``, ``partial``, ``never``) for the ``rhel_os_url``. To do so, add the ``policy`` key and provide the desired value while providing the repository URLs.
+* **Example**: If ``cluster_os_type`` is rhel, ``rhel_os_url`` might be ``- {url: ""http://crb.com/CRB/x86_64/os/"", gpgkey: ""http://crb.com/CRB/x86_64/os/RPM-GPG-KEY"", name: """", policy: """"}``
 
 .. note:: The ``rhel_os_url`` is configured via proxy in compute nodes.
 
@@ -48,17 +50,18 @@ Required","* This variable accepts a list of all the repo urls from where ``.rpm
 * ``url`` defines the baseurl for the repository where the package is hosted.
 * ``gpgkey`` defines the gpgkey for the repository. If ``gpgkey`` is omitted, then ``gpgcheck=0`` is set for that repository.
 * ``name`` defines the name of the software ``.rpm`` package.
+* Irresprective of the value set to ``repo_config`` in ``/opt/omnia/input/project_default/software_config.json``, you can set individual policies (``always``, ``partial``, ``never``) for the repository URLs. To do so, add the ``policy`` key and provide the desired value while providing the repository URLs.
 * **Default value**: ::
 
-       - { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"" }
-       - { url: ""https://repo.radeon.com/rocm/rhel9/{{ rocm_version }}/main"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""rocm"" }
-       - { url: ""https://download.fedoraproject.org/pub/epel/9/Everything/x86_64"", gpgkey: ""https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"", name: ""epel"" }
-       - { url: ""https://repo.radeon.com/amdgpu/{{ amdgpu_version }}/rhel/{{ cluster_os_version }}/main/x86_64"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""amdgpu"" }
-       - { url: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/dists/rhel9"", gpgkey: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/gpg/GPG-KEY-beegfs"", name: ""beegfs"" }
-       - { url: ""https://yum.repos.intel.com/oneapi"", gpgkey: ""https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB"", name: ""oneapi"" }
-       - { url: ""https://ltb-project.org/rpm/openldap25/9/x86_64"", gpgkey: """", name: ""ldap"" }
-       - { url: ""https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"", gpgkey: ""https://nvidia.github.io/libnvidia-container/gpgkey"", name: ""nvidia-repo"" }
-       - { url: ""https://a2o.github.io/snoopy-packages/repo/centos/9/stable/"", gpgkey: """", name: ""snoopy"" }
+       - { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", policy: """" }
+       - { url: ""https://repo.radeon.com/rocm/rhel9/{{ rocm_version }}/main"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""rocm"", policy: """"  }
+       - { url: ""https://download.fedoraproject.org/pub/epel/9/Everything/x86_64"", gpgkey: ""https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"", name: ""epel"", policy: """"  }
+       - { url: ""https://repo.radeon.com/amdgpu/{{ amdgpu_version }}/rhel/{{ cluster_os_version }}/main/x86_64"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""amdgpu"", policy: """"  }
+       - { url: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/dists/rhel9"", gpgkey: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/gpg/GPG-KEY-beegfs"", name: ""beegfs"", policy: """"  }
+       - { url: ""https://yum.repos.intel.com/oneapi"", gpgkey: ""https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB"", name: ""oneapi"", policy: """"  }
+       - { url: ""https://ltb-project.org/rpm/openldap25/9/x86_64"", gpgkey: """", name: ""ldap"", policy: """"  }
+       - { url: ""https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64"", gpgkey: ""https://nvidia.github.io/libnvidia-container/gpgkey"", name: ""nvidia-repo"", policy: """"  }
+       - { url: ""https://a2o.github.io/snoopy-packages/repo/centos/9/stable/"", gpgkey: """", name: ""snoopy"", policy: """"  }
 
 .. note::
       * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
