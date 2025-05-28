@@ -20,12 +20,6 @@ import yaml
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
 from ansible.module_utils.input_validation.common_utils import config
 
-def get_os_type():
-    with open("/etc/os-release") as f:
-        for line in f:
-            if line.startswith("ID="):
-                return line.strip().split("=")[1].strip('"')
-
 def load_yaml_as_json(yaml_file, omnia_base_dir, project_name, logger, module):
     try:
         if is_file_encrypted(yaml_file):
@@ -215,7 +209,7 @@ def check_overlap(ip_list):
 
     # Convert IP ranges and CIDR to ipaddress objects
     for item in ip_list:
-        if (item == ''):
+        if item == '' or item == 'N/A':
             continue
         if "-" in item:
             start_ip, end_ip = item.split("-")
@@ -352,6 +346,52 @@ def check_port_ranges(port_ranges) -> bool:
 
     return True
 
+def is_range_within_netmask(ip_range, netmask_bits):
+    """
+    Check if a given IP range falls within the valid IP address range for a given netmask.
+
+    Args:
+        ip_range (str): The IP range in format "start_ip-end_ip"
+            (e.g., "192.168.1.10-192.168.1.50").
+        netmask_bits (int or str): The netmask bits (e.g., 20 for /20).
+
+    Returns:
+        bool: True if the IP range is valid for the given netmask, False otherwise.
+    """
+    try:
+        # Parse the IP range
+        start_ip, end_ip = ip_range.split('-')
+        start_ip_obj = ipaddress.ip_address(start_ip)
+        end_ip_obj = ipaddress.ip_address(end_ip)
+
+        # Ensure start_ip <= end_ip
+        if start_ip_obj > end_ip_obj:
+            return False
+
+        # Create network from start_ip with the given netmask
+        network = ipaddress.ip_network(f"{start_ip}/{netmask_bits}", strict=False)
+
+        # Get first and last usable addresses (excluding network and broadcast)
+        first_usable = network.network_address + 1
+        last_usable = network.broadcast_address - 1
+
+        # Check if both start and end IPs are within the usable range
+        return (first_usable <= start_ip_obj <= last_usable and
+                first_usable <= end_ip_obj <= last_usable)
+    except (ValueError, TypeError):
+        return False
+
+def is_ip_within_range(ip_range, ip):
+    start_ip, end_ip = [ipaddress.IPv4Address(part.strip()) for part in ip_range.split('-')]
+    target_ip = ipaddress.IPv4Address(ip)
+    return (start_ip <= target_ip <= end_ip)
+
+def is_ip_in_subnet(admin_oim_ip, netmask_bits, vip_address):
+    # Create the subnet from the reference IP and netmask bits
+    subnet = ipaddress.IPv4Network(f"{admin_oim_ip}/{netmask_bits}", strict=False)
+    ip = ipaddress.IPv4Address(vip_address)
+    return ip in subnet
+
 def validate_cluster_items(cluster_items, json_file_path):
     failures = []
     successes = []
@@ -410,5 +450,3 @@ def validate_softwaresubgroup_entries(software_name, json_path, json_data, valid
         failures.append(f"Failed. Unexpected error in file '{json_path}': {str(e)}")
 
     return validation_results, failures
-
-            

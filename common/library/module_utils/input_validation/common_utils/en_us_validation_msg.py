@@ -40,6 +40,9 @@ invalid_switch_ports_msg = "Please provide any port ranges as start-end (example
 duplicate_group_name_msg = "Duplicate group names are not allowed."
 empty_or_syntax_error_roles_config_msg = "File is either empty or contains syntax errors. File must contain valid YAML with 'Roles' and 'Groups' sections along with valid syntax. Check the file content and ensure proper YAML formatting."
 duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
+SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = "The role service_node defined in roles_config.yml," \
+    " but service_node entry missing in sofware_config.json, " \
+    "Please rerun local repo with service_node entry in software_config.json to deploy service nodes successfully"
 
 # provision_config.yml
 default_lease_time_fail_msg = "Please provide a valid default_lease_time."
@@ -121,6 +124,7 @@ range_ip_check_overlap_msg = "Static range and dynamic range in admin_network mu
 network_gateway_fail_msg = "Failed. network_gateway should be a valid IP address (Example: 192.168.1.1)"
 admin_network_missing_msg = "Failed. admin_network configuration is mandatory in network_spec.yml"
 netmask_bits_fail_msg = "Netmask bit must be a valid number between 1 and 32"
+range_netmask_boundary_fail_msg = "IP range is outside the valid address range for the specified netmask."
 
 # telemetry
 mandatory_field_fail_msg = "must not be empty"
@@ -146,6 +150,18 @@ def server_spec_network_key_fail_msg(nic_device):
     return f"in server_spec.yml does not start with '{nic_device}' (nicdevices)"
 ip_overlap_fail_msg = "admin network, bmc network and k8 network and IP ranges should not have any IP overlap. Check omnia_config.yml and network_spec.yml"
 telemetry_ip_overlap_fail_msg = "admin network, telemetry network and IP ranges should not have any IP overlap. Check telemetry_config.yml and network_spec.yml"
+
+# high_availability
+virtual_ip_not_in_admin_subnet = "virtual ip address provided is not in admin subnet. Check high_availability_config.yml and network_spec.yml"
+virtual_ip_not_valid = "should be outside the admin static and dynamic ranges. Check high_availability_config.yml and network_spec.yml"
+bmc_virtual_ip_not_valid = "should be outside any bmc static and dynamic ranges. Check high_availability_config.yml, network_spec.yml, and roles_config.yml"
+feild_must_be_empty = "feild must be empty."
+duplicate_virtual_ip = "is already used. Please give unique virtual ip address"
+invalid_passive_node_service_tag = "active node and passive node service tag cannot be same."
+group_not_found = "is not defined in the roles_config. Please define the group in roles_config."
+role_node_found = "is not defined in roles_config. Please define the role in roles_config."
+duplicate_active_node_service_tag = "the service tag configured for a active node is already present elsewhere in the config file. "
+duplicate_passive_node_service_tag = "the service tag configured for a passive node is already present elsewhere in the config file. "
 
 def user_name_duplicate(duplicate_usernames):
     return f'duplicate username detected {duplicate_usernames}. Check that usernames are unique in k8s_access_config.yml and passwordless_ssh_config.yml'

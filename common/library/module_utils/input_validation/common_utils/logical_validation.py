@@ -18,6 +18,7 @@ sys.path.append("module_utils/validation_flows")
 from ansible.module_utils.input_validation.validation_flows import provision_validation
 from ansible.module_utils.input_validation.validation_flows import common_validation
 from ansible.module_utils.input_validation.validation_flows import roles_validation
+from ansible.module_utils.input_validation.validation_flows import high_availability_validation
 from ansible.module_utils.input_validation.validation_flows import local_repo_validation
 
 # L2 Validation Code - validate anything that could not have been validated with JSON schema
@@ -41,11 +42,12 @@ def validate_input_logic(input_file_path, data, logger, module, omnia_base_dir, 
         "login_node_security_config.yml": common_validation.validate_login_node_security_config,
         "site_config.yml": common_validation.validate_site_config,
         "roles_config.yml": roles_validation.validate_roles_config,
-        "high_availability_config.yml": common_validation.validate_high_availability_config
+        "high_availability_config.yml": high_availability_validation.validate_high_availability_config
     }
 
     path_parts = input_file_path.split("/")
     file_name = path_parts[-1]
+    
     validation_function = validation_functions.get(file_name, None)
     print("validation_function", validation_function)
     if validation_function:

@@ -53,7 +53,7 @@
             "type": "string",
             "format": "uri",
             "minLength": 1,
-            "pattern": "^(?!\\s*$).+"  
+            "pattern": "^(https?:\\/\\/(?!\\s*$).+)?$"  
           },
           "url": {
             "type": "string",
@@ -83,20 +83,16 @@
           },
           "gpgkey": {
             "type": "string",
-            "pattern": "^https?:\\/\\/(?!\\s*$).+",
-            "minLength": 1
+            "pattern": "^(https?:\\/\\/(?!\\s*$).+)?$"
           },
           "sslcacert": {
-            "type": "string",
-            "minLength": 0
+            "type": ["string","null"]
           },
           "sslclientkey": {
-            "type": "string",
-            "minLength": 0
+            "type": ["string","null"]
           },
           "sslclientcert": {
-            "type": "string",
-            "minLength": 0
+            "type": ["string","null"]
           },
           "name": {
             "type": "string",
@@ -104,18 +100,18 @@
             "minLength": 1
           },
           "policy": {
-            "enum": ["always", "partial", "never", ""]
+            "enum": ["always", "partial", "never", "", "null"]
           }
         },
         "required": [
           "url",
           "gpgkey",
-          "name",
-          "policy"
+          "name"
         ],
        "allOf": [
           {
             "if": {
+              "required": ["sslcacert"],
               "properties": {
                 "sslcacert": { "minLength": 1 }
               }
@@ -130,6 +126,7 @@
           },
           {
             "if": {
+              "required": ["sslclientkey"],
               "properties": {
                 "sslclientkey": { "minLength": 1 }
               }
@@ -144,6 +141,7 @@
           },
           {
             "if": {
+              "required": ["sslclientcert"],
               "properties": {
                 "sslclientcert": { "minLength": 1 }
               }
@@ -157,8 +155,18 @@
             }
           }
         ]
+
       },
       "description": "URLs for repositories from which RPMs will be downloaded for Omnia features on RHEL, with SSL configuration options and policy."
+    },
+     "pulp_protocol_https": {
+      "type": "boolean",
+      "description": "Set to true to enable secure (HTTPS) connection to the Pulp server. Default is false."
+    },
+    "enable_routed_internet": {
+      "type" : "boolean",
+      "description": " enable_routed_internet should be set to true for clusters with partial or no dedicated internet access."
+
     }
   },
   "required": ["rhel_os_url","omnia_repo_url_rhel"],
