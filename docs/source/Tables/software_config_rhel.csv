@@ -23,23 +23,22 @@ Required","* Path where the user has placed the ``<OS>.iso`` image that needs to
 ``string``
 
 Required","* Omnia sets up a local Pulp repository on the OIM and downloads all the necessary packages or images for the cluster into this repository. The behavior of the Pulp container varies depending on the value of the ``repo_config`` parameter.
-* In case of ``always``, Omnia downloads all the required packages from the internet when the ``local_repo.yml`` is executed. These packages are then cached locally, allowing them to be reused in future operations without needing to download them again.
-* In case of ``partial``, during the execution of the ``local_repo.yml`` playbook, Omnia first checks the ``user_repo_url`` or ``user_registry`` and downloads all the packages from the URLs listed there. Any packages not found in these sources are then fetched from the internet. However, these packages are not cached locally—they are discarded after use.
-* In case of ``never``, Omnia does not store any packages locally. Instead, the Pulp container functions solely as a proxy, streaming the required packages directly from the source URLs each time they are requested.
+* In case of ``always``, packages are downloaded and cached on OIM during ``local_repo.yml`` execution; compute nodes get the packages from OIM. Caching these packages allow them to be reused in future operations without needing to download them again.
+* In case of ``partial``, packages are not pre-downloaded or cached. OIM downloads from upstream URLs when needed.
+* In case of ``never``, the Pulp container functions solely as a proxy, streaming the required packages directly from the source URLs. Packages are not downloaded or cached.
 * **Accepted value**: ``always``, ``partial``, ``never``
 * **Default value**: ``always``
 
-.. note:: Repositories that are not available as images, debian packages, RPMs, manifests, iso, or tarballs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.
-
-￹
-**Value****Pulp repository policy****Downloaded on OIM****Caching on OIM****Description**￻
-￹
-``always``on-demandYesYesPackages are downloaded and cached on OIM during ``local_repo.yml`` execution; compute nodes get the packages from OIM.￻
-￹
-``partial``on-demandNoNoPackages are not pre-downloaded or cached. OIM streams from upstream when needed.￻
-￹
-``never``streamedNoNoOIM acts only as a transparent proxy. No caching or downloads at all.￻
-"
+..note:: The following packages will always be downloaded from the local Pulp repository, regardless of the value of ``repo_config``:
+* debian packages
+* RPMs
+* pip modules
+* manifests
+* tarballs
+* container images
+* AMD GPU drivers
+* OFED
+* CUDA"
 "**softwares**
 
 ``JSON list``
