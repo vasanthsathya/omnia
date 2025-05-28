@@ -32,3 +32,4 @@ service_node_sync_files:
   - { src: "{{ hostvars['omnia_provision']['syncfiles_share_path'] }}", dest: "{{ hostvars['omnia_provision']['provision_shared_path'] }}" }
   - { src: "/opt/omnia/provision/install", dest: "/", rsync_opts: ["--exclude=autoinst"] }
   - { src: "/opt/omnia/provision/tftpboot", dest: "/" }
+  - { src: "/etc/xcat/hostkeys", dest: "/etc/xcat/" }
