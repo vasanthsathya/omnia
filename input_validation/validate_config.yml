@@ -29,6 +29,7 @@
     - server_spec
     - prepare_oim
     - telemetry
+    - additional_software
 
 - name: Validate omnia input config
   hosts: localhost

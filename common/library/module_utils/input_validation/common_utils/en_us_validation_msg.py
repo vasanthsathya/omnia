@@ -40,6 +40,9 @@ invalid_switch_ports_msg = "Please provide any port ranges as start-end (example
 duplicate_group_name_msg = "Duplicate group names are not allowed."
 empty_or_syntax_error_roles_config_msg = "File is either empty or contains syntax errors. File must contain valid YAML with 'Roles' and 'Groups' sections along with valid syntax. Check the file content and ensure proper YAML formatting."
 duplicate_group_name_in_layers_msg = "The following groups are mapped to both frontend and compute layers, which is not allowed for group: [{0}] in frontend layer: [{1}] and compute layer: [{2}]"
+SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = "The role service_node defined in roles_config.yml," \
+    " but service_node entry missing in sofware_config.json, " \
+    "Please rerun local repo with service_node entry in software_config.json to deploy service nodes successfully"
 
 # provision_config.yml
 default_lease_time_fail_msg = "Please provide a valid default_lease_time."
@@ -113,6 +116,9 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
 def software_mandatory_fail_msg(software_name):
     return f"in software_config.json. Please add the corresponding field '{software_name}' to the JSON. Look at /examples/template_ubuntu_software_config.json for an example"
 
+def json_file_mandatory(file_path):
+     return f"is present in software_config.json. Please make sure that the corresponding JSON file is present at location '{file_path}'"
+
 # network_spec.json
 range_ip_check_fail_msg = "Failed. IP range should be in valid format (Example: 192.168.1.1-192.168.1.254)"
 range_ip_check_overlap_msg = "Static range and dynamic range in admin_network must not overlap"
@@ -160,6 +166,13 @@ duplicate_passive_node_service_tag = "the service tag configured for a passive n
 
 def user_name_duplicate(duplicate_usernames):
     return f'duplicate username detected {duplicate_usernames}. Check that usernames are unique in k8s_access_config.yml and passwordless_ssh_config.yml'
+
+# addtional_software
+ADDITIONAL_SOFTWARE_FAIL_MSG = "The additional_software is mandatory in additional_software.json"
+ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG = ("The role or group name, [{0}] is present in subgroup "
+                                         "but not present in roles_config.yml")
+MISSING_IN_ADDITIONAL_SOFTWARE_MSG = ("The role or group name is present in software_config.json, "
+                                     "but [{0}] is not present in additional_software.yml")
 
 # login_node_security
 def restrict_softwares_fail_msg(software):
