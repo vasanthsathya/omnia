@@ -25,7 +25,7 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
         10.5.0.101,service,9XK3FZ2
         10.5.1.102,compute,5D4N8Q3
     
-    * To run the ``telemetry.yml`` playbook on nodes with **Intel Gaudi** accelerators, first execute the ``performance_profile.yml`` playbook. Once that’s done, you can run the ``telemetry.yml`` playbook separately.
+    * To run the telemetry services on nodes with **Intel Gaudi** accelerators, first execute the ``performance_profile.yml`` playbook followed by the ``telemetry.yml`` playbook.
 
     * To take a local backup of the telemetry data stored in timescaleDB, use the `timescaledb utility <../Utils/timescaledb_utility.html>`_.
 
@@ -88,35 +88,6 @@ Filter logs using Loki
 
         (job="cluster deployment logs") |= "nodename"
         (job="compute log messages") |= "nodename" |="node_username"
-
-
-View telemetry data in Grafana
----------------------------------
-
-    1. Login to the Grafana UI by connecting to the cluster IP of grafana service obtained above via port 5000. Example: ``http://xx.xx.xx.xx:5000/login``
-
-    2. In the Explore page, select **telemetry-postgres**.
-
-        .. image:: ../images/Grafana_Telemetry_PostGRES.png
-            :width: 600px
-
-    3. The query builder allows you to create SQL commands that can be used to query the ``omnia_telemetry.metrics`` table. Filter the data required using the following fields:
-
-        * **id**: The name of the metric.
-        * **context**: The type of metric being collected (Regular Metric, Health Check Metric and GPU metric).
-        * **label**: A combined field listing the **id** and **context** row values.
-        * **value**: The value of the metric at the given timestamp.
-        * **unit**: The unit measure of the metric (eg: Seconds, kb, percent, etc.)
-        * **system**: The service tag of the cluster node.
-        * **hostname**: The hostname of the cluster node.
-        * **time**: The timestamp at which the metric was polled from the cluster node.
-
-    The below image shows a sample of **iDRAC telemetry data in Grafana**:
-
-    .. image:: ../images/idractelemetry.png
-        :width: 600px
-
-.. note:: If you are more comfortable using SQL queries over the query builder, click on **Edit SQL** to directly provide your query. Optionally, the data returned from a query can be viewed as a graph.
 
 Visualizations
 ----------------
