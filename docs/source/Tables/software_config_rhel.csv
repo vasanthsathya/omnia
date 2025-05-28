@@ -29,7 +29,17 @@ Required","* Omnia sets up a local Pulp repository on the OIM and downloads all 
 * **Accepted value**: ``always``, ``partial``, ``never``
 * **Default value**: ``always``
 
-.. note:: Repositories that are not available as images, debian packages, RPMs, manifests, iso, or tarballs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.	"
+.. note:: Repositories that are not available as images, debian packages, RPMs, manifests, iso, or tarballs will be downloaded and configured locally on the OIM. Additionally, AMD GPU drivers, CUDA, and OFED are also downloaded by default if they are mentioned in the ``/opt/omnia/input/project_default/software_config.json``.
+
+￹
+**Value****Pulp repository policy****Downloaded on OIM****Caching on OIM****Description**￻
+￹
+``always``on-demandYesYesPackages are downloaded and cached on OIM during ``local_repo.yml`` execution; compute nodes get the packages from OIM.￻
+￹
+``partial``on-demandNoNoPackages are not pre-downloaded or cached. OIM streams from upstream when needed.￻
+￹
+``never``streamedNoNoOIM acts only as a transparent proxy. No caching or downloads at all.￻
+"
 "**softwares**
 
 ``JSON list``

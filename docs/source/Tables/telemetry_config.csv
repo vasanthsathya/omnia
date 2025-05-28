@@ -21,7 +21,7 @@ Mandatory	","* Specifies the tool that collects the iDRAC telemetry data. This p
 
 ``boolean``
 
-Mandatory	","* Enables visualizations for the iDRAC telemtry data via Grafana dashboards. 
+Optional	","* Enables visualizations for the iDRAC telemtry data via Grafana dashboards. 
 * **Accepted values**: ``true`` or ``false``
 * **Default value**: ``false``
 
