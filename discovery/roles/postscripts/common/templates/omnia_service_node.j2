@@ -71,8 +71,8 @@ if [ "$str_os_type" = "redhat" ]; then
     sudo dnf install -y podman
 fi
 
-# sudo systemctl enable podman.socket || { echo "Error enabling podman.socket." >> "$LOGFILE"; exit 1; }
-# sudo systemctl start podman.socket || { echo "Error starting podman.socket." >> "$LOGFILE"; exit 1; }
+# Configuring service node for rsyslog
+echo -e 'module(load="imudp") \ninput(type="imudp" port="514")' | sudo tee /etc/rsyslog.d/01-receiver.conf > /dev/null
 
 log "INFO: Renaming admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}."
 # Ensure the management interface name is the same as active OIM, if not add the active OIM's interface name as an alternative name
