@@ -1,5 +1,5 @@
-Software Update
-=================
+Role based additional software installation
+============================================
 
 To install multiple packages on cluster nodes in a bulk operation, the ``software_update.yml`` playbook can be leveraged.
 
@@ -25,33 +25,36 @@ Steps
 
     * Specify the **role** in order to install the desired packages on all the nodes linked to a specific role. 
         
-        **Example**: In the below example, the packages will be installed on all the nodes linked to the role ``default`` and ``compiler_node``: ::
+        **Example**: In the below example, the packages will be installed on all the nodes linked to the role ``default`` and ``compiler_node``:
+        ::
 
-        "additional_software": [
+            "additional_software": [
                 
-                {"name": "default,compiler_node"},
+                {"name": "default,compiler_node"}
 
-        ]
+            ]
 
     * Specify the **group names** in order to install the desired packages on all the nodes linked to specific groups. 
         
-        **Example**: In the below example, the packages will be installed on all the nodes linked to ``grp1`` and ``grp 2``: ::
+        **Example**: In the below example, the packages will be installed on all the nodes linked to ``grp1`` and ``grp 2``: 
+        ::
 
-        "additional_software": [
+            "additional_software": [
                 
                 {"name": "grp1,grp2"}
 
-        ]   
+            ]
 
     * Specify a combination of **role** and **group names** in order to install the desired packages on a specific group of nodes under a role. 
         
-        **Example**: In the below example, the packages will be installed on all the nodes linked to ``grp2`` of the ``default`` role: ::
+        **Example**: In the below example, the packages will be installed on all the nodes linked to ``grp2`` of the ``default`` role: 
+        ::
 
-        "additional_software": [
+            "additional_software": [
                 
-                {"name": "default,grp2"},
-        ]    
+                {"name": "default,grp2"}
 
+            ]
 
 .. note:: If no roles or groups are specified, the packages will be installed on all the nodes.
 
