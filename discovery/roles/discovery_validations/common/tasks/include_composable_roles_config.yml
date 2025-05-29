@@ -103,4 +103,4 @@
   when:
     - "'management_layer' not in ansible_run_tags"
     - not hierarchical_provision_status
-    - service_role_required
+    - "'service_node' in roles_data"
