@@ -19,6 +19,20 @@ To create local repositories on the Pulp container, execute the ``local_repo.yml
     cd /omnia/local_repo
     ansible-playbook local_repo.yml
 
+Metadata report
+-----------------
+
+After a successful execution of the ``local_repo.yml`` playbook, a metadata file called ``localrepo_metadata.yml`` is created under the ``/opt/omnia/offline_repo/.data/`` directory. 
+This file captures the ``repo_config`` (``always``, ``partial``, or ``never``) details provided during the playbook execution. 
+If the ``local_repo.yml`` playbook is re-run, it compares the current repository policy with the previous metadata. Based on this, there can be two scenarios:
+
+    * If a change in policy is detected, you will be prompted to confirm whether to proceed with the updated configuration or not.
+
+        * If you agree, the playbook continues with the updated policy and after successful execution it updates the metadata file with the new repository policy.
+        * If you decline, the playbook execution is aborted and the metadata file remains unchanged.
+
+    * If there is no change in policy, the playbook execution proceeds without prompting. The metadata file remains unchanged.
+         
 Check status of the packages
 ------------------------------
 
