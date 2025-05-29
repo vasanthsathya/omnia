@@ -13,14 +13,18 @@
 # limitations under the License.
 ---
 
-- name: Create directories for each service tag
+- name: Create all required directories for each service tag
   ansible.builtin.file:
-    path: "{{ service_node_dir }}"
+    path: "{{ service_node_dir }}/{{ dir }}"
     state: directory
     mode: "{{ file_permissions }}"
-  loop: "{{ discovered_service_nodes }}"
+  loop: "{{ discovered_service_nodes | product(dirs) | list }}"
   loop_control:
-    label: "{{ item.service_tag }}"
+    label: "{{ item.0.service_tag }} / {{ item.1 }}"
+  vars:
+    dirs:
+      - "pcs/config"
+      - "pcs/corosync"
 
 - name: Render corosync.conf for non-HA nodes
   loop: "{{ discovered_service_nodes }}"
@@ -29,7 +33,7 @@
   when: node.service_tag not in service_node_ha_data.service_nodes | map(attribute='active_node_service_tag') | list
   ansible.builtin.template:
     src: "{{ corosync_non_ha_tmpl }}"
-    dest: "{{ service_node_base_dir }}/{{ node.service_tag }}/corosync.conf"
+    dest: "{{ corosync_tmpl_nonha_dest }}"
     mode: "{{ file_permissions }}"
 
 - name: Generate pcs container file for non-HA nodes
