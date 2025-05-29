@@ -7,7 +7,7 @@ Prerequisites
 ---------------
 
 * Download the required packages to the Pulp container using the ``local_repo.yml`` playbook.
-* Ensure that the target cluster nodes are in ``booted`` state.OMN01D-494
+* Ensure that the target cluster nodes are in ``booted`` state.
 * Add the following entry under the ``softwares`` section in ``/opt/omnia/input/project_default/software_config.json``: ::
     
     "softwares": [ 
@@ -21,7 +21,7 @@ Steps
 
 1. Create a ``additional_software.json`` file under ``input/config/<cluster_os_type>/<cluster_os_version>`` directory, with all the additional packages listed. These packages will be installed on the cluster nodes.
 
-2. Provide details about the software installation requirements for each group or role. Use the format of subgroups, where each subgroup name is a comma-separated list of group or role names.
+2. Provide details about the software installation requirements for each group or role in the ``/opt/omnia/input/project_default/software_config.json`` file. Use the format of subgroups, where each subgroup name is a comma-separated list of group or role names.
 
     * Specify the **role** in order to install the desired packages on all the nodes linked to a specific role. 
         
@@ -77,7 +77,7 @@ The below provided sample contains all the possible combinations for roles and g
 ::
 
             {
-              "custom_image": {
+              "additional_software": {
                 "cluster": [
                   {
                     "package": "quay.io/jetstack/cert-manager-controller",

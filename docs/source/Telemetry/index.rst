@@ -8,6 +8,10 @@ Prerequisites
 
 To enable telemetry support, set ``idrac_telemetry_support`` to ``true`` and ``idrac_telemetry_collection_type`` to ``prometheus`` in the ``telemetry_config.yml`` file. Then, run the ``prepare_oim.yml`` playbook, which deploys the containers necessary for the telemetry service. For more information, `click here <../OmniaInstallGuide/RHEL_new/prepare_oim.html#telemetry-config-yml>`_.
 
+.. note:: To update the ``bmc_username`` and ``bmc_password`` fields in the ``omnia_config_credentials.yml`` input file for the connected iDRACs, use the command provided below. Do not alter any other fields in the file, as this may lead to unexpected failures.
+    ::
+        ansible-vault edit omnia_config_credentials.yml --vault-password-file .omnia_config_credentials_key
+
 Playbook execution
 -------------------
 
