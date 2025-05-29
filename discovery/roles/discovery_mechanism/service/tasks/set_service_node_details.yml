@@ -100,3 +100,20 @@
       ansible.builtin.fail:
         msg: "{{ dhcp_config_apply_fail_msg }} {{ makedhcp_result.stderr }}"
       when: makedhcp_result.stderr is defined
+
+- name: Try to restart nfs-server service if not running
+  block:
+    - name: Restart nfs-server service if not running
+      ansible.builtin.systemd:
+        name: nfs-server
+        state: restarted
+      register: nfs_restart
+      until: nfs_restart is not failed
+      retries: "{{ service_retries }}"
+      when:
+        - "'nfs-server' in ansible_facts.services"
+
+  rescue:
+    - name: Unable to start nfs-server service
+      ansible.builtin.debug:
+        msg: "{{ nfs_start_fail_msg }} Error: {{ nfs_restart }}"

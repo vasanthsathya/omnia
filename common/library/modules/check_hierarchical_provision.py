@@ -126,9 +126,9 @@ def get_service_node_ha_dict(service_node_ha_data, booted_service_nodes_data):
         raise ValueError(f" ERROR: \
             These service tags '{invalid_tags}' mentioned in 'high_availability_config.yml' \
             for service node HA may be incorrect, or the node might not have been provisioned. \
-            * If not provisioned, verify the input in roles_config.yml and execute discovery_provision.yml \
+            * If service_node not provisioned, verify the input in roles_config.yml and execute discovery_provision.yml \
             playbook with 'management_layer' tag. \
-            * If already provisioned with management layer nodes, verify the input in\
+            * If service_node is already provisioned with management layer nodes, verify the input in\
             high_availability_config.yml and execute discovery_provision.yml"
         )
     return sn_ha_data
@@ -144,7 +144,7 @@ def check_hierarchical_provision(group, parent, booted_service_nodes_data):
         f"Error: The service tag '{parent}' specified in the 'parent' field for group '{group}' \
         in roles_config.yml may be incorrect, or the node might not have been provisioned. \
         Please verify the input in roles_config.yml and execute discovery_provision.yml playbook \
-        with 'management_layer' tag."
+        with 'management_layer' tag to provision service nodes."
         )
 
 

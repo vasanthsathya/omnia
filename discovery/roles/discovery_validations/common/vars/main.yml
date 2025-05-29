@@ -80,7 +80,12 @@ ha_nfs_error_msg: |
   ERROR: Internal NFS is not supported with HA OIM or Service HA.
   Please configure External NFS for HA capabilities.
 warning_wait_time_10s: 10
-
+hierarchical_provision_warning_msg: |
+  "WARNING: service_node role is defined in roles_config.yml but non of the groups have parent field defined.
+  This is compute layer provisioning and non of the groups have valid parent field defined. If this is expected,
+  skip this warning and continue with this playbook execution.
+  If this is not intended, please define parent field in compute layer groups in roles_config.yml
+  for hierarchical provisioning and re-run the playbook."
 # Usage: include_local_repo_config.yml
 local_repo_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/local_repo_config.yml"
 software_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/software_config.json"
