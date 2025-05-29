@@ -17,4 +17,7 @@
   containers.podman.podman_container_exec:
     name: "{{ squid_container_name }}"
     command: "{{ reload_squid_cmd }}"
-  register: result
+  register: squid_reload_result
+  retries: "{{ squid_reload_retries }}"
+  delay: "{{ squid_reload_delay }}"
+  until: squid_reload_result.rc == 0

@@ -16,18 +16,23 @@ acl Safe_ports port {{ port }}
 {% endfor %}
 
 # Ports from local_repo_config.yml
+{% if hostvars['localhost']['omnia_repo_url_rhel'] is defined and hostvars['localhost']['omnia_repo_url_rhel'] %}
 {% for repo in hostvars['localhost']['omnia_repo_url_rhel'] if repo.port is defined %}
 {% if repo.port not in listOfAddedPorts %}
-{% set tmp = listOfAddedPorts.append(repo.port) %}
+{% set _ = listOfAddedPorts.append(repo.port) %}
 acl Safe_ports port {{ repo.port }}
 {% endif %}
 {% endfor %}
+{% endif %}
+
+{% if hostvars['localhost']['rhel_os_url'] is defined and hostvars['localhost']['rhel_os_url'] %}
 {% for repo in hostvars['localhost']['rhel_os_url'] if repo.port is defined %}
 {% if repo.port not in listOfAddedPorts %}
-{% set tmp = listOfAddedPorts.append(repo.port) %}
+{% set _ = listOfAddedPorts.append(repo.port) %}
 acl Safe_ports port {{ repo.port }}
 {% endif %}
 {% endfor %}
+{% endif %}
 
 #
 # Recommended minimum Access Permission configuration:
