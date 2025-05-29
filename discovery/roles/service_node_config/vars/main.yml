@@ -28,14 +28,11 @@ failure_timeout: '100s'
 
 # Usage: configure_non_ha_servicenode_config.yml
 service_node_dir: "{{ service_node_base_dir }}/{{ item.service_tag }}"
-pcs_config_dir: "{{ service_node_dir }}/pcs/config"
-pcs_corosync_dir: "{{ service_node_dir }}/pcs/corosync"
 service_admin_nic_ip: "{{ node.admin_ip }}"
 service_node_name: "{{ node.hostname }}"
-pcs_container_tmpl_nonha_dest: "{{ service_node_dir }}/{{ pcs_container_name }}.container"
-pcs_start_tmpl_nonha_dest: "{{ pcs_config_dir }}/pcs-start.sh"
+pcs_container_tmpl_nonha_dest: "{{ service_node_base_dir }}/{{ node.service_tag }}/{{ pcs_container_name }}.container"
+pcs_start_tmpl_nonha_dest: "{{ service_node_base_dir }}/{{ node.service_tag }}/pcs-start.sh"
 corosync_non_ha_tmpl: "corosync_non_ha.conf.j2"
-corosync_tmpl_nonha_dest: "{{ pcs_corosync_dir }}/corosync.conf"
 
 # Usage: generate_active_servicenode_config.yml
 active_node_corosync_dest: "{{ service_node_base_dir }}/{{ item.key }}/corosync.conf"
