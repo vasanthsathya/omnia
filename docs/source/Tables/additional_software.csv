@@ -12,8 +12,8 @@
      - custom 
 
 
-* In the above case, user is required to create ``custom.json`` under ``input/config/<cluster_os_type>/<cluster_os_version>``. For example: ``input/config/rhel/9.4/custom.json``
-* This ``.json`` file should contain the list of .rpm packages, to be installed on the cluster nodes.                                               "
+* In the above case, user is required to create ``additional_software.json`` under ``input/config/<cluster_os_type>/<cluster_os_version>``. For example: ``input/config/rhel/9.4/additional_software.json``
+* This ``.json`` file should contain the list of additional ``.rpm`` packages, to be installed on the cluster nodes.                                               "
 "package_list   
      ``string``
      Required  
