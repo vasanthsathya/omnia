@@ -90,12 +90,14 @@
       ansible.builtin.file:
         path: "{{ service_node_metadata_path }}"
         state: touch
+        mode: "{{ metadata_perm }}"
 
     - name: Update service node metadata file
       ansible.builtin.copy:
         dest: "{{ service_node_metadata_path }}"
         content: "{{ booted_service_nodes_data | to_yaml }}"
         force: true
+        mode: "{{ metadata_perm }}"
 
 - name: Get the group(s) for OIM HA
   when:

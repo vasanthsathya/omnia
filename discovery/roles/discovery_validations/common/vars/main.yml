@@ -205,7 +205,7 @@ provision_os_success_msg: "cluster_os_type validated"
 provision_os_fail_msg: |
   "Failed. Incorrect cluster_os_type selected.
   If Omnia Infrastructure Manager OS RHEL, only cluster_os_type {{ os_supported_rhel }} is supported."
-supported_rhel_os_version: ["9.4"]
+supported_rhel_os_version: ["9.6"]
 supported_ubuntu_os_version: ["20.04", "22.04", "24.04"]
 provision_os_version_fail_msg: |
   "Failed. Invalid cluster_os_version: {{ provision_os_version }} provided in software_config.json.
