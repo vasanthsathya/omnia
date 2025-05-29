@@ -83,6 +83,17 @@
     hierarchical_provision_status: "{{ hierarchical_output.hierarchical_provision_status | default(false) }}"
     groups_roles_info: "{{ hierarchical_output.groups_roles_info | default(groups_roles_info) }}"
 
+- name: Create service node metadata file
+  ansible.builtin.file:
+    path: "{{ service_node_metadata_path }}"
+    state: touch
+
+- name: Update service node metadata file
+  ansible.builtin.file:
+    path: "{{ service_node_metadata_path }}"
+    state: present
+    contents: "{{ booted_service_nodes_data | to_yaml }}"
+
 - name: Get the group(s) for OIM HA
   when:
     - oim_ha_role_required
