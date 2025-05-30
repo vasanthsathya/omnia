@@ -18,7 +18,7 @@
   block:
     - name: Generate service node HA config file
       service_ha_config:
-        high_availability_config_path: "{{ high_availability_config_path  }}"
+        high_availability_config_path: "{{ high_availability_config_path }}"
         service_node_base_dir: "{{  service_node_base_dir }}"
       delegate_to: localhost
       connection: local
