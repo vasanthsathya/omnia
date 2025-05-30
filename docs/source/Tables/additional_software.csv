@@ -1,38 +1,17 @@
-﻿Parameter,Details
-"softwares_list  
-     ``string`` 
-     Required   
-                
-                
-                ","* Mandatory, when ``package_list`` is not provided.                                                                                                                                               
-* This variable contains the list of software group mentioned in ``software_config.json``.                                                                                                   
-* Example: ::
-
-    softwares_list: 
-     - custom 
-
-
-* In the above case, user is required to create ``additional_software.json`` under ``input/config/<cluster_os_type>/<cluster_os_version>``. For example: ``input/config/rhel/9.4/additional_software.json``
-* This ``.json`` file should contain the list of additional ``.rpm`` packages, to be installed on the cluster nodes.                                               "
-"package_list   
-     ``string``
-     Required  
-               ","* Mandatory, when ``softwares_list`` is not provided.                                               
-* This variable contains the list of packages to be installed on remote nodes.         
-* Example: ::
-
-    package_list: 
-     - linux-generic
-     - wget 
-
-
-* Kernel package name for RHEL is ``kernel*``."
-"reboot_required 
-     ``boolean``
-     Required   
-                ","Indicates whether the listed cluster nodes will be rebooted or not.
-                                                           
-Choices:                                                   
-                                                           
-     * ``true``                                            
-     * ``false`` <- Default                                "
+﻿Parameter,Mandatory/Optional,Details
+``package``,Mandatory,"* **Type**: string
+* Provide the name of the additional software package to be installed on the nodes."
+``type``,Mandatory,"* **Type**: string
+* Provide the type of the additional software package.
+* **Example**: ``image``, ``rpm``"
+``url``,Optional,Provide the public URL from which the package will be downloaded.
+``path``,Optional,"If the package is present locally, add the path to it in this variable."
+``digest``,Optional,"* **Type**: string
+* This variable is only applicable for ``image`` type.
+* Contains the digest value of the image being pulled from the external repository."
+``tag``,Optional,"* **Type**: string
+* This variable is only applicable for ``image`` type.
+* Contains the tag of the additional software image."
+``reboot_required``,Optional,"* Indicates whether the listed cluster nodes will be rebooted post software package installation or not.
+* **Accepted values**: ``true`` or ``false``
+* **Default value**: ``false``"

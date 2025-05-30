@@ -36,6 +36,16 @@ Configurations made by the ``discovery_provision.yml`` playbook
         - { mount_point: "/var", desired_capacity: "102400" }
         - { mount_point: "swap", desired_capacity: "10240" }
 
+**Installation of additional software packages**
+
+Apart from the packages listed in the ``/opt/omnia/input/project_default/software_config.json`` file, additional software can also be installed on the cluster nodes during cluster provisioning. TO do so, follow the below steps:
+
+    1. First, fill up the ``additional_software.json`` and ``software_config.json`` input files.
+    2. Then, execute the ``local_repo.yml`` playbook in order to download the required packages.
+    3. Finally, execute the ``discover_and_provision.yml`` playbook in order to provision the cluster nodes along with the new additional software packages.
+
+For more information on how to fill up the input files, `click here <../../../Utils/software_update.html>`_.
+
 Running the provision tool
 -------------------------------
 

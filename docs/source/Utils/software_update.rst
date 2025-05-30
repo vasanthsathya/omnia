@@ -1,7 +1,15 @@
 Role based additional software installation
 ============================================
 
-To install multiple packages on cluster nodes in a bulk operation, the ``software_update.yml`` playbook can be leveraged.
+Apart from the packages listed in the ``/opt/omnia/input/project_default/software_config.json`` file, additional software can also be installed on the cluster nodes. You can do so in two following ways: 
+
+1. To install additional packages during provisioning, you need to follow the below steps:
+
+    * First, fill up the ``additional_software.json`` and ``software_config.json`` input files.
+    * Then, execute the ``local_repo.yml`` playbook in order to download the required packages.
+    * Finally, execute the ``discover_and_provision.yml`` playbook in order to provision the cluster nodes along with the new additional software packages.
+
+2. To install packages after the cluster is up and running, the ``software_update.yml`` utility playbook can be leveraged separately.
 
 Prerequisites
 ---------------
@@ -76,95 +84,35 @@ The below provided sample contains all the possible combinations for roles and g
 
 ::
 
-            {
-              "additional_software": {
-                "cluster": [
-                  {
-                    "package": "quay.io/jetstack/cert-manager-controller",
-                    "type": "image",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
-                  
-                  {
-                    "package": "quay.io/jetstack/cert-manager-webhook",
-                    "type": "image",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
-                  
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
-                ]
-              
-              "default, compiler_node": {
-                "cluster": [
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
+    {
+        "additional_software": {
 
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  }
-                ]
-              
-              "grp1,grp3": {
-                "cluster": [
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
-
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
-                ]
-              
-              "default,grp2": {
-                "cluster": [
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  },
-
-                  {
-                    "package": "nfs-common",
-                    "type": "deb",
-                    "url": "",
-                    "path": ""
-                    "reboot_required":
-                  }
-
-                ]
-              
-              }
-
-            }
+	        "cluster": [
+	            {
+		            "package": "quay.io/jetstack/cert-manager-controller",
+		            "type": "image",
+                    "tag": "v1.13.0"
+                },
+                    
+                {
+                    "package": "nfs-utils",
+                    "type": "rpm",
+                    "repo_name": "baseos"
+                }
+            ], 
+            
+        "default,compiler_node": {
+        
+            "cluster": [
+                {
+                    "package_list": ["python3-PyMySQL", "apr-util", "asciidoc"],
+                    "type": "rpm_list",
+                    "repo_name": "appstream",
+                    "reboot_required": true
+                }
+            ]
+        }
+    }
 
 
 Playbook execution
