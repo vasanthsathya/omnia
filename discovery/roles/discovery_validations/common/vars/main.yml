@@ -56,7 +56,7 @@ nfs_not_configured: "When enabling OIM HA or Service Node HA or Heirarchical clu
 # Usage: include_composable_roles_config.yml
 omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
 service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
-metadata_perm: 0644
+metadata_perm: "0644"
 omnia_images_path: "/opt/omnia/images/omnia_images.tar"
 omnia_images_path_fail_msg: |
   "Images tarball does not exist. To support either OIM HA or heirarchical provisioning, input must be provided in
