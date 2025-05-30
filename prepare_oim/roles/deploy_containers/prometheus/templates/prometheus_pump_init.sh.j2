@@ -1,4 +1,6 @@
-# Copyright 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+#!/bin/bash
+
+# Copyright © 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,22 +13,5 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
 
-- name: Saving management station os
-  ansible.builtin.set_fact:
-    mgmt_os: "{{ ansible_facts['distribution'] | lower }}"
-
-- name: Install PyYAML using pip3
-  ansible.builtin.pip:
-    name: PyYAML
-    state: present
-    executable: pip3
-    extra_args: --ignore-installed
-
-- name: Install python packages using pip3
-  ansible.builtin.pip:
-    name: "{{ item }}"
-    state: present
-    executable: pip3
-  with_items: "{{ pip_packages }}"
+go run /go/src/github.com/telemetry-reference-tools/cmd/prometheuspump/prometheuspump.go

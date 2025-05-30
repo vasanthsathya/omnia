@@ -20,12 +20,14 @@ pcs_container_name: "omnia_pcs"
 read_write_mode: "0644"
 read_write_execute_mode: "0744"
 pcs_container_dir: "{{ oim_shared_path }}/omnia/pcs"
-pcs_container_log_dir: "{{ oim_shared_path }}/omnia/log/pcs"
+pcs_container_corosync_log_dir: "{{ oim_shared_path }}/omnia/log/pcs/corosync"
+pcs_container_pacemaker_log_dir: "{{ oim_shared_path }}/omnia/log/pcs/pacemaker"
 container_systemd_dir: "/etc/containers/systemd"
 network_spec: "{{ hostvars['localhost']['input_project_dir'] }}/network_spec.yml"
 network_spec_syntax_fail_msg: "Failed. Syntax errors present in network_spec.yml. Fix errors and re-run playbook again."
 pcs_directories:
-  - { path: "{{ pcs_container_log_dir }}", mode: "{{ read_write_mode }}" }
+  - { path: "{{ pcs_container_corosync_log_dir }}", mode: "{{ read_write_execute_mode }}" }
+  - { path: "{{ pcs_container_pacemaker_log_dir }}", mode: "{{ read_write_execute_mode }}" }
   - { path: "{{ pcs_container_dir }}/corosync", mode: "{{ read_write_execute_mode }}" }
   - { path: "{{ container_systemd_dir }}", mode: "{{ read_write_mode }}" }
 
@@ -51,7 +53,8 @@ pcs_volumes:
   - /run/podman/podman.sock:/run/podman/podman.sock:ro
   - "{{ pcs_container_dir }}/pcs-start.sh:{{ pcs_resource_script_path }}{{ selinux_option }}"
   - "{{ pcs_container_dir }}/corosync:/etc/corosync{{ selinux_option }}"
-  - "{{ pcs_container_log_dir }}:/var/log/cluster{{ selinux_option }}"
+  - "{{ pcs_container_corosync_log_dir }}:/var/log/cluster{{ selinux_option }}"
+  - "{{ pcs_container_pacemaker_log_dir }}:/var/log/pacemaker{{ selinux_option }}"
   - "{{ oim_shared_path }}/omnia:/opt/omnia{{ selinux_option }}"
 
 pcs_container_success_msg: "The {{ pcs_container_name }} container has been successfully deployed."
@@ -185,3 +188,109 @@ pcs_failed_resource_msg: |
   please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
   After the cleanup, you can re-run the original playbook to deploy the {{ pcs_container_name }} container
   and its resources.
+
+# Usage: pcs-container-resource-init.sh: idrac_telemetry
+telemetry_pcs_group: omnia_telemetry
+# mysqldb
+mysql_env_vars:
+  - "MYSQL_DATABASE={{ mysql_database }}"
+mysql_run_opts: >-
+  --restart=no
+  --network=host
+  --secret {{ mysql_root_password }},type=env,target=MYSQL_ROOT_PASSWORD
+  --secret {{ mysql_user }},type=env,target=MYSQL_USER
+  --secret {{ mysql_user_password }},type=env,target=MYSQL_PASSWORD
+  --env {{ mysql_env_vars | join(' ') }}
+  {{ mysqldb_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
+  --name {{ mysql_container_name }}
+  --entrypoint {{ mysql_entry_script }}
+  --detach
+
+# activemq
+activemq_run_opts: >-
+  --network=host
+  --volume activemq_log:/opt/activemq/data{{ selinux_option }}
+  --detach
+  --name {{ activemq_container_name }}
+
+# idrac_telemetry_receiver
+idrac_telemetry_receiver_run_opts: >-
+  --network=host
+  --secret {{ mysql_user }},type=env,target=MYSQL_USER
+  --secret {{ mysql_user_password }},type=env,target=MYSQL_PASSWORD
+  {% for volume in idrac_telemetry_receiver_volumes %}
+  --volume {{ volume }}
+  {% endfor %}
+  --workdir=/go/src/github.com/telemetry-reference-tools
+  {% for key, value in idrac_telemetry_receiver_env.items() %}
+  --env {{ key }}={{ value }}
+  {% endfor %}
+  --name {{ idrac_telemetry_receiver_container_name }}
+  --entrypoint {{ idrac_telemetry_receiver_entry_script }}
+  --detach
+
+# prometheus_pump
+prometheus_pump_run_opts: >-
+  --network=host
+  {% for key, value in prometheus_pump_receiver_env.items() %}
+  --env {{ key }}={{ value }}
+  {% endfor %}
+  {% for volume in prometheus_pump_volumes %}
+  --volume {{ volume }}
+  {% endfor %}
+  --name {{ prometheus_pump_container_name }}
+  -w /go/src/github.com/telemetry-reference-tools
+  --entrypoint {{ prometheus_pump_entry_script }}
+  --detach
+
+# prometheus
+prometheus_run_opts: >-
+  --network=host
+  {% for key, value in prometheus_env.items() %}
+  --env {{ key }}={{ value }}
+  {% endfor %}
+  {% for volume in prometheus_volumes %}
+  --volume {{ volume }}
+  {% endfor %}
+  --name {{ prometheus_container_name }}
+  --detach
+
+# Usage: pcs-container-resource-init.sh: visualization
+visualization_pcs_group: omnia_visualization
+# grafana
+grafana_run_opts: >-
+  --network=host
+  --secret {{ grafana_user }},type=env,target=GF_SECURITY_ADMIN_USER
+  --secret {{ grafana_user_password }},type=env,target=GF_SECURITY_ADMIN_PASSWORD
+  --env GF_SERVER_HTTP_PORT={{ grafana_port }}
+  --env GF_USERS_ALLOW_SIGN_UP=false
+  --env GF_USERS_ALLOW_ORG_CREATE=false
+  {{ grafana_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
+  --detach
+  --entrypoint {{ grafana_entrypoint }}
+
+# loki
+container_config_mnt: "/mnt/config"
+loki_run_opts: >-
+  --network=host
+  --restart=no
+  --volume loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}
+  --add-host=loki:127.0.0.1
+  --add-host=promtail:127.0.0.1
+  --detach
+loki_run_cmd: >-
+  --config.file={{ container_config_mnt }}/loki-config.yaml
+loki_monitor_cmd: "/usr/bin/loki -version"
+
+# promtail
+promtail_run_opts: >-
+  --network=host
+  --restart=no
+  --add-host=loki:127.0.0.1
+  --add-host=promtail:127.0.0.1
+  --volume loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}
+  --volume {{ omnia_nfs_share }}/log:/var/log{{ selinux_option }}
+  --detach
+promtail_run_cmd: >-
+  --config.file={{ container_config_mnt }}/promtail-config.yaml
+promtail_monitor_cmd: "/usr/bin/promtail -version"

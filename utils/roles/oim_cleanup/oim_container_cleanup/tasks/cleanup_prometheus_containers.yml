@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
 # limitations under the License.
 ---
 
-- name: Initialise install_idrac_telemetry variable
-  ansible.builtin.set_fact:
-    install_idrac_telemetry: false
+- name: Cleanup prometheus pump container
+  ansible.builtin.import_tasks: cleanup_prometheus_pump.yml
 
-- name: Check idrac-telemetry pod status
-  ansible.builtin.command: "kubectl get pods -A"
-  register: pod_status
-  changed_when: false
-  failed_when: false
+- name: Cleanup prometheus container
+  ansible.builtin.import_tasks: cleanup_prometheus.yml
 
-- name: Set idrac-telemetry installation status to true
-  ansible.builtin.set_fact:
-    install_idrac_telemetry: true
-  when: "'idrac-telemetry' not in pod_status.stdout"
+- name: Remove Prometheus ports on host firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    state: disabled
+    permanent: true
+  loop: "{{ prometheus_firewall_ports }}"
+  changed_when: true
