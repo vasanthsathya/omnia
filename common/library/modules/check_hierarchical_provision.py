@@ -51,12 +51,14 @@ def get_booted_service_nodes_data():
 
     if not_booted_nodes:
         raise ValueError(
-            f"The following service nodes are not in booted state: \
+            f"The following service nodes are not in the 'booted' state: \
             {', '.join(not_booted_nodes)}. \
-            For hierarchical provisioning, all service nodes must be in 'booted' state. \
-            Either wait till all the service nodes are booted or remove \
-            these nodes using utility playbook delete_node.yml")
-
+            For hierarchical provisioning of compute nodes or adding new management layer nodes, \
+            all service nodes initiated for provisioning must be in the 'booted' state. \
+            Please wait until all service nodes are booted, or \
+            remove the nodes experiencing provisioning failures \
+            using the utils/delete_node.yml playbook."
+        )
     return data
 
 def get_service_node_ha_dict(service_node_ha_data, booted_service_nodes_data):
