@@ -48,3 +48,5 @@ volumes:
 
 # Usage: handlers/main.yml
 reload_squid_cmd: /usr/sbin/squid -k restart
+squid_reload_retries: 3
+squid_reload_delay: 20

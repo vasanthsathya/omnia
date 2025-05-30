@@ -39,6 +39,7 @@ def write_yaml(path, data):
 
     Uses block-style formatting (not flow style).
     """
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as f:
         yaml.dump(data, f, default_flow_style=False)
 
@@ -75,7 +76,11 @@ def update_metadata_file(file_path: str, repo_src_name: str, new_policy: dict):
     - Updates or adds the new policy under the given repo_src_name key.
     - Writes the updated metadata back to the file.
     """
-    existing_metadata = load_yaml(file_path)
+    if os.path.exists(file_path):
+        existing_metadata = load_yaml(file_path)
+    else:
+        existing_metadata = {}
+
     existing_metadata[repo_src_name] = new_policy
     write_yaml(file_path, existing_metadata)
 
