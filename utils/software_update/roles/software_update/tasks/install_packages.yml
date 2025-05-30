@@ -19,3 +19,8 @@
   loop: "{{ grp.value }}"
   loop_control:
     loop_var: node
+  when:
+    - grouped_packages.grp_pkg_map[grp.key] is defined
+    - "'rpm' in grouped_packages.grp_pkg_map[grp.key]"
+    - grouped_packages.grp_pkg_map[grp.key].rpm | length > 0
+
