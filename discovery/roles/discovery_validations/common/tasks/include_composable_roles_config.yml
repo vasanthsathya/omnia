@@ -86,7 +86,7 @@
 - name: Create and update service node metadata file
   ansible.builtin.copy:
     dest: "{{ service_node_metadata_path }}"
-    content: "{{ {'service_nodes': booted_service_nodes_data} | to_yaml }}"
+    content: "{{ {'service_nodes_metadata': booted_service_nodes_data} | to_yaml }}"
     force: true
 
 - name: Get the group(s) for OIM HA
