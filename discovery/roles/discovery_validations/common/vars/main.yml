@@ -81,11 +81,11 @@ ha_nfs_error_msg: |
   Please configure External NFS for HA capabilities.
 warning_wait_time_10s: 10
 hierarchical_provision_warning_msg: |
-  "WARNING: service_node role is defined in roles_config.yml but non of the groups have parent field defined.
-  This is compute layer provisioning and non of the groups have valid parent field defined. If this is expected,
-  skip this warning and continue with this playbook execution.
-  If this is not intended, please define parent field in compute layer groups in roles_config.yml
-  for hierarchical provisioning and re-run the playbook."
+  "WARNING: The service_node role is defined in roles_config.yml, but none of the groups have a parent field specified.
+  This execution is for compute layer provisioning, and no groups have a valid parent field defined. If this is intentional,
+  you may ignore this warning and proceed with the playbook execution.
+  If this is unintentional, stop the execution, define the parent field in the compute layer groups within roles_config.yml
+  for hierarchical provisioning, and re-run the playbook."
 # Usage: include_local_repo_config.yml
 local_repo_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/local_repo_config.yml"
 software_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/software_config.json"
