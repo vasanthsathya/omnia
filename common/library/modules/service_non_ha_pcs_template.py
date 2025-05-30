@@ -115,9 +115,9 @@ def main():
         }
 
         # Render the templates
-        render_template(tmpl_corosync, corosync_path, context, module)
-        render_template(tmpl_pcs_start, start_script_path, context, module)
-        render_template(tmpl_pcs_container, container_path, context, module)
+        render_template(tmpl_corosync, corosync_path, context)
+        render_template(tmpl_pcs_start, start_script_path, context)
+        render_template(tmpl_pcs_container, container_path, context)
 
         # Add the result to the list
         results.append(f"Processed node {service_tag}")
