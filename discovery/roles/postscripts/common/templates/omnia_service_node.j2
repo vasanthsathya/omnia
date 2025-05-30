@@ -96,8 +96,13 @@ if ! ifconfig | grep -w {{ hostvars['omnia_provision']['admin_nic'] }}; then
     # 70-persistent-net.rules must be used as the file for consistent interface naming
     [ -f {{ persistent_rules_file }} ] || touch {{ persistent_rules_file }}
     echo "SUBSYSTEM==\"net\",ACTION==\"add\",ATTR{address}==\"${MAC}\",ATTR{type}==\"${TYPE}\",NAME=\"{{ hostvars['omnia_provision']['admin_nic'] }}\"" >> {{ persistent_rules_file }}
+    CONNECTION_PROFILE=$(nmcli -f name,device connection show | grep -w ${INTERFACE} | cut -d' ' -f1)
+    log "INFO: CONNECTION_PROFILE - ${CONNECTION_PROFILE}"
+    nmcli connection modify ${CONNECTION_PROFILE} connection.interface-name \"\"
+    log "INFO: Executing command- nmcli connection modify ${CONNECTION_PROFILE} match.interface-name {{ hostvars['omnia_provision']['admin_nic'] }}"
+    nmcli connection modify ${CONNECTION_PROFILE} match.interface-name {{ hostvars['omnia_provision']['admin_nic'] }} || { echo "ERROR: Using nmcli to match the interface name." >> "$LOGFILE"; exit 1; }
 
-    log "INFO: Renamed the admin interface to {{ hostvars['omnia_provision']['admin_nic'] }}."
+    log "INFO: Renamed the admin interface ${CONNECTION_PROFILE} to {{ hostvars['omnia_provision']['admin_nic'] }}."
 fi
 
 log "--------------------------"

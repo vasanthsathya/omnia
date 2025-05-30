@@ -128,6 +128,9 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
 def software_mandatory_fail_msg(software_name):
     return f"in software_config.json. Please add the corresponding field '{software_name}' to the JSON. Look at /examples/template_ubuntu_software_config.json for an example"
 
+def json_file_mandatory(file_path):
+     return f"is present in software_config.json. Please make sure that the corresponding JSON file is present at location '{file_path}'"
+
 # network_spec.json
 range_ip_check_fail_msg = "Failed. IP range should be in valid format (Example: 192.168.1.1-192.168.1.254)"
 range_ip_check_overlap_msg = "Static range and dynamic range in admin_network must not overlap"
@@ -182,6 +185,13 @@ duplicate_passive_node_service_tag = "the service tag configured for a passive n
 
 def user_name_duplicate(duplicate_usernames):
     return f'duplicate username detected {duplicate_usernames}. Check that usernames are unique in k8s_access_config.yml and passwordless_ssh_config.yml'
+
+# addtional_software
+ADDITIONAL_SOFTWARE_FAIL_MSG = "The additional_software is mandatory in additional_software.json"
+ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG = ("The role or group name, [{0}] is present in subgroup "
+                                         "but not present in roles_config.yml")
+MISSING_IN_ADDITIONAL_SOFTWARE_MSG = ("The role or group name is present in software_config.json, "
+                                     "but [{0}] is not present in additional_software.yml")
 
 # login_node_security
 def restrict_softwares_fail_msg(software):
