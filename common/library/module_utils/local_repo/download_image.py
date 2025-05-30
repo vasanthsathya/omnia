@@ -14,12 +14,12 @@
 
 # pylint: disable=import-error,no-name-in-module,line-too-long
 import re
+import json
+import subprocess
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
 from ansible.module_utils.local_repo.user_image_utility import handle_user_image_registry
-import json
-import multiprocessing
 from ansible.module_utils.local_repo.config import (
     pulp_container_commands
 )
@@ -31,6 +31,86 @@ from ansible.module_utils.local_repo.container_repo_utils import (
     repository_creation_lock,
     remote_creation_lock
 )
+import yaml
+
+def load_docker_credentials(vault_yml_path, vault_password_file, logger):
+    """
+    Decrypts an Ansible Vault YAML file and extracts docker_username and docker_password.
+
+    Args:
+        vault_yml_path (str): Path to the encrypted Ansible Vault YAML file.
+        vault_password_file (str): Path to the vault password file.
+
+    Returns:
+        tuple: (docker_username, docker_password)
+
+    Raises:
+        RuntimeError: If decryption or parsing fails.
+        ValueError: If the expected keys are not found.
+    """
+    try:
+        result = subprocess.run(
+            ["ansible-vault", "view", vault_yml_path, "--vault-password-file", vault_password_file],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        data = yaml.safe_load(result.stdout)
+        docker_username = data.get("docker_username")
+        docker_password = data.get("docker_password")
+        if not docker_username or not docker_password:
+            logger.info(f"Docker username and password not present")
+            return None, None
+        return docker_username, docker_password
+    except subprocess.CalledProcessError as error:
+        raise RuntimeError(f"Vault decryption failed: {error.stderr.strip()}") from error
+    except yaml.YAMLError as error:
+        raise RuntimeError(f"Failed to parse decrypted YAML: {error}") from error
+
+def create_container_remote_with_auth(remote_name, remote_url, package, policy_type, tag, logger, docker_username, docker_password):
+    try:
+        remote_exists = execute_command(pulp_container_commands["show_container_remote"] % remote_name, logger)
+        if not remote_exists:
+            # tags_str = tag  # 👈 just use the tag as string
+            # create_command = pulp_container_commands["create_container_remote_auth"] % (
+            #     remote_name, remote_url, package, policy_type, tags_str, docker_username, docker_password
+            # )
+            tags_json = json.dumps([tag])  # --> '["1.25.2-alpine"]'
+            create_command = pulp_container_commands["create_container_remote_auth"] % (
+            remote_name,remote_url,package,policy_type,tags_json,docker_username,docker_password)
+
+            result = execute_command(create_command, logger)
+            if result:
+                logger.info(f"Remote '{remote_name}' created successfully with auth.")
+                return True
+            else:
+                logger.error(f"Failed to create remote '{remote_name}' with auth.")
+                return False
+        else:
+            logger.info(f"Remote '{remote_name}' already exists. Checking tags.")
+            existing_tags = extract_existing_tags(remote_name, logger)
+            if tag in existing_tags:
+                logger.info(f"Tag '{tag}' already exists. No update needed.")
+                return True
+
+            new_tags = existing_tags + [tag]
+            tags_str = ",".join(new_tags)  # 👈 CLI expects comma-separated string
+            update_command = pulp_container_commands["update_container_remote_auth"] % (
+                remote_name, remote_url, package, policy_type, tags_str, docker_username, docker_password
+            )
+            result = execute_command(update_command, logger)
+            if result:
+                logger.info(f"Remote '{remote_name}' updated successfully with auth and tags: {new_tags}")
+                return True
+            else:
+                logger.error(f"Failed to update remote '{remote_name}' with auth.")
+                return False
+
+    except Exception as error:
+        logger.error(f"Error in create/update remote '{remote_name}' with auth: {error}")
+        return False
+
+
 
 def create_container_remote(remote_name, remote_url, package, policy_type, tag, logger):
     """
@@ -88,8 +168,8 @@ def create_container_remote(remote_name, remote_url, package, policy_type, tag, 
                 logger.error(f"Failed to update remote '{remote_name}'.")
                 return False
 
-    except Exception as e:
-        logger.error(f"Error in create/update remote '{remote_name}': {e}")
+    except Exception as error:
+        logger.error(f"Error in create/update remote '{remote_name}': {error}")
         return False
 
 def create_container_remote_digest(remote_name, remote_url, package, policy_type, logger):
@@ -192,11 +272,33 @@ def process_image(package, status_file_path, version_variables, user_registries,
                     raise Exception(f"Failed to create remote digest: {remote_name}")
 
             elif "tag" in package:
-                tag_template = Template(package.get('tag', None))  # Use Jinja2 Template for URL
+                tag_template = Template(package['tag'])
                 tag_val = tag_template.render(**version_variables)
                 package_identifier += f":{package['tag']}"
-                with remote_creation_lock:  # Locking for single execution
-                    result = create_container_remote(remote_name, base_url, package_content, policy_type, tag_val, logger)
+
+                # Only use auth for docker.io images
+                if package['package'].startswith('docker.io/'):
+                    yml_file = "/opt/omnia/input/project_default/omnia_config_credentials.yml"
+                    vault_file_path = "/opt/omnia/input/project_default/.omnia_config_credentials_key"
+
+                    docker_username, docker_password = load_docker_credentials(yml_file, vault_file_path, logger)
+
+                    with remote_creation_lock:
+                        if docker_username and docker_password:
+                            result = create_container_remote_with_auth(
+                                remote_name, base_url, package_content, policy_type,
+                                tag_val, logger, docker_username, docker_password
+                            )
+                        else:
+                            result = create_container_remote(
+                                remote_name, base_url, package_content, policy_type, tag_val, logger
+                            )
+                else:
+                    # For non-docker.io registries, use unauthenticated access
+                    with remote_creation_lock:
+                        result = create_container_remote(
+                            remote_name, base_url, package_content, policy_type, tag_val, logger
+                        )
 
                 if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
                     raise Exception(f"Failed to create remote: {remote_name}")

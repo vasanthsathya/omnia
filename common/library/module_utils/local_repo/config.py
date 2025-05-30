@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# pylint: disable=import-error,no-name-in-module,line-too-long
 
 """
 Consolidated configuration file for Ansible module utilities.
@@ -95,7 +96,12 @@ pulp_container_commands = {
     "sync_container_repository": "pulp container repository sync --name %s --remote %s",
     "distribute_container_repository": "pulp container distribution create --name %s --repository %s --base-path %s",
     "update_container_distribution": "pulp container distribution update --name %s --repository %s --base-path %s",
-    "list_container_remote_tags": "pulp container remote list --name %s --field include_tags"
+    "list_container_remote_tags": "pulp container remote list --name %s --field include_tags",
+
+    "create_container_remote_auth": "pulp container remote create --name %s --url %s --upstream-name %s --policy %s --include-tags '%s' --username %s --password '%s'",
+
+    "update_container_remote_auth": "pulp container remote update --name %s --url %s --upstream-name %s --policy %s --include-tags %s --username %s --password '%s'"
+
 }
 
 # ----------------------------
