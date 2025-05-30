@@ -1,4 +1,4 @@
-#  Copyright 2022 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,12 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 ---
 
-- name: Replace the rocky os version in dockerfile
-  ansible.builtin.replace:
-    path: "{{ item.path }}"
-    regexp: '^FROM docker.io/rockylinux/rockylinux:docker_os'
-    replace: 'FROM docker.io/rockylinux/rockylinux:{{ docker_rocky_os }}'
-  with_items:
-    - { path: "{{ slurm_telemetry_dockerfile_path }}"}
+- name: Deploy Prometheus Pump and Prometheus container
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
+  block:
+    - name: Deploy Prometheus Pump Container
+      ansible.builtin.include_tasks: deploy_prometheus_pump_container.yml
+
+    - name: Deploy Prometheus Container
+      ansible.builtin.include_tasks: deploy_prometheus_container.yml
