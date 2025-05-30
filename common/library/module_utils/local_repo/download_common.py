@@ -85,9 +85,6 @@ def download_file_distribution(distribution_name, dl_directory, relative_path, l
     except json.JSONDecodeError as e:
         logger.error(f"JSON parsing failed: {e}")
         return "Failed"
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        return "Failed"
 
 def wait_for_task(task_href, base_url, username, password, logger, timeout=3600, interval=3):
     """
@@ -124,7 +121,7 @@ def wait_for_task(task_href, base_url, username, password, logger, timeout=3600,
         state = task.get("state", "unknown")
         if state == "completed":
             return True
-        elif state in ("failed", "canceled"):
+        if state in ("failed", "canceled"):
             return False
 
         time.sleep(interval)
@@ -193,8 +190,8 @@ def handle_file_upload(repository_name, relative_path, file_url, poll_interval, 
     task_result = wait_for_task(task_href, base_url, config["username"], config["password"], logger, timeout=POST_TIMEOUT, interval=poll_interval)
     if task_result:
         return "Success"
-    else:
-        return "Failed"
+
+    return "Failed"
 
 def handle_post_request(repository_name, relative_path, base_path, file_url, poll_interval,logger):
     """
@@ -234,7 +231,7 @@ def handle_post_request(repository_name, relative_path, base_path, file_url, pol
 def process_file(repository_name, output_file, relative_path, base_path, distribution_name, url, file_path, logger):
     """
     Process a file using Pulp, ensuring it is downloaded and stored in the specified file_path.
- 
+
     Args:
         repository_name (str): Name of the Pulp repository.
         output_file (str): Name of the output file.
@@ -244,7 +241,7 @@ def process_file(repository_name, output_file, relative_path, base_path, distrib
         url (str): URL of the file to be downloaded.
         file_path (str): Path where the file should be stored.
         logger (logging.Logger): Logger instance for logging.
- 
+
     Returns:
         str: "Success" if the process is successful, otherwise "Failed".
     """
@@ -262,7 +259,7 @@ def process_file(repository_name, output_file, relative_path, base_path, distrib
             if not execute_command(download_command, logger):
                 logger.error(f"Failed to download the file: {url}")
                 return "Failed"
-            logger.info(f"File downloaded to: {file_path}") 
+            logger.info(f"File downloaded to: {file_path}")
         # Step 2: Check if the repository exists; create if not
         logger.info("Step 2: Checking repository...")
         if not execute_command(pulp_file_commands["show_repository"] % (repository_name), logger):
@@ -295,13 +292,13 @@ def process_file(repository_name, output_file, relative_path, base_path, distrib
                 logger.error(f"Failed to update distribution: {distribution_name}")
                 return "Failed"
         logger.info(f"Processing for file {url} completed successfully!")
-        return "Success"
+        return status
     except Exception as e:
         logger.error(f"Error processing file: {e}")
-        return "Failed" 
+        return "Failed"
     finally:
         logger.info("#" * 30 + f" {process_file.__name__} end " + "#" * 30)  # End of function
- 
+
 def process_file_without_download(repository_name, output_file, relative_path, base_path, distribution_name, url, file_path, logger):
     """
     Process a file using Pulp, ensuring it is stored in the specified file_path.
@@ -330,19 +327,19 @@ def process_file_without_download(repository_name, output_file, relative_path, b
                 return "Failed"
         else:
             logger.info(f"Repository {repository_name} already exists.")
- 
+
         # Step 2: Upload the content to the repository
         logger.info("Step 2: Uploading content...")
         if not execute_command(pulp_file_commands["content_upload"] % (repository_name, file_path, relative_path), logger):
             logger.error(f"Failed to upload content to repository: {repository_name}")
             return "Failed"
- 
+
         # Step 3: Create a publication
         logger.info("Step 3: Creating publication...")
         if not execute_command(pulp_file_commands["publication_create"] % (repository_name), logger):
             logger.error(f"Failed to create publication for repository: {repository_name}")
             return "Failed"
- 
+
         # Step 4: Check if the distribution exists
         logger.info("Step 4: Checking distribution...")
         if not execute_command(pulp_file_commands["show_distribution"] % (distribution_name), logger):
@@ -356,14 +353,14 @@ def process_file_without_download(repository_name, output_file, relative_path, b
                 logger.error(f"Failed to update distribution: {distribution_name}")
                 return "Failed"
         logger.info(f"Processing for file {url} completed successfully!")
-        return "Success"
- 
+        return status
+
     except Exception as e:
         logger.error(f"Error processing file: {e}")
         return "Failed"
     finally:
         logger.info("#" * 30 + f" {process_file_without_download.__name__} end " + "#" * 30)  # End of function
- 
+
 def process_manifest(file,repo_store_path, status_file_path,logger):
     """
     Process a manifest file.
@@ -384,10 +381,10 @@ def process_manifest(file,repo_store_path, status_file_path,logger):
         url = file.get('url', None)
         url = shlex.quote(url).strip("'\"")
         package_type = file["type"]
- 
+
         # Using wget to check if the URL exists (returns 0 for success, non-zero for failure)
         subprocess.run(['wget', '-q', '--spider', '--tries=1', url], check=True)
- 
+
         # Ensure the manifest directory exists
         manifest_directory = os.path.join(repo_store_path, "offline_repo", "cluster", "manifest", package_name)
         # # Determine the manifest file path
@@ -405,7 +402,7 @@ def process_manifest(file,repo_store_path, status_file_path,logger):
         write_status_to_file(status_file_path, package_name, package_type, status, logger)
         logger.info("#" * 30 + f" {process_manifest.__name__} end " + "#" * 30)  # End of function
         return status
- 
+
 def process_git(file,repo_store_path, status_file_path,logger):
     """
     Process a Git package.
@@ -424,19 +421,19 @@ def process_git(file,repo_store_path, status_file_path,logger):
     try:
         package_name = file['package']
         package_name = shlex.quote(package_name).strip("'\"")
- 
+
         url = file.get('url', None)
         url = shlex.quote(url).strip("'\"")
         version = file.get('version', None)
         version = shlex.quote(version).strip("'\"")
- 
+
         package_type = file['type']
         logger.info(f"Processing Git Package: {package_name}, URL: {url}, Version: {version}")
- 
+
         # Assuming you have a specific path to store Git packages
         git_modules_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', 'git', package_name)
         os.makedirs(git_modules_directory, exist_ok=True)  # Ensure the directory exists
- 
+
         clone_directory = os.path.join(git_modules_directory, package_name)
         clone_directory = shlex.quote(clone_directory).strip("'\"")
         tarball_path = os.path.join(git_modules_directory, f'{package_name}.tar.gz')
@@ -445,53 +442,53 @@ def process_git(file,repo_store_path, status_file_path,logger):
         relative_path = output_file
         base_path = git_modules_directory.strip("/")
         distribution_name = repository_name
- 
+
         # Step 1: Clone the repository and create a tarball
         logger.info("Step 1: Cloning repository and creating tarball...")
         if not os.path.exists(clone_directory):
             clone_command = ['git', 'clone', '--branch', version, url, clone_directory]
             subprocess.run(clone_command, check=True)
- 
+
             # Create a tarball of the cloned repository in the same directory
             with tarfile.open(tarball_path, 'w:gz') as tar:
                 tar.add(clone_directory, arcname=package_name)
- 
+
         else:
             logger.info(f"Git repository {file['package']} already cloned. Skipping clone.")
- 
+
         # Step 2: Process the downloaded git tarball file using Pulp commands
         logger.info("Step 2: Processing git tarball with Pulp...")
         status = "Success"
         status = process_file_without_download(repository_name, output_file, relative_path, base_path, distribution_name, url, tarball_path,logger)
- 
+
     except subprocess.CalledProcessError as e:
         logger.error(f"Error executing Git commands: {e}")
         status= "Failed"
     except Exception as e:
         logger.error(f"Error processing Git package: {e}")
         status= "Failed"
- 
+
     finally:
         # Write the status to the file
         write_status_to_file(status_file_path, package_name, package_type, status, logger)
- 
+
         logger.info("#" * 30 + f" {process_git.__name__} end " + "#" * 30)  # End of function
         return status
- 
+
 # Function to process a shell file
 def process_shell(file,repo_store_path, status_file_path,logger):
     """
     Process a shell package.
- 
+
     Args:
         file (dict): A dictionary containing the package information.
         repo_store_path (str): The path to the repository store.
         status_file_path (str): The path to the status file.
         logger (logging.Logger): The logger instance.
- 
+
     Returns:
         str: The status of the shell package processing.
- 
+
     Raises:
         Exception: If an error occurs while processing the shell package.
     """
@@ -501,11 +498,11 @@ def process_shell(file,repo_store_path, status_file_path,logger):
         url = file.get('url', None)
         package_type = file['type']
         logger.info(f"Processing sh Package: {package_name}, URL: {url}")
- 
+
         # Creating the local path to save the sh file
         sh_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', 'shell', package_name)
         os.makedirs(sh_directory, exist_ok=True)  # Ensure the directory exists
- 
+
         sh_path = os.path.join(sh_directory, f"{package_name}.sh")
         repository_name = "shell" + package_name
         output_file = package_name + ".sh"
@@ -517,17 +514,17 @@ def process_shell(file,repo_store_path, status_file_path,logger):
     except Exception as e:
         logger.error(f"Error processing shell: {e}")
         status = "Failed"
- 
+
     finally:
         # Write the status to the file
         write_status_to_file(status_file_path, package_name, package_type, status, logger)
         logger.info("#" * 30 + f" {process_shell.__name__} end " + "#" * 30)  # End of function
         return status
- 
+
 def process_ansible_galaxy_collection(file, repo_store_path, status_file_path, logger):
     """
     Process an Ansible Galaxy Collection.
- 
+
     Args:
         file (dict): A dictionary containing the package information.
         repo_store_path (str): The path to the repository store.
@@ -543,13 +540,13 @@ def process_ansible_galaxy_collection(file, repo_store_path, status_file_path, l
     try:
         package_name = file['package']
         version = file.get('version', None)
- 
+
         package_name = shlex.quote(package_name).strip("'\"")
         version = shlex.quote(version).strip("'\"")
- 
+
         package_type = file['type']
         logger.info(f"Processing Ansible Galaxy Collection Package: {package_name}, Version: {version}")
- 
+
         # Assuming you have a specific path to store Ansible Galaxy Collections
         galaxy_collections_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', 'ansible_galaxy_collection', package_name)
         galaxy_collections_directory = shlex.quote(galaxy_collections_directory).strip("'\"")
@@ -560,11 +557,11 @@ def process_ansible_galaxy_collection(file, repo_store_path, status_file_path, l
         relative_path = output_file
         base_path = galaxy_collections_directory.strip("/")
         distribution_name = repository_name
- 
+
         logger.info(f"Processing Ansible Galaxy Collection: {file['package']}")
- 
+
         # Check if the tarball already exists
- 
+
         if os.path.exists(collections_tarball_path):
             logger.info(f"Ansible Galaxy Collection {package_name}:{version} already exists at {collections_tarball_path}. Skipping download.")
             logger.info("Processing the Ansible Galaxy collection tarball with Pulp...")
@@ -585,25 +582,25 @@ def process_ansible_galaxy_collection(file, repo_store_path, status_file_path, l
                 logger.info("Processing the Ansible Galaxy collection tarball with Pulp...")
                 status = "Success"
                 status = process_file_without_download(repository_name, output_file, relative_path, base_path, distribution_name, file["package"], collections_tarball_path, logger)
- 
+
             except subprocess.CalledProcessError:
                 logger.error(f"Error: Unable to download Ansible Galaxy Collection {package_name}:{version}")
                 status = "Failed"
             except Exception as e:
                 logger.error(f"Error processing ansible-galaxy-collection: {e}")
                 status = "Failed"
-                
+
     except subprocess.CalledProcessError as e:
         logger.error(f"Error executing ansible-galaxy commands: {e}")
         status = "Failed"
     except Exception as e:
         logger.error(f"Error processing Ansible Galaxy collection: {e}")
         status = "Failed"
- 
+
     finally:
         # Write the status to the file
         write_status_to_file(status_file_path, package_name, package_type, status, logger)
- 
+
         logger.info("#" * 30 + f" {process_ansible_galaxy_collection.__name__} end " + "#" * 30)  # End of function
         return status
 
@@ -808,40 +805,40 @@ def process_pip(package, repo_store_path, status_file_path, logger):
         package (dict): Package info with 'package' (name) and optional 'version'.
         repo_store_path (str): Path to store the downloaded package.
         status_file_path (str): Path to log processing status.
- 
+
     Returns:
         str: "Success" if the process is successful, otherwise "Failed".
     """
     logger.info("#" * 30 + f" {process_pip.__name__} start " + "#" * 30)
     status = "Success"  # Default status, updated if any step fails
- 
+
     try:
         package_name = shlex.quote(package['package']).strip("'\"")
         package_type = package['type']
         version = package.get('version', None)
         pip_repo = "pip_module" + package_name
         distribution_name = pip_repo
- 
+
         logger.info(f"Processing Pip Package: {package_name}, Version: {version}")
- 
+
         # Define storage path
         pip_package_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', 'pip_module', package_name)
         base_package_directory = os.path.join(repo_store_path, "offline_repo", 'cluster', 'pip_module', package_name)
         base_package_directory = base_package_directory.strip("/")
- 
+
         os.makedirs(pip_package_directory, exist_ok=True)  # Ensure directory exists
- 
+
         # Step 1: Download the package
         logger.info("Step 1: Downloading package...")
         download_command = f"pip download -d {shlex.quote(pip_package_directory)} {package_name}"
         if version:
             download_command += f"=={version}"
- 
+
         if not execute_command(download_command, logger):
             status = "Failed"
             logger.error(f"Failed to download {package_name}. Aborting process.")
             return status  # Stop further steps
- 
+
         # Step 2: Create the Pulp repository if it does not exist
         logger.info("Step 2: Checking repository existence...")
         if not execute_command(f"pulp python repository show --name {pip_repo}", logger):
@@ -850,7 +847,7 @@ def process_pip(package, repo_store_path, status_file_path, logger):
                 status = "Failed"
                 logger.error(f"Failed to create repository {pip_repo}. Aborting process.")
                 return status  # Stop further steps
- 
+
         # Step 3: Upload the package(s) to Pulp
         logger.info("Step 3: Uploading package to Pulp...")
         for whl_file in os.listdir(pip_package_directory):
@@ -862,14 +859,14 @@ def process_pip(package, repo_store_path, status_file_path, logger):
                     status = "Failed"
                     logger.error(f"Failed to upload {whl_file} to {pip_repo}. Aborting process.")
                     return status  # Stop further steps
- 
+
         # Step 4: Publish the repository
         logger.info("Step 4: Publishing the repository...")
         if not execute_command(f"pulp python publication create --repository {pip_repo}", logger):
             status = "Failed"
             logger.error(f"Failed to publish repository {pip_repo}. Aborting process.")
             return status  # Stop further steps
- 
+
         # Step 5: Create or update the distribution
         logger.info("Step 5: Configuring distribution...")
         if not execute_command(f"pulp python distribution show --name {distribution_name}", logger):
@@ -884,17 +881,16 @@ def process_pip(package, repo_store_path, status_file_path, logger):
                 status = "Failed"
                 logger.error(f"Failed to update distribution {distribution_name}. Aborting process.")
                 return status  # Stop further steps
- 
+
         logger.info(f"Package {package_name} processed successfully!")
- 
+
     except Exception as e:
         logger.error(f"Unexpected error while processing {package_name}: {str(e)}")
         status = "Failed"
- 
+
     finally:
         # Write status to file
         write_status_to_file(status_file_path, package_name, package_type, status, logger)
- 
+
         logger.info("#" * 30 + f" {process_pip.__name__} end " + "#" * 30)
         return status
-
