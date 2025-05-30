@@ -20,7 +20,7 @@
     file_permissions: "{{ file_permissions }}"
     oim_shared_path: "{{ oim_shared_path }}"
     vars_file: "{{ role_path }}/vars/main.yml"
-    corosync_non_ha_tmpl: "{{ role_path }}/templates/corosync_non_ha.conf.j2"
+    corosync_tmpl: "{{ role_path }}/templates/corosync_non_ha.conf.j2"
     pcs_container_tmpl: "{{ role_path }}/templates/omnia_pcs_non_ha.container.j2"
     pcs_start_tmpl: "{{ role_path }}/templates/pcs-start.sh.j2"
   register: render_service_template

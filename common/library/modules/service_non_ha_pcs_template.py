@@ -46,7 +46,7 @@ def main():
         service_node_base_dir (str): The base directory where the service nodes will be created.
         file_permissions (str): The file permissions for the directories and files created.
         corosync_non_ha_tmpl (str): The path to the corosync template.
-        pcs_container_tmpl (str): The path to the pcs container template.
+        corosync_tmpl (str): The path to the pcs container template.
         pcs_start_tmpl (str): The path to the pcs start template.
         oim_shared_path (str): The path to the oim shared path.
         vars_file (str): The path to the variables file.
@@ -59,7 +59,7 @@ def main():
         "discovered_service_nodes": {"type": "list", "required": True},
         "service_node_base_dir": {"type": "str", "required": True},
         "file_permissions": {"type": "str", "required": True},
-        "corosync_non_ha_tmpl": {"type": "str", "required": True},
+        "corosync_tmpl": {"type": "str", "required": True},
         "pcs_container_tmpl": {"type": "str", "required": True},
         "pcs_start_tmpl": {"type": "str", "required": True},
         "oim_shared_path": {"type": "str", "required": True},
