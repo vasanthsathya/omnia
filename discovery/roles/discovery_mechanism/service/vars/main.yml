@@ -25,11 +25,9 @@ dns_config_warning_msg: "[WARNING] makedns -n command is not successful. Error:"
 service_retries: 3
 xcatd_service: "xcatd.service"
 xcat_start_fail_msg: "Failed to start xcatd services on {{ hostvars[inventory_hostname]['service_tag'] }}"
-
 # Usage: copy_syncfiles.yml
 syncfiles_mode: "0755"
 service_node_sync_files:
   - { src: "{{ hostvars['omnia_provision']['syncfiles_share_path'] }}", dest: "{{ hostvars['omnia_provision']['provision_shared_path'] }}" }
   - { src: "/opt/omnia/provision/install", dest: "/", rsync_opts: ["--exclude=autoinst"] }
   - { src: "/opt/omnia/provision/tftpboot", dest: "/" }
-  - { src: "/opt/omnia/provision/xcatdata/etc/xcat/hostkeys", dest: "/etc/xcat/" }

@@ -80,6 +80,7 @@
   parallel_tasks:
     tasks: []
     software: []
+    local_repo_config_path: "{{ local_repo_config_path }}"
     overall_status_dict: "{{ overall_status_dict }}"
     show_softwares_status: "{{ true | bool }}"
   register: status_results
