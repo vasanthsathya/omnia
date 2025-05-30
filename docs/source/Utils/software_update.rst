@@ -15,6 +15,7 @@ Prerequisites
 ---------------
 
 * Download the required packages to the Pulp container using the ``local_repo.yml`` playbook.
+* Ensure that the ``opt/omnia/input/project_default/roles_config.yml`` input file has been updated with the desired roles for the nodes.
 * Ensure that the target cluster nodes are in ``booted`` state.
 * Add the following entry under the ``softwares`` section in ``/opt/omnia/input/project_default/software_config.json``: ::
     
