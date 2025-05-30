@@ -18,6 +18,7 @@ import shlex
 import tarfile
 import shutil
 import time
+import json
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import write_status_to_file,execute_command
@@ -32,6 +33,60 @@ from ansible.module_utils.local_repo.config import (
     FILE_POLL_VAL,
     FILE_URI
 )
+
+def download_file_distribution(distribution_name, dl_directory, relative_path, logger):
+    """
+    Download a file from a Pulp file distribution.
+
+    Runs `pulp file distribution show` to get the base_url, constructs the full URL 
+    with the given relative_path, creates the local directory if needed, and downloads 
+    the file using wget (ignores HTTPS cert errors). Skips download if file exists.
+
+    Args:
+        distribution_name (str): Name of the Pulp distribution.
+        dl_directory (str): Local directory to save the file.
+        relative_path (str): Filename to append to base_url.
+        logger (logging.Logger): Logger for logging info and errors.
+
+    Returns:
+        str: "Success" if download succeeded or file exists, else "Failed".
+    """
+    try:
+        # Run the pulp command and capture output
+        cmd = ["pulp", "file", "distribution", "show", "--name", distribution_name]
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        # Parse JSON output
+        data = json.loads(result.stdout)
+        base_url = data.get("base_url")
+        if not base_url:
+            logger.error(f"base_url not found in pulp distribution info for {distribution_name}")
+            return "Failed"
+        # Construct full URL
+        full_url = full_url = base_url.rstrip('/') + '/' + relative_path
+        # Construct local file path
+        local_path = os.path.join(dl_directory, relative_path)
+        # Skip download if file exists
+        if os.path.exists(local_path):
+            logger.info(f"{distribution_name}: File already exists at {local_path}, skipping download.")
+            return "Success"
+        # Prepare wget command
+        wget_cmd = ["wget", "-q", "-O", local_path]
+
+        if full_url.startswith("https://"):
+            wget_cmd.append("--no-check-certificate")
+        wget_cmd.append(full_url)
+        subprocess.run(wget_cmd, check=True)
+        logger.info(f"Download completed for {local_path}")
+        return "Success"
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Command execution failed: {e}")
+        return "Failed"
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parsing failed: {e}")
+        return "Failed"
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return "Failed"
 
 def wait_for_task(task_href, base_url, username, password, logger, timeout=3600, interval=3):
     """
@@ -670,7 +725,7 @@ def process_tarball(package, repo_store_path, status_file_path, version_variable
             write_status_to_file(status_file_path, package_name, package_type, status, logger)
             logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)  # End of function
             return status
-            
+
 def process_iso(package, repo_store_path, status_file_path, cluster_os_type, cluster_os_version, version_variables, logger):
     """
     Process an ISO package.
@@ -729,10 +784,7 @@ def process_iso(package, repo_store_path, status_file_path, cluster_os_type, clu
             # Check if the file already exists
             if os.path.exists(iso_file_path):
                 logger.info(f"ISO Package {package_name} already exists at {iso_directory}")
-                # Process the iso file using Pulp commands
-                logger.info("Processing iso with Pulp...")
                 status = "Success"
-                status = process_file_without_download(repository_name, output_file, relative_path, base_path, distribution_name, package_name, iso_file_path, logger)
             else:
                 # Using wget to check if the URL exists (returns 0 for success, non-zero for failure)
                 subprocess.run(['wget', '-q', '--spider', '--tries=1', url], check=True)
@@ -744,6 +796,9 @@ def process_iso(package, repo_store_path, status_file_path, cluster_os_type, clu
             logger.error(f"Error processing iso: {e}")
             status = "Failed"
         finally:
+            if status == "Success":
+                os.makedirs(iso_directory, exist_ok =True)
+                status = download_file_distribution(distribution_name, iso_directory, relative_path, logger)
             # Write the status to the file
             write_status_to_file(status_file_path, package_name, package_type, status, logger)
             logger.info("#" * 30 + f" {process_iso.__name__} end " + "#" * 30)  # End of function
