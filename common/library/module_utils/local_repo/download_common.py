@@ -399,6 +399,9 @@ def process_manifest(file,repo_store_path, status_file_path,logger):
         status= "Failed"
     finally:
         # Write the status to the file
+        if status == "Success":
+            os.makedirs(manifest_directory, exist_ok =True)
+            status = download_file_distribution(repository_name, manifest_directory, relative_path, logger)
         write_status_to_file(status_file_path, package_name, package_type, status, logger)
         logger.info("#" * 30 + f" {process_manifest.__name__} end " + "#" * 30)  # End of function
         return status
@@ -671,6 +674,9 @@ def process_tarball(package, repo_store_path, status_file_path, version_variable
                     status = "Failed"
                 finally:
                     # Write the status to the file
+                    if status == "Success":
+                        os.makedirs(tarball_directory, exist_ok =True)
+                        status = download_file_distribution(distribution_name, tarball_directory, relative_path, logger)
                     write_status_to_file(status_file_path, package_name, package_type, status, logger)
                     logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)  # End of function
                     return status
