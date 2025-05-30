@@ -50,7 +50,7 @@ if [ $genesis_url_status -eq 0 ]; then
     rpm -e --nodeps $genesis_rpm_file
     rpm -ivh /tmp/xCAT-genesis-base-x86_64-2.16.4-snap202308211541.noarch.rpm
     echo "Executing mknb x86_64 command -" >> "$LOGFILE"
-    /opt/xcat/sbin/mknb x86_64 >> "$LOGFILE"
+    XCATBYPASS=1 /opt/xcat/sbin/mknb x86_64 >> "$LOGFILE"
     if [[ $? -eq 0 ]]; then
         echo " mknb x86_64 command execution successfully." >> "$LOGFILE"
     else
