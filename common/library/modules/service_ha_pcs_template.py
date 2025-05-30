@@ -98,6 +98,8 @@ def main():
         render_template(tmpl_pcs_container, container_path, context)
         render_template(tmpl_pcs_start, start_script_path, context)
 
+        os.chmod(start_script_path, file_mode)
+
         results.append(f"Configured HA group: {service_tag}")
 
         # Copy rendered active node directory to passive node directories

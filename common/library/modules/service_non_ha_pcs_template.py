@@ -119,6 +119,8 @@ def main():
         render_template(tmpl_pcs_start, start_script_path, context)
         render_template(tmpl_pcs_container, container_path, context)
 
+        os.chmod(start_script_path, file_mode)
+
         # Add the result to the list
         results.append(f"Processed node {service_tag}")
 
