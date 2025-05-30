@@ -13,45 +13,14 @@
 # limitations under the License.
 ---
 
-- name: Create directories for each service tag
-  ansible.builtin.file:
-    path: "{{ service_node_dir }}"
-    state: directory
-    mode: "{{ file_permissions }}"
-  loop: "{{ discovered_service_nodes }}"
-  loop_control:
-    label: "{{ item.service_tag }}"
-
-- name: Render corosync.conf for non-HA nodes
-  loop: "{{ discovered_service_nodes }}"
-  loop_control:
-    loop_var: node
-  when: node.service_tag not in service_node_ha_data.service_nodes | map(attribute='active_node_service_tag') | list
-  ansible.builtin.template:
-    src: "{{ corosync_non_ha_tmpl }}"
-    dest: "{{ service_node_base_dir }}/{{ node.service_tag }}/corosync.conf"
-    mode: "{{ file_permissions }}"
-
-- name: Generate pcs container file for non-HA nodes
-  ansible.builtin.template:
-    src: "{{ pcs_container_tmpl }}"
-    dest: "{{ pcs_container_tmpl_nonha_dest }}"
-    mode: "{{ file_permissions }}"
-  loop: "{{ discovered_service_nodes }}"
-  loop_control:
-    loop_var: node
-  when: node.service_tag not in service_node_ha_data.service_nodes | map(attribute='active_node_service_tag') | list
-  vars:
-    node_info: "{{ node }}"
-
-- name: Generate pcs-start.sh for non-HA nodes
-  ansible.builtin.template:
-    src: "{{ pcs_start_tmpl }}"
-    dest: "{{ pcs_start_tmpl_nonha_dest }}"
-    mode: "{{ file_permissions }}"
-  loop: "{{ discovered_service_nodes }}"
-  loop_control:
-    loop_var: node
-  when: node.service_tag not in service_node_ha_data.service_nodes | map(attribute='active_node_service_tag') | list
-  vars:
-    item: "{{ node }}"
+- name: Create directories and render configuration files for non-HA nodes
+  service_non_ha_pcs_template:
+    discovered_service_nodes: "{{ discovered_service_nodes }}"
+    service_node_base_dir: "{{  service_node_base_dir }}"
+    file_permissions: "{{ file_permissions }}"
+    oim_shared_path: "{{ oim_shared_path }}"
+    vars_file: "{{ role_path }}/vars/main.yml"
+    corosync_non_ha_tmpl: "{{ role_path }}/templates/corosync_non_ha.conf.j2"
+    pcs_container_tmpl: "{{ role_path }}/templates/omnia_pcs_non_ha.container.j2"
+    pcs_start_tmpl: "{{ role_path }}/templates/pcs-start.sh.j2"
+  register: result
