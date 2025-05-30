@@ -87,6 +87,7 @@
   ansible.builtin.copy:
     dest: "{{ service_node_metadata_path }}"
     content: "{{ {'service_nodes_metadata': booted_service_nodes_data} | to_yaml }}"
+    mode: "{{ metadata_perm }}"
     force: true
 
 - name: Get the group(s) for OIM HA
