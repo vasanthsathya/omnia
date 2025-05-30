@@ -115,23 +115,34 @@ def get_type_dict(clust_list, repo_config):
     for pkg_dict in clust_list:
         pkgtype = pkg_dict.get('type')
         if pkgtype == 'rpm_list':
+            # Add package_list to RPM_LIST_BASE
             type_dict[RPM_LIST_BASE] = type_dict.get(
-                RPM_LIST_BASE, []) + pkg_dict.get('package_list')
-        elif pkgtype == 'image' and pkg_dict.get('tag') is not None:
+               RPM_LIST_BASE, []) + pkg_dict.get('package_list')
+
+        elif pkgtype == 'image' and pkg_dict.get('tag') is not None: 
+            # Add package:tag to type_dict
             type_dict[pkgtype] = type_dict.get(
-                pkgtype, []) + pkg_dict.get('package') + ":" + pkg_dict.get('tag')
+                pkgtype, []) + [pkg_dict.get('package') + ":" + pkg_dict.get('tag')]
+
         elif pkgtype == 'image' and pkg_dict.get('digest') is not None:
             if repo_config == 'never':
+                # Add package@sha256:digest to type_dict for never repo_config
                 type_dict[pkgtype] = type_dict.get(
-                    pkgtype, []) + pkg_dict.get('package') + '@sha256:' + pkg_dict.get('digest')
-            else:
+                    pkgtype, []) + [pkg_dict.get('package') + '@sha256:' + pkg_dict.get('digest')]
+            else :
+                # Add package:omnia to type_dict
                 type_dict[pkgtype] = type_dict.get(
-                    pkgtype, []) + pkg_dict.get('package') + ':omnia'
+                   pkgtype, []) + [pkg_dict.get('package') + ':omnia']
+
         elif pkgtype == 'rpm':  # rpm
+                # Add package to rpm key
             type_dict[pkgtype] = type_dict.get(
                 pkgtype, []) + [pkg_dict.get('package')]
+
+        # Update reboot required values
         reboot_val = pkg_dict.get(REBOOT_KEY, False)
         type_dict[REBOOT_KEY] = type_dict.get(REBOOT_KEY, False) or reboot_val
+
     return type_dict
 
 
