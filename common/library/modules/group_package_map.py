@@ -113,7 +113,7 @@ def split_comma_keys(input_dict):
     return split_dict
 
 
-def get_type_dict(clust_list, repo_config):
+def get_type_dict(clust_list):
     """
     Returns a dictionary of package types and their corresponding package lists.
 
@@ -137,14 +137,9 @@ def get_type_dict(clust_list, repo_config):
                 pkgtype, []) + [pkg_dict.get('package') + ":" + pkg_dict.get('tag')]
 
         elif pkgtype == 'image' and pkg_dict.get('digest') is not None:
-            if repo_config == 'never':
-                # Add package@sha256:digest to type_dict for never repo_config
-                type_dict[pkgtype] = type_dict.get(
-                    pkgtype, []) + [pkg_dict.get('package') + '@sha256:' + pkg_dict.get('digest')]
-            else :
-                # Add package:omnia to type_dict
-                type_dict[pkgtype] = type_dict.get(
-                   pkgtype, []) + [pkg_dict.get('package') + ':omnia']
+            # Add package@sha256:digest to type_dict for never repo_config
+            type_dict[pkgtype] = type_dict.get(
+                pkgtype, []) + [pkg_dict.get('package') + '@sha256:' + pkg_dict.get('digest')]
 
         elif pkgtype == 'rpm':  # rpm
                 # Add package to rpm key
@@ -172,7 +167,7 @@ def modify_addl_software(addl_dict, repo_config):
     new_dict = {}
     for key, value in addl_dict.items():
         clust_list = value.get('cluster', [])
-        type_dict = get_type_dict(clust_list, repo_config)
+        type_dict = get_type_dict(clust_list)
         new_dict[key] = type_dict
     return new_dict
 
@@ -230,8 +225,6 @@ def main():
         roles_config = module.params.get('roles_config')
         sw_cfg_data = read_json_file(module.params.get('software_config'))
   
-    repo_cfg = sw_cfg_data.get('repo_config')
-
     sw_list = [sw_dict.get('name') for sw_dict in sw_cfg_data.get('softwares')]
     if addl_key not in sw_list:
         module.exit_json(
@@ -249,7 +242,7 @@ def main():
     roles_dict, all_groups = read_roles_config(roles_config, module)
     temp_addl_pkgs = req_addl_soft.pop(addl_key, {})
     req_addl_soft[','.join(all_groups)] = temp_addl_pkgs
-    addl_software_dict = modify_addl_software(req_addl_soft, repo_cfg)
+    addl_software_dict = modify_addl_software(req_addl_soft)
     split_comma_dict = split_comma_keys(addl_software_dict)
 
     # intersection of split_comma_dict and roles_yaml_data
