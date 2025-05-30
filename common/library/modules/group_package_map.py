@@ -137,7 +137,7 @@ def get_type_dict(clust_list):
                 pkgtype, []) + [pkg_dict.get('package') + ":" + pkg_dict.get('tag')]
 
         elif pkgtype == 'image' and pkg_dict.get('digest') is not None:
-            # Add package@sha256:digest to type_dict for never repo_config
+            # Add package@sha256:digest to type_dict
             type_dict[pkgtype] = type_dict.get(
                 pkgtype, []) + [pkg_dict.get('package') + '@sha256:' + pkg_dict.get('digest')]
 
@@ -153,7 +153,7 @@ def get_type_dict(clust_list):
     return type_dict
 
 
-def modify_addl_software(addl_dict, repo_config):
+def modify_addl_software(addl_dict):
     """
     Modifies the additional software dictionary by generating
       a type dictionary for each cluster list.
@@ -223,7 +223,7 @@ def main():
     else:
         addl_soft = module.params.get('software_bundle')
         roles_config = module.params.get('roles_config')
-        sw_cfg_data = read_json_file(module.params.get('software_config'))
+        sw_cfg_data = read_json_file(module.params.get('software_config'), module)
   
     sw_list = [sw_dict.get('name') for sw_dict in sw_cfg_data.get('softwares')]
     if addl_key not in sw_list:
