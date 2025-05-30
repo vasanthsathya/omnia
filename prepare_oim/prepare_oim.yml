@@ -101,6 +101,7 @@
     - role: deploy_containers/loki  # noqa:role-name[path]
       tags: loki
     - role: deploy_containers/squid
+      tags: squid
 
 - name: Add all containers to known hosts on omnia core
   hosts: localhost

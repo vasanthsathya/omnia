@@ -91,6 +91,17 @@ pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
  op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
 {% endif %}
 
+{% if hostvars['localhost']['enable_routed_internet'] %}
+pcs resource create {{ squid_container_name }} ocf:heartbeat:podman \
+ name={{ squid_container_name }} \
+ image={{ squid_image }} \
+ reuse=true \
+ run_opts="{{ squid_run_opts }}" \
+ op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+ op start interval={{ start_interval }} timeout={{ start_timeout }} \
+ op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+{% endif %}
+
 # Resource for idrac_telemetry containers
 {% if hostvars['localhost']['idrac_telemetry_support'] %}
 pcs resource group add {{ telemetry_pcs_group }}
@@ -194,17 +205,6 @@ pcs resource create {{ promtail_container_name }} ocf:heartbeat:podman \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
   --group {{ visualization_pcs_group }}
-{% endif %}
-
-{% if hostvars['localhost']['enable_routed_internet'] %}
-pcs resource create {{ squid_container_name }} ocf:heartbeat:podman \
- name={{ squid_container_name }} \
- image={{ squid_image }} \
- reuse=true \
- run_opts="{{ squid_run_opts }}" \
- op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
- op start interval={{ start_interval }} timeout={{ start_timeout }} \
- op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
 {% endif %}
 
 # Create ordering constraints
