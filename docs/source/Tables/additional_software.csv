@@ -1,17 +1,20 @@
-﻿Parameter,Mandatory/Optional,Details
-``package``,Mandatory,"* **Type**: string
+﻿Parameter,Details
+``package``,"* **Type**: string
 * Provide the name of the additional software package to be installed on the nodes."
-``type``,Mandatory,"* **Type**: string
+``package_list``,"* **Type**: list
+* If you want to download multiple packages from a single repository, then provide the list of packages to this variable.
+* **Example**: ``""package_list"": [""python3-PyMySQL"", ""apr-util"", ""asciidoc""],``"
+``type``,"* **Type**: string
 * Provide the type of the additional software package.
-* **Example**: ``image``, ``rpm``"
-``url``,Optional,Provide the public URL from which the package will be downloaded.
-``path``,Optional,"If the package is present locally, add the path to it in this variable."
-``digest``,Optional,"* **Type**: string
+* **Accepted values**: ``image``, ``rpm``, ``rpm_list``"
+``repo_name``,"* Name of the repository from which the package will be downloaded.
+* **Example**: ``""repo_name"": ""baseos""``"
+``digest``,"* **Type**: string
 * This variable is only applicable for ``image`` type.
 * Contains the digest value of the image being pulled from the external repository."
-``tag``,Optional,"* **Type**: string
+``tag``,"* **Type**: string
 * This variable is only applicable for ``image`` type.
 * Contains the tag of the additional software image."
-``reboot_required``,Optional,"* Indicates whether the listed cluster nodes will be rebooted post software package installation or not.
+``reboot_required``,"* Indicates whether the listed cluster nodes will be rebooted post software package installation or not.
 * **Accepted values**: ``true`` or ``false``
 * **Default value**: ``false``"
