@@ -16,6 +16,15 @@
 
 # pylint: disable=import-error,no-name-in-module,line-too-long
 
+"""
+Generates non-HA PCS template.
+
+This module is used to generate the template for non-HA PCS nodes.
+It provides the necessary configuration and settings for the nodes.
+"""
+
+import os
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.discovery.standard_functions import (
     create_directory,
@@ -23,20 +32,39 @@ from ansible.module_utils.discovery.standard_functions import (
     load_vars_file
 )
 
-import os
-
 def main():
+    """
+    The main function is the entry point of the Ansible module. It defines the module arguments, 
+    creates the Ansible module, extracts the module parameters, loads the variables file, 
+    and processes each node in the discovered_service_nodes list. The function creates the 
+    node directories, loads the variables file, and renders the templates for corosync, pcs container, 
+    and pcs start. The function returns a JSON object with the results of processing each node.
+
+    Args:
+        discovered_service_nodes (list): A list of dictionaries where each dictionary contains 
+            the service_tag, hostname, and admin_ip.
+        service_node_base_dir (str): The base directory where the service nodes will be created.
+        file_permissions (str): The file permissions for the directories and files created.
+        corosync_non_ha_tmpl (str): The path to the corosync template.
+        pcs_container_tmpl (str): The path to the pcs container template.
+        pcs_start_tmpl (str): The path to the pcs start template.
+        oim_shared_path (str): The path to the oim shared path.
+        vars_file (str): The path to the variables file.
+
+    Returns:
+        A JSON object with the results of processing each node.
+    """
     # Define the module arguments
-    module_args = dict(
-        discovered_service_nodes=dict(type='list', required=True),
-        service_node_base_dir=dict(type='str', required=True),
-        file_permissions=dict(type='str', required=True),
-        corosync_non_ha_tmpl=dict(type='str', required=True),
-        pcs_container_tmpl=dict(type='str', required=True),
-        pcs_start_tmpl=dict(type='str', required=True),
-        oim_shared_path=dict(type='str', required=True),
-        vars_file=dict(type='str', required=False, default=None)
-    )
+    module_args = {
+        "discovered_service_nodes": {"type": "list", "required": True},
+        "service_node_base_dir": {"type": "str", "required": True},
+        "file_permissions": {"type": "str", "required": True},
+        "corosync_non_ha_tmpl": {"type": "str", "required": True},
+        "pcs_container_tmpl": {"type": "str", "required": True},
+        "pcs_start_tmpl": {"type": "str", "required": True},
+        "oim_shared_path": {"type": "str", "required": True},
+        "vars_file": {"type": "str", "required": False, "default": None}
+    }
 
     # Create the Ansible module
     module = AnsibleModule(argument_spec=module_args)
@@ -99,4 +127,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

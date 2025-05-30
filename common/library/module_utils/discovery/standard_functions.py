@@ -29,26 +29,25 @@ def create_directory(path: str, mode: int) -> None:
         os.chmod(path, mode)
 
 
-def render_template(src: str, dest: str, context: dict, module: str) -> None:
+def render_template(src: str, dest: str, context: dict) -> None:
     """Render a Jinja2 template from src to dest using context."""
     try:
-        with open(src, 'r') as f:
+        with open(src, 'r', encoding='utf-8') as f:
             template_content = f.read()
         template = Template(template_content)
         rendered = template.render(context)
 
-        with open(dest, 'w') as f:
+        with open(dest, 'w', encoding='utf-8') as f:
             f.write(rendered)
     except Exception as e:
-        raise Exception(f"Template render error ({src} → {dest}): {str(e)}")
-
+        raise RuntimeError(f"Template render error ({src} → {dest}): {e}") from e
 
 def load_vars_file(path: str) -> dict:
     """Load YAML variables from a file and return as a dict."""
     if not path:
         return {}
     try:
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f) or {}
     except Exception as e:
-        raise Exception(f"Failed to read vars file '{path}': {str(e)}")
+        raise RuntimeError(f"Failed to read vars file '{path}': {str(e)}") from e
