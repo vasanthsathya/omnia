@@ -1,28 +1,16 @@
-﻿Parameter,Details
-"**cluster_os_type**
-
-``string``
-
-Required","* Specify the operating system running on the OIM and the one to be provisioned on the compute nodes.
-* **Value**: ``rhel``"
-"**cluster_os_version**
-
-``string``
-
-Required","* The OS Version that will be provisoned on compute nodes.
-* For RHEL, the accepted ``value`` is ``9.4``."
-"**iso_file_path**
-
-``string``
-
-Required","* Path where the user has placed the ``<OS>.iso`` image that needs to be provisioned on target nodes. 
+﻿Parameter,Mandatory/Optional,Details
+**cluster_os_type**,Mandatory,"* **Type**: string
+* Specify the operating system running on the OIM and the one to be provisioned on the compute nodes.
+* **Accepted value**: ``rhel``"
+**cluster_os_version**,Mandatory,"* **Type**: string
+* The OS Version that will be provisoned on compute nodes.
+* **Accepted value**: ``9.4``."
+**iso_file_path**,Mandatory,"* **Type**: string
+* Path where the user has placed the ``<OS>.iso`` image that needs to be provisioned on target nodes. 
 * ``iso_file_path`` should contain the ``provision_os`` and ``provision_os_version`` values mentioned in the filename.
 * **Example**: ``/opt/omnia/input/project_default/RHEL-9.4.0-20240419.25-x86_64-dvd1.iso``"
-"**repo_config**
-
-``string``
-
-Required","* Omnia sets up a local Pulp repository on the OIM and downloads all the necessary packages or images for the cluster into this repository. The behavior of the Pulp container varies depending on the value of the ``repo_config`` parameter.
+**repo_config**,Mandatory,"* **Type**: string
+* Omnia sets up a local Pulp repository on the OIM and downloads all the necessary packages or images for the cluster into this repository. The behavior of the Pulp container varies depending on the value of the ``repo_config`` parameter.
 * In case of ``always``, packages are downloaded and cached on OIM during ``local_repo.yml`` execution; compute nodes get the packages from OIM. Caching these packages allow them to be reused in future operations without needing to download them again.
 * In case of ``partial``, packages are not pre-downloaded or cached. OIM downloads from upstream URLs when needed.
 * In case of ``never``, the packages are not downloaded or cached, but streamed directly from the source URLs.
@@ -39,15 +27,11 @@ Required","* Omnia sets up a local Pulp repository on the OIM and downloads all 
        * AMD GPU drivers
        * OFED
        * CUDA"
-"**softwares**
-
-``JSON list``
-
-Required","* A JSON list of required software and (optionally) the software version.
+**softwares**,Mandatory,"* **Type**: JSON list
+* A JSON list of required software and (optionally) the software version.
 * The following software should be listed with a version in the list: BeeGFS, AMD GPU, Kubernetes, CUDA, OFED, UCX, and ROCm.
 * A minimum of one software should be provided in the list for ``local_repo.yml`` to execute correctly.
 * The ``<os_type>_software_config.json`` will have the basic softwares present in it. To add additional software stacks, add the software under ``/opt/omnia/input/project_default/software_config.json``.
 * For the list of all applicable softwares based on your ``<cluster_os_type>``, refer the templates at ``examples/template_<os>_software_config.json``. For example, ``examples/template_rhel_software_config.json``.
 
-.. note:: The accepted names for software is taken from ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>``.
-"
+.. note:: The accepted names for software is taken from ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>``."
