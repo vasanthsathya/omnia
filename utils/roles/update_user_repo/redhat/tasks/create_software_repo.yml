@@ -20,7 +20,7 @@
       - item.version | default("",true) | length > 0
     fail_msg: "{{ version_invalid_fail_msg }} {{ item.name }}"
 
-- name: Check software repo exists in pulp distribution
+- name: Get pulp distribution result
   ansible.builtin.command: "{{ pulp_bin_path }} {{ os_package_map[cluster_os] }} distribution list --name {{ item.name }}_{{ item.version }} --field name,base_url"  # noqa: yaml[line-length]
   register: check_repo_stat
   delegate_to: localhost

@@ -13,10 +13,9 @@
 # limitations under the License.
 ---
 
-- name: Update beegfs,amdgpu,rocm repo when repo_config=partial,always
-  when: (software_config['repo_config']|lower == "partial") or (software_config['repo_config']|lower == "always")
+- name: Update beegfs,amdgpu,rocm repo
   block:
-    - name: Local local_repo_access.yml file
+    - name: Include vars from local_repo_access.yml file
       ansible.builtin.include_vars: "{{ local_repo_access_path }}"
 
     - name: Generate software repository configurations

@@ -47,7 +47,11 @@
       ansible.builtin.fail:
         msg: " {{ repo_fail_msg }} "
       when: check_pulp_repo.stdout | length == 0
-
+    
+    - name: Set fact for distribution paths
+      ansible.builtin.set_fact:
+        pulp_dist_result: "{{ check_pulp_repo.stdout | from_json }}"
+      when: check_repo_stat.stdout | from_json | length > 0
   rescue:
     - name: Failed - pulp repo is configured
       ansible.builtin.fail:
