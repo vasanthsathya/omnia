@@ -71,6 +71,14 @@
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
 #   when: not ( hostvars['127.0.0.1']['update_user_repo_executed'] | default(false) | bool )
 
+# - name: Generate telemetrty service node configuration
+#   hosts: sn_active
+#   connection: ssh
+#   gather_facts: false
+#   role:
+#     - service_node_config
+#   when: (discovered_service_nodes | default([])) | length > 0
+
 - name: Telemetry for omnia
   hosts: localhost
   connection: local
