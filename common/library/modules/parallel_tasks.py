@@ -51,7 +51,8 @@ from ansible.module_utils.local_repo.config import (
     DEFAULT_STATUS_FILENAME,
     SOFTWARE_CSV_FILENAME,
     SOFTWARE_CSV_HEADER,
-    STATUS_CSV_HEADER
+    STATUS_CSV_HEADER,
+    LOCAL_REPO_CONFIG_PATH_DEFAULT
 )
 
 def update_status_csv(csv_dir, software, overall_status):
@@ -230,7 +231,7 @@ def main():
         "user_json_file": {"type": "str", "required": False, "default": USER_JSON_FILE_DEFAULT},
         "show_softwares_status": {"type": "bool", "required": False, "default": False},
         "overall_status_dict": {"type": "dict", "required": False, "default": {}},
-        "local_repo_config_path": {"type": "str", "required": True}
+        "local_repo_config_path": {"type": "str", "required": False, "default": LOCAL_REPO_CONFIG_PATH_DEFAULT}
     }
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
     tasks = module.params["tasks"]
