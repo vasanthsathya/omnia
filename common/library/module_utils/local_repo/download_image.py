@@ -21,7 +21,9 @@ from ansible.module_utils.local_repo.standard_logger import setup_standard_logge
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
 from ansible.module_utils.local_repo.user_image_utility import handle_user_image_registry
 from ansible.module_utils.local_repo.config import (
-    pulp_container_commands
+    pulp_container_commands,
+    OMNIA_CREDENTIALS_YAML_PATH,
+    OMNIA_CREDENTIALS_VAULT_PATH
 )
 from ansible.module_utils.local_repo.container_repo_utils import (
     create_container_repository,
@@ -292,8 +294,8 @@ def process_image(package, status_file_path, version_variables, user_registries,
 
                 # Only use auth for docker.io images
                 if package['package'].startswith('docker.io/'):
-                    yml_file = "/opt/omnia/input/project_default/omnia_config_credentials.yml"
-                    vault_file_path = "/opt/omnia/input/project_default/.omnia_config_credentials_key"
+                    yml_file = OMNIA_CREDENTIALS_YAML_PATH
+                    vault_file_path = OMNIA_CREDENTIALS_VAULT_PATH
 
                     docker_username, docker_password = load_docker_credentials(yml_file, vault_file_path, logger)
 
