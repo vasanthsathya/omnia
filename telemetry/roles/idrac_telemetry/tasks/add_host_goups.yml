@@ -18,7 +18,7 @@
 
 - name: Get updated host inventory
   get_telemetry_host_inventory:
-    bmc_group_data: "{{ bmc_group_data_filename }}"
+    bmc_group_data_path: "{{ bmc_group_data_filename }}"
     service_node_metadata: "{{ service_nodes_metadata }}"
   register: host_inventory
 
