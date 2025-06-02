@@ -265,6 +265,11 @@ def process_image(package, status_file_path, version_variables, user_registries,
     policy_type = "immediate"
     base_url, package_content = get_repo_url_and_content(package['package'])
     package_identifier = None
+    yml_file = OMNIA_CREDENTIALS_YAML_PATH
+    vault_file_path = OMNIA_CREDENTIALS_VAULT_PATH
+
+    docker_username, docker_password = load_docker_credentials(yml_file, vault_file_path, logger)
+
 
     if user_registries:
         result, package_identifier = handle_user_image_registry(package, package_content, version_variables, user_registries, logger)
@@ -294,10 +299,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
 
                 # Only use auth for docker.io images
                 if package['package'].startswith('docker.io/'):
-                    yml_file = OMNIA_CREDENTIALS_YAML_PATH
-                    vault_file_path = OMNIA_CREDENTIALS_VAULT_PATH
-
-                    docker_username, docker_password = load_docker_credentials(yml_file, vault_file_path, logger)
 
                     with remote_creation_lock:
                         if docker_username and docker_password:
