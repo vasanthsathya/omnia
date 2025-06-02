@@ -316,15 +316,119 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
 
     return errors
 
-def validate_telemetry_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_federated_idrac_telemetry_collection(
+        input_file_path,
+        omnia_base_dir,
+        project_name,
+        logger,
+        module,
+        errors
+):
+
+    """
+    Validates the L2 validations for federated iDRAC telemetry collection configuration.
+
+    Args:
+        input_file_path (str): The path to the input file.
+        omnia_base_dir (str): The base directory of the Omnia project.
+        project_name (str): The name of the project.
+        logger (object): The logger object.
+        module (object): The module object.
+        errors (list): A list to store error messages.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    """
+    # load roles_config for L2 validations
+    roles_config_file_path = create_file_path(input_file_path, file_names["roles_config"])
+    roles_config_json = validation_utils.load_yaml_as_json(
+        roles_config_file_path, omnia_base_dir, project_name, logger, module
+    )
+    roles_configured = roles_config_json.get('Roles',[])
+
+    # Search for service_node role
+    service_node_role_entry = next(
+        (role for role in roles_configured if role.get('name') == "service_node"),
+        None
+    )
+
+    if not service_node_role_entry:
+        errors.append(create_error_msg(
+                "federated_idrac_telemetry_collection",
+                True,
+                en_us_validation_msg.service_role_undefined
+                )
+            )
+
+
+def validate_telemetry_config(
+    input_file_path,
+    data,
+    logger,
+    module,
+    omnia_base_dir,
+    _module_utils_base,
+    project_name
+):
+
+    """
+    Validates the telemetry configuration data.
+
+    This function checks the telemetry configuration data for validity and consistency.
+    It verifies that the iDRAC telemetry support and federated iDRAC telemetry collection
+    settings are correctly configured.
+
+    Args:
+        input_file_path (str): The path to the input file.
+        data (dict): The telemetry configuration data.
+        logger (object): The logger object.
+        module (object): The module object.
+        omnia_base_dir (str): The base directory of the Omnia project.
+        _module_utils_base (str): The base directory of the module utilities.
+        project_name (str): The name of the project.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    """
     errors = []
 
     idrac_telemetry_support = data.get("idrac_telemetry_support")
+    federated_idrac_telemetry_collection = data.get("federated_idrac_telemetry_collection")
 
     if idrac_telemetry_support:
         collection_type = data.get("idrac_telemetry_collection_type")
         if collection_type and collection_type not in config.supported_telemetry_collection_type:
-            errors.append(create_error_msg("idrac_telemetry_collection_type", collection_type, en_us_validation_msg.unsupported_idrac_telemetry_collection_type))
+            errors.append(create_error_msg(
+                "idrac_telemetry_collection_type",
+                collection_type,
+                en_us_validation_msg.unsupported_idrac_telemetry_collection_type
+                )
+            )
+
+    if federated_idrac_telemetry_collection and not idrac_telemetry_support:
+        errors.append(create_error_msg(
+                "federated_idrac_telemetry_collection",
+                federated_idrac_telemetry_collection,
+                en_us_validation_msg.federated_idrac_telemetry_collection_fail
+                )
+            )
+        return errors
+
+    if federated_idrac_telemetry_collection:
+        validate_federated_idrac_telemetry_collection(input_file_path,
+                                                      omnia_base_dir,
+                                                      project_name,
+                                                      logger,
+                                                      module,
+                                                      errors)
 
     # preserved below code for future use
     '''
