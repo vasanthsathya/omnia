@@ -27,7 +27,7 @@
 
 - name: Set fact for jinja template
   ansible.builtin.set_fact:
-    software_item: "{{ item.name }}_{{ item.version }}" 
+    software_item: "{{ item.name }}_{{ item.version }}"
 
 - name: Create repo file on node
   ansible.builtin.template:

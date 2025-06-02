@@ -13,12 +13,12 @@
 # limitations under the License.
 ---
 
-- name: Check if user repo file exists on node
+- name: Check if repo file exists on node
   ansible.builtin.stat:
     path: "{{ repo_path }}/{{ item.name }}.repo"
   register: repo_file_check
 
-- name: Update list if user repo file is missing
+- name: Update list if repo file is missing
   ansible.builtin.set_fact:
     new_repos: "{{ new_repos | default([]) + [item.url] }}"
   when: not repo_file_check.stat.exists
