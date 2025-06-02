@@ -51,17 +51,53 @@
     mode: "{{ logs_dir_permission }}"
     remote_src: true
 
-- name: Set cert_san fact based on hostname
-  ansible.builtin.set_fact:
-    cert_san: subjectAltName=IP:{{ cert_san_ip }},DNS:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
-  when: hostvars['oim']['hostname_enabled']
-  no_log: true
+- name: Check if pulp crt file exists
+  ansible.builtin.stat:
+    path: "{{ pulp_cert_src }}"
+  register: pulp_crt_stat
 
-- name: Set cert_san fact based on IP
-  ansible.builtin.set_fact:
-    cert_san: subjectAltName=IP:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
-  when: not hostvars['oim']['hostname_enabled']
-  no_log: true
+- name: Tasks to generate pulp crt
+  when: not pulp_crt_stat.stat.exists
+  block:
+    - name: Set cert_san fact based on hostname
+      ansible.builtin.set_fact:
+        cert_san: subjectAltName=IP:{{ cert_san_ip }},DNS:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
+      when: hostvars['oim']['hostname_enabled']
+      no_log: true
+
+    - name: Set cert_san fact based on IP
+      ansible.builtin.set_fact:
+        cert_san: subjectAltName=IP:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
+      when: not hostvars['oim']['hostname_enabled']
+      no_log: true
+
+    - name: Generating Pulp SSL Certificate
+      ansible.builtin.command:
+        cmd: "{{ generate_cert_cmd }}"
+      changed_when: false
+
+    - name: Ensure the pulp group exists
+      ansible.builtin.group:
+        name: pulp
+        state: present
+
+    - name: Change group ownership of SSL certificate and key
+      ansible.builtin.file:
+        path: "{{ item }}"
+        group: pulp
+        state: file
+      loop: "{{ cert_items.values() }}"
+
+    - name: Copy Pulp crt to container trust
+      ansible.builtin.copy:
+        src: "{{ pulp_cert_src }}"
+        dest: "{{ ca_trust_path }}"
+        mode: "{{ logs_dir_permission }}"
+
+    - name: Add Pulp Certificate to TrustStore
+      ansible.builtin.command:
+        cmd: update-ca-trust extract
+      changed_when: false
 
 # CERT GENERATION USING community.crypto x509_certificate MODULE
 # - name: Generate private key
@@ -100,31 +136,3 @@
 #     selfsigned_version: 3
 #     selfsigned_create_subject_key_identifier: always_create
 #     return_content: true
-
-- name: Generating Pulp SSL Certificate
-  ansible.builtin.command:
-    cmd: "{{ generate_cert_cmd }}"
-  changed_when: false
-
-- name: Ensure the pulp group exists
-  ansible.builtin.group:
-    name: pulp
-    state: present
-
-- name: Change group ownership of SSL certificate and key
-  ansible.builtin.file:
-    path: "{{ item }}"
-    group: pulp
-    state: file
-  loop: "{{ cert_items.values() }}"
-
-- name: Copy Pulp crt to container trust
-  ansible.builtin.copy:
-    src: "{{ pulp_cert_src }}"
-    dest: "{{ ca_trust_path }}"
-    mode: "{{ logs_dir_permission }}"
-
-- name: Add Pulp Certificate to TrustStore
-  ansible.builtin.command:
-    cmd: update-ca-trust extract
-  changed_when: false
