@@ -157,3 +157,6 @@ telemetry_container_fail_msg: "Telemetry container {{ telemetry_container }} is 
  Current Status: {{ telemetry_container_status.containers[0].State.Status }}"
 prepare_oim_telemetry_not_executed_msg: "Telemetry container {{ telemetry_container }} not found.
  Please execute prepare_oim.yml to deploy all required containers."
+
+# Usage: add_host_goups.yml
+service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"

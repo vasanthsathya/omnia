@@ -16,8 +16,5 @@
 - name: Check if telemetry entry is present in software_config.json
   when: hostvars['localhost']['idrac_telemetry_support']
   block:
-    - name: Generate service node host groups
-      ansible.builtin.include_tasks: add_host_goups.yml
-
     - name: Collect iDRAC IP and initiate telemetry collection
       ansible.builtin.include_tasks: initiate_telemetry.yml

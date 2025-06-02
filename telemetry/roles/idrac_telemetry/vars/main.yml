@@ -51,7 +51,3 @@ telemetry_report: |
   Check the report file at {{ telemetry_report_path }} for all Telemetry Activated IPs.
 
   =====================================
-
-# Usage: add_host_goups.yml
-bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
-service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
