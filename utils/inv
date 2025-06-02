@@ -1,0 +1,22 @@
+#Batch Scheduler: Slurm
+ 
+[slurm_control_node]
+ 
+[slurm_node]
+ 
+[login]
+ 
+#General Cluster Storage
+ 
+[auth_server]
+ 
+#AI Scheduler: Kubernetes
+ 
+[kube_control_plane]
+node001
+ 
+[etcd]
+node001
+ 
+[kube_node]
+node002 

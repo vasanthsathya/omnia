@@ -53,7 +53,7 @@
       ansible.builtin.template:
         src: "{{ usr_repo_config_template_src }}"
         dest: "{{ repo_path }}/{{ item.1.name }}.repo"
-        mode: "{{ file_permission_create }}"
+        mode: "{{ file_permission }}"
       with_indexed_items: "{{ user_repo_url }}"
       when: item.1.url in new_repos and software_version_default not in item.1.url
 
