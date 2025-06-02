@@ -23,7 +23,7 @@
 
 - name: Validate omnia input config
   vars:
-    input_validate_tags: "{{ omnia_run_tags | default([]) | difference(['all']) if (omnia_run_tags | length) >= 2 
+    input_validate_tags: "{{ omnia_run_tags | default([]) | difference(['all']) if (omnia_run_tags | length) >= 2
       else omnia_run_tags | default([]) }}"
   validate_input:
     omnia_base_dir: "{{ input_dir }}/../"
