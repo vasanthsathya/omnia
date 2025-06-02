@@ -72,7 +72,7 @@ def main():
     # Extract the module parameters
     nodes = module.params['discovered_service_nodes']
     base_dir = module.params['service_node_base_dir']
-    perms = int(module.params['file_permissions'], 8)
+    file_mode = int(module.params['file_permissions'], 8)
     tmpl_corosync = module.params['corosync_tmpl']
     tmpl_pcs_container = module.params['pcs_container_tmpl']
     tmpl_pcs_start = module.params['pcs_start_tmpl']
@@ -103,7 +103,7 @@ def main():
 
         # Create the directories
         for path in [service_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir]:
-            create_directory(path, perms)
+            create_directory(path, file_mode)
 
         # Create the template context
         context = {
