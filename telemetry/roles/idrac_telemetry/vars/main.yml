@@ -54,4 +54,4 @@ telemetry_report: |
 
 # Usage: add_host_goups.yml
 bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
-service_node_metadata_path: "/opt/omnia/telemetry/bmc_group_data.csv"
+service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
