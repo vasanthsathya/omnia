@@ -110,8 +110,6 @@ def main():
         idrac_telemetry_receiver_dir = os.path.join(idrac_telemetry_dir, 'idrac_telemetry_receiver')
         prometheus_dir = os.path.join(telemetry_dir, 'prometheus')
         prometheus_pump_dir = os.path.join(telemetry_dir, 'prometheus_pump')
-        grafana_dir = os.path.join(telemetry_dir, 'grafana')
-        loki_dir = os.path.join(telemetry_dir, 'loki_promtail')
 
         log_dir = os.path.join(service_dir, 'log')
         telemetry_log_dir = os.path.join(log_dir, 'telemetry')
@@ -120,8 +118,6 @@ def main():
         idrac_telemetry_receiver_log = os.path.join(telemetry_log_dir, 'idrac_telemetry_receiver')
         prometheus_log = os.path.join(telemetry_log_dir, 'prometheus')
         prometheus_pump_log = os.path.join(telemetry_log_dir, 'prometheus_pump')
-        grafana_log = os.path.join(telemetry_log_dir, 'grafana')
-        promtail_log = os.path.join(telemetry_log_dir, 'promtail')
 
         # Create the directories
         for path in [
@@ -130,7 +126,7 @@ def main():
             idrac_telemetry_receiver_dir, prometheus_dir, prometheus_pump_dir,
             grafana_dir, loki_dir, log_dir, telemetry_log_dir, activemq_log,
             mysql_log, idrac_telemetry_receiver_log, prometheus_log,
-            prometheus_pump_log, grafana_log, promtail_log
+            prometheus_pump_log
         ]:
             create_directory(path, file_mode)
 
