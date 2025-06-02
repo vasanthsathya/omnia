@@ -53,8 +53,8 @@ def fetch_admin_ip(parent_tags, service_node_metadata):
                The second dictionary maps service tags to their corresponding virtual IP addresses.
     """
     service_node_admin_ip = {}
-    service_node_virtual_ip = {}
-    active_nodes, passive_nodes = fetch_active_passive_serivetags(
+    service_node_active_ip = {}
+    active_nodes, passive_nodes, ha_status = fetch_active_passive_servicetags(
         parent_tags, service_node_metadata)
     for nodes in (active_nodes, passive_nodes):
         for service_tag in nodes:
@@ -62,12 +62,16 @@ def fetch_admin_ip(parent_tags, service_node_metadata):
 
     for nodes in active_nodes:
         for service_tag in nodes:
-            service_node_virtual_ip[service_tag] = \
-                service_node_metadata[service_tag]['virtual_ip_address']
+            if ha_status:
+                service_node_active_ip[service_tag] = \
+                    service_node_metadata[service_tag]['virtual_ip_address']
+            else:
+                service_node_active_ip[service_tag] = \
+                    service_node_metadata[service_tag]['admin_ip']
 
-    return service_node_admin_ip, service_node_virtual_ip
+    return service_node_admin_ip, service_node_active_ip
 
-def fetch_active_passive_serivetags(parent_tags, service_node_metadata):
+def fetch_active_passive_servicetags(parent_tags, service_node_metadata):
     """
     Fetches the active and passive service tags based 
     on the provided parent tags and service node metadata.
@@ -80,17 +84,21 @@ def fetch_active_passive_serivetags(parent_tags, service_node_metadata):
         tuple: A tuple containing two sets. The first set contains active service tags.
                The second set contains passive service tags.
     """
+    ha_status = False
     active_nodes = set()
     passive_nodes = set()
     for service_tag, data in service_node_metadata.items():
         if service_tag in parent_tags:
             if data['enable_service_ha']:
+                ha_status = True
                 if data['active']:
                     active_nodes.add(service_tag)
                     passive_nodes.update(data['passive_nodes'])
                 else:
                     passive_nodes.add(service_tag)
-    return active_nodes, passive_nodes
+            else:
+                active_nodes.add(service_tag)
+    return active_nodes, passive_nodes, ha_status
 
 def main():
     """Main module function."""
@@ -104,8 +112,8 @@ def main():
     service_node_metadata = module.params["service_node_metadata"]
     try:
         parent_tags = fetch_parent_tags(bmc_group_data_path)
-        sn_admin_ip, sn_virtual_ip = fetch_admin_ip(parent_tags, service_node_metadata)
-        module.exit_json(changed=False, sn_admin_ip=sn_admin_ip, sn_virtual_ip=sn_virtual_ip)
+        sn_admin_ip, sn_active_ip = fetch_admin_ip(parent_tags, service_node_metadata)
+        module.exit_json(changed=False, sn_admin_ip=sn_admin_ip, sn_active_ip=sn_active_ip)
     except ValueError as e:
         module.fail_json(msg=f"Failed to to get Service Node Group data. {e}")
 
