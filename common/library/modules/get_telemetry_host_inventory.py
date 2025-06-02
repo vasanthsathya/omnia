@@ -60,14 +60,13 @@ def fetch_admin_ip(parent_tags, service_node_metadata):
         for service_tag in nodes:
             service_node_admin_ip[service_tag] = service_node_metadata[service_tag]['admin_ip']
 
-    for nodes in active_nodes:
-        for service_tag in nodes:
-            if ha_status:
-                service_node_active_ip[service_tag] = \
-                    service_node_metadata[service_tag]['virtual_ip_address']
-            else:
-                service_node_active_ip[service_tag] = \
-                    service_node_metadata[service_tag]['admin_ip']
+    for service_tag in active_nodes:
+        if ha_status:
+            service_node_active_ip[service_tag] = \
+                service_node_metadata[service_tag]['virtual_ip_address']
+        else:
+            service_node_active_ip[service_tag] = \
+                service_node_metadata[service_tag]['admin_ip']
 
     return service_node_admin_ip, service_node_active_ip
 
