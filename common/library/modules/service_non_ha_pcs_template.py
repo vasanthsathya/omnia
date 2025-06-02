@@ -45,7 +45,7 @@ def main():
             the service_tag, hostname, and admin_ip.
         service_node_base_dir (str): The base directory where the service nodes will be created.
         file_permissions (str): The file permissions for the directories and files created.
-        corosync_non_ha_tmpl (str): The path to the corosync template.
+        corosync_tmpl (str): The path to the corosync template.
         corosync_tmpl (str): The path to the pcs container template.
         pcs_start_tmpl (str): The path to the pcs start template.
         oim_shared_path (str): The path to the oim shared path.
@@ -73,7 +73,7 @@ def main():
     nodes = module.params['discovered_service_nodes']
     base_dir = module.params['service_node_base_dir']
     perms = int(module.params['file_permissions'], 8)
-    tmpl_corosync = module.params['corosync_non_ha_tmpl']
+    tmpl_corosync = module.params['corosync_tmpl']
     tmpl_pcs_container = module.params['pcs_container_tmpl']
     tmpl_pcs_start = module.params['pcs_start_tmpl']
     oim_shared_path = module.params['oim_shared_path']
