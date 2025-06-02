@@ -36,7 +36,7 @@ from ansible.module_utils.discovery.standard_functions import (
 
 
 def main():
-  
+
     module_args = {
         "service_ha_data": {"type": "dict", "required": True},
         "service_node_base_dir": {"type": "str", "required": True},
@@ -82,7 +82,7 @@ def main():
         corosync_path = os.path.join(pcs_corosync_dir, 'corosync.conf')
 
         # Create telemetry directories when idrac telemetry is supported
-        # if module.params['idrac_telemetry_support'] == 'true':        
+        # if module.params['idrac_telemetry_support'] == 'true':
         telemetry_dir = os.path.join(service_tag_dir, 'telemetry')
         idrac_telemetry_dir = os.path.join(telemetry_dir, 'idrac_telemetry')
         activemq_dir = os.path.join(idrac_telemetry_dir, 'activemq')
@@ -102,7 +102,7 @@ def main():
         for d in [
             service_tag_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir,telemetry_dir,
             idrac_telemetry_dir, activemq_dir, mysql_dir, idrac_telemetry_receiver_dir,
-            prometheus_dir, prometheus_pump_dir, grafana_dir, loki_dir, log_dir, telemetry_log_dir,
+            prometheus_dir, prometheus_pump_dir, log_dir, telemetry_log_dir,
             activemq_log, mysql_log, idrac_telemetry_receiver_log, prometheus_log, prometheus_pump_log
         ]:
             create_directory(d, file_mode)
