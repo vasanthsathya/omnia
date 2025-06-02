@@ -108,7 +108,7 @@ def create_container_remote_with_auth(remote_name, remote_url, package, policy_t
                 return True
 
             new_tags = existing_tags + [tag]
-            tags_str = ",".join(new_tags)  # 👈 CLI expects comma-separated string
+            tags_str = ",".join(new_tags)
             update_command = pulp_container_commands["update_container_remote_auth"] % (
                 remote_name, remote_url, package, policy_type, tags_str, docker_username, docker_password
             )
