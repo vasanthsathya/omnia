@@ -14,7 +14,7 @@
 ---
 
 - name: Include service node metadata vars
-  include_vars: "{{ service_node_metadata_path }}"
+  ansible.builtin.include_vars: "{{ service_node_metadata_path }}"
 
 - name: Get updated host inventory
   get_telemetry_host_inventory:
@@ -23,13 +23,13 @@
   register: host_inventory
 
 - name: Add service node admin details to inventory
-  add_host:
+  ansible.builtin.add_host:
     name: "{{ item.value }}"
     groups: sn_admin
   loop: "{{ host_inventory.sn_admin_ip | dict2items }}"
 
 - name: Add active service nodes to inventory
-  add_host:
+  ansible.builtin.add_host:
     name: "{{ item.value }}"
     groups: sn_active
   loop: "{{ host_inventory.sn_active_ip | dict2items }}"
