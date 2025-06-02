@@ -12,16 +12,3 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
-
-# can remove this include variables when using ansible module for rendering template with vars
-- name: Include idarc_telemetry vars file
-  ansible.builtin.include_vars: "{{ role_path }}/../idrac_telemetry/vars/main.yml"
-
-- name: Include prometheus vars file
-  ansible.builtin.include_vars: "{{ role_path }}/../prometheus/vars/main.yml"
-
-- name: Include grafana vars file
-  ansible.builtin.include_vars: "{{ role_path }}/../grafana/vars/main.yml"
-
-- name: Include loki and promtail vars file
-  ansible.builtin.include_vars: "{{ role_path }}/../loki/vars/main.yml"
