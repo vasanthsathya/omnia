@@ -31,10 +31,10 @@
   add_host:
     name: "{{ item.value }}"
     groups: sn_admin
-  loop: "{{ host_inventory.sn_admin_ip }}"
+  loop: "{{ host_inventory.sn_admin_ip | dict2items }}"
 
 - name: Add active service nodes to inventory
   add_host:
     name: "{{ item.value }}"
     groups: sn_active
-  loop: "{{ host_inventory.sn_active_ip }}"
+  loop: "{{ host_inventory.sn_active_ip | dict2items }}"
