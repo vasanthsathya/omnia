@@ -25,7 +25,7 @@
 - name: Set fact for service node group data
   set_fact:
     sn_admin: "{{ host_inventory.sn_admin_ip }}"
-    sn_active: "{{ host_inventory.sn_virtual_ip }}"
+    sn_active: "{{ host_inventory.sn_active_ip }}"
 
 - name: Add service node admin details to inventory
   add_host:
