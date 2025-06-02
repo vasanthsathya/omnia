@@ -25,3 +25,11 @@
 - name: Set fact for service node group data
   set_fact:
     sn_admin_ip: "{{ host_inventory.sn_admin_ip }}"
+    sn_virtual_ip: "{{ host_inventory.sn_virtual_ip }}"
+
+- name: Add webservers to inventory
+  add_host:
+    name: "{{ item }}"
+    groups: webservers
+  loop: "{{ my_hosts.webservers }}"
+
