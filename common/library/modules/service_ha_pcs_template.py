@@ -103,7 +103,13 @@ def main():
         grafana_log = os.path.join(telemetry_log_dir, 'grafana')
         promtail_log = os.path.join(telemetry_log_dir, 'promtail')
 
-        for d in [service_tag_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir]:
+        for d in [
+            service_tag_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir,telemetry_dir,
+            idrac_telemetry_dir, activemq_dir, mysql_dir, idrac_telemetry_receiver_dir,
+            prometheus_dir, prometheus_pump_dir, grafana_dir, loki_dir, log_dir, telemetry_log_dir,
+            activemq_log, mysql_log, idrac_telemetry_receiver_log, prometheus_log, prometheus_pump_log,
+            grafana_log, promtail_log
+        ]:
             create_directory(d, file_mode)
 
         context = {
