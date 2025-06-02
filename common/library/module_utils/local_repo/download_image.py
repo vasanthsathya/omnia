@@ -68,13 +68,27 @@ def load_docker_credentials(vault_yml_path, vault_password_file, logger):
         raise RuntimeError(f"Failed to parse decrypted YAML: {error}") from error
 
 def create_container_remote_with_auth(remote_name, remote_url, package, policy_type, tag, logger, docker_username, docker_password):
+    """
+    Create a container remote with authentication.
+
+    Creates a new container remote or updates an existing one with the provided tag and authentication credentials.
+
+    Parameters:
+        remote_name (str): Name of the container remote.
+        remote_url (str): URL of the container remote.
+        package (str): Package name.
+        policy_type (str): Policy type.
+        tag (str): Tag to add to the container remote.
+        logger (object): Logger instance.
+        docker_username (str): Docker username.
+        docker_password (str): Docker password.
+
+    Returns:
+        bool: True if the container remote was created or updated successfully, False otherwise.
+    """
     try:
         remote_exists = execute_command(pulp_container_commands["show_container_remote"] % remote_name, logger)
         if not remote_exists:
-            # tags_str = tag  # 👈 just use the tag as string
-            # create_command = pulp_container_commands["create_container_remote_auth"] % (
-            #     remote_name, remote_url, package, policy_type, tags_str, docker_username, docker_password
-            # )
             tags_json = json.dumps([tag])  # --> '["1.25.2-alpine"]'
             create_command = pulp_container_commands["create_container_remote_auth"] % (
             remote_name,remote_url,package,policy_type,tags_json,docker_username,docker_password)
