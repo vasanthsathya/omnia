@@ -18,6 +18,7 @@
 
 import subprocess
 import ipaddress
+import json
 from ansible.module_utils.basic import AnsibleModule
 
 module = AnsibleModule(
@@ -52,7 +53,6 @@ def get_existing_routes():
     """Get existing routes from the kernel route table."""
     try:
         output = subprocess.check_output(['ip', '-j', 'route']).decode()
-        import json
         routes = json.loads(output)
         return [route['dst'] for route in routes if 'dst' in route]
     except Exception:
