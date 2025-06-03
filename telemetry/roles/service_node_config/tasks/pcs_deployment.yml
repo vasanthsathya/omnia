@@ -14,8 +14,8 @@
 ---
 
 - name: Create directories and render configuration files for HA nodes
-  service_ha_pcs_template:
-    service_node_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
+  telemetry_pcs_template:
+    service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
     service_node_base_dir: "{{ service_node_base_dir }}"
     file_permissions: "{{ file_permissions }}"
     oim_shared_path: "{{ oim_shared_path }}"
