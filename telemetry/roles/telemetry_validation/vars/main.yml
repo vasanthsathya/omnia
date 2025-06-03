@@ -13,6 +13,8 @@
 # limitations under the License.
 ---
 
+omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
+
 # local repo
 software_config_file: "{{ role_path }}/../../../input/software_config.json"
 local_repo_access_path: "/opt/omnia/offline/local_repo_access.yml"

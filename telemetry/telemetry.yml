@@ -66,15 +66,24 @@
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
 #   when: not ( hostvars['127.0.0.1']['update_user_repo_executed'] | default(false) | bool )
 
-# - name: Generate telemetrty service node configuration
+- name: Configure service nodes for telemetry
+  hosts: sn_admin
+  connection: ssh
+  gather_facts: false
+  roles:
+    - service_node_config
+
+# - name: Deployment of telemetry container in service node
 #   hosts: sn_active
 #   connection: ssh
 #   gather_facts: false
-#   role:
-#     - service_node_config
-#   when: (discovered_service_nodes | default([])) | length > 0
+#   tasks:
+#     - name: Deployment of telemetry container in service node
+#       ansible.builtin.include_role:
+#         name: service_node_config
+#         tasks_from: pcs_deployment.yml
 
-- name: Telemetry for omnia
+- name: Enable idrac telemetry in OIM
   hosts: localhost
   connection: local
   gather_facts: false
