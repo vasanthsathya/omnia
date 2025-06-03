@@ -66,8 +66,8 @@ def main():
             continue
 
         # If telemetry is enabled and the node is active, collect its passive_node
-        if node.get('enable_telemetry') and node.get('active'):
-            passive_nodes.append(node.get('passive_node'))
+        if node.get('enable_service_ha') and node.get('active'):
+            passive_nodes.extend(node.get('passive_nodes'))
 
         # Extract the node parameters
 
