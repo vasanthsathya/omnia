@@ -27,6 +27,7 @@ module = AnsibleModule(
         argument_spec={
             'oim_nic': {'required': True, 'type': 'str'},
             'oim_nic_ip': {'required': True, 'type': 'str'},
+            'oim_nic_netmask_bits': {'required': True, 'type': 'str'},
             'servicetag': {'required': True, 'type': 'str'},
             'all_nodes': {'required': True, 'type': 'list'},
             'delete': {'required': False, 'type': 'bool', 'default': False},
@@ -36,6 +37,7 @@ module = AnsibleModule(
 
 nic = module.params['oim_nic']
 oim_nic_ip = module.params['oim_nic_ip']
+netmask_bits = module.params['oim_nic_netmask']
 servicetag = module.params['servicetag']
 all_nodes = module.params['all_nodes']
 
@@ -117,7 +119,7 @@ def main():
 
     subnets = set()
     for ip in bmc_ips:
-        net = ipaddress.ip_network(f"{ip}/16", strict=False)
+        net = ipaddress.ip_network(f"{ip}/{netmask_bits}", strict=False)
         if not ping_host(ip):
             subnets.add(str(net))
         else:

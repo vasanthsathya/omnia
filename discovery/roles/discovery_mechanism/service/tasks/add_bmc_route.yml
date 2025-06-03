@@ -16,7 +16,8 @@
 - name: Add missing routes using custom module
   update_bmc_subnet_route_sn:
     oim_nic: "xcat-{{ hostvars['omnia_provision']['pxe_nic'] }}"
-    oim_nic_ip: "{{ hostvars['omnia_provision']['admin_nic_ip'] }}"
+    oim_nic_ip: "{{ hostvars['omnia_provision']['pxe_nic_ip'] }}"
+    oim_nic_netmask_bits: "{{ hostvars['omnia_provision']['pxe_nic_netmask_bits'] }}"
     servicetag: "{{ hostvars[inventory_hostname]['active_service_tag'] }}"
     all_nodes: >-
       {{
