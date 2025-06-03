@@ -18,4 +18,4 @@
  ::
       
         passive_nodes:
-             - node_service_tags: [ ""<service_tag>""]"
+             - node_service_tags: [""<service_tag>""]"

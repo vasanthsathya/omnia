@@ -49,7 +49,7 @@ Configuring specific local repositories
 
 .. note::
     * If the package version is customized, ensure that the same ``version`` value is also updated in the ``software_config.json``.
-    * If the target cluster runs on RHEL, ensure that the "dkms" package is also included in ``/opt/omnia/input/project_default/config/<cluster_os_type>/9.x/cuda.json`` as illustrated above.
+    * If the target cluster runs on RHEL, ensure that the "dkms" package is also included in ``/opt/omnia/input/project_default/config/<cluster_os_type>/9.x/cuda.json``, as shown above.
 
 **OFED**
 
