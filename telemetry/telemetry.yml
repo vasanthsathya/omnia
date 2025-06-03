@@ -67,7 +67,7 @@
   hosts: sn_active
   connection: ssh
   gather_facts: false
-  role:
+  roles:
     - service_node_config
 
 - name: Telemetry for omnia
