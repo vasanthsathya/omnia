@@ -24,6 +24,7 @@ mysql_secrets:
 
 # Usage: create_podman_volume.yml
 dir_permissions_755: "0755"
+oim_shared_path: "{{ hostvars['localhost']['oim_shared_path'] }}"
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
 telemetry_data_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['service_tag'] }}/telemetry"
 telemetry_log_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['service_tag'] }}/log/telemetry"
@@ -34,12 +35,12 @@ mysql_data_dir: "{{ idrac_telemetry_dir }}/mysqldb"
 mysql_log_dir: "{{ telemetry_log_dir }}/mysqldb"
 mysqldb_podman_volumes:
   - { name: "mysqldb_data", path: "{{ mysql_data_dir }}" }
-  - { name: "mysqldb_log", path: "{{ mysql_log_volume }}" }
+  - { name: "mysqldb_log", path: "{{ mysql_log_dir }}" }
 
 # activemq
-activemq_logs_dir: "{{ telemetry_log_dir  }}/activemq"
+activemq_log_dir: "{{ telemetry_log_dir  }}/activemq"
 activemq_podman_volumes:
-  - { name: "activemq_log", path: "{{ activemq_logs_dir }}" }
+  - { name: "activemq_log", path: "{{ activemq_log_dir }}" }
 
 # idrac_telemetry_receiver
 idrac_telemetry_receiver_log_dir: "{{ telemetry_log_dir }}/idrac_telemetry_receiver"
@@ -47,8 +48,8 @@ idrac_telemetry_receiver_podman_volumes:
     - { name: "idrac_telemetry_receiver_log", path: "{{ idrac_telemetry_receiver_log_dir }}" }
 
 # prometheus
-prometheus_logs_dir: "{{ telemetry_log_dir }}/prometheus"
+prometheus_log_dir: "{{ telemetry_log_dir }}/prometheus"
 prometheus_data_dir: "{{ telemetry_data_dir }}/prometheus/prometheus_data"
 prometheus_podman_volumes:
  - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
- - { name: "prometheus_log", path: "{{ prometheus_logs_dir }}" }
+ - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
