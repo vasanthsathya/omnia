@@ -99,7 +99,7 @@ def main():
 
         # Create the directories
         for path in [
-            service_dir, telemetry_dir, idrac_telemetry_dir, activemq_dir, mysql_dir,
+            service_dir, pcs_dir, pcs_config_dir, telemetry_dir, idrac_telemetry_dir, activemq_dir, mysql_dir,
             idrac_telemetry_receiver_dir, prometheus_dir, prometheus_pump_dir,
             log_dir, telemetry_log_dir, activemq_log,
             mysql_log, idrac_telemetry_receiver_log, prometheus_log,
