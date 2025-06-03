@@ -11,6 +11,7 @@ on:
       - pub/composable_software_roles
       - pub/local_repo
       - pub/telemetry_restructure
+      - pub/telemetry_service_oim_ha
 
 jobs:
   build:
