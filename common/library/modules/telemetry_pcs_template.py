@@ -14,6 +14,8 @@
 
 #!/usr/bin/python
 
+"""This module provides functionality for telemetry PCS nodes."""
+
 # pylint: disable=import-error,no-name-in-module,line-too-long
 
 import os
@@ -26,7 +28,25 @@ from ansible.module_utils.discovery.standard_functions import (
     load_vars_file
 )
 
+# pylint: disable=too-many-locals
 def main():
+    """
+	Generates telemetry configuration for a list of service nodes.
+
+    	Parameters:
+		service_nodes_metadata (dict): A dictionary containing service node metadata.
+		service_node_base_dir (str): The base directory for service nodes.
+		file_permissions (str): The file permissions for the generated files.
+		tmpl_telemetry (str): The path to the telemetry template.
+		oim_shared_path (str): The path to the OIM shared path.
+		vars_file (str): The path to the variables file (default: None).
+		telemetry_vars_file (str): The path to the telemetry variables file (default: None).
+
+	Returns:
+		- A JSON object containing the results of processing each node,including the 
+        changed status, a message describing the result, and the path to the written file.
+
+    """
 
     # Define the module arguments
     module_args = {
@@ -113,7 +133,6 @@ def main():
         # Create the template context
         context = {
             'service_tag': service_tag,
-            # 'service_node_name': service_node_name,
             'service_admin_nic_ip': service_admin_nic_ip,
             'oim_shared_path': oim_shared_path,
             **extra_vars,
