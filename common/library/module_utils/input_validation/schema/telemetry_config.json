@@ -11,11 +11,15 @@
     },
     "visualization_support": {
       "type": "boolean"
+    },
+    "federated_idrac_telemetry_collection": {
+      "type": "boolean"
     }
   },
   "required": [
     "idrac_telemetry_support",
-    "visualization_support"
+    "visualization_support",
+    "federated_idrac_telemetry_collection"
   ],
   "allOf": [
     {
