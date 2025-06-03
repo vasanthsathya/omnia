@@ -83,27 +83,27 @@ def main():
 
         # Create telemetry directories when idrac telemetry is supported
         # if module.params['idrac_telemetry_support'] == 'true':
-        telemetry_dir = os.path.join(service_tag_dir, 'telemetry')
-        idrac_telemetry_dir = os.path.join(telemetry_dir, 'idrac_telemetry')
-        activemq_dir = os.path.join(idrac_telemetry_dir, 'activemq')
-        mysql_dir = os.path.join(idrac_telemetry_dir, 'mysql')
-        idrac_telemetry_receiver_dir = os.path.join(idrac_telemetry_dir, 'idrac_telemetry_receiver')
-        prometheus_dir = os.path.join(telemetry_dir, 'prometheus')
-        prometheus_pump_dir = os.path.join(telemetry_dir, 'prometheus_pump')
+        # telemetry_dir = os.path.join(service_tag_dir, 'telemetry')
+        # idrac_telemetry_dir = os.path.join(telemetry_dir, 'idrac_telemetry')
+        # activemq_dir = os.path.join(idrac_telemetry_dir, 'activemq')
+        # mysql_dir = os.path.join(idrac_telemetry_dir, 'mysql')
+        # idrac_telemetry_receiver_dir = os.path.join(idrac_telemetry_dir, 'idrac_telemetry_receiver')
+        # prometheus_dir = os.path.join(telemetry_dir, 'prometheus')
+        # prometheus_pump_dir = os.path.join(telemetry_dir, 'prometheus_pump')
 
-        log_dir = os.path.join(service_tag_dir, 'log')
-        telemetry_log_dir = os.path.join(log_dir, 'telemetry')
-        activemq_log = os.path.join(telemetry_log_dir, 'activemq')
-        mysql_log = os.path.join(telemetry_log_dir, 'mysql')
-        idrac_telemetry_receiver_log = os.path.join(telemetry_log_dir, 'idrac_telemetry_receiver')
-        prometheus_log = os.path.join(telemetry_log_dir, 'prometheus')
-        prometheus_pump_log = os.path.join(telemetry_log_dir, 'prometheus_pump')
+        # log_dir = os.path.join(service_tag_dir, 'log')
+        # telemetry_log_dir = os.path.join(log_dir, 'telemetry')
+        # activemq_log = os.path.join(telemetry_log_dir, 'activemq')
+        # mysql_log = os.path.join(telemetry_log_dir, 'mysql')
+        # idrac_telemetry_receiver_log = os.path.join(telemetry_log_dir, 'idrac_telemetry_receiver')
+        # prometheus_log = os.path.join(telemetry_log_dir, 'prometheus')
+        # prometheus_pump_log = os.path.join(telemetry_log_dir, 'prometheus_pump')
 
         for d in [
-            service_tag_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir,telemetry_dir,
-            idrac_telemetry_dir, activemq_dir, mysql_dir, idrac_telemetry_receiver_dir,
-            prometheus_dir, prometheus_pump_dir, log_dir, telemetry_log_dir,
-            activemq_log, mysql_log, idrac_telemetry_receiver_log, prometheus_log, prometheus_pump_log
+            service_tag_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir,
+            # telemetry_dir, idrac_telemetry_dir, activemq_dir, mysql_dir, idrac_telemetry_receiver_dir,
+            # prometheus_dir, prometheus_pump_dir, log_dir, telemetry_log_dir,
+            # activemq_log, mysql_log, idrac_telemetry_receiver_log, prometheus_log, prometheus_pump_log
         ]:
             create_directory(d, file_mode)
 
