@@ -139,8 +139,8 @@ prometheus_dir: "{{ telemetry_data_dir }}/prometheus"
 prometheus_container_name: "prometheus"
 prometheus_image: "docker.io/prom/prometheus:v2.43.0"
 prometheus_env:
- PROMETHEUS_DB: "poweredge_telemetry_metrics"
- node.name: "127.0.0.1"
+  PROMETHEUS_DB: "poweredge_telemetry_metrics"
+  node.name: "127.0.0.1"
 prometheus_run_opts: >-
   --network=host
   {% for key, value in prometheus_env.items() %}
@@ -157,9 +157,9 @@ prometheus_run_opts: >-
 prometheus_pump_entry_script: "/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh"
 oim_prometheus_pump_dir: "{{ oim_telemetry_dir_path }}/prometheus_pump"
 prometheus_pump_receiver_env:
- MESSAGEBUS_HOST: "localhost"
- MESSAGEBUS_PORT: "61613"
- PROMETHEUSDB_SERVER: "prometheus"
+  MESSAGEBUS_HOST: "localhost"
+  MESSAGEBUS_PORT: "61613"
+  PROMETHEUSDB_SERVER: "prometheus"
 prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_run_opts: >-
   --network=host
