@@ -16,13 +16,6 @@
 
 # pylint: disable=import-error,no-name-in-module,line-too-long
 
-"""
-Generates non-HA PCS template.
-
-This module is used to generate the template for non-HA PCS nodes.
-It provides the necessary configuration and settings for the nodes.
-"""
-
 import os
 
 from ansible.module_utils.basic import AnsibleModule
@@ -33,27 +26,7 @@ from ansible.module_utils.discovery.standard_functions import (
 )
 
 def main():
-    """
-    The main function is the entry point of the Ansible module. It defines the module arguments, 
-    creates the Ansible module, extracts the module parameters, loads the variables file, 
-    and processes each node in the discovered_service_nodes list. The function creates the 
-    node directories, loads the variables file, and renders the templates for corosync, pcs container, 
-    and pcs start. The function returns a JSON object with the results of processing each node.
 
-    Args:
-        discovered_service_nodes (list): A list of dictionaries where each dictionary contains 
-            the service_tag, hostname, and admin_ip.
-        service_node_base_dir (str): The base directory where the service nodes will be created.
-        file_permissions (str): The file permissions for the directories and files created.
-        corosync_tmpl (str): The path to the corosync template.
-        corosync_tmpl (str): The path to the pcs container template.
-        pcs_start_tmpl (str): The path to the pcs start template.
-        oim_shared_path (str): The path to the oim shared path.
-        vars_file (str): The path to the variables file.
-
-    Returns:
-        A JSON object with the results of processing each node.
-    """
     # Define the module arguments
     module_args = {
         "service_nodes_metadata": {"type": "list", "required": True},
