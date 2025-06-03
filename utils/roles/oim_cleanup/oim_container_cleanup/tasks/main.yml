@@ -57,6 +57,9 @@
       ansible.builtin.import_tasks: cleanup_loki_promtail.yml
 
 - name: Remove telemetry Directory
+  when:
+    - hostvars['localhost']['visualization_support']
+    - hostvars['localhost']['idrac_telemetry_support']
   ansible.builtin.file:
     path: "{{ telemetry_dir_path }}"
     state: absent
