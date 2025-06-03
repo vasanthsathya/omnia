@@ -22,21 +22,21 @@
       ansible.builtin.include_tasks: create_podman_secrets.yml
 
     - name: Include tasks for podman volume - mysql
-      ansible.builtin.include_tasks: create_podman_volume_name.yml
+      ansible.builtin.include_tasks: create_podman_volume.yml
       vars:
         podman_volume_name: "{{ mysqldb_podman_volume_names }}"
   
     - name: Include tasks for podman volume - activemq
-      ansible.builtin.include_tasks: create_podman_volume_name.yml
+      ansible.builtin.include_tasks: create_podman_volume.yml
       vars:
         podman_volume_name: "{{ activemq_podman_volume_names }}"
 
     - name: Include tasks for podman volume - idrac_telemetry_receiver
-      ansible.builtin.include_tasks: create_podman_volume_name.yml
+      ansible.builtin.include_tasks: create_podman_volume.yml
       vars:
         podman_volume_name: "{{ idrac_telemetry_receiver_podman_volume_names }}"
 
     - name: Include tasks for podman volume - prometheus
-      ansible.builtin.include_tasks: create_podman_volume_name.yml
+      ansible.builtin.include_tasks: create_podman_volume.yml
       vars:
         podman_volume_name: "{{ prometheus_podman_volume_names }}"
