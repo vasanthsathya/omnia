@@ -69,7 +69,7 @@ user_registry:
 # rhel_os_url:
 #   - {url: "http://crb.com/CRB/x86_64/os/", gpgkey: "http://crb.com/CRB/x86_64/os/RPM-GPG-KEY", name: "codeready-builder"}
 rhel_os_url:
-  - {url: "", gpgkey: "", name: ""}
+  - {url: "", gpgkey: "", name: "codeready-builder"}
 
 ### ADVANCE CONFIGURATIONS FOR LOCAL REPO ###
 # Mandatory
