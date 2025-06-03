@@ -103,8 +103,8 @@ def main():
     """Main function to update BMC subnet routes for a Service Node."""
 
     bmc_ips = [
-        n['bmc'] for n in all_nodes
-        if n.get('parent') == servicetag and n.get('bmc')
+        n['bmc_ip'] for n in all_nodes
+        if n.get('parent') == servicetag and n.get('bmc_ip')
     ]
 
     if not bmc_ips:
