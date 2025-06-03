@@ -17,6 +17,7 @@
 # pylint: disable=import-error,no-name-in-module,line-too-long
 
 import os
+import shutil
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.discovery.standard_functions import (
@@ -54,9 +55,18 @@ def main():
 
     # Initialize the results list
     results = []
+    passive_nodes = []
 
     # Process each node
     for node in service_nodes:
+        # Skip nodes that are HA-enabled but not active
+        if node.get('enable_service_ha') and not node.get('active'):
+            continue
+
+        # If telemetry is enabled and the node is active, collect its passive_node
+        if node.get('enable_telemetry') and node.get('active'):
+            passive_nodes.append(node.get('passive_node'))
+
         # Extract the node parameters
 
         service_tag = node['service_tag']
@@ -114,6 +124,17 @@ def main():
 
         # Add the result to the list
         results.append(f"Processed node {service_tag}")
+
+        # Copy rendered active node directory to passive node directories
+        for p_node in passive_nodes:
+            passive_service_tag = p_node['service_tag']
+            passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
+
+            if os.path.exists(passive_service_tag_dir):
+                shutil.rmtree(passive_service_tag_dir)
+
+            shutil.copytree(service_dir, passive_service_tag_dir)
+            results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
 
     # Exit the module
     module.exit_json(changed=True, msg="Nodes processed successfully", results=results)
