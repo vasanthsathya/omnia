@@ -29,17 +29,23 @@ enable_routed_internet: true
 # Optional
 # This variable accepts the repository urls of the user which contains the packages required for the cluster.
 # User should make sure required disk space is available.
-# This variable accepts repo url, gpgkey and name 
+# This variable accepts repo url, gpgkey and name, sslcacert, sslclientkey, and sslclientcert, policy
 # url: defines the baseurl for the repository
 # gpgkey: defines gpgkey for the repository
 # name: defines name for the repository
+# sslcacert, sslclientkey, sslclientcert : Defines respective certificate file paths.
+# policy: Add the policy(always, partial, never) depending upon desired configuration.
 # If gpgkey is empty then gpgcheck will be disabled for that repository
 # This variable should not have jinja variables in it.
 # and user leaves the gpgkey field empty (gpgkey: "" ), omnia configures the repository as a trusted source and the user is solely
 # responsible in maintaining the security.
+# If you are using SSL certificates for encryption, include the sslcacert, sslclientkey, and sslclientcert fields.
+# Example:
+# - { url: "", gpgkey: "", name: "", sslcacert: "", sslclientkey: "", sslclientcert: "", policy: "" }
+# Omit these fields entirely if SSL is not in use.
 # Example:
 # user_repo_url:
-#   - {url: "http://user_repo.com/x86_64/os/",gpgkey: "http://user_repo.com/x86_64/os/RPM-GPG-KEY",name: ""}
+#   - {url: "",gpgkey: "",name: ""}
 user_repo_url:
 
 # Optional
