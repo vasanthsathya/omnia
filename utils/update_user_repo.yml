@@ -28,8 +28,17 @@
 #         name: update_user_repo/common
 #         tasks_from: check_os_versions.yml
 
-- name: Update repo and registry
+- name: Check and update Pulp crt, repo, and registry
   hosts: slurm_control_node, slurm_node, kube_control_plane, kube_node, auth_server, login, etcd
+  tasks:
+    - name: Pulp crt modified flag
+      ansible.builtin.set_fact:
+        pulp_crt_changed: false
+
+    - name: Invoke certification updation tasks when pulp_crt_changed is true
+      ansible.builtin.include_tasks: roles/update_user_repo/common/tasks/update_pulp_crt.yml
+      when: pulp_crt_changed
+
   roles:
     - update_user_repo/common
-    # - update_user_registry # Needs to updated
+    # - update_user_registry  # Needs to be updated

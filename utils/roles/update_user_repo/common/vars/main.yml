@@ -13,6 +13,10 @@
 # limitations under the License.
 ---
 
+# Usage: update_pulp_crt.yml
+pulp_cert_src: "/opt/omnia/pulp/settings/certs/pulp_webserver.crt"
+ca_trust_path: "/etc/pki/ca-trust/source/anchors/"
+
 # Usage:<os_type>/update_software_repo.yml
 software_version_default: "omnia_default"
 file_permission: "644"
