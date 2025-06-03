@@ -74,6 +74,9 @@
         privileged: false
         env: "{{ idrac_telemetry_receiver_env }}"
         entrypoint: "{{ idrac_telemetry_receiver_entry_script }}"
+        log_driver: "json-file"
+        log_opt:
+          path: "{{ idrac_telemetry_receiver_logs_dir }}/idrac_telemetry_receiver.log"
 
     - name: Check if iDRAC Telemtery Receiver container is running after deployment
       containers.podman.podman_container_info:
