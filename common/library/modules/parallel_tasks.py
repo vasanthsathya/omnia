@@ -17,7 +17,6 @@
 # pylint: disable=import-error,no-name-in-module,line-too-long
 import os
 import re
-import subprocess
 from datetime import datetime
 from prettytable import PrettyTable
 from ansible.module_utils.basic import AnsibleModule
@@ -53,44 +52,8 @@ from ansible.module_utils.local_repo.config import (
     SOFTWARE_CSV_FILENAME,
     SOFTWARE_CSV_HEADER,
     STATUS_CSV_HEADER,
-    LOCAL_REPO_CONFIG_PATH_DEFAULT,
-    OMNIA_CREDENTIALS_YAML_PATH,
-    OMNIA_CREDENTIALS_VAULT_PATH
+    LOCAL_REPO_CONFIG_PATH_DEFAULT
 )
-import yaml
-
-def load_docker_credentials(vault_yml_path, vault_password_file):
-    """
-    Decrypts an Ansible Vault YAML file and extracts docker_username and docker_password.
-
-    Args:
-        vault_yml_path (str): Path to the encrypted Ansible Vault YAML file.
-        vault_password_file (str): Path to the vault password file.
-
-    Returns:
-        tuple: (docker_username, docker_password)
-
-    Raises:
-        RuntimeError: If decryption or parsing fails.
-        ValueError: If the expected keys are not found.
-    """
-    try:
-        result = subprocess.run(
-            ["ansible-vault", "view", vault_yml_path, "--vault-password-file", vault_password_file],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-        data = yaml.safe_load(result.stdout)
-        docker_username = data.get("docker_username")
-        docker_password = data.get("docker_password")
-        if not docker_username or not docker_password:
-            return None, None
-        return docker_username, docker_password
-    except subprocess.CalledProcessError as error:
-        raise RuntimeError(f"Vault decryption failed: {error.stderr.strip()}") from error
-    except yaml.YAMLError as error:
-        raise RuntimeError(f"Failed to parse decrypted YAML: {error}") from error
 
 def update_status_csv(csv_dir, software, overall_status):
     """
@@ -147,7 +110,7 @@ def update_status_csv(csv_dir, software, overall_status):
         f.write("\n".join(final_lines))
 
 
-def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries):
+def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries, docker_username, docker_password):
     """
     Determines the appropriate function and its arguments to process a given task.
 
@@ -178,7 +141,6 @@ def determine_function(task, repo_store_path, csv_file_path, user_data, version_
             with open(status_file, 'w', encoding="utf-8") as file:
                 file.write(STATUS_CSV_HEADER)
 
-        docker_username, docker_password = load_docker_credentials(OMNIA_CREDENTIALS_YAML_PATH, OMNIA_CREDENTIALS_VAULT_PATH)
 
         task_type = task.get("type")
         if task_type == "manifest":
