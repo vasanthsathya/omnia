@@ -76,4 +76,3 @@
 # - name: Validate k8s prometheus when prometheus gaudi is true
 #   ansible.builtin.include_tasks: validate_prometheus_gaudi.yml
 #   when: prometheus_gaudi_support
-
