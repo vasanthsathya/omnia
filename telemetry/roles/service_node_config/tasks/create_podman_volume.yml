@@ -19,8 +19,7 @@
     path: "{{ item.path }}"
     state: directory
     mode: "{{ dir_permissions_755 }}"
-  loop:
-    - "{{ mysqldb_podman_volumes + activemq_podman_volumes + idrac_telemetry_receiver_podman_volumes + prometheus_podman_volumes }}"
+  loop: "{{ podman_volume_name }}"
 
 - name: Create Podman bind-mounted volumes
   containers.podman.podman_volume:
@@ -31,5 +30,4 @@
       - "o=bind"
       - "type=none"
       - "device={{ item.path }}"
-  loop:
-    - "{{ mysqldb_podman_volumes + activemq_podman_volumes + idrac_telemetry_receiver_podman_volumes + prometheus_podman_volumes }}"
+  loop: "{{ podman_volume_name }}"
