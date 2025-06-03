@@ -54,11 +54,15 @@ prometheus_podman_volumes:
   - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
   - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
 
+# Usage: pull_podman_images.yml
+omnia_images_tar: "{{ omnia_nfs_share }}/images/omnia_images.tar"
+
 # Usage: pcs_deployment.yml
 
 service_node_base_dir: "/opt/omnia/service_nodes"
 file_permissions: '0755'
-oim_idrac_telemetry_dir: "{{ oim_shared_path }}/telemetry/idrac_telemetry"
+oim_telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
+oim_idrac_telemetry_dir: "{{ oim_telemetry_dir_path }}/idrac_telemetry"
 telemetry_pcs_group: "omnia_telemetry"
 monitor_interval: "30s"
 monitor_timeout: "60s"
