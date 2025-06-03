@@ -30,7 +30,7 @@ def main():
 
     # Define the module arguments
     module_args = {
-        "service_nodes_metadata": {"type": "list", "required": True},
+        "service_nodes_metadata": {"type": "dict", "required": True},
         "service_node_base_dir": {"type": "str", "required": True},
         "file_permissions": {"type": "str", "required": True},
         "tmpl_telemetry": {"type": "str", "required": True},
@@ -58,7 +58,7 @@ def main():
     passive_nodes = []
 
     # Process each node
-    for node in service_nodes:
+    for _, node in service_nodes.items():
         # Skip nodes that are HA-enabled but not active
         if node.get('enable_service_ha') and not node.get('active'):
             continue
