@@ -38,5 +38,6 @@
 
     - name: Include tasks for podman volume - prometheus
       ansible.builtin.include_tasks: create_podman_volume.yml
+      when: hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
       vars:
         podman_volume_name: "{{ prometheus_podman_volumes }}"
