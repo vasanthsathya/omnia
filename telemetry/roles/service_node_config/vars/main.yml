@@ -13,9 +13,6 @@
 #  limitations under the License.
 ---
 
-service_node_base_dir: "/opt/omnia/service_nodes"
-file_permissions: '0755'
-
 # Usage: create_podman_secrets.yml
 mysql_root_password: "mysql_root_password"
 mysql_user_password: "mysql_user_password"
@@ -59,6 +56,8 @@ prometheus_podman_volumes:
 
 # Usage: pcs_deployment.yml
 
+service_node_base_dir: "/opt/omnia/service_nodes"
+file_permissions: '0755'
 oim_idrac_telemetry_dir: "{{ oim_shared_path }}/telemetry/idrac_telemetry"
 telemetry_pcs_group: "omnia_telemetry"
 monitor_interval: "30s"
