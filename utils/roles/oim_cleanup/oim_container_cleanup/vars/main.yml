@@ -93,6 +93,9 @@ visualization_firewall_ports:
   - "3001/tcp"
   - "5000/tcp"
 
+loki_firewall_ports:
+  - "3100/tcp"
+
 # Usage: cleanup_kubespray.yml
 kubespray_image_tag: "{{ hostvars['localhost']['kubespray_version'] }}"
 kubespray_container_name: "omnia_kubespray_{{ hostvars['localhost']['kubespray_version'] }}"
@@ -157,3 +160,15 @@ grafana_data_dir: "{{ omnia_nfs_share }}/telemetry/grafana"
 grafana_podman_volumes:
   - { name: "grafana_data", path: "{{ grafana_data_dir }}" }
   - { name: "grafana_log", path: "{{ grafana_logs_dir }}" }
+
+# Usage: cleanup_loki_promtail.yml
+loki_container_name: "loki"
+promtail_container_name: "promtail"
+loki_promtail_cleanup_directory:
+  - "{{ omnia_nfs_share }}/telemetry/loki_promtail"
+loki_firewall_ports:
+  - "3100/tcp"
+resource_removal_failure_msg: "Failed to clean up Loki and Promtail resources after container removal."
+config_dir: "{{ omnia_nfs_share }}/telemetry/loki_promtail"
+loki_podman_volumes:
+  - { name: "loki_promtail_config", path: "{{ config_dir }}" }
