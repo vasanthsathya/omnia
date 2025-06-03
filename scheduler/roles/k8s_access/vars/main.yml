@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+
 # fetch_user_input.yml
+input_project_dir: "{{ hostvars['localhost']['input_project_dir'] }}"
 user_confirmation: "No usernames defined in k8s_access_config.yml file."
-file_path: "{{ role_path }}/../../../input/k8s_access_config.yml"
+file_path: "{{ input_project_dir }}/k8s_access_config.yml"
 
 # generate_certificate.yml
 user_kube_path: "/home/{{ user }}"
