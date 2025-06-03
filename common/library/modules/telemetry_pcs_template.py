@@ -129,8 +129,7 @@ def main():
         results.append(f"Processed node {service_tag}")
 
         # Copy rendered active node directory to passive node directories
-        for p_node in passive_nodes:
-            passive_service_tag = p_node['service_tag']
+        for passive_service_tag in passive_nodes:
             passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
 
             if os.path.exists(passive_service_tag_dir):
