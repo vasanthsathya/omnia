@@ -19,5 +19,5 @@
         input: "{{ omnia_images_tar }}"
   rescue:
     - name: Failed to load the telemetry images
-      ansible.buitin.fail:
+      ansible.builtin.fail:
         msg: "{{ load_images_fail_msg }}"
