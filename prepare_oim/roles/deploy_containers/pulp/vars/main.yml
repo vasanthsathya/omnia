@@ -113,6 +113,7 @@ pulp_config_cmd_overwrite_https: "pulp config create --username admin  --base-ur
 pulp_config_filepath: "{{ pulp_ha_dir }}/cli.toml"
 config_default_dir: "/root/.config/pulp/"
 config_default_loc: "{{ config_default_dir }}/cli.toml"
+track_file_path: /opt/omnia/pulp/pulp_crt_track.txt
 cert_san_ip: 0.0.0.0
 cert_validity_days: 365
 cert_items:

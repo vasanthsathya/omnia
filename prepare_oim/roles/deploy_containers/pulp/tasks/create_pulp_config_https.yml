@@ -51,17 +51,85 @@
     mode: "{{ logs_dir_permission }}"
     remote_src: true
 
-- name: Set cert_san fact based on hostname
-  ansible.builtin.set_fact:
-    cert_san: subjectAltName=IP:{{ cert_san_ip }},DNS:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
-  when: hostvars['oim']['hostname_enabled']
-  no_log: true
+# Steps to decide crt generation
+- name: Run pulp status command on omnia_core container
+  ansible.builtin.command: /usr/local/bin/pulp status
+  changed_when: false
+  register: pulp_status_output
 
-- name: Set cert_san fact based on IP
-  ansible.builtin.set_fact:
-    cert_san: subjectAltName=IP:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
-  when: not hostvars['oim']['hostname_enabled']
-  no_log: true
+- name: Check if track file exists
+  ansible.builtin.stat:
+    path: "{{ track_file_path }}"
+  register: file_check
+
+- name: Tasks to generate pulp crt
+  when: >
+    (
+      (hostvars['oim']['pulp_container_status'] == 'running') and
+      (pulp_status_output.rc != 0) and
+      (not file_check.stat.exists)
+    ) or
+    (
+      (hostvars['oim']['pulp_container_status'] == 'running') and
+      (pulp_status_output.rc == 0) and
+      (not file_check.stat.exists)
+    ) or
+    (
+      (pulp_status_output.rc != 0) and
+      (not file_check.stat.exists)
+    )  
+  block:
+    - name: Set cert_san fact based on hostname
+      ansible.builtin.set_fact:
+        cert_san: subjectAltName=IP:{{ cert_san_ip }},DNS:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
+      when: hostvars['oim']['hostname_enabled']
+      no_log: true
+
+    - name: Set cert_san fact based on IP
+      ansible.builtin.set_fact:
+        cert_san: subjectAltName=IP:{{ pulp_server_ip }},DNS:pulp,DNS:localhost
+      when: not hostvars['oim']['hostname_enabled']
+      no_log: true
+
+    - name: Generating Pulp SSL Certificate
+      ansible.builtin.command:
+        cmd: "{{ generate_cert_cmd }}"
+      changed_when: false
+
+    - name: Ensure the pulp group exists
+      ansible.builtin.group:
+        name: pulp
+        state: present
+
+    - name: Change group ownership of SSL certificate and key
+      ansible.builtin.file:
+        path: "{{ item }}"
+        group: pulp
+        state: file
+      loop: "{{ cert_items.values() }}"
+
+    - name: Copy Pulp crt to container trust
+      ansible.builtin.copy:
+        src: "{{ pulp_cert_src }}"
+        dest: "{{ ca_trust_path }}"
+        mode: "{{ logs_dir_permission }}"
+
+    - name: Add Pulp Certificate to TrustStore
+      ansible.builtin.command:
+        cmd: update-ca-trust extract
+      changed_when: false
+
+    - name: Create a track file
+      ansible.builtin.file:
+        path: "{{ track_file_path }}"
+        state: touch
+        mode: "{{ logs_dir_permission }}"
+
+    - name: Record current timestamp in track file
+      ansible.builtin.copy:
+        dest: "{{ track_file_path }}"
+        content: "Timestamp: {{ ansible_date_time.iso8601 }}"
+        mode: "{{ logs_dir_permission }}"
 
 # CERT GENERATION USING community.crypto x509_certificate MODULE
 # - name: Generate private key
@@ -100,31 +168,3 @@
 #     selfsigned_version: 3
 #     selfsigned_create_subject_key_identifier: always_create
 #     return_content: true
-
-- name: Generating Pulp SSL Certificate
-  ansible.builtin.command:
-    cmd: "{{ generate_cert_cmd }}"
-  changed_when: false
-
-- name: Ensure the pulp group exists
-  ansible.builtin.group:
-    name: pulp
-    state: present
-
-- name: Change group ownership of SSL certificate and key
-  ansible.builtin.file:
-    path: "{{ item }}"
-    group: pulp
-    state: file
-  loop: "{{ cert_items.values() }}"
-
-- name: Copy Pulp crt to container trust
-  ansible.builtin.copy:
-    src: "{{ pulp_cert_src }}"
-    dest: "{{ ca_trust_path }}"
-    mode: "{{ logs_dir_permission }}"
-
-- name: Add Pulp Certificate to TrustStore
-  ansible.builtin.command:
-    cmd: update-ca-trust extract
-  changed_when: false
