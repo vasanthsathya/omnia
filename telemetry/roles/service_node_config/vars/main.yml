@@ -45,11 +45,11 @@ activemq_podman_volumes:
 # idrac_telemetry_receiver
 idrac_telemetry_receiver_log_dir: "{{ telemetry_log_dir }}/idrac_telemetry_receiver"
 idrac_telemetry_receiver_podman_volumes:
-    - { name: "idrac_telemetry_receiver_log", path: "{{ idrac_telemetry_receiver_log_dir }}" }
+  - { name: "idrac_telemetry_receiver_log", path: "{{ idrac_telemetry_receiver_log_dir }}" }
 
 # prometheus
 prometheus_log_dir: "{{ telemetry_log_dir }}/prometheus"
 prometheus_data_dir: "{{ telemetry_data_dir }}/prometheus/prometheus_data"
 prometheus_podman_volumes:
- - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
- - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
+  - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
+  - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
