@@ -23,7 +23,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 module = AnsibleModule(
         argument_spec={
-            'nic': {'required': True, 'type': 'str'},
+            'oim_nic': {'required': True, 'type': 'str'},
+            'oim_nic_ip': {'required': True, 'type': 'str'},
             'servicetag': {'required': True, 'type': 'str'},
             'all_nodes': {'required': True, 'type': 'list'},
             'delete': {'required': False, 'type': 'bool', 'default': False},
@@ -31,7 +32,8 @@ module = AnsibleModule(
         supports_check_mode=True
     )
 
-nic = module.params['nic']
+nic = module.params['oim_nic']
+oim_nic_ip = module.params['oim_nic_ip']
 servicetag = module.params['servicetag']
 all_nodes = module.params['all_nodes']
 
@@ -130,8 +132,9 @@ def main():
     for subnet in subnets:
         if route_exists(subnet, existing_routes) or route_exists_in_nmcli(subnet):
             continue
-        if add_route_nmcli(subnet):
-            added.append(subnet)
+        subnet_gateway = f"{subnet} {oim_nic_ip}"
+        if add_route_nmcli(subnet_gateway):
+            added.append(subnet_gateway)
 
     for ip in bmc_ips:
         if not ping_host(ip):
