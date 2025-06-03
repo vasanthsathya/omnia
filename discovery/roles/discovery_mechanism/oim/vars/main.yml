@@ -38,7 +38,7 @@ empty_discover_node_msg: |
 # Usage: update_idrac_group_csv.yml
 telemetry_shared_path: "/opt/omnia/telemetry"
 bmc_group_csv_path: "{{ telemetry_shared_path }}/bmc_group_data.csv"
-
+waiting_time_30: 30
 # Usage: service_node_postgres_setting.yml
 no_service_node_msg: "[Warning] No new service nodes discovered, skipping service node configurations."
 waiting_time_10: 10
