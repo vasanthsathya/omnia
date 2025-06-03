@@ -15,6 +15,7 @@
 
 container_removal_failure_msg: " container could not be removed. Please check container logs."
 omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
+telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
 
 # Usage: cleanup_pcs.yml
 pcs_container_name: "omnia_pcs"
