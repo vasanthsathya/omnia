@@ -35,39 +35,6 @@ from ansible.module_utils.local_repo.container_repo_utils import (
 )
 import yaml
 
-def load_docker_credentials(vault_yml_path, vault_password_file, logger):
-    """
-    Decrypts an Ansible Vault YAML file and extracts docker_username and docker_password.
-
-    Args:
-        vault_yml_path (str): Path to the encrypted Ansible Vault YAML file.
-        vault_password_file (str): Path to the vault password file.
-
-    Returns:
-        tuple: (docker_username, docker_password)
-
-    Raises:
-        RuntimeError: If decryption or parsing fails.
-        ValueError: If the expected keys are not found.
-    """
-    try:
-        result = subprocess.run(
-            ["ansible-vault", "view", vault_yml_path, "--vault-password-file", vault_password_file],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-        data = yaml.safe_load(result.stdout)
-        docker_username = data.get("docker_username")
-        docker_password = data.get("docker_password")
-        if not docker_username or not docker_password:
-            logger.info(f"Docker username and password not present")
-            return None, None
-        return docker_username, docker_password
-    except subprocess.CalledProcessError as error:
-        raise RuntimeError(f"Vault decryption failed: {error.stderr.strip()}") from error
-    except yaml.YAMLError as error:
-        raise RuntimeError(f"Failed to parse decrypted YAML: {error}") from error
 
 def create_container_remote_with_auth(remote_name, remote_url, package, policy_type, tag, logger, docker_username, docker_password):
     """
@@ -245,7 +212,7 @@ def get_repo_url_and_content(package):
 
     raise ValueError(f"Unsupported package prefix for package: {package}")
 
-def process_image(package, status_file_path, version_variables, user_registries, logger):
+def process_image(package, status_file_path, version_variables, user_registries,docker_username, docker_password, logger):
     """
     Process an image.
     Args:
@@ -265,10 +232,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
     policy_type = "immediate"
     base_url, package_content = get_repo_url_and_content(package['package'])
     package_identifier = None
-    yml_file = OMNIA_CREDENTIALS_YAML_PATH
-    vault_file_path = OMNIA_CREDENTIALS_VAULT_PATH
-
-    docker_username, docker_password = load_docker_credentials(yml_file, vault_file_path, logger)
 
 
     if user_registries:
