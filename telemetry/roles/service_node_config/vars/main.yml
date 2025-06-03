@@ -56,3 +56,4 @@ prometheus_podman_volumes:
 
 # Usage: pcs_deployment.yml
 service_node_base_dir: "/opt/omnia/service_nodes"
+file_permissions: '0755'
