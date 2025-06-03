@@ -162,7 +162,7 @@ prometheus_pump_receiver_env:
  MESSAGEBUS_HOST: "localhost"
  MESSAGEBUS_PORT: "61613"
  PROMETHEUSDB_SERVER: "prometheus"
-
+prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_run_opts: >-
   --network=host
   {% for key, value in prometheus_pump_receiver_env.items() %}
