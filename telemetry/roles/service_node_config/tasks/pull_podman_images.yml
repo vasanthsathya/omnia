@@ -12,6 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-- name: Load podman images
-  containers.podman.podman_load:
-    input: "{{ omnia_images_tar }}"
+- name: Pull podman images from tar file
+  block:
+    - name: Load podman images
+      containers.podman.podman_load:
+        input: "{{ omnia_images_tar }}"
+  rescue:
+    - name: Failed to load the telemetry images
+      ansible.buitin.fail:
+        msg: "{{ load_images_fail_msg }}"
