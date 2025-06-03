@@ -35,6 +35,11 @@
       ansible.builtin.fail:
         msg: "{{ telemetry_config_syntax_fail_msg }} Possible Syntax Error Hints: {{ include_telemetry_config.message }}"
 
+- name: Include metadata vars
+  ansible.builtin.include_vars: "{{ omnia_metadata_file }}"
+  register: include_metadata
+  no_log: true
+
 - name: Set support values
   ansible.builtin.set_fact:
     idrac_telemetry_support: "{{ idrac_telemetry_support | lower }}"

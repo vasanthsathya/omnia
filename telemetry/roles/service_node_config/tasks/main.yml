@@ -24,3 +24,32 @@
     admin_netmask: "{{ network_data.admin_network.netmask_bits }}"
   delegate_to: localhost
   connection: local
+
+- name: Service node configuration
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['federated_idrac_telemetry_collection']
+  block:
+    - name: Include tasks for podman secrets
+      ansible.builtin.include_tasks: create_podman_secrets.yml
+
+    - name: Include tasks for podman volume - mysql
+      ansible.builtin.include_tasks: create_podman_volume.yml
+      vars:
+        podman_volume_name: "{{ mysqldb_podman_volumes }}"
+
+    - name: Include tasks for podman volume - activemq
+      ansible.builtin.include_tasks: create_podman_volume.yml
+      vars:
+        podman_volume_name: "{{ activemq_podman_volumes }}"
+
+    - name: Include tasks for podman volume - idrac_telemetry_receiver
+      ansible.builtin.include_tasks: create_podman_volume.yml
+      vars:
+        podman_volume_name: "{{ idrac_telemetry_receiver_podman_volumes }}"
+
+    - name: Include tasks for podman volume - prometheus
+      ansible.builtin.include_tasks: create_podman_volume.yml
+      when: hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
+      vars:
+        podman_volume_name: "{{ prometheus_podman_volumes }}"
