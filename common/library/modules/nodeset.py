@@ -18,7 +18,7 @@
 
 import subprocess
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
+from ansible.module_utils.discovery import omniadb_connection
 
 
 def validate_osimage(osimage):

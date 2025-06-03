@@ -15,7 +15,7 @@
 #!/usr/bin/python
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
+from ansible.module_utils.discovery import omniadb_connection
 
 def nodeinfo_db_update(node_details, domain_name, discovery_mechanism):
     """
