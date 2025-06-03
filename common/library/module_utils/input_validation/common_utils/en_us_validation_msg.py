@@ -92,7 +92,7 @@ switch_snmp3_password_fail_msg = "switch_snmp3_password must be at least 3 chara
 # telemetry_config.yml
 unsupported_idrac_telemetry_collection_type= "unsupported. 'prometheus' is the supported telemetry collection type."
 service_role_undefined= "then, 'service_node' role must be defined in roles_config.yml."
-federated_idrac_telemetry_collection_fail= "can only be true if idrac_telemetry_support is true."
+federated_idrac_telemetry_collection_fail= "idrac_telemetry_support must be set to true in order to enable federated_idrac_telemetry_collection."
 def boolean_fail_msg(value):
     return f"{value} must be set to either true or false."
 appliance_k8s_pod_net_cidr_fail_msg = "appliance_k8s_pod_net_cidr value is either empty or invalid. Please provide CIDR notation such as 192.168.0.0/16"

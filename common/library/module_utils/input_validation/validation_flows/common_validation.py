@@ -316,63 +316,14 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
 
     return errors
 
-def validate_federated_idrac_telemetry_collection(
-        input_file_path,
-        omnia_base_dir,
-        project_name,
-        logger,
-        module,
-        errors
-):
-
-    """
-    Validates the L2 validations for federated iDRAC telemetry collection configuration.
-
-    Args:
-        input_file_path (str): The path to the input file.
-        omnia_base_dir (str): The base directory of the Omnia project.
-        project_name (str): The name of the project.
-        logger (object): The logger object.
-        module (object): The module object.
-        errors (list): A list to store error messages.
-
-    Returns:
-        None
-
-    Raises:
-        None
-
-    """
-    # load roles_config for L2 validations
-    roles_config_file_path = create_file_path(input_file_path, file_names["roles_config"])
-    roles_config_json = validation_utils.load_yaml_as_json(
-        roles_config_file_path, omnia_base_dir, project_name, logger, module
-    )
-    roles_configured = roles_config_json.get('Roles',[])
-
-    # Search for service_node role
-    service_node_role_entry = next(
-        (role for role in roles_configured if role.get('name') == "service_node"),
-        None
-    )
-
-    if not service_node_role_entry:
-        errors.append(create_error_msg(
-                "federated_idrac_telemetry_collection",
-                True,
-                en_us_validation_msg.service_role_undefined
-                )
-            )
-
-
 def validate_telemetry_config(
-    input_file_path,
+    _input_file_path,
     data,
-    logger,
-    module,
-    omnia_base_dir,
+    _logger,
+    _module,
+    _omnia_base_dir,
     _module_utils_base,
-    project_name
+    _project_name
 ):
 
     """
@@ -420,50 +371,6 @@ def validate_telemetry_config(
                 en_us_validation_msg.federated_idrac_telemetry_collection_fail
                 )
             )
-        return errors
-
-    if federated_idrac_telemetry_collection:
-        validate_federated_idrac_telemetry_collection(input_file_path,
-                                                      omnia_base_dir,
-                                                      project_name,
-                                                      logger,
-                                                      module,
-                                                      errors)
-
-    # preserved below code for future use
-    '''
-    # Added code for Omnia 1.7 k8 prometheus support parameters
-    # Validate prometheus_gaudi_support, k8s_prometheus_support, and prometheus_scrape_interval
-    prometheus_gaudi_support = data["prometheus_gaudi_support"]
-    k8s_prometheus_support = data["k8s_prometheus_support"]
-    prometheus_scrape_interval = data["prometheus_scrape_interval"]
-
-    if prometheus_gaudi_support:
-        mandatory_fields = ["k8s_prometheus_support", "prometheus_scrape_interval"]
-        check_mandatory_fields(mandatory_fields, data, errors)
-
-    # Check k8s_prometheus_support is True and prometheus_scrape_interval is >= 15 when prometheus_gaudi_support is True
-    if prometheus_gaudi_support and isinstance(prometheus_gaudi_support, str):
-        if not k8s_prometheus_support:
-            errors.append(create_error_msg("k8s_prometheus_support", k8s_prometheus_support, en_us_validation_msg.k8s_prometheus_support_fail_msg))
-
-        if prometheus_scrape_interval < 15:
-            errors.append(create_error_msg("prometheus_scrape_interval", prometheus_scrape_interval, en_us_validation_msg.prometheus_scrape_interval_fail_msg))
-
-    # Check that IP addresses do not overlap with admin network
-    admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
-    admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
-    admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
-    pod_external_ip_range = data["pod_external_ip_range"]
-    k8s_service_addresses = data["k8s_service_addresses"]
-    k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
-
-    ip_ranges = [admin_static_range, admin_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr]
-
-    does_overlap, overlap_ips = validation_utils.check_overlap(ip_ranges)
-    if does_overlap:
-        errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.telemetry_ip_overlap_fail_msg))
-    '''
     return errors
 
 def validate_additional_software(
