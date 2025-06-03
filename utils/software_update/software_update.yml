@@ -22,6 +22,43 @@
   when: not project_dir_status | default(false) | bool
   ansible.builtin.import_playbook: ../include_input_dir.yml
 
+# Get all nodes to update repo
+- name: Get the group nodes
+  hosts: localhost
+  tasks:
+    - name: Get the software organized by group
+      group_package_map:
+        input_path: "{{ hostvars['localhost']['input_project_dir'] }}"
+      register: grouped_packages
+
+    - name: Get all discovered nodes from DB
+      community.postgresql.postgresql_query:
+        login_db: omniadb
+        login_user: postgres
+        query: |
+          SELECT node,hostname,admin_ip,role,group_name,service_tag
+          FROM cluster.nodeinfo
+          WHERE node!='oim';
+        login_password: "{{ hostvars['localhost']['postgresdb_password'] }}"
+      register: db_result
+      delegate_to: omnia_provision
+
+    - name: Create ansible group to update repo
+      ansible.builtin.add_host:
+        name: "{{ node.admin_ip }}"
+        groups: "addl_repo"
+      loop: "{{ db_result.query_result }}"
+      loop_control:
+        loop_var: node
+
+# Update user repo
+- name: Update user repo
+  hosts: addl_repo
+  tasks:
+    - name: Run on the group addl_repo
+      ansible.builtin.command: hostname
+    - pause:
+
 - name: Get the additional software organized by group
   hosts: localhost
   roles:
