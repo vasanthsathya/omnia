@@ -73,6 +73,7 @@
     groups_roles_info: "{{ groups_roles_info }}"
     service_node_ha_data: "{{ service_node_ha_data }}"
   register: hierarchical_output
+  when: '"management_layer" not in ansible_run_tags'
 
 - name: Set fact for service_node role required and other facts
   ansible.builtin.set_fact:
