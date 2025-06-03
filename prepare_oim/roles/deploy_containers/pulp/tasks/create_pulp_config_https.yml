@@ -51,7 +51,6 @@
     mode: "{{ logs_dir_permission }}"
     remote_src: true
 
-# Steps to decide crt generation
 - name: Run pulp status command on omnia_core container
   ansible.builtin.command: /usr/local/bin/pulp status
   changed_when: false
