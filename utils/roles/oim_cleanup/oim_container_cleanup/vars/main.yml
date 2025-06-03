@@ -166,8 +166,6 @@ loki_container_name: "loki"
 promtail_container_name: "promtail"
 loki_promtail_cleanup_directory:
   - "{{ omnia_nfs_share }}/telemetry/loki_promtail"
-loki_firewall_ports:
-  - "3100/tcp"
 resource_removal_failure_msg: "Failed to clean up Loki and Promtail resources after container removal."
 config_dir: "{{ omnia_nfs_share }}/telemetry/loki_promtail"
 loki_podman_volumes:
