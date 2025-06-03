@@ -69,15 +69,6 @@
   when:
     - not idrac_telemetry_support
 
-# # Include validations for omnia telemetry
-# - name: Validate omnia telemetry
-#   ansible.builtin.include_tasks: validate_omnia_telemetry.yml
-#   when: omnia_telemetry_support
-
-# - name: Include grafana validations
-#   ansible.builtin.include_tasks: validate_grafana_params.yml
-#   when: visualization_support
-
 # - name: Validate k8s prometheus, scrape interval and prometheus gaudi
 #   ansible.builtin.include_tasks: validate_k8s_prometheus_prometheus_gaudi.yml
 #   when: k8s_prometheus_support or prometheus_gaudi_support
@@ -85,32 +76,3 @@
 # - name: Validate k8s prometheus when prometheus gaudi is true
 #   ansible.builtin.include_tasks: validate_prometheus_gaudi.yml
 #   when: prometheus_gaudi_support
-
-# # Validate k8s inputs
-# - name: Assert k8s_cni
-#   ansible.builtin.assert:
-#     that:
-#       - k8s_cni == "calico" or k8s_cni == "flannel"
-#     fail_msg: "{{ invalid_k8s_cni }}"
-
-# - name: Assert pod external IP range
-#   ansible.builtin.assert:
-#     that:
-#       - pod_external_ip_range | default("", true) | length > 9
-#       - ("'/' in pod_external_ip_range") or ("'-' in pod_external_ip_range")
-#     fail_msg: "{{ invalid_pod_external_ip_range }}"
-#   when: idrac_telemetry_support or omnia_telemetry_support or visualization_support
-
-# - name: Assert kubernetes service addresses
-#   ansible.builtin.assert:
-#     that:
-#       - k8s_service_addresses | default("", true) | length > 9
-#       - '"/" in k8s_service_addresses'
-#     fail_msg: "{{ invalid_k8s_service_addresses }}"
-
-# - name: Assert kubernetes pod network CIDR
-#   ansible.builtin.assert:
-#     that:
-#       - k8s_pod_network_cidr | default("", true) | length > 9
-#       - '"/" in k8s_pod_network_cidr'
-#     fail_msg: "{{ invalid_k8s_pod_network_cidr }}"

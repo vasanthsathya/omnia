@@ -25,10 +25,6 @@
       ansible.builtin.include_vars: "{{ playbook_dir }}/roles/idrac_telemetry/vars/main.yml"
       no_log: true
 
-    - name: Include timescaledb vars
-      ansible.builtin.include_vars: "{{ playbook_dir }}/roles/timescaledb/vars/main.yml"
-      no_log: true
-
     - name: Initialize variables
       ansible.builtin.set_fact:
         idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
