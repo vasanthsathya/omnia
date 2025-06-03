@@ -35,7 +35,6 @@ enable_routed_internet: true
 # name: defines name for the repository
 # If gpgkey is empty then gpgcheck will be disabled for that repository
 # This variable should not have jinja variables in it.
-# In Ubuntu OS, it is mandatory to provide gpgkey for the user repositories. In case there is no gpgkey associated with the repo
 # and user leaves the gpgkey field empty (gpgkey: "" ), omnia configures the repository as a trusted source and the user is solely
 # responsible in maintaining the security.
 # Example:
@@ -58,7 +57,6 @@ user_repo_url:
 user_registry:
 
 # Mandatory when cluster_os_type is rhel in softwares_config.json
-# This variable will be ignored when cluster_os_type is ubuntu or rocky
 # User has to provide the code ready builder url that should not have a RedHat subscription authentication inorder to download the packages
 # and the rhel_os_url configured via proxy in compute nodes
 # Example:
