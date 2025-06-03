@@ -360,7 +360,7 @@ def validate_telemetry_config(
             errors.append(create_error_msg(
                 "idrac_telemetry_collection_type",
                 collection_type,
-                en_us_validation_msg.unsupported_idrac_telemetry_collection_type
+                en_us_validation_msg.UNSUPPORTED_IDRAC_TELEMETRY_COLLECTION_TYPE
                 )
             )
 
@@ -368,7 +368,7 @@ def validate_telemetry_config(
         errors.append(create_error_msg(
                 "federated_idrac_telemetry_collection",
                 federated_idrac_telemetry_collection,
-                en_us_validation_msg.federated_idrac_telemetry_collection_fail
+                en_us_validation_msg.FEDERATED_IDRAC_TELEMETRY_COLLECTION_FAIL
                 )
             )
     return errors
