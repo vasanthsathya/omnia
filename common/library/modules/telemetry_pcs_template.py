@@ -35,7 +35,8 @@ def main():
         "file_permissions": {"type": "str", "required": True},
         "tmpl_telemetry": {"type": "str", "required": True},
         "oim_shared_path": {"type": "str", "required": True},
-        "vars_file": {"type": "str", "required": False, "default": None}
+        "vars_file": {"type": "str", "required": False, "default": None},
+        "telemetry_vars_file": {"type": "str", "required": False, "default": None}
     }
 
     # Create the Ansible module
@@ -48,10 +49,11 @@ def main():
     tmpl_telemetry = module.params['tmpl_telemetry']
     oim_shared_path = module.params['oim_shared_path']
     vars_file = module.params['vars_file']
-
+    telemetry_vars_file = module.params['telemetry_vars_file']
 
     # Load the variables file
     extra_vars = load_vars_file(vars_file)
+    telemetry_vars = load_vars_file(telemetry_vars_file)
 
     # Initialize the results list
     results = []
@@ -77,7 +79,7 @@ def main():
         service_dir = os.path.join(base_dir, service_tag)
         pcs_dir = os.path.join(service_dir, 'pcs')
         pcs_config_dir = os.path.join(pcs_dir, 'config')
-        start_script_path = os.path.join(pcs_config_dir, 'pcs-start.sh')
+        pcs_telemetry_script_path = os.path.join(pcs_config_dir, 'telemetry.sh')
 
         # Create telemetry directories when idrac telemetry is supported
         # if module.params['idrac_telemetry_support'] == 'true':
@@ -114,13 +116,14 @@ def main():
             # 'service_node_name': service_node_name,
             'service_admin_nic_ip': service_admin_nic_ip,
             'oim_shared_path': oim_shared_path,
-            **extra_vars
+            **extra_vars,
+            **telemetry_vars
         }
 
         # Render the telemetry templates
-        render_template(tmpl_telemetry, start_script_path, context)
+        render_template(tmpl_telemetry, pcs_telemetry_script_path, context)
 
-        os.chmod(start_script_path, file_mode)
+        os.chmod(pcs_telemetry_script_path, file_mode)
 
         # Add the result to the list
         results.append(f"Processed node {service_tag}")

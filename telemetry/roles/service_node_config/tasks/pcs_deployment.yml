@@ -21,5 +21,6 @@
     oim_shared_path: "{{ oim_shared_path }}"
     vars_file: "{{ role_path }}/vars/main.yml"
     tmpl_telemetry: "{{ role_path }}/templates/pcs-start.sh.j2"
+    telemetry_vars_file: "{{ hostvars['localhost']['input_project_dir'] }}/telemetry_vars.yml"
   delegate_to: localhost
   connection: local
