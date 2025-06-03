@@ -37,7 +37,7 @@ module = AnsibleModule(
 
 nic = module.params['oim_nic']
 oim_nic_ip = module.params['oim_nic_ip']
-netmask_bits = module.params['oim_nic_netmask']
+netmask_bits = module.params['oim_nic_netmask_bits']
 servicetag = module.params['servicetag']
 all_nodes = module.params['all_nodes']
 
