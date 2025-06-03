@@ -62,23 +62,9 @@
       ansible.builtin.fail:
         msg: "{{ loki_container_name }} {{ container_removal_failure_msg }}"
 
-- name: Confirm Promtail is stopped and removed
-  containers.podman.podman_container_info:
-    name: "{{ promtail_container_name }}"
-  register: promtail_status_after
-  failed_when: false
-
-- name: Confirm Loki is stopped and removed
-  containers.podman.podman_container_info:
-    name: "{{ loki_container_name }}"
-  register: loki_status_after
-  failed_when: false
-
 - name: Perform cleanup only if both containers are removed
   when:
     - promtail_status_before.containers | length > 0 or loki_status_before.containers | length > 0
-    - promtail_status_after.containers | length == 0
-    - loki_status_after.containers | length == 0
   block:
     - name:  Remove Podman bind-mounted volumes for loki and promtail
       containers.podman.podman_volume:
