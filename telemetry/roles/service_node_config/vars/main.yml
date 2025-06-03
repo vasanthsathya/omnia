@@ -53,3 +53,6 @@ prometheus_data_dir: "{{ telemetry_data_dir }}/prometheus/prometheus_data"
 prometheus_podman_volumes:
   - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
   - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
+
+# Usage: pcs_deployment.yml
+service_node_base_dir: "/opt/omnia/service_nodes"
