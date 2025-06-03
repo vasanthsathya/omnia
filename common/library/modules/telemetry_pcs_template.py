@@ -70,7 +70,7 @@ def main():
         # Extract the node parameters
 
         service_tag = node['service_tag']
-        service_node_name = node['hostname']
+        # service_node_name = node['hostname']
         service_admin_nic_ip = node['admin_ip']
 
         # # Create the node directories
@@ -111,7 +111,7 @@ def main():
         # Create the template context
         context = {
             'service_tag': service_tag,
-            'service_node_name': service_node_name,
+            # 'service_node_name': service_node_name,
             'service_admin_nic_ip': service_admin_nic_ip,
             'oim_shared_path': oim_shared_path,
             **extra_vars
