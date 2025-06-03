@@ -125,13 +125,13 @@ def get_service_node_ha_dict(service_node_ha_data, booted_service_nodes_data):
                 passive_nodes_tags_list.append(passive_node_tag)
         sn_ha_data[active_sn_tag]['passive_nodes'] = passive_nodes_tags_list
     if invalid_tags:
-        raise ValueError(f" ERROR: \
-            These service tags '{invalid_tags}' mentioned in 'high_availability_config.yml' \
-            for service node HA may be incorrect, or the node might not have been provisioned. \
-            * If service_node not provisioned, verify the input in roles_config.yml and execute discovery_provision.yml \
-            playbook with 'management_layer' tag. \
-            * If service_node is already provisioned with management layer nodes, verify the input in\
-            high_availability_config.yml and execute discovery_provision.yml"
+        raise ValueError(
+            f"ERROR: These service tags '{invalid_tags}' mentioned in 'high_availability_config.yml' "
+            "for service node HA may be incorrect, or the node might not have been provisioned.\n"
+            "  * If service_node is not provisioned, verify the input in roles_config.yml and execute "
+            "discovery_provision.yml playbook with the 'management_layer' tag.\n"
+            "  * If the service_node is already provisioned with management layer nodes, verify the input "
+            "in high_availability_config.yml and execute discovery_provision.yml."
         )
     return sn_ha_data
 

@@ -12,12 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #!/usr/bin/python
+"""Ansible module to update switch mechanism nodes information in the database."""
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
-from ansible.module_utils.omniadb_connection import execute_select_query
+import sys
+import re
 from ipaddress import IPv4Address
-import sys, re
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.discovery import omniadb_connection
+from ansible.module_utils.discovery.omniadb_connection import execute_select_query
 
 def check_switch_table():
     """Checks if the cluster.switchinfo table has any entries."""

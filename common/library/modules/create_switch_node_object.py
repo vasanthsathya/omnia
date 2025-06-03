@@ -14,9 +14,9 @@
 
 #!/usr/bin/python
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.omniadb_connection import execute_select_query
 import subprocess
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.discovery.omniadb_connection import execute_select_query
 
 def create_node_object(oim_admin_ip):
     """
@@ -56,9 +56,17 @@ def create_node_object(oim_admin_ip):
     return msg
 
 def main():
-    module_args = dict(
-        oim_admin_ip = dict(type='str', required=True)
-    )
+    """
+    Main function to handle the create_switch_node_object module execution.
+    It retrieves switch information from the database and creates node objects.
+
+    Input:
+    - oim_admin_ip: The IP address of the OIM admin server.
+
+    """
+    module_args = {
+        'oim_admin_ip': {'type': 'str', 'required': True}
+    }
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
     oim_admin_ip = module.params['oim_admin_ip']
     results = create_node_object(oim_admin_ip)
