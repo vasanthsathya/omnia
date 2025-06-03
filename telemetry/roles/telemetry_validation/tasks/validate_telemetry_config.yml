@@ -62,12 +62,6 @@
     - not idrac_telemetry_support
     - not visualization_support
 
-- name: Please wait, This task will take few seconds
-  ansible.builtin.pause:
-    seconds: "{{ idrac_omnia_telemetry_support_false_warn_time }}"
-    prompt: "{{ idrac_omnia_telemetry_support_warn_msg }}"
-  when:
-    - not idrac_telemetry_support
 
 # - name: Validate k8s prometheus, scrape interval and prometheus gaudi
 #   ansible.builtin.include_tasks: validate_k8s_prometheus_prometheus_gaudi.yml
