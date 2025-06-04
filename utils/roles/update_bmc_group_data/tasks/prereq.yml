@@ -1,0 +1,54 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+
+- name: Set_fact for omnia_config_credentials.yml variables
+  ansible.builtin.set_fact:
+    bmc_username: "{{ hostvars['localhost']['bmc_username'] }}"
+    bmc_password: "{{ hostvars['localhost']['bmc_password'] }}"
+    postgresdb_password: "{{ hostvars['localhost']['postgresdb_password'] }}"
+  no_log: true
+
+- name: Get all discovered nodes from DB
+  community.postgresql.postgresql_query:
+    db: omniadb
+    login_user: postgres
+    query: |
+      SELECT admin_ip,bmc_ip,hostname,node,group_name,role,parent,service_tag
+      FROM cluster.nodeinf
+      WHERE node!='oim';
+    login_password: "{{ postgresdb_password }}"
+  become: true
+  become_user: postgres
+  register: query_status
+  failed_when: false
+  no_log: true
+
+- name: Fail if query failed
+  ansible.builtin.fail:
+    msg: "{{ db_query_fail_msg }}"
+  when: >
+    query_status.failed or
+    (query_status.query_result is not defined)
+
+- name: Fail if no nodes are discovered
+  ansible.builtin.fail:
+    msg: "{{ empty_discover_node_msg }}"
+  when:
+    - query_status.query_result is defined
+    - query_status.query_result | length < 1
+
+- name: Set fact discovered_nodes for task on service nodes
+  ansible.builtin.set_fact:
+    discovered_nodes: "{{ query_status.query_result | list }}"
