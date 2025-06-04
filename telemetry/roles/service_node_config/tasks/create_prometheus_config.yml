@@ -14,7 +14,7 @@
 ---
 
 - name: Create Prometheus configuration file for each service node
-  telemetry_pcs_template:
+  telemetry_prom_config:
     service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
     service_node_base_dir: "{{ service_node_base_dir }}"
     file_permissions: "{{ file_permissions }}"
