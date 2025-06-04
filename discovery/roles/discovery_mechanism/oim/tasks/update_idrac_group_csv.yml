@@ -32,6 +32,11 @@
 
 - name: Show BMC Issues
   block:
+    - name: Show added BMC entries
+      when: bmc_result.added | length > 0
+      ansible.builtin.debug:
+        msg: "Added BMC entries for IPs: {{ bmc_result.added | join(', ') }}."
+
     - name: Show Redfish Disabled Warning
       when: bmc_result.redfish_disabled | length > 0
       ansible.builtin.debug:
