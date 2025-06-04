@@ -27,7 +27,7 @@ pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
     op start interval={{ start_interval }} timeout={{ start_timeout }} \
     op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-    --group {{ telemetry_pcs_group }}
+    group {{ telemetry_pcs_group }}
 
 # Resource for ActiveMQ container
 pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
@@ -38,7 +38,7 @@ pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  group {{ telemetry_pcs_group }}
 
 # Resource for iDRAC-telemetry-receiver container
 pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:podman \
@@ -49,7 +49,7 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  group {{ telemetry_pcs_group }}
 {% endif %}
 
 # Resource for prometheus and prometheus_pump
@@ -64,7 +64,7 @@ pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  group {{ telemetry_pcs_group }}
 
 # Resource for prometheus container
 pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
@@ -76,5 +76,5 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  group {{ telemetry_pcs_group }}
 {% endif %}
