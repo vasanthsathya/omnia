@@ -28,11 +28,10 @@ def create_directory(path: str, mode: int) -> None:
     else:
         os.chmod(path, mode)
 
-
 def render_template(src: str, dest: str, context: dict) -> None:
     """Render a Jinja2 template from src to dest using context."""
     try:
-        with open(src, 'r', encoding='utf-8') as f:
+        with open(src, 'r', encoding='utf-8', encoding='utf-8') as f:
             template_content = f.read()
         template = Template(template_content)
         rendered = template.render(context)
@@ -47,7 +46,24 @@ def load_vars_file(path: str) -> dict:
     if not path:
         return {}
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, 'r', encoding='utf-8', encoding='utf-8') as f:
             return yaml.safe_load(f) or {}
     except Exception as e:
         raise RuntimeError(f"Failed to read vars file '{path}': {str(e)}") from e
+
+def render_template_multi_pass(src: str, dest: str, context: dict, passes: int = 5) -> None:
+    """Render a Jinja2 template from src to dest using context."""
+    try:
+        # Load the template
+        with open(src, 'r', encoding='utf-8') as f:
+            template_content = f.read()
+
+        # Perform multiple rendering passes
+        for _ in range(passes):
+            rendered = Template(template_content).render(context)
+
+        # Save the final rendered result
+        with open(dest, 'w', encoding='utf-8') as f:
+            f.write(rendered)
+    except Exception as e:
+        raise RuntimeError(f"Template render error ({src} → {dest}): {e}") from e

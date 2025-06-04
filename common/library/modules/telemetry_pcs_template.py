@@ -24,7 +24,7 @@ import shutil
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.discovery.standard_functions import (
     create_directory,
-    render_template,
+    render_template_multi_pass,
     load_vars_file
 )
 
@@ -140,7 +140,7 @@ def main():
         }
 
         # Render the telemetry templates
-        render_template(tmpl_telemetry, pcs_telemetry_script_path, context)
+        render_template_multi_pass(tmpl_telemetry, pcs_telemetry_script_path, context, passes=5)
 
         os.chmod(pcs_telemetry_script_path, file_mode)
 
