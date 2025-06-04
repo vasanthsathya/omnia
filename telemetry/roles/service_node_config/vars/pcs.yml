@@ -30,6 +30,9 @@ stop_timeout: "60s"
 ####################################
 # MySQL Container Configuration
 ####################################
+mysql_root_password: "mysql_root_password"
+mysql_user_password: "mysql_user_password"
+mysql_user: "mysql_user"
 mysql_docker_image: "docker.io/library/mysql:8.0"
 mysql_container_name: "mysqldb"
 mysql_database: "idrac_telemetrydb"
@@ -42,10 +45,10 @@ mysql_run_opts: >-
   --secret {{ mysql_root_password }},type=env,target=MYSQL_ROOT_PASSWORD
   --secret {{ mysql_user }},type=env,target=MYSQL_USER
   --secret {{ mysql_user_password }},type=env,target=MYSQL_PASSWORD
-  --env "MYSQL_DATABASE={{ mysql_database }}"
+  --env MYSQL_DATABASE={{ mysql_database }}
   --volume mysqldb_data:/var/lib/mysql
   --volume mysqldb_log:/var/log/mysql
-  --volume "{{ oim_idrac_telemetry_dir }}/mysqldb_init.sh:{{ mysql_entry_script }}"
+  --volume {{ oim_idrac_telemetry_dir }}/mysqldb_init.sh:{{ mysql_entry_script }}
   --entrypoint {{ mysql_entry_script }}
   --detach
 
@@ -76,13 +79,12 @@ idrac_telemetry_receiver_run_opts: >-
   --volume {{ oim_idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools
   --volume {{ oim_idrac_telemetry_dir }}/idrac_telemetry_receiver_init.sh:{{ idrac_telemetry_receiver_entry_script }}
   --workdir=/go/src/github.com/telemetry-reference-tools
-  --env {{ key }}={{ value }}
   --env MESSAGEBUS_HOST="127.0.0.1"
   --env MESSAGEBUS_PORT="61613"
   --env CONFIGUI_HTTP_PORT="3000"
-  --env MYSQL_DATABASE="{{ mysql_database }}"
+  --env MYSQL_DATABASE={{ mysql_database }}
   --env MYSQL_HOST="127.0.0.1"
-  --env MYSQL_HOST_PORT="{{ mysql_port }}"
+  --env MYSQL_HOST_PORT={{ mysql_port }}
   --env HTTP_PROXY=""
   --env HTTPS_PROXY=""
   --entrypoint {{ idrac_telemetry_receiver_entry_script }}
@@ -100,10 +102,9 @@ prometheus_env:
   node.name: "127.0.0.1"
 prometheus_run_opts: >-
   --network=host
-  --env {{ key }}={{ value }}
   --env PROMETHEUS_DB="poweredge_telemetry_metrics"
   --env node.name="127.0.0.1"
-  --volume "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml"
+  --volume {{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml
   --volume prometheus_data:/prometheus
   --volume prometheus_log:/prometheus/log
   --detach
