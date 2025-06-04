@@ -55,6 +55,7 @@
   ansible.builtin.command: /usr/local/bin/pulp status
   changed_when: false
   register: pulp_status_output
+  failed_when: false
 
 - name: Check if track file exists
   ansible.builtin.stat:
