@@ -6,11 +6,16 @@ The telemetry feature in Omnia allows you to set up a telemetry service that col
 Prerequisites
 ---------------
 
+* Ensure that the ``discovery_provision.yml`` playbook has been executed successfully. Post execution, an inventory file called ``bmc_group_data.csv`` file is created under the ``/opt/omnia/telemetry/`` directory. This file acts as the default inventory for the ``telemetry.yml`` playbook. 
+
 * To enable telemetry support, set ``idrac_telemetry_support`` to ``true`` and ``idrac_telemetry_collection_type`` to ``prometheus`` in the ``telemetry_config.yml`` file. Then, run the ``prepare_oim.yml`` playbook, which deploys the containers necessary for the telemetry service. For more information, `click here <../OmniaInstallGuide/RHEL_new/prepare_oim.html#telemetry-config-yml>`_.
 
-* To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true``. In this setup, the iDRAC telemetry container gathers data from all service nodes, each of which collects telemetry from its associated compute nodes. This enables centralized monitoring, analysis, and visualization.
+* To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. In this setup, the iDRAC telemetry container gathers data from all service nodes, each of which collects telemetry from its associated compute nodes. This enables centralized monitoring, analysis, and visualization.
 
-* Ensure that the ``discovery_provision.yml`` playbook has been executed successfully. Post execution, an inventory file called ``bmc_group_data.csv`` file is created under the ``/opt/omnia/telemetry/`` directory. This file acts as the default inventory for the ``telemetry.yml`` playbook. 
+.. csv-table:: telemetry_config.yml
+   :file: ../../Tables/telemetry_config.csv
+   :header-rows: 1
+   :keepspace:
 
 .. note:: To update the ``bmc_username`` and ``bmc_password`` fields in the ``omnia_config_credentials.yml`` input file for the connected iDRACs, use the command provided below. Do not alter any other fields in the file, as this may lead to unexpected failures. For more information, `click here <../OmniaInstallGuide/RHEL_new/credentials_utility.html>`_.
     ::
@@ -25,7 +30,8 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
 
     ansible-playbook telemetry.yml
 
-.. note:: If you want to add an external node for ``idrac_telemetry`` acquisition, you can do so by editing the ``bmc_group_data.csv`` file manually and then re-running the ``telemetry.yml`` playbook. Sample: ::
+.. note:: If you want to add an external node for ``idrac_telemetry`` acquisition, you can do so by editing the ``bmc_group_data.csv`` file manually and then re-running the ``telemetry.yml`` playbook. Sample: 
+    ::
 
         BMC_IP,GROUP_NAME,PARENT
         10.5.0.101,grp0,ABCD123

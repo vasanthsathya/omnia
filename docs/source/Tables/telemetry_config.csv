@@ -21,8 +21,16 @@ Mandatory	","* Specifies the tool that collects the iDRAC telemetry data. This p
 
 ``boolean``
 
-Optional	","* Enables visualizations for the iDRAC telemtry data via Grafana dashboards. 
+Optional	","* Enables visualizations for the iDRAC telemtry data via Grafana dashboards.
+* If ``visualization_support`` is set to ``true``, then the ``grafana``, ``loki``,  and ``promtail`` containers are deployed during the execution of the ``prepare_oim.yml`` playbook. 
 * **Accepted values**: ``true`` or ``false``
 * **Default value**: ``false``
 
 .. note:: If ``visualization_support`` is set to ``true``, you will be prompted for the ``grafana_username`` and ``grafana_password`` parameters during the ``prepare_oim.yml`` playbook execution."
+"**federated_idrac_telemetry_collection**
+
+``boolean``
+
+Optional	","* Enables federated telemetry data collection using the iDRAC telemetry container. 
+* **Accepted values**: ``true`` or ``false``
+* **Default value**: ``false``"
