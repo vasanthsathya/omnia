@@ -17,14 +17,14 @@ empty_discover_node_msg: "No nodes found in db. Please run discovery_provision.y
 bmc_group_csv_path: "/opt/omnia/telemetry/bmc_group_data.csv"
 waiting_time_30: 30
 redfish_disabled_msg: |
-  "Redfish is disabled on the following BMC IPs: {{ bmc_result.redfish_disabled | join(', ') }}
-  Please enable Redfish on these BMCs and run the update_bmc_group_data.yml utility."
+  Redfish is disabled on the following BMC IPs: {{ bmc_result.redfish_disabled | join(', ') }}
+  Please enable Redfish on these BMCs and run the update_bmc_group_data.yml utility.
 invalid_creds_msg: |
-  "The following BMC IPs have invalid credentials: {{ bmc_result.invalid_creds | join(', ') }}
-  Please verify the credentials and run the update_bmc_group_data.yml utility."
+  The following BMC IPs have invalid credentials: {{ bmc_result.invalid_creds | join(', ') }}
+  Please verify the credentials and run the update_bmc_group_data.yml utility.
 unreachable_bmc_msg: |
-  "The following BMC IPs are unreachable: {{ bmc_result.unreachable | join(', ') }}
-  Please ensure these BMCs are reachable from OIM and run the update_bmc_group_data.yml utility."
-invalid_bmc_warning_msg: |
-  "[WARNING] Some BMC IPs could not be added to the CSV file. Kindly address the issues mentioned above and
-  run the update_bmc_group_data.yml utility to add IPs in bmc_group_data.csv."
+  The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}
+  Please ensure these BMCs are reachable from OIM and run the update_bmc_group_data.yml utility.
+invalid_bmc_fail_msg: |
+  [Failed] Some BMC IPs could not be added to the CSV file. Kindly address the issues mentioned above and
+  run the update_bmc_group_data.yml utility to add IPs in bmc_group_data.csv.
