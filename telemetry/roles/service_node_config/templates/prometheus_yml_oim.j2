@@ -4,9 +4,9 @@ global:
 
 scrape_configs:
 {% for job in existing_config.scrape_configs %}
-  - job_name: "{{ job.job_name }}"
+  - job_name: '{{ job.job_name }}'
 {% if job.metrics_path is defined %}
-    metrics_path: "{{ job.metrics_path }}"
+    metrics_path: '{{ job.metrics_path }}'
 {% endif %}
 {% if job.scrape_interval is defined %}
     scrape_interval: {{ job.scrape_interval }}
@@ -17,12 +17,11 @@ scrape_configs:
 {% endfor %}
 
 {% endfor %}
-
 {% for tag, node in hostvars['localhost']['service_nodes_metadata'].items() %}
-  {% set job_name = "prometheus-pump-"+ tag %}
+  {% set job_name = "prometheus-pump-" + tag %}
   {% if job_name not in existing_config.scrape_configs | map(attribute='job_name') | list %}
-  - job_name: "{{ job_name }}"
-    metrics_path: "/metrics"
+  - job_name: '{{ job_name }}'
+    metrics_path: '/metrics'
     scrape_interval: 5s
     static_configs:
       - targets: ["{{ node.admin_ip }}:2112"]
