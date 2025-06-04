@@ -69,7 +69,7 @@ activemq_run_opts: >-
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
 idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
 oim_idrac_telemetry_receiver_dir_path: "{{ oim_idrac_telemetry_dir }}/idrac_telemetry_receiver"
-oim_idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
+oim_idrac_telemetry_reference_path: "{{ oim_idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
 
 idrac_telemetry_receiver_run_opts: >-
