@@ -1,0 +1,35 @@
+- name: Validate k8s local repo metadata
+  when: k8s_support
+  block:
+    - name: Check if the k8s local repo metadata file exists
+      ansible.builtin.stat:
+        path: "{{ k8s_local_repo_metadata_file }}"
+      register: metadata_stat
+
+    - name: Fail if k8s local repo metadata file does not exist
+      ansible.builtin.fail:
+        msg: "{{ k8s_local_repo_metadata_file_not_exist_msg }}"
+      when: not metadata_stat.stat.exists
+
+    - name: Read k8s local repo metadata file
+      ansible.builtin.slurp:
+        src: "{{ k8s_local_repo_metadata_file }}"
+      register: metadata_content
+
+    - name: Decode metadata content
+      ansible.builtin.set_fact:
+        metadata_yaml: "{{ metadata_content.content | b64decode | from_yaml }}"
+
+    - name: Fail if k8s_version not in k8s local repo metadata file
+      ansible.builtin.fail:
+        msg: "{{ msg_not_in_list }}"
+      when: k8s_version not in metadata_yaml.k8s_local_repo_versions
+
+    - name: Fail if last_k8s_local_repo_version does not match k8s_version
+      ansible.builtin.fail:
+        msg: "{{ msg_version_mismatch }}"
+      when: metadata_yaml.last_k8s_local_repo_version != k8s_version
+
+    - name: Success message
+      ansible.builtin.debug:
+        msg: "{{ k8s_version_msg_success }}"

@@ -19,7 +19,10 @@ oim_host_port: "22"
 oim_host_group: "oim"
 provision_container_port: "2223"
 provision_container_name: "omnia_provision"
-kubespray_container_port: "2224"
+kubespray_ssh_port:
+  "v2.26.0": "2226"
+  "v2.27.0": "2227"
+  "v2.28.0": "2228"
 kubespray_container_hostname: "omnia_kubespray"
 kubespray_container_name: "omnia_kubespray_{{ hostvars['localhost']['matched_kubespray_version'] }}"
 
