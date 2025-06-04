@@ -13,7 +13,7 @@ Prerequisites
 * To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. In this setup, the iDRAC telemetry container gathers data from all service nodes, each of which collects telemetry from its associated compute nodes. This enables centralized monitoring, analysis, and visualization.
 
 .. csv-table:: telemetry_config.yml
-   :file: ../../Tables/telemetry_config.csv
+   :file: ../Tables/telemetry_config.csv
    :header-rows: 1
    :keepspace:
 
