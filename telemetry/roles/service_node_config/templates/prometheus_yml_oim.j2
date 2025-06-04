@@ -13,11 +13,13 @@ scrape_configs:
     {% endfor %}
 {% endfor %}
 
-{% for node in service_nodes %}
-  {% set job_name = "node_exporter_" + node.tag %}
+{% for tag, node in hostvars['localhost']['service_nodes_metadata'].items() %}
+  {% set job_name = "prometheus-pump-"+ node.tag %}
   {% if job_name not in existing_tags %}
   - job_name: "{{ job_name }}"
+    metrics_path: '/metrics'
+    scrape_interval: 5s
     static_configs:
-      - targets: ["{{ node.host }}:9100"]
+      - targets: ["{{ node.admin_ip }}:2112"]
   {% endif %}
 {% endfor %}

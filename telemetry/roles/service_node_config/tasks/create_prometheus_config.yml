@@ -44,8 +44,5 @@
           src: "{{ prometheus_yml_oim_temp_src }}"
           dest: "{{ oim_prometheus_config_path }}"
           mode: 0644
-        vars:
-          existing_config: "{{ existing_config }}"
-          service_nodes: "{{ service_nodes }}"
   delegate_to: oim
   connection: ssh
