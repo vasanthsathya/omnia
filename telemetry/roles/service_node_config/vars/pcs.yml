@@ -96,7 +96,7 @@ idrac_telemetry_receiver_run_opts: >-
 
 prometheus_dir: "{{ telemetry_data_dir }}/prometheus"
 prometheus_container_name: "prometheus"
-prometheus_image: "docker.io/prom/prometheus:v2.43.0"
+prometheus_image: "docker.io/prom/prometheus:v2.36.0"
 prometheus_env:
   PROMETHEUS_DB: "poweredge_telemetry_metrics"
   node.name: "127.0.0.1"
