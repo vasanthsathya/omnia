@@ -31,7 +31,6 @@
   register: bmc_result
 
 - name: Show BMC Issues
-  when: bmc_result.changed
   block:
     - name: Show Redfish Disabled Warning
       when: bmc_result.redfish_disabled | length > 0

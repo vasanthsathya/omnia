@@ -31,7 +31,6 @@
   register: bmc_result
 
 - name: Show BMC Issues
-  when: bmc_result.changed
   block:
     - name: Show added BMC entries
       when: bmc_result.added | length > 0
@@ -59,4 +58,4 @@
         (bmc_result.invalid_creds | length > 0) or
         (bmc_result.unreachable | length > 0)
       ansible.builtin.fail:
-      msg: "{{ invalid_bmc_fail_msg }}"
+        msg: "{{ invalid_bmc_fail_msg }}"
