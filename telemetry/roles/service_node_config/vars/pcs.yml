@@ -113,6 +113,7 @@ prometheus_run_opts: >-
 # Prometheus Pump Container
 ####################################
 prometheus_pump_entry_script: "/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh"
+prometheus_pump_container_name: "prometheus_pump"
 oim_prometheus_pump_dir: "{{ oim_telemetry_dir_path }}/prometheus_pump"
 prometheus_pump_receiver_env:
   MESSAGEBUS_HOST: "localhost"

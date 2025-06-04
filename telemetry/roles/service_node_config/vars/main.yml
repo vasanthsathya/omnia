@@ -60,6 +60,9 @@ load_images_fail_msg: |
   "Failed to load the telemetry images from the tar file {{ omnia_images_tar }}.
   Ensure the tar file is present in the shared folder by running prepare_oim.yml and re-run telemetry.yml again."
 
-# Usage: pcs_deployment.yml
+# Usage: render_telemetry_template.yml
 service_node_base_dir: "/opt/omnia/service_nodes"
 file_permissions: '0755'
+
+# Usage: pcs_container_deployment.yml
+pcs_container_name: omnia_pcs
