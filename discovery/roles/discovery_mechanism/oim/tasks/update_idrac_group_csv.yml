@@ -30,13 +30,13 @@
     bmc_password: "{{ bmc_password }}"
   register: bmc_result
 
-- name: Show BMC entries updated in CSV
+- name: Show Invalid BMC IPs
   when:
     - bmc_result.changed
     - bmc_result.invalid is defined
     - bmc_result.invalid | length > 0
   block:
-    - name: Show Invalid BMC IPs
+    - name: Invalid BMC IPs found
       ansible.builtin.debug:
         msg: "{{ invalid_bmc_ip_msg }}"
 
