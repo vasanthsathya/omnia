@@ -18,6 +18,33 @@
     service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
     service_node_base_dir: "{{ service_node_base_dir }}"
     file_permissions: "{{ file_permissions }}"
-    tmpl_telemetry: "{{ role_path }}/templates/prometheus_yml.j2"
+    tmpl_telemetry: "{{ role_path }}/templates/prometheus_yml_sn.j2"
   delegate_to: localhost
   connection: local
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['federated_idrac_telemetry_collection']
+
+- name: Update OIM Prometheus configuration file for each service node
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - not hostvars['localhost']['federated_idrac_telemetry_collection']
+  block:
+      - name: Read existing prometheus.yml
+        slurp:
+          src: "{{ oim_prometheus_config_path }}"
+        register: existing_prometheus_raw
+
+      - name: Parse existing YAML
+        set_fact:
+          existing_config: "{{ existing_prometheus_raw.content | b64decode | from_yaml }}"
+
+      - name: Template updated prometheus.yml
+        template:
+          src: "{{ prometheus_yml_oim_temp_src }}"
+          dest: "{{ oim_prometheus_config_path }}"
+          mode: 0644
+        vars:
+          existing_config: "{{ existing_config }}"
+          service_nodes: "{{ service_nodes }}"
+  delegate_to: oim

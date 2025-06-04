@@ -61,7 +61,6 @@ load_images_fail_msg: |
   Ensure the tar file is present in the shared folder by running prepare_oim.yml and re-run telemetry.yml again."
 
 # Usage: pcs_deployment.yml
-
 service_node_base_dir: "/opt/omnia/service_nodes"
 file_permissions: '0755'
 oim_telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
@@ -73,6 +72,11 @@ start_interval: "0s"
 start_timeout: "20s"
 stop_interval: "0s"
 stop_timeout: "60s"
+
+# Usage: create_prometheus_config.yml
+oim_prometheus_config_path: "{{ oim_telemetry_dir_path }}/prometheus/prometheus.yml"
+prometheus_dir: ""
+proemetheus_yml_temp_src: "{{ role_path }}/templates/prometheus_yml.j2"
 
 ####################################
 # MySQL Container Configuration

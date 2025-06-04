@@ -1,0 +1,23 @@
+{% set existing_tags = existing_config.scrape_configs | map(attribute='job_name') | list %}
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 15s
+
+scrape_configs:
+{% for job in existing_config.scrape_configs %}
+  - job_name: "{{ job.job_name }}"
+    static_configs:
+    {% for sc in job.static_configs %}
+      - targets: {{ sc.targets }}
+    {% endfor %}
+{% endfor %}
+
+{% for node in service_nodes %}
+  {% set job_name = "node_exporter_" + node.tag %}
+  {% if job_name not in existing_tags %}
+  - job_name: "{{ job_name }}"
+    static_configs:
+      - targets: ["{{ node.host }}:9100"]
+  {% endif %}
+{% endfor %}
