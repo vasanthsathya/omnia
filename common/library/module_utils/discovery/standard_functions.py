@@ -56,11 +56,11 @@ def render_template_multi_pass(src: str, dest: str, context: dict, passes: int =
     try:
         # Load the template
         with open(src, 'r', encoding='utf-8') as f:
-            template_content = f.read()
+            rendered = f.read()
 
         # Perform multiple rendering passes
         for _ in range(passes):
-            rendered = Template(template_content).render(context)
+            rendered = Template(rendered).render(context)
 
         # Save the final rendered result
         with open(dest, 'w', encoding='utf-8') as f:
