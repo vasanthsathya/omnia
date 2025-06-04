@@ -38,7 +38,7 @@ Access the Grafana UI
 
 **Prerequisite**
 
-``visualization_support`` should be set to ``true`` during ``telemetry.yml`` playbook execution.
+``visualization_support`` should be set to ``true`` during ``prepare_oim.yml`` playbook execution. For more information, `click here <../OmniaInstallGuide/RHEL_new/prepare_oim.html#telemetry-config-yml>`_.
 
 **Steps**
 
