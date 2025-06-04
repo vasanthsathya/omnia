@@ -17,4 +17,3 @@
   containers.podman.podman_container_exec:
     name: "{{ pcs_container_name }}"
     command: "/bin/bash {{ pcs_resource_script_path }}"
-
