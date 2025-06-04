@@ -12,3 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
+
+- name: Update OIM Prometheus configuration file for each service node
+  ansible.builtin.template:
+    src: "{{ prometheus_yml_oim_temp_src }}"
+    dest: "{{ oim_prometheus_config_path }}"
+    mode: "{{ file_permissions }}"
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['federated_idrac_telemetry_collection']

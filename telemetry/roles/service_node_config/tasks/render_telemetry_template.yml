@@ -27,3 +27,10 @@
         vars_file: "{{ role_path }}/vars/pcs.yml"
         tmpl_telemetry: "{{ role_path }}/templates/pcs_telemetry.sh.j2"
         telemetry_vars_file: "{{ hostvars['localhost']['input_project_dir'] }}/telemetry_config.yml"
+
+    - name: Create Prometheus configuration file for each service node
+      telemetry_prom_config:
+        service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
+        service_node_base_dir: "{{ service_node_base_dir }}"
+        file_permissions: "{{ file_permissions }}"
+        tmpl_telemetry: "{{ role_path }}/templates/prometheus_yml_sn.j2"

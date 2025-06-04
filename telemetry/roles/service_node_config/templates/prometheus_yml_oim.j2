@@ -3,28 +3,20 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-{% for job in existing_config.scrape_configs %}
-  - job_name: '{{ job.job_name }}'
-{% if job.metrics_path is defined %}
-    metrics_path: '{{ job.metrics_path }}'
-{% endif %}
-{% if job.scrape_interval is defined %}
-    scrape_interval: {{ job.scrape_interval }}
-{% endif %}
-    static_configs:
-{% for sc in job.static_configs %}
-      - targets: {{ sc.targets }}
-{% endfor %}
-
-{% endfor %}
-{% for tag, node in hostvars['localhost']['service_nodes_metadata'].items() %}
-  {% set job_name = "prometheus-pump-" + tag %}
-  {% if job_name not in existing_config.scrape_configs | map(attribute='job_name') | list %}
-  - job_name: '{{ job_name }}'
+  - job_name: 'prometheus-pump'
     metrics_path: '/metrics'
     scrape_interval: 5s
     static_configs:
-      - targets: ["{{ node.admin_ip }}:2112"]
+      - targets: [ 'localhost:2112' ]
 
+  - job_name: 'federate-metrics-service-nodes'
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{__name__=~".+"}'
+    static_configs:
+{% for tag, node in hostvars['localhost']['service_nodes_metadata'].items() %}
+  {% if (hostvars['localhost']['enable_ha'] and node.active) or not hostvars['localhost']['enable_ha'] %}
+      - targets: ["{{ node.virtual_ip_address if hostvars['localhost']['enable_service_ha'] and node.active else node.admin_ip }}:9090"]
   {% endif %}
 {% endfor %}

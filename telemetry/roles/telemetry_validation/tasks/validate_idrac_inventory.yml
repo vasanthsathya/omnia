@@ -32,9 +32,16 @@
     msg: "{{ bmc_group_data_invalid_msg }}'"
   when: bmc_group_data[0] != bmc_group_data_headers
 
-- name: Extract BMC_IP values
+- name: Extract BMC_IP values of compute nodes
   ansible.builtin.set_fact:
-    bmc_ips: "{{ bmc_group_data[1:] | map('split', ',') | map('first') | list }}"
+    bmc_ips: >-
+      {{
+        bmc_group_data[1:]
+        | map('split', ',')
+        | selectattr('2', 'truthy')
+        | map('first')
+        | list
+      }}
 
 - name: Validate each BMC IP
   ansible.builtin.fail:
