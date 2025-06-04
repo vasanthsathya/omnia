@@ -16,16 +16,15 @@
 empty_discover_node_msg: "No nodes found in db. Please run discovery_provision.yml first."
 bmc_group_csv_path: "/opt/omnia/telemetry/bmc_group_data.csv"
 waiting_time_30: 30
-db_query_fail_msg: >
-  Unable to fetch discovered nodes. This might be because the table `cluster.nodeinfo` does not exist.
-  Please ensure `discovery_provision.yml` has been executed, if not kindly execute `discovery_provision.yml` playbook.
-invalid_bmc_ip_msg: >
-  "The following BMC IPs could not be added: {{ bmc_result.invalid | join(', ') }}"
-invalid_bmc_warning_msg: >
-  Some BMC IPs could not be added to the CSV file.
-  Possible reasons could be:
-    - Incorrect credentials
-    - Redfish not enabled on iDRAC
-    - BMC IP not reachable from OIM
-  Please address the issues mentioned above and run the utility again.
-    ansible-playbook update_bmc_group_data.yml
+redfish_disabled_msg: |
+  "Redfish is disabled on the following BMC IPs: {{ bmc_result.redfish_disabled | join(', ') }}
+  Please enable Redfish on these BMCs and run the update_bmc_group_data.yml utility."
+invalid_creds_msg: |
+  "The following BMC IPs have invalid credentials: {{ bmc_result.invalid_creds | join(', ') }}
+  Please verify the credentials and run the update_bmc_group_data.yml utility."
+unreachable_bmc_msg: |
+  "The following BMC IPs are unreachable: {{ bmc_result.unreachable | join(', ') }}
+  Please ensure these BMCs are reachable from OIM and run the update_bmc_group_data.yml utility."
+invalid_bmc_warning_msg: |
+  "[WARNING] Some BMC IPs could not be added to the CSV file. Kindly address the issues mentioned above and
+  run the update_bmc_group_data.yml utility to add IPs in bmc_group_data.csv."

@@ -30,17 +30,29 @@
     bmc_password: "{{ bmc_password }}"
   register: bmc_result
 
-- name: Show Invalid BMC IPs
-  when:
-    - bmc_result.changed
-    - bmc_result.invalid is defined
-    - bmc_result.invalid | length > 0
+- name: Show BMC Issues
+  when: bmc_result.changed
   block:
-    - name: Invalid BMC IPs found
+    - name: Show Redfish Disabled Warning
+      when: bmc_result.redfish_disabled | length > 0
       ansible.builtin.debug:
-        msg: "{{ invalid_bmc_ip_msg }}"
+        msg: "{{ redfish_disabled_msg }}"
 
-    - name: Warning to address invalid BMC IPs
+    - name: Show Invalid BMC Credentials
+      when: bmc_result.invalid_creds | length > 0
+      ansible.builtin.debug:
+        msg: "{{ invalid_creds_msg }}"
+
+    - name: Show Unreachable BMC IPs
+      when: bmc_result.unreachable | length > 0
+      ansible.builtin.debug:
+        msg: "{{ unreachable_bmc_msg }}"
+
+    - name: Warning for user to fix BMC issues
+      when: >
+        (bmc_result.redfish_disabled | length > 0) or
+        (bmc_result.invalid_creds | length > 0) or
+        (bmc_result.unreachable | length > 0)
       ansible.builtin.pause:
         prompt: "{{ invalid_bmc_warning_msg }}"
         seconds: "{{ waiting_time_30 }}"
