@@ -22,3 +22,4 @@
       containers.podman.podman_container_exec:
         name: "{{ pcs_container_name }}"
         command: "/bin/bash {{ pcs_telemetry_resource_script_path }}"
+      failed_when: false
