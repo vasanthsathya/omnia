@@ -313,6 +313,11 @@ def main():
             result["overall_status"] = "FAILURE"
             module.exit_json(msg="Some tasks failed", **result)
 
+    except RuntimeError as e:
+        slogger.error(f"Execution failed: {str(e)}")
+        module.fail_json(msg=f"Error during execution: {str(e)}", **result)
+
+
     except Exception as e:
         result["table_output"] = table_output if "table_output" in locals() else "No table generated."
         slogger.error(f"Execution failed: {str(e)}")

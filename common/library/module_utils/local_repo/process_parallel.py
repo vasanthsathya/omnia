@@ -273,7 +273,10 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
 
     config = load_yaml_file(local_repo_config_path)
     user_registries = config.get("user_registry", [])
-    docker_username, docker_password = load_docker_credentials(OMNIA_CREDENTIALS_YAML_PATH, OMNIA_CREDENTIALS_VAULT_PATH)
+    try:
+        docker_username, docker_password = load_docker_credentials(OMNIA_CREDENTIALS_YAML_PATH, OMNIA_CREDENTIALS_VAULT_PATH)
+    except RuntimeError as e:
+        raise
     # Create a pool of worker processes to handle the tasks
     with multiprocessing.Pool(processes=nthreads) as pool:
         task_results = []  # List to hold references to the async results of the tasks
