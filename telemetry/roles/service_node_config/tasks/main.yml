@@ -45,5 +45,5 @@
     - name: Include tasks for podman images
       ansible.builtin.include_tasks: pull_podman_images.yml
 
-    - name: Service node Prometheus configuration
-      ansible.builtin.include_tasks: create_prometheus_config.yml
+- name: Service node Prometheus configuration
+  ansible.builtin.include_tasks: create_prometheus_config.yml
