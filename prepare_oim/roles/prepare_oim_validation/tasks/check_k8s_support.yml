@@ -59,7 +59,7 @@
         n_latest: 3
         arch: "amd64"
         mode: "clone"
-        check_version: True
+        check_version: true
       register: k8s_to_kubespray_comp_ver
 
     - name: Print compatiable kubespray tags
@@ -79,6 +79,6 @@
 
     - name: Fail if the latest 3 release tags of kubespray do not support the Kubernetes version {{ k8s_version }}
       ansible.builtin.fail:
-        msg: "{{ failed_k8s_version_msg }}"
+        msg: "{{ fail_msg_k8s_version }}"
       when:
         - kubespray_version == ''

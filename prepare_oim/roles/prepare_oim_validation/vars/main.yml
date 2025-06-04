@@ -32,9 +32,9 @@ and repo_config values."
 software_config_syntax_fail_msg: "Failed. Syntax errors present in software_config.json. Fix errors and re-run playbook again."
 
 supported_k8s_version:
-  "v2.26.0": [v1.30.4, v1.30.3, v1.30.2, v1.30.1, v1.30.0, v1.29.7, v1.29.6, v1.29.5, v1.29.4, v1.29.3, v1.29.2, v1.29.1, v1.29.0, v1.28.12, v1.28.11, v1.28.10, v1.28.9, v1.28.8, v1.28.7, v1.28.6, v1.28.5, v1.28.4, v1.28.3, v1.28.2, v1.28.1, v1.28.0] # noqa: yaml[line-length]
-  "v2.27.0": [v1.31.4, v1.31.3, v1.31.2, v1.31.1, v1.31.0, v1.30.8, v1.30.7, v1.30.6, v1.30.5, v1.30.4, v1.30.3, v1.30.2, v1.30.1, v1.30.0, v1.29.12, v1.29.11, v1.29.10, v1.29.9, v1.29.8, v1.29.7, v1.29.6, v1.29.5, v1.29.4, v1.29.3, v1.29.2, v1.29.1, v1.29.0] # noqa: yaml[line-length]
-  "v2.28.0": [1.32.5, 1.32.4, 1.32.2, 1.32.3, 1.32.1, 1.32.0, 1.31.9, 1.31.8, 1.31.7, 1.31.6, 1.31.5, 1.31.4, 1.31.3, 1.31.2, 1.31.1, 1.31.0, 1.30.13, 1.30.12, 1.30.11, 1.30.10, 1.30.9, 1.30.8, 1.30.7, 1.30.6, 1.30.5, 1.30.4, 1.30.3, 1.30.2, 1.30.1, 1.30.0] # noqa: yaml[line-length]
+  "v2.26.0": [v1.30.4, v1.28.0]
+  "v2.27.0": [v1.31.4, v1.29.0]
+  "v2.28.0": [1.32.5, 1.30.0]
 
 dynamic_k8s_json_folder: "/opt/omnia/k8s_dynamic_json"
 dynamic_k8s_json_file: "{{ dynamic_k8s_json_folder }}/v{{ k8s_version }}/k8s_v{{ k8s_version }}.json"
@@ -47,9 +47,9 @@ dynamic_k8s_generation: false
 file_permission: "0755"
 
 success_msg_k8s_version: "Kubernetes Version Validated"
-fail_msg_k8s_version: "Failed. Kubernetes Version is unsupported or incorrect in software_config.json. Supported versions are - {{ supported_k8s_version }}" # noqa: yaml[line-length]
+fail_msg_k8s_version: "Failed. Kubernetes Version is unsupported or incorrect in software_config.json. Update software_config.json with a supported Kubernetes versions and re-run the playbook.Supported versions are - {{ supported_k8s_version }}" # noqa: yaml[line-length]
 kube_version_on_unsupported_os: "Failed. On RHEL 9.6 OS, supported kubernetes version is 1.29.5"  # noqa: yaml[line-length]
-failed_k8s_version_msg: "Stopping execution. Please update software_config.json with a supported Kubernetes versions and re-run the playbook." # noqa: yaml[line-length]
+
 # Usage: validate_network_spec.yml
 network_spec: "{{ input_project_dir }}/network_spec.yml"
 network_spec_syntax_fail_msg: "Failed. Syntax errors present in network_spec.yml. Fix errors and re-run playbook again."
