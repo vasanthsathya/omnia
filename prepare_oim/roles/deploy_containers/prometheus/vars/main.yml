@@ -44,14 +44,8 @@ prometheus_pump_receiver_env:
  PROMETHEUSDB_SERVER: "prometheus"
 prometheus_pump_container_success_msg: "The {{ prometheus_pump_container_name }} container has been successfully deployed."
 prometheus_pump_container_failure_msg: |
-  Deployment of {{ prometheus_pump_container_name }} container failed.
-  To resolve this, check logs using 'podman logs {{ prometheus_pump_container_name }}' from OIM if container is created 
-  successfully but not in running state and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ prometheus_pump_container_name }} container.
-
-prometheus_pump_container_failure_msg: |
   Deployment of the {{ prometheus_pump_container_name }} container has failed.
-  
+
   If the container was created but is not in a running state, check the logs using:
     podman logs {{ prometheus_pump_container_name }}
 
@@ -80,7 +74,7 @@ prometheus_env:
 prometheus_container_success_msg: "The {{ prometheus_container_name }} container has been successfully deployed."
 prometheus_container_failure_msg: |
   Deployment of the {{ prometheus_container_name }} container has failed.
-  
+
   If the container was created but is not in a running state, check the logs using:
     podman logs {{ prometheus_container_name }}
 
