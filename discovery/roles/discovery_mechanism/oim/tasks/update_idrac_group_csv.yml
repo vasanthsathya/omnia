@@ -32,24 +32,15 @@
 
 - name: Show BMC entries updated in CSV
   when:
-  - bmc_result.changed
-  - bmc_result.updated is defined
-  - bmc_result.updated | length > 0
+    - bmc_result.changed
+    - bmc_result.invalid is defined
+    - bmc_result.invalid | length > 0
   block:
     - name: Show Invalid BMC IPs
       ansible.builtin.debug:
-        msg: "Invalid BMC IPs: {{ bmc_result.invalid | join(', ') }}"
+        msg: "{{ invalid_bmc_ip_msg }}"
 
-    - name: Pause for user to address invalid BMC IPs
+    - name: Warning to address invalid BMC IPs
       ansible.builtin.pause:
-        prompt: |
-          The following BMC IPs could not be added: {{ bmc_result.invalid | join(', ') }}
-
-          Possible reasons:
-            - Incorrect credentials
-            - Redfish not enabled on iDRAC
-            - BMC IP not reachable from OIM
-
-          After fixing the issue, run the utility:
-            ansible-playbook update_bmc_group_data.yml
+        prompt: "{{ invalid_bmc_warning_msg }}"
         seconds: "{{ waiting_time_30 }}"
