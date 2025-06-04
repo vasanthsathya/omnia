@@ -26,7 +26,7 @@
     login_user: postgres
     query: |
       SELECT admin_ip,bmc_ip,hostname,node,group_name,role,parent,service_tag
-      FROM cluster.nodeinf
+      FROM cluster.nodeinfo
       WHERE node!='oim';
     login_password: "{{ postgresdb_password }}"
   become: true
