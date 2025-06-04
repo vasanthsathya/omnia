@@ -77,7 +77,7 @@
     (
       (pulp_status_output.rc != 0) and
       (not file_check.stat.exists)
-    )  
+    )
   block:
     - name: Set cert_san fact based on hostname
       ansible.builtin.set_fact:
