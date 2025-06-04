@@ -13,7 +13,12 @@
 #  limitations under the License.
 ---
 
-- name: Run the updated PCS resource script to create all container resources
-  containers.podman.podman_container_exec:
-    name: "{{ pcs_container_name }}"
-    command: "/bin/bash {{ pcs_telemetry_resource_script_path }}"
+- name: Deploy telemetry containers from pcs container
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - hostvars['localhost']['federated_idrac_telemetry_collection']
+  block:
+    - name: Run the updated PCS resource script to create all container resources
+      containers.podman.podman_container_exec:
+        name: "{{ pcs_container_name }}"
+        command: "/bin/bash {{ pcs_telemetry_resource_script_path }}"

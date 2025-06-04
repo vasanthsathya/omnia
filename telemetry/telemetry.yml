@@ -92,7 +92,7 @@
 
 - name: Deployment of telemetry container in service node
   hosts: sn_active
-  connection: local
+  connection: ssh
   gather_facts: false
   tasks:
     - name: Deployment of telemetry container in service node
