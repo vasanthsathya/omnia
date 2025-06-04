@@ -110,7 +110,7 @@ def update_status_csv(csv_dir, software, overall_status):
         f.write("\n".join(final_lines))
 
 
-def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries):
+def determine_function(task, repo_store_path, csv_file_path, user_data, version_variables, user_registries, docker_username, docker_password):
     """
     Determines the appropriate function and its arguments to process a given task.
 
@@ -141,6 +141,7 @@ def determine_function(task, repo_store_path, csv_file_path, user_data, version_
             with open(status_file, 'w', encoding="utf-8") as file:
                 file.write(STATUS_CSV_HEADER)
 
+
         task_type = task.get("type")
         if task_type == "manifest":
             return process_manifest, [task, repo_store_path, status_file]
@@ -158,7 +159,7 @@ def determine_function(task, repo_store_path, csv_file_path, user_data, version_
         if task_type == "pip_module":
             return process_pip, [task, repo_store_path, status_file]
         if task_type == "image":
-            return process_image, [task, status_file, version_variables, user_registries]
+            return process_image, [task, status_file, version_variables, user_registries, docker_username, docker_password]
         if task_type == "rpm":
             return process_rpm, [task, repo_store_path, status_file,
                                  cluster_os_type, cluster_os_version, repo_config_value]
@@ -311,6 +312,11 @@ def main():
         else:
             result["overall_status"] = "FAILURE"
             module.exit_json(msg="Some tasks failed", **result)
+
+    except RuntimeError as e:
+        slogger.error(f"Execution failed: {str(e)}")
+        module.fail_json(msg=f"Error during execution: {str(e)}", **result)
+
 
     except Exception as e:
         result["table_output"] = table_output if "table_output" in locals() else "No table generated."
