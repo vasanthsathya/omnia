@@ -48,3 +48,4 @@
           existing_config: "{{ existing_config }}"
           service_nodes: "{{ service_nodes }}"
   delegate_to: oim
+  connection: ssh
