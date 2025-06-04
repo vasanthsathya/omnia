@@ -14,7 +14,7 @@ scrape_configs:
 {% endfor %}
 
 {% for tag, node in hostvars['localhost']['service_nodes_metadata'].items() %}
-  {% set job_name = "prometheus-pump-"+ node.tag %}
+  {% set job_name = "prometheus-pump-"+ tag %}
   {% if job_name not in existing_tags %}
   - job_name: "{{ job_name }}"
     metrics_path: '/metrics'
