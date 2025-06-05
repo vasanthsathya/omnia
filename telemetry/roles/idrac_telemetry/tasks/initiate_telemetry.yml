@@ -17,6 +17,10 @@
 - name: Initiate telemetry process if idrac_support is enabled
   when: idrac_telemetry_support is true
   block:
+    - name: Set server host
+      ansible.builtin.set_fact:
+        server_host: "{{ hostvars['inventory_hostname']['service_tag'] }}"
+
     - name: Include telemetry common vars
       ansible.builtin.include_vars: "{{ playbook_dir }}/roles/telemetry_validation/vars/main.yml"
       no_log: true
@@ -79,7 +83,7 @@
 
             - name: Generate filtered iDRAC IP list
               ansible.builtin.set_fact:
-                filtered_bmc_ips: "{{ bmc_ips | difference(db_idrac_ips) }}"
+                filtered_bmc_ips: "{{ bmc_ips[service_host] | difference(db_idrac_ips) }}"
       rescue:
         - name: Show failure msg
           ansible.builtin.fail:

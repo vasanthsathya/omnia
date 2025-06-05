@@ -116,3 +116,10 @@
   gather_facts: false
   roles:
     - idrac_telemetry
+
+- name: Enable idrac telemetry in SN
+  hosts: sn_active
+  connection: ssh
+  gather_facts: false
+  roles:
+    - idrac_telemetry

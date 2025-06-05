@@ -32,9 +32,61 @@
     msg: "{{ bmc_group_data_invalid_msg }}'"
   when: bmc_group_data[0] != bmc_group_data_headers
 
-- name: Extract BMC_IP values
+- name: Extract BMC_IP values for federated telemetry
+  when: hostvars['localhost']['federated_idrac_telemetry_collection'] 
+  block:
+    - name: Extract BMC_IP values grouped by PARENT (service tags)
+      ansible.builtin.set_fact:
+        sn_bmc_ips: >-
+          {{
+            dict(
+              bmc_group_data[1:]
+              | map('split', ',')
+              | selectattr('2', 'truthy')
+              | groupby('2')
+              | map('first', '0') | zip(
+                  bmc_group_data[1:]
+                  | map('split', ',')
+                  | selectattr('2', 'truthy')
+                  | groupby('2')
+                  | map(attribute='1')
+                  | map('map', '0')
+                  | map('list')
+                )
+            )
+          }}
+
+    - name: Extract BMC_IPs with no parent (manager list)
+      ansible.builtin.set_fact:
+        oim_bmc_ips: >-
+          {{
+            bmc_group_data[1:]
+            | map('split', ',')
+            | selectattr('2', 'falsy')
+            | map('first')
+            | list
+          }}
+
+    - name: Combine BMC IPs into final sn_bmc_ip_map
+      ansible.builtin.set_fact:
+        bmc_ips: "{{ sn_bmc_ips | combine({'oim': oim_bmc_ips}) }}"
+
+- name: Extract BMC_IP values for non federated telemetry
   ansible.builtin.set_fact:
-    bmc_ips: "{{ bmc_group_data[1:] | map('split', ',') | map('first') | list }}"
+    bmc_ips: >-
+      {{
+        dict(
+          sn_bmc_ips.items() | list +
+          [('oim',
+            bmc_group_data[1:]
+            | map('split', ',')
+            | map('first')
+            | unique
+            | list
+          )]
+        )
+      }}
+  when: not hostvars['localhost']['federated_idrac_telemetry_collection']
 
 - name: Validate each BMC IP
   ansible.builtin.fail:
