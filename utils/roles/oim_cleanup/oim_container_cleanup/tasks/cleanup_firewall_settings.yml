@@ -1,4 +1,4 @@
-# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#  Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +13,9 @@
 # limitations under the License.
 ---
 
-- name: Copy genesis package
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-  with_items: "{{ genesis_package_path }}"
+- name: Remove NTP service from firewalld
+  ansible.posix.firewalld:
+    service: "{{ ntp_firewall_service }}"
+    permanent: true
+    state: disabled
+    immediate: true

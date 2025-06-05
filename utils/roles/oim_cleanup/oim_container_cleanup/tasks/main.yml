@@ -37,6 +37,9 @@
   ansible.builtin.import_tasks: cleanup_kubespray.yml
   when: hostvars['localhost']['k8s_support']
 
+- name: Remove firewall settings
+  ansible.builtin.import_tasks: cleanup_firewall_settings.yml
+
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true
