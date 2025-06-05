@@ -77,6 +77,12 @@
     grep -qxF '{{ pxe_nic_ip }} {{ oim_hostname }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} {{ oim_hostname }}' >> {{ hosts_file_path }}
   changed_when: true
 
+- name: Add hosts file entry for the provisioning container
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -qxF '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' >> {{ hosts_file_path }}
+  changed_when: true
+
 - name: Ensure 127.0.0.1 localhost entry exists uniquely using echo
   ansible.builtin.shell: |
     set -o pipefail
