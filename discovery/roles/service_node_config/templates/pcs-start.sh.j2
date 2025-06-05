@@ -43,7 +43,7 @@ pcs resource group add {{ pcs_group }}  XCATD-CHECK
 {% if active_node is defined %}
 # Add a Service Node Virtual IP (VIP) resource
 pcs resource create SNVIP IPaddr2 ip={{ active_node.virtual_ip }} cidr_netmask={{ network_data.admin_network.netmask_bits }} \
-  op monitor interval={{ monitor_interval_30s }}
+  nic={{ network_data.admin_network.oim_nic_name }} op monitor interval={{ monitor_interval_30s }}
 # Add SNVIP to group
 pcs resource group add {{ pcs_group }} SNVIP
 
