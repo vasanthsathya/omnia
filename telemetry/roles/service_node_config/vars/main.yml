@@ -69,5 +69,5 @@ pcs_container_name: omnia_pcs
 pcs_telemetry_resource_script_path: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['service_tag'] }}/pcs/config/pcs_telemetry.sh"
 
 # Usage: prometheus_config_update.yml
-oim_prometheus_config_path: "{{ {{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus.yml"
+oim_prometheus_config_path: "{{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus.yml"
 prometheus_yml_oim_temp_src: "{{ role_path }}/templates/prometheus_yml_oim.j2"
