@@ -77,11 +77,11 @@ def read_entries_csv(csv_path, module):
         try:
             with open(csv_path, mode='r', encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
-                if not reader.fieldnames or not any(reader):
-                    return entries
 
                 actual_columns = set(reader.fieldnames or [])
-                if not expected_columns.issubset(actual_columns):
+                if not actual_columns:
+                    return entries
+                if expected_columns != actual_columns:
                     module.fail_json(
                         msg=f"CSV file at {csv_path} is missing required columns. \
                             Expected: {expected_columns}, \
@@ -89,6 +89,10 @@ def read_entries_csv(csv_path, module):
                     )
 
                 for row in reader:
+                    if not row['BMC_IP']:
+                        module.fail_json(
+                            msg=f"CSV file at {csv_path} contains an entry with an empty 'BMC_IP'."
+                        )
                     entries[row['BMC_IP']] = row
         except csv.Error as e:
             module.fail_json(msg=f"Failed to parse CSV file at {csv_path}: {str(e)}")
@@ -197,12 +201,12 @@ def main():
 
     if delete:
         delete_bmc_entries(nodes, existing_entries, result)
+        write_entries_csv(csv_path, existing_entries)
     elif verify_bmc:
         verify_bmc_entries(existing_entries, bmc_creds, module, result)
     else:
         add_bmc_entries(nodes, existing_entries, bmc_creds, module, result)
-
-    write_entries_csv(csv_path, existing_entries)
+        write_entries_csv(csv_path, existing_entries)
     module.exit_json(**result)
 
 if __name__ == '__main__':
