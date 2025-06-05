@@ -197,12 +197,12 @@ def main():
 
     if delete:
         delete_bmc_entries(nodes, existing_entries, result)
+        write_entries_csv(csv_path, existing_entries)
     elif verify_bmc:
         verify_bmc_entries(existing_entries, bmc_creds, module, result)
     else:
         add_bmc_entries(nodes, existing_entries, bmc_creds, module, result)
-
-    write_entries_csv(csv_path, existing_entries)
+        write_entries_csv(csv_path, existing_entries)
     module.exit_json(**result)
 
 if __name__ == '__main__':
