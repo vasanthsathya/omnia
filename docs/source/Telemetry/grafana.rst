@@ -7,13 +7,15 @@ Access the Grafana UI
 
 **Steps**
 
-    1. Log in to the Grafana UI via port 5000. Enter the below URL into the browser's address bar: ::
+    1. Log in to the Grafana UI via port 5000. Enter the below URL into the browser's address bar: 
+    
+        ::
         
-        http://localhost:5000/login
+            http://localhost:5000/login
 
 
-        .. image:: ../images/Grafana_login.png
-            :width: 600px
+       .. image:: ../images/Grafana_login.png
+           :width: 600px
 
 
     3. Enter the ``grafana_username`` and ``grafana_password`` as mentioned previously in the ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` input file.
