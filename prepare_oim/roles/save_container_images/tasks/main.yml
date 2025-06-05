@@ -40,7 +40,7 @@
           'docker.io/prom/prometheus:' + prometheus_tag
         ] }}
 
-- name: Save container images
+- name: Save container images (This task may take 10 mins)
   containers.podman.podman_save:
     image: "{{ container_images }}"
     dest: "{{ images_directory_path }}/{{ container_tar_file }}"
