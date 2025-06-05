@@ -455,7 +455,7 @@ def validate_additional_software(
     """
     errors = []
     # Get all keys in the data
-    sub_groups = flatten_sub_groups(list(data.keys()))
+    sub_groups = set(flatten_sub_groups(list(data.keys())))
 
     # Check if additional_software is not given in the config
     if "additional_software" not in sub_groups:
@@ -495,6 +495,11 @@ def validate_additional_software(
     # also present in additioanl_software.json
     software_config_file_path = create_file_path(config_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
+
+    # check if additional_software is present in software_config.json
+    if "addtional_software" not in software_config_json:
+        logger.warn("The additional_software field is not present in software_config.json")
+        software_config_json["additional_software"] = []
 
     sub_groups_in_software_config = list(sub_group['name'] for sub_group in
                                             software_config_json["additional_software"])
