@@ -67,3 +67,30 @@ file_permissions: '0755'
 # Usage: pcs_container_deployment.yml
 pcs_container_name: omnia_pcs
 pcs_telemetry_resource_script_path: "/opt/omnia/pcs/pcs_telemetry.sh"
+
+# Usage: mysqldb_creation.yml
+mysql_container_name: "mysqldb"
+mysql_database: "idrac_telemetrydb"
+mysql_container_success_msg: "The MySQL container {{ mysql_container_name }} has been successfully created and is running."
+mysql_container_failure_msg: |
+  Deployment of the {{ mysql_container_name }} container has failed.
+
+  If the container was created but is not in a running state, check the logs using:
+    podman logs {{ mysql_container_name }}
+
+mysql_port: 3306
+max_retries: 10
+delay_count: 5
+create_db_retries: 10
+create_db_delay: 10
+mysql_db_create_query:
+  - "CREATE DATABASE IF NOT EXISTS {{ mysql_database }}"
+  - >
+    CREATE TABLE IF NOT EXISTS {{ mysql_database }}.services (
+      ip VARCHAR(255) PRIMARY KEY,
+      serviceType INT,
+      authType INT,
+      auth VARCHAR(4096)
+    )
+mysql_database_create_failure_msg: |
+  The creation of the MySQL database {{ mysql_database }} has failed.
