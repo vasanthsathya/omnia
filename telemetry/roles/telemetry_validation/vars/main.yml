@@ -100,7 +100,8 @@ invalid_parent_tags_message: |
   [ERROR] Invalid parent tags : {{ host_inventory.invalid_parent_tags }}.
   These parent tags found in `{{ bmc_group_data_filename }}` are not of service nodes.
   If your are adding a bmc entry in the csv file, please ensure that the parent tag is service tag of service node.
-  If service nodes are not provisioned, please run `discovery_provision.yml` to provision service nodes.
+  If service nodes are not provisioned or compute node provisioning not initiated,
+  please run discovery_provision.yml to provision service nodes and compute nodes from service nodes.
   And then run `telemetry.yml` playbook again.
 
 # Usage: include_high_availability_config.yml
