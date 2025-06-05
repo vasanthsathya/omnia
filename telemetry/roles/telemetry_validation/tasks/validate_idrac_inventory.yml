@@ -44,9 +44,9 @@
 
 - name: Validate BMC reachability
   update_bmc_group_entry:
-    csv_path: "{{ bmc_group_csv_path }}"
-    bmc_username: "{{ bmc_username }}"
-    bmc_password: "{{ bmc_password }}"
+    csv_path: "{{ bmc_group_data_filename }}"
+    bmc_username: "{{ hostvars['localhost']['bmc_username'] }}"
+    bmc_password: "{{ hostvars['localhost']['bmc_password'] }}"
     verify_bmc: true
   register: bmc_result
 
