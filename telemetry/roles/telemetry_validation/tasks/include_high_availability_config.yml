@@ -17,7 +17,7 @@
 
 - name: Check that the high_availability_config.yml exists
   ansible.builtin.stat:
-    path: "{{ high_availability_config_file }}"
+    path: "{{ high_availability_config_path }}"
   register: stat_result
 
 - name: Fail if high_availability_config.yml file doesn't exist
