@@ -7,21 +7,16 @@ Access the Grafana UI
 
 **Steps**
 
-    1. Find the IP address of the Grafana service using ``kubectl get svc -n grafana``
-
-
-        .. image:: ../images/grafanaIP.png
-                :width: 600px
-
-
-    2. Login to the Grafana UI by connecting to the cluster IP of grafana service obtained above via port 5000, that's ``http://xx.xx.xx.xx:5000/login``
+    1. Log in to the Grafana UI via port 5000. Enter the below URL into the browser's address bar: ::
+        
+        http://localhost:5000/login
 
 
         .. image:: ../images/Grafana_login.png
             :width: 600px
 
 
-    3. Enter the ``grafana_username`` and ``grafana_password`` as mentioned in ``input/telemetry_config.yml``.
+    3. Enter the ``grafana_username`` and ``grafana_password`` as mentioned previously in the ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` input file.
 
 
         .. image:: ../images/Grafana_Dashboards.png
@@ -44,9 +39,11 @@ Access the Grafana UI
 Filter logs using Loki
 -----------------------
 
-    1. Login to the Grafana UI by connecting to the cluster IP of grafana service obtained above via port 5000. That is ``http://xx.xx.xx.xx:5000/login``
+    1. Log in to the Grafana UI via port 5000. Enter the below URL into the browser's address bar: ::
+        
+        http://localhost:5000/login
 
-    2. In the Explore page, select **control-plane-loki**.
+    2. In the Explore page, select **oim-node-loki**.
 
         .. image:: ../images/Grafana_ControlPlaneLoki.png
             :width: 600px
