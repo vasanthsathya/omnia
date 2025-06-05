@@ -13,8 +13,9 @@
 # limitations under the License.
 ---
 
-container_removal_failure_msg: " container could not be removed."
+container_removal_failure_msg: " container could not be removed. Please check container logs."
 omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
+telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
 
 # Usage: cleanup_pcs.yml
 pcs_container_name: "omnia_pcs"
@@ -75,6 +76,26 @@ xcat_firewall_ports:
   - "162/tcp"
   - "162/udp"
   - "2240/tcp"
+  - "5432/tcp"
+  - "5432/udp"
+
+idrac_firewall_ports:
+  - "61613/tcp"
+  - "8161/tcp"
+  - "3306/tcp"
+  - "3000/tcp"
+
+prometheus_firewall_ports:
+  - "2112/tcp"
+  - "9090/tcp"
+
+visualization_firewall_ports:
+  - "3000/tcp"
+  - "3001/tcp"
+  - "5000/tcp"
+
+loki_firewall_ports:
+  - "3100/tcp"
 
 # Usage: cleanup_kubespray.yml
 kubespray_image_tag: "{{ hostvars['localhost']['kubespray_version'] }}"
@@ -82,3 +103,71 @@ kubespray_container_name: "omnia_kubespray_{{ hostvars['localhost']['kubespray_v
 kubespray_cleanup_directory:
   - "{{ omnia_nfs_share }}/kubespray"
   - "{{ omnia_nfs_share }}/log/kubespray"
+
+# Usage: cleanup_mysql.yml
+idrac_telemetry_dir: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry" # For idrac_telemetry and all those logs
+mysql_container_name: "mysqldb"
+mysql_root_password: "mysql_root_password"
+mysql_user_password: "mysql_user_password"
+mysql_user: "mysql_user"
+mysqldb_secrets:
+  - "{{ mysql_root_password }}"
+  - "{{ mysql_user }}"
+  - "{{ mysql_user_password }}"
+mysql_data_dir: "{{ idrac_telemetry_dir }}/mysqldb"
+mysql_log_volume: "{{ omnia_nfs_share }}/log/telemetry/mysqldb"
+mysqldb_podman_volumes:
+  - { name: "mysqldb_data", path: "{{ mysql_data_dir }}" }
+  - { name: "mysqldb_log", path: "{{ mysql_log_volume }}" }
+
+# Usage: cleanup_activemq.yml
+activemq_container_name: "activemq"
+activemq_cleanup_directory:
+  - "{{ omnia_nfs_share }}/log/telemetry/activemq"
+  - "{{ idrac_telemetry_dir }}/activemq"
+activemq_podman_volumes:
+  - { name: "activemq_log", path: "{{ omnia_nfs_share }}/log/telemetry/activemq" }
+
+# Usage: cleanup_idrac_receiver.yml
+idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
+idrac_telemetry_receiver_cleanup_directory:
+  - "{{ omnia_nfs_share }}/log/telemetry/idrac_telemetry_receiver"
+  - "{{ idrac_telemetry_dir }}/idrac_telemetry_receiver"
+
+# Usage: cleanup_prometheus_pump.yml
+prometheus_pump_container_name: "prometheus_pump"
+prometheus_pump_cleanup_directory:
+  - "{{ omnia_nfs_share }}/log/telemetry/prometheus_pump"
+  - "{{ omnia_nfs_share }}/telemetry/prometheus_pump"
+
+# Usage: cleanup_prometheus.yml
+prometheus_container_name: "prometheus"
+prometheus_cleanup_directory:
+  - "{{ omnia_nfs_share }}/telemetry/prometheus"
+  - "{{ omnia_nfs_share }}/log/telemetry/prometheus"
+prometheus_podman_volumes:
+  - { name: "prometheus_data", path: "{{ omnia_nfs_share }}/telemetry/prometheus/prometheus_data" }
+  - { name: "prometheus_log", path: "{{ omnia_nfs_share }}/log/telemetry/prometheus" }
+
+# Usage: cleanup_grafana.yml
+grafana_container_name: "grafana"
+grafana_user: "grafana_user"
+grafana_user_password: "grafana_user_password"
+grafana_secrets:
+  - "{{ grafana_user }}"
+  - "{{ grafana_user_password }}"
+grafana_logs_dir: "{{ omnia_nfs_share }}/log/telemetry/grafana"
+grafana_data_dir: "{{ omnia_nfs_share }}/telemetry/grafana"
+grafana_podman_volumes:
+  - { name: "grafana_data", path: "{{ grafana_data_dir }}" }
+  - { name: "grafana_log", path: "{{ grafana_logs_dir }}" }
+
+# Usage: cleanup_loki_promtail.yml
+loki_container_name: "loki"
+promtail_container_name: "promtail"
+loki_promtail_cleanup_directory:
+  - "{{ omnia_nfs_share }}/telemetry/loki_promtail"
+resource_removal_failure_msg: "Failed to clean up Loki and Promtail resources after container removal."
+config_dir: "{{ omnia_nfs_share }}/telemetry/loki_promtail"
+loki_podman_volumes:
+  - { name: "loki_promtail_config", path: "{{ config_dir }}" }

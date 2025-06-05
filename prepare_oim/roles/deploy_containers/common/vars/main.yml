@@ -60,6 +60,21 @@ pcs_firewall_ports:
   - "2224/tcp"
   - "2222/tcp"
 
+idrac_firewall_ports:
+  - "61613/tcp"
+  - "8161/tcp"
+  - "3306/tcp"
+  - "3000/tcp"
+
+prometheus_firewall_ports:
+  - "2112/tcp"
+  - "9090/tcp"
+
+visualization_firewall_ports:
+  - "3000/tcp"
+  - "3001/tcp"
+  - "5000/tcp"
+
 pcs_firewall_services:
   - "http"
   - "https"
