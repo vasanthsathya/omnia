@@ -97,9 +97,9 @@ prepare_oim_telemetry_not_executed_msg: "Telemetry container {{ telemetry_contai
 service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
 cluster_layout_path: "/opt/omnia/omnia_inventory/cluster_layout"
 invalid_parent_tags_message: |
-  [ERROR] Invalid parent tags : {{ host_inventory.invalid_parent_tags | join(', ') }}
+  [ERROR] Invalid parent tags : {{ host_inventory.invalid_parent_tags }}.
   These parent tags found in `{{ bmc_group_data_filename }}` are not of service nodes.
-  If your are adding a bmc entry in the csv file, please ensure that the parent tag is a service node tag.
+  If your are adding a bmc entry in the csv file, please ensure that the parent tag is service tag of service node.
   If service nodes are not provisioned, please run `discovery_provision.yml` to provision service nodes.
   And then run `telemetry.yml` playbook again.
 
