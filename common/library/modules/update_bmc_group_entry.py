@@ -89,6 +89,10 @@ def read_entries_csv(csv_path, module):
                     )
 
                 for row in reader:
+                    if not row['BMC_IP']:
+                        module.fail_json(
+                            msg=f"CSV file at {csv_path} contains an entry with an empty 'BMC_IP'."
+                        )
                     entries[row['BMC_IP']] = row
         except csv.Error as e:
             module.fail_json(msg=f"Failed to parse CSV file at {csv_path}: {str(e)}")
