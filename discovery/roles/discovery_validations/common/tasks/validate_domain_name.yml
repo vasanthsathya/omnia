@@ -80,7 +80,7 @@
 - name: Add hosts file entry for the provisioning container
   ansible.builtin.shell: |
     set -o pipefail
-    grep -qxF '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' 
+    grep -qxF '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}'
     >> {{ hosts_file_path }}
   changed_when: true
 
