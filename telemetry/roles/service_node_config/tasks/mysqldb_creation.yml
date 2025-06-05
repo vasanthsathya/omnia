@@ -35,6 +35,10 @@
       ansible.builtin.fail:
         msg: "{{ mysql_container_failure_msg.splitlines() | join(' ') }}"
 
+- name: Ensure pip3 is available using ensurepip
+  ansible.builtin.command: "python3 -m ensurepip"
+  changed_when: false
+
 - name: Install python packages using pip3
   ansible.builtin.pip:
     name: "{{ mysql_pip_package }}"
