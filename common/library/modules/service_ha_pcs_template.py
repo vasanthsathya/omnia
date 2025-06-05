@@ -46,6 +46,7 @@ def main():
         "pcs_start_tmpl": {"type": "str", "required": True},
         "oim_shared_path": {"type": "str", "required": True},
         "admin_netmask": {"type": "str", "required": True},
+        "admin_nic": {"type": "str", "required": True},
         "vars_file": {"type": "str", "required": False, "default": None}
     }
 
@@ -60,6 +61,7 @@ def main():
     oim_path = module.params['oim_shared_path']
     vars_file = module.params['vars_file']
     admin_netmask = module.params['admin_netmask']
+    admin_nic = module.params['admin_nic']
 
     extra_vars = load_vars_file(vars_file)
 
@@ -81,31 +83,16 @@ def main():
         start_script_path = os.path.join(pcs_config_dir, 'pcs-start.sh')
         corosync_path = os.path.join(pcs_corosync_dir, 'corosync.conf')
 
-        # Create telemetry directories when idrac telemetry is supported
-        # if module.params['idrac_telemetry_support'] == 'true':
-        # telemetry_dir = os.path.join(service_tag_dir, 'telemetry')
-        # idrac_telemetry_dir = os.path.join(telemetry_dir, 'idrac_telemetry')
-        # activemq_dir = os.path.join(idrac_telemetry_dir, 'activemq')
-        # mysql_dir = os.path.join(idrac_telemetry_dir, 'mysql')
-        # idrac_telemetry_receiver_dir = os.path.join(idrac_telemetry_dir, 'idrac_telemetry_receiver')
-        # prometheus_dir = os.path.join(telemetry_dir, 'prometheus')
-        # prometheus_pump_dir = os.path.join(telemetry_dir, 'prometheus_pump')
+        log_dir = os.path.join(service_tag_dir, 'log')
+        pcs_log_dir = os.path.join(log_dir, 'pcs')
+        pcs_pacemaker_log_dir = os.path.join(pcs_log_dir, 'pacemaker')
+        pcs_corosync_log_dir = os.path.join(pcs_log_dir, 'corosync')
 
-        # log_dir = os.path.join(service_tag_dir, 'log')
-        # telemetry_log_dir = os.path.join(log_dir, 'telemetry')
-        # activemq_log = os.path.join(telemetry_log_dir, 'activemq')
-        # mysql_log = os.path.join(telemetry_log_dir, 'mysql')
-        # idrac_telemetry_receiver_log = os.path.join(telemetry_log_dir, 'idrac_telemetry_receiver')
-        # prometheus_log = os.path.join(telemetry_log_dir, 'prometheus')
-        # prometheus_pump_log = os.path.join(telemetry_log_dir, 'prometheus_pump')
-
-        for d in [
+        for path in [
             service_tag_dir, pcs_dir, pcs_config_dir, pcs_corosync_dir,
-            # telemetry_dir, idrac_telemetry_dir, activemq_dir, mysql_dir, idrac_telemetry_receiver_dir,
-            # prometheus_dir, prometheus_pump_dir, log_dir, telemetry_log_dir,
-            # activemq_log, mysql_log, idrac_telemetry_receiver_log, prometheus_log, prometheus_pump_log
+            log_dir, pcs_log_dir, pcs_pacemaker_log_dir, pcs_corosync_log_dir
         ]:
-            create_directory(d, file_mode)
+            create_directory(path, file_mode)
 
         context = {
             'service_tag': service_tag,
@@ -113,6 +100,7 @@ def main():
             'passive_nodes': passive_nodes,
             'oim_shared_path': oim_path,
             'admin_netmask': admin_netmask,
+            'admin_nic': admin_nic,
             **extra_vars
         }
 

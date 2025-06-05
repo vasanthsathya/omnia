@@ -38,6 +38,7 @@
         pcs_container_tmpl: "{{ role_path }}/templates/omnia_pcs.container.j2"
         pcs_start_tmpl: "{{ role_path }}/templates/pcs-start.sh.j2"
         admin_netmask: "{{ network_data.admin_network.netmask_bits }}"
+        admin_nic: "{{ network_data.admin_network.nic }}"
       delegate_to: localhost
       connection: local
 
@@ -51,6 +52,7 @@
     corosync_tmpl: "{{ role_path }}/templates/corosync_non_ha.conf.j2"
     pcs_container_tmpl: "{{ role_path }}/templates/omnia_pcs.container.j2"
     pcs_start_tmpl: "{{ role_path }}/templates/pcs-start.sh.j2"
+    admin_nic: "{{ network_data.admin_network.nic }}"
   register: render_service_template
   delegate_to: localhost
   connection: local
