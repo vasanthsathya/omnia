@@ -42,13 +42,12 @@
   tasks:
     - name: Check for additional_software.yml
       ansible.builtin.stat:
-        path: "{{ playbook_dir }}/additional_software.yml"
+        path: "{{ playbook_dir }}/roles/software_update/tasks/additional_software.yml"
       register: additional_software_file
 
-    - name: Warn if additional_software.yml is missing
+    - name: Warn if additional_software.yml is not present
       ansible.builtin.debug:
-        msg: "Warning: additional_software.yml is not defined. Some features may be unavailable."
-        warn: true
+        msg: "Warning: additional_software.yml is not defined."
       when: not additional_software_file.stat.exists
 
 - name: Get the additional software organized by group
