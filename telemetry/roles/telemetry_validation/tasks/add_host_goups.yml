@@ -47,7 +47,7 @@
 - name: Add passive oim hosts to inventory
   ansible.builtin.add_host:
     name: "{{ item }}"
-    groups: "oim_ha_nodes"
+    groups: "oim_ha_node"
   loop: "{{ host_inventory.oim_ha_hosts }}"
   when:
     - enable_oim_ha
