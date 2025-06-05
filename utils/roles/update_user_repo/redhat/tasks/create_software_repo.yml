@@ -29,11 +29,21 @@
   ansible.builtin.set_fact:
     software_item: "{{ item.name }}_{{ item.version }}"
 
+- name: Check if base_url is present for the given software_item
+  ansible.builtin.set_fact:
+    baseurl_present: >-
+      {{ (hostvars['localhost']['pulp_output_fact'] 
+          | selectattr('name', 'equalto', software_item)
+          | map(attribute='base_url')
+          | list
+          | length) > 0 }}
+
 - name: Create repo file on node
   ansible.builtin.template:
     src: "{{ repo_config_template_src }}"
     dest: "{{ repo_path }}/{{ software_item }}.repo"
     mode: "{{ file_permission }}"
+  when: baseurl_present
 
 - name: Set repos_update_status
   ansible.builtin.set_fact:
