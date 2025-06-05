@@ -17,9 +17,9 @@
   hosts: localhost
   connection: local
   tasks:
-    - name: Set dynamic run tags including 'local_repo'
+    - name: Set dynamic run tags including 'local_repo' and 'additional_software'
       ansible.builtin.set_fact:
-        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['local_repo']) | unique }}"
+        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['local_repo', 'additional_software']) | unique }}"
         cacheable: true
 
 - name: Invoke validate_config.yml to perform L1 and L2 validations for local repo

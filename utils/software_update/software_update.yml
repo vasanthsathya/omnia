@@ -35,6 +35,22 @@
 - name: Invoke validate_config.yml to perform L1 and L2 validations with additional_software tag
   ansible.builtin.import_playbook: ../../input_validation/validate_config.yml
 
+- name: Warn if additional_software.yml is not defined
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Check for additional_software.yml
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/additional_software.yml"
+      register: additional_software_file
+
+    - name: Warn if additional_software.yml is missing
+      ansible.builtin.debug:
+        msg: "Warning: additional_software.yml is not defined. Some features may be unavailable."
+        warn: true
+      when: not additional_software_file.stat.exists
+
 - name: Get the additional software organized by group
   hosts: localhost
   roles:
