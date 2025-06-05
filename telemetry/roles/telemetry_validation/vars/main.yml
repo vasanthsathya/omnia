@@ -14,6 +14,7 @@
 ---
 
 # Usage: validate_telemetry_config.yml
+omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
 telemetry_config_file: "{{ input_project_dir }}/telemetry_config.yml"
 fail_msg_telemetry_config_file: "telemetry_config.yml file doesn't exist."
 pause_time_15: 15
@@ -75,3 +76,6 @@ telemetry_container_fail_msg: "Telemetry container {{ telemetry_container }} is 
  Current Status: {{ telemetry_container_status.containers[0].State.Status }}"
 prepare_oim_telemetry_not_executed_msg: "Telemetry container {{ telemetry_container }} not found.
  Please execute prepare_oim.yml to deploy all required containers."
+
+# Usage: add_host_goups.yml
+service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
