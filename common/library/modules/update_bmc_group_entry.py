@@ -142,25 +142,46 @@ def add_bmc_entries(nodes, existing_entries, bmc_creds, module, result):
                     result['unreachable_bmc'].append(bmc_ip)
             result['changed'] = True
 
+def verify_bmc_entries(existing_entries, bmc_creds, module, result):
+    """
+    Verify reachability and authentication of BMC entries in the existing entries.
+    """
+
+    for bmc_ip, _ in existing_entries.items():
+        is_valid, code = is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'),
+                                                  bmc_creds.get('password'), module)
+        if is_valid:
+            result['verified_bmc'].append(bmc_ip)
+        else:
+            if code == 401:
+                result['invalid_creds'].append(bmc_ip)
+            elif code == 404:
+                result['redfish_disabled'].append(bmc_ip)
+            else:
+                result['unreachable_bmc'].append(bmc_ip)
+    result['changed'] = True
+
 
 def main():
     "Main function for the custom ansible module - update_bmc_group_entry"
     module_args = {
         'csv_path': {'type': 'str', 'required': True},
-        'nodes': {'type': 'list', 'elements': 'dict', 'required': True},
+        'nodes': {'type': 'list', 'elements': 'dict', 'required': False, 'default': []},
         'bmc_username': {'type': 'str', 'required': False, 'no_log': True},
         'bmc_password': {'type': 'str', 'required': False, 'no_log': True},
-        'delete': {'type': 'bool', 'default': False}
+        'delete': {'type': 'bool', 'default': False, 'required': False},
+        'verify_bmc': {'type': 'bool', 'default': False, 'required': False}
     }
 
     result = {'changed': False, 'added': [], 'deleted': [], 'invalid_creds': [],
-              'unreachable_bmc': [], 'redfish_disabled': []}
+              'unreachable_bmc': [], 'redfish_disabled': [], 'verified_bmc': []}
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     csv_path = module.params['csv_path']
     nodes = module.params['nodes']
     delete = module.params['delete']
+    verify_bmc = module.params['verify_bmc']
     bmc_creds = {}
     bmc_creds['username'] = module.params.get('bmc_username')
     bmc_creds['password'] = module.params.get('bmc_password')
@@ -173,6 +194,8 @@ def main():
 
     if delete:
         delete_bmc_entries(nodes, existing_entries, result)
+    elif verify_bmc:
+        verify_bmc_entries(existing_entries, bmc_creds, module, result)
     else:
         add_bmc_entries(nodes, existing_entries, bmc_creds, module, result)
 
