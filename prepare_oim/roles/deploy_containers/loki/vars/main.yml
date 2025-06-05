@@ -29,10 +29,16 @@ loki_config_file_path:
   - { src: "files/loki-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
 loki_container_success_msg: "The Loki container '{{ loki_container_name }}' container has been successfully deployed."
 loki_container_failure_msg: |
-  The deployment of the {{ loki_container_name }} container has failed.
-  To resolve this, check logs using 'podman logs {{ loki_container_name }}' from OIM
-  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ loki_container_name }} container.
+  Deployment of the {{ loki_container_name }} container has failed.
+
+  If the container was created but is not in a running state, check the logs using:
+    podman logs {{ loki_container_name }}
+
+  Then, run the utility playbook to clean up existing OIM resources:
+    ansible-playbook utility/oim_cleanup.yml
+
+  After cleanup, re-run the prepare_oim.yml playbook to attempt the deployment again.
+
 loki_image_pull_fail_msg: |
   The pull of the Loki image '{{ loki_image }}:{{ loki_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
@@ -54,10 +60,16 @@ promtail_config_file_path:
   - { src: "files/promtail-config.yaml", dest: "{{ config_dir }}", mode: "0644" }
 promtail_container_success_msg: "The Promtail container '{{ promtail_container_name }}' container has been successfully deployed."
 promtail_container_failure_msg: |
-  The deployment of the {{ promtail_container_name }} container has failed.
-  To resolve this, check logs using 'podman logs {{ promtail_container_name }}' from OIM
-  and then run utility/oim_cleanup.yml playbook to clean up existing OIM resources.
-  After cleanup, re-run the prepare_oim.yml playbook to successfully deploy the {{ promtail_container_name }} container.
+  Deployment of the {{ promtail_container_name }} container has failed.
+
+  If the container was created but is not in a running state, check the logs using:
+    podman logs {{ promtail_container_name }}
+
+  Then, run the utility playbook to clean up existing OIM resources:
+    ansible-playbook utility/oim_cleanup.yml
+
+  After cleanup, re-run the prepare_oim.yml playbook to attempt the deployment again.
+
 promtail_image_pull_fail_msg: |
   The pull of the Promtail image '{{ promtail_image }}:{{ promtail_image_tag }}' has failed.
   To resolve this, please check the following error: {{ image_pull_result.msg }}.
