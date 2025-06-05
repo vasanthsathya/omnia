@@ -78,7 +78,9 @@ mysql_container_failure_msg: |
   If the container was created but is not in a running state, check the logs using:
     podman logs {{ mysql_container_name }}
 
-mysql_pip_package: "PyMySQL==1.1.1"
+pip_packages:
+  - "PyMySQL==1.1.1"
+  - "cryptography==44.0.1"
 mysql_port: 3306
 max_retries: 10
 delay_count: 5

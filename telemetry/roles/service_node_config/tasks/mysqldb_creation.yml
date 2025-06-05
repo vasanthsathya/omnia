@@ -41,9 +41,10 @@
 
 - name: Install python packages using pip3
   ansible.builtin.pip:
-    name: "{{ mysql_pip_package }}"
+    name: "{{ item }}"
     state: present
     executable: pip3
+  loop: "{{ pip_packages }}"
 
 - name: Create MySQL database and table
   block:
