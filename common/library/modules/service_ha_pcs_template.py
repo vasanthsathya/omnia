@@ -36,6 +36,24 @@ from ansible.module_utils.discovery.standard_functions import (
 
 
 def main():
+    """
+	Generates HA PCS template.
+
+	Parameters:
+	    service_ha_data (dict): A dictionary containing the service HA data.
+	    service_node_base_dir (str): The base directory where the service nodes will be created.
+	    file_permissions (str): The file permissions for the generated files.
+	    corosync_tmpl (str): The path to the corosync template.
+	    pcs_container_tmpl (str): The path to the pcs container template.
+	    pcs_start_tmpl (str): The path to the pcs start template.
+	    oim_shared_path (str): The path to the OIM shared path.
+	    admin_netmask (str): The admin network netmask.
+	    admin_nic (str): The admin network nic.
+	    vars_file (str): The path to the variables file (default: None).
+
+	Returns:
+	    A JSON object with the results of processing each node, including the changed status, a message describing the result, and the path to the written file.
+	"""
 
     module_args = {
         "service_ha_data": {"type": "dict", "required": True},

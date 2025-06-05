@@ -46,9 +46,11 @@ def main():
         service_node_base_dir (str): The base directory where the service nodes will be created.
         file_permissions (str): The file permissions for the directories and files created.
         corosync_tmpl (str): The path to the corosync template.
-        corosync_tmpl (str): The path to the pcs container template.
+        pcs_container_tmpl (str): The path to the pcs container template.
         pcs_start_tmpl (str): The path to the pcs start template.
         oim_shared_path (str): The path to the oim shared path.
+        admin_netmask (str): The admin network netmask.
+	    admin_nic (str): The admin network nic.
         vars_file (str): The path to the variables file.
 
     Returns:
