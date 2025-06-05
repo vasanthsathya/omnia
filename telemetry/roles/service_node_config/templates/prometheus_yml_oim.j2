@@ -16,7 +16,9 @@ scrape_configs:
         - '{__name__=~".+"}'
     static_configs:
 {% for tag, node in hostvars['localhost']['service_nodes_metadata'].items() %}
-  {% set target_ip = node.virtual_ip_address if node.enable_service_ha and node.active else node.admin_ip %}
-  - targets: ["{{ target_ip }}:9090"]
+  {% if node.enable_service_ha and node.active %}
+  - targets: ["{{ node.virtual_ip_address }}:9090"]
+  {% elif not node.enable_service_ha %}
+  - targets: ["{{ node.admin_ip }}:9090"]
+  {% endif %}
 {% endfor %}
-
