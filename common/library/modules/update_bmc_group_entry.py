@@ -77,6 +77,9 @@ def read_entries_csv(csv_path, module):
         try:
             with open(csv_path, mode='r', encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
+                if not reader.fieldnames or not any(reader):
+                    return entries
+
                 actual_columns = set(reader.fieldnames or [])
                 if not expected_columns.issubset(actual_columns):
                     module.fail_json(
