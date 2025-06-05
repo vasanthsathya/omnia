@@ -59,7 +59,7 @@
       until: createdb_result is not failed
       retries: "{{ create_db_retries }}"
       delay: "{{ create_db_delay }}"
-#      no_log: true
+      no_log: true
   rescue:
     - name: DB creation failed
       ansible.builtin.fail:
