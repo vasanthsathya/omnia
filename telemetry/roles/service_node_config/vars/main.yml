@@ -66,4 +66,4 @@ file_permissions: '0755'
 
 # Usage: pcs_container_deployment.yml
 pcs_container_name: omnia_pcs
-pcs_telemetry_resource_script_path: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['service_tag'] }}/pcs/config/pcs_telemetry.sh"
+pcs_telemetry_resource_script_path: "/opt/omnia/pcs/pcs_telemetry.sh"
