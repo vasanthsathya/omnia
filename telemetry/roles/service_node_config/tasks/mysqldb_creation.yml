@@ -35,6 +35,12 @@
       ansible.builtin.fail:
         msg: "{{ mysql_container_failure_msg.splitlines() | join(' ') }}"
 
+- name: Install python packages using pip3
+  ansible.builtin.pip:
+    name: "{{ mysql_pip_package }}"
+    state: present
+    executable: pip3
+
 - name: Create MySQL database and table
   block:
     - name: Execute SQL to create DB and table
