@@ -3,8 +3,8 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'prometheus-pump'
+  - job_name: 'prometheus-pump-{{ service_tag }}'
     metrics_path: '/metrics'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'localhost:2112' ]
+      - targets: [ '{{ service_admin_nic_ip }}:2112' ]
