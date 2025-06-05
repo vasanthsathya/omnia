@@ -24,3 +24,6 @@
 
 - name: Set Service node details to node object
   ansible.builtin.include_tasks: set_service_node_details.yml
+
+- name: Add BMC Route
+  ansible.builtin.include_tasks: add_bmc_route.yml

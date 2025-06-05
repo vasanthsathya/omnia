@@ -12,10 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# pylint: disable=import-error,no-name-in-module,line-too-long
+
 #!/usr/bin/python
+"""Ansible module to update mapping node information in the database."""
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
+from ansible.module_utils.discovery import omniadb_connection
 
 def nodeinfo_db_update(node_details, domain_name, discovery_mechanism):
     """
@@ -68,11 +71,14 @@ def nodeinfo_db_update(node_details, domain_name, discovery_mechanism):
     return new_nodes, existing_nodes
 
 def main():
-    module_args = dict(
-        node_details=dict(type="list", elements="dict", required=True),
-        domain_name=dict(type="str", required=True),
-        discovery_mechanism=dict(type="str", required=True)
-    )
+    """
+    Main function to run the Custom ansible module for updating mapping node information in the database.
+    """
+    module_args = {
+        'node_details': {'type': "list", 'elements': "dict", 'required': True},
+        'domain_name': {'type': "str", 'required': True},
+        'discovery_mechanism':{'type': "str", 'required': True}
+    }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
@@ -81,8 +87,11 @@ def main():
     discovery_mechanism = module.params["discovery_mechanism"]
 
     try:
-        new_nodes, existing_nodes = nodeinfo_db_update(node_details, domain_name, discovery_mechanism)
-        module.exit_json(changed=True, msg="Database updated successfully", existing_nodes=existing_nodes, new_nodes=new_nodes)
+        new_nodes, existing_nodes = nodeinfo_db_update(node_details,
+                                                       domain_name,
+                                                       discovery_mechanism)
+        module.exit_json(changed=True, msg="Database updated successfully",
+                         existing_nodes=existing_nodes, new_nodes=new_nodes)
     except Exception as e:
         module.fail_json(msg=str(e))
 

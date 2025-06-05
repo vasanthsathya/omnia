@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# pylint: disable=import-error,no-name-in-module,line-too-long
+
 #!/usr/bin/python
 
 """Ansible module to check hierarchical provisioning status and service node HA configuration."""
@@ -51,13 +53,12 @@ def get_booted_service_nodes_data():
 
     if not_booted_nodes:
         raise ValueError(
-            f"The following service nodes are not in the 'booted' state: \
-            {', '.join(not_booted_nodes)}. \
-            For hierarchical provisioning of compute nodes or adding new management layer nodes, \
-            all service nodes initiated for provisioning must be in the 'booted' state. \
-            Please wait until all service nodes are booted, or \
-            remove the nodes experiencing provisioning failures \
-            using the utils/delete_node.yml playbook."
+            f"The following service nodes are not in the 'booted' state: "
+            f"{', '.join(not_booted_nodes)}. "
+            "For hierarchical provisioning of compute nodes or adding new management layer nodes, "
+            "all service nodes initiated for provisioning must be in the 'booted' state. "
+            "Please wait until all service nodes are booted, or remove the nodes experiencing "
+            "provisioning failures using the utils/delete_node.yml playbook."
         )
     return data
 
@@ -125,13 +126,13 @@ def get_service_node_ha_dict(service_node_ha_data, booted_service_nodes_data):
                 passive_nodes_tags_list.append(passive_node_tag)
         sn_ha_data[active_sn_tag]['passive_nodes'] = passive_nodes_tags_list
     if invalid_tags:
-        raise ValueError(f" ERROR: \
-            These service tags '{invalid_tags}' mentioned in 'high_availability_config.yml' \
-            for service node HA may be incorrect, or the node might not have been provisioned. \
-            * If service_node not provisioned, verify the input in roles_config.yml and execute discovery_provision.yml \
-            playbook with 'management_layer' tag. \
-            * If service_node is already provisioned with management layer nodes, verify the input in\
-            high_availability_config.yml and execute discovery_provision.yml"
+        raise ValueError(
+            f"ERROR: These service tags '{invalid_tags}' mentioned in 'high_availability_config.yml' "
+            "for service node HA may be incorrect, or the node might not have been provisioned.\n"
+            "  * If service_node is not provisioned, verify the input in roles_config.yml and execute "
+            "discovery_provision.yml playbook with the 'management_layer' tag.\n"
+            "  * If the service_node is already provisioned with management layer nodes, verify the input "
+            "in high_availability_config.yml and execute discovery_provision.yml."
         )
     return sn_ha_data
 
@@ -143,10 +144,10 @@ def check_hierarchical_provision(group, parent, booted_service_nodes_data):
     if parent in booted_service_nodes_data:
         return True
     raise ValueError(
-        f"Error: The service tag '{parent}' specified in the 'parent' field for group '{group}' \
-        in roles_config.yml may be incorrect, or the node might not have been provisioned. \
-        Please verify the input in roles_config.yml and execute discovery_provision.yml playbook \
-        with 'management_layer' tag to provision service nodes."
+            f"Error: The service tag '{parent}' specified in the 'parent' field for group '{group}' "
+            "in roles_config.yml may be incorrect, or the node might not have been provisioned. "
+            "Please verify the input in roles_config.yml and execute discovery_provision.yml playbook "
+            "with the 'management_layer' tag to provision service nodes."
         )
 
 
@@ -274,7 +275,7 @@ def main():
             service_node_ha_dict = service_node_ha_data
         )
     except ValueError as e:
-        module.fail_json(msg=str(e))
+        module.fail_json(msg=str(e).replace('\n', ' '))
 
 if __name__ == "__main__":
     main()
