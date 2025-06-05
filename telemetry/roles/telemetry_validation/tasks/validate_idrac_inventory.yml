@@ -27,14 +27,18 @@
   ansible.builtin.set_fact:
     bmc_group_data: "{{ lookup('file', bmc_group_data_filename).splitlines() }}"
 
+- name: Extract headers
+  set_fact:
+    bmc_headers: "{{ bmc_group_data[0].split(',') }}"
+
 - name: Validate BMC group data headers
   ansible.builtin.fail:
     msg: "{{ bmc_group_data_invalid_msg }}'"
-  when: bmc_group_data[0] != bmc_group_data_headers
+  when: bmc_group_data[0] != bmc_headers
 
 - name: Parse BMC group data CSV into list of dicts
   set_fact:
-    bmc_dict_list: "{{ bmc_dict_list | default([]) + [dict(bmc_group_data_headers | zip(item.split(',')) | list)] }}"
+    bmc_dict_list: "{{ bmc_dict_list | default([]) + [dict(bmc_headers | zip(item.split(',')) | list)] }}"
   loop: "{{ bmc_group_data[1:] }}"
 
 - name: Validate each BMC_IP in bmc_dict_list
