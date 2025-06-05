@@ -33,11 +33,11 @@
   when: bmc_group_data[0] != bmc_group_data_headers
 
 - name: Extract headers
-  set_fact:
+  ansible.builtin.set_fact:
     bmc_headers: "{{ bmc_group_data[0].split(',') }}"
 
 - name: Parse BMC group data CSV into list of dicts
-  set_fact:
+  ansible.builtin.set_fact:
     bmc_dict_list: "{{ bmc_dict_list | default([]) + [dict(bmc_headers | zip(item.split(',')) | list)] }}"
   loop: "{{ bmc_group_data[1:] }}"
 
@@ -48,7 +48,7 @@
   loop: "{{ bmc_dict_list }}"
 
 - name: Extract BMC_IP values for federated telemetry
-  when: hostvars['localhost']['federated_idrac_telemetry_collection'] 
+  when: hostvars['localhost']['federated_idrac_telemetry_collection']
   block:
     - name: Group compute node BMC_IPs by service node
       ansible.builtin.set_fact:
@@ -88,7 +88,7 @@
           }}
 
 - name: Extract all unique BMC_IP values
-  set_fact:
+  ansible.builtin.set_fact:
     bmc_ips: >-
       {{
         {
