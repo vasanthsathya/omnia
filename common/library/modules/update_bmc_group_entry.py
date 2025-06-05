@@ -44,13 +44,16 @@ def is_bmc_reachable_or_auth(ip, username, password, module):
         )
 
         if response.status_code == 200:
-            return True
+            return True, 200
         if response.status_code == 401:
             module.warn(f"BMC IP {ip} is reachable, but bmc credential is invalid.")
-            return False
+            return False, 401
+        if response.status_code == 404:
+            module.warn(f"BMC IP {ip} is reachable, but Redfish API not found (404).")
+            return False, 404
 
         module.warn(f"BMC IP {ip} responded with unexpected status code: {response.status_code}")
-        return False
+        return False, response.status_code
 
     except ConnectTimeout:
         module.warn(f"BMC IP {ip} connection timed out. Not reachable.")
@@ -63,7 +66,7 @@ def is_bmc_reachable_or_auth(ip, username, password, module):
     except RequestException as req_err:
         module.warn(f"BMC IP {ip} encountered a request error: {req_err}")
 
-    return False
+    return False, 500  # Return 500 for general errors
 
 def read_entries_csv(csv_path, module):
     "Reading existing entries from the CSV file"
@@ -121,18 +124,23 @@ def add_bmc_entries(nodes, existing_entries, bmc_creds, module, result):
         parent = node.get('parent', '')
 
         if bmc_ip and bmc_ip not in existing_entries:
-            if is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'), bmc_creds.get('password'), module):
+            is_valid, code = is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'),
+                                                      bmc_creds.get('password'), module)
+            if is_valid:
                 existing_entries[bmc_ip] = {
                     'BMC_IP': bmc_ip,
                     'GROUP_NAME': group,
                     'PARENT': parent
                 }
                 result['added'].append(bmc_ip)
-                result['changed'] = True
             else:
-                result['invalid'].append(bmc_ip)
-                result['changed'] = True
-
+                if code == 401:
+                    result['invalid_creds'].append(bmc_ip)
+                elif code == 404:
+                    result['redfish_disabled'].append(bmc_ip)
+                else:
+                    result['unreachable_bmc'].append(bmc_ip)
+            result['changed'] = True
 
 
 def main():
@@ -145,7 +153,8 @@ def main():
         'delete': {'type': 'bool', 'default': False}
     }
 
-    result = {'changed': False, 'added': [], 'deleted': [], 'invalid': []}
+    result = {'changed': False, 'added': [], 'deleted': [], 'invalid_creds': [],
+              'unreachable_bmc': [], 'redfish_disabled': []}
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 

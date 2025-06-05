@@ -11,13 +11,18 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#!/usr/bin/python
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
-from ansible.module_utils.omniadb_connection import execute_select_query
+# pylint: disable=import-error,no-name-in-module,line-too-long
+
+#!/usr/bin/python
+"""Ansible module to update switch mechanism nodes information in the database."""
+
+import sys
+import re
 from ipaddress import IPv4Address
-import sys, re
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.discovery import omniadb_connection
+from ansible.module_utils.discovery.omniadb_connection import execute_select_query
 
 def check_switch_table():
     """Checks if the cluster.switchinfo table has any entries."""

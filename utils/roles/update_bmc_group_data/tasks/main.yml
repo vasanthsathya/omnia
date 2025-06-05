@@ -13,16 +13,8 @@
 # limitations under the License.
 ---
 
-# - name: Update selinux policy
-#   ansible.builtin.command: chcon -R {{ selinux_policy }} {{ provision_shared_path }}
-#   changed_when: false
+- name: Update iDRAC ip with group details
+  ansible.builtin.include_tasks: prereq.yml
 
-- name: Create host groups for service node
-  ansible.builtin.add_host:
-    name: "{{ booted_service_nodes_data[item]['admin_ip'] }}"
-    groups: "service_nodes"
-    service_tag: "{{ booted_service_nodes_data[item]['service_tag'] }}"
-    active_service_tag: >-
-      {{ booted_service_nodes_data[item]['active_service_tag']
-         | default(booted_service_nodes_data[item]['service_tag']) }}
-  loop: "{{ booted_service_nodes_data.keys() }}"
+- name: Update iDRAC ip with group details
+  ansible.builtin.include_tasks: update_idrac_group_csv.yml

@@ -12,13 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+# pylint: disable=import-error,no-name-in-module,line-too-long
+
 #!/usr/bin/python
 
 """Ansible custom module to set osimage for nodes in a cluster based on discovery mechanism."""
 
 import subprocess
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
+from ansible.module_utils.discovery import omniadb_connection
 
 
 def validate_osimage(osimage):
