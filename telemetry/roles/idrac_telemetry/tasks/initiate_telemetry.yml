@@ -19,7 +19,12 @@
   block:
     - name: Set server host
       ansible.builtin.set_fact:
-        server_host: "{{ hostvars['inventory_hostname']['service_tag'] }}"
+        server_host: >-
+          {{
+            hostvars[inventory_hostname]['service_tag']
+            if inventory_hostname != 'localhost'
+            else 'oim'
+          }}
 
     - name: Include telemetry common vars
       ansible.builtin.include_vars: "{{ playbook_dir }}/roles/telemetry_validation/vars/main.yml"
@@ -83,7 +88,7 @@
 
             - name: Generate filtered iDRAC IP list
               ansible.builtin.set_fact:
-                filtered_bmc_ips: "{{ bmc_ips[service_host] | difference(db_idrac_ips) }}"
+                filtered_bmc_ips: "{{ hostvars['localhost']['bmc_ips'][server_host] | difference(db_idrac_ips) }}"
       rescue:
         - name: Show failure msg
           ansible.builtin.fail:

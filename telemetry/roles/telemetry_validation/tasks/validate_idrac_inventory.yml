@@ -84,7 +84,7 @@
       ansible.builtin.set_fact:
         bmc_ips: >-
           {{
-            sn_bmc_ips | combine({ 'manager': manager_bmc_ips })
+            sn_bmc_ips | combine({ 'oim': manager_bmc_ips })
           }}
 
 - name: Extract all unique BMC_IP values
