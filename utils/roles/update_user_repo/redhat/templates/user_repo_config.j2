@@ -1,6 +1,6 @@
-[Omnia-RPM-Repo{{ item.1.name }}]
-name=Omnia-Repo-{{ item.1.name }}
-baseurl={{ (pulp_dist_result | selectattr('name', 'equalto', item.1.name) | map(attribute='base_url') | list | first) }}
+[Omnia-RPM-Repo{{ item.name }}]
+name=Omnia-Repo-{{ item.name }}
+baseurl={{ (pulp_dist_result | selectattr('name', 'equalto', item.name) | map(attribute='base_url') | list | first) }}
 enabled=1
 gpgcheck=0
 skip_if_unavailable=True

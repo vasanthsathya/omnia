@@ -21,16 +21,12 @@
       register: check_pulp_repo
       changed_when: false
 
-    - name: Fail if pulp repo is not configured
-      ansible.builtin.fail:
-        msg: " {{ repo_fail_msg }} "
-      when: check_pulp_repo.stdout | length == 0
-
     - name: Set fact for distribution paths
       ansible.builtin.set_fact:
         pulp_dist_result: "{{ check_pulp_repo.stdout | from_json }}"
-      when: check_pulp_repo.stdout | from_json | length > 0
+      when: check_pulp_repo.stdout is defined and (check_pulp_repo.stdout | length > 0)
+
   rescue:
-    - name: Failed - pulp repo is configured
+    - name: Failed - pulp repo is not configured
       ansible.builtin.fail:
-        msg: " {{ repo_fail_msg }} "
+        msg: "{{ repo_fail_msg }}"
