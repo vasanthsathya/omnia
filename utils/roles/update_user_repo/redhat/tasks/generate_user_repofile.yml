@@ -27,4 +27,3 @@
     src: "{{ usr_repo_config_template_src }}"
     dest: "{{ repo_path }}/{{ item.name }}.repo"
     mode: "{{ file_permission }}"
-
