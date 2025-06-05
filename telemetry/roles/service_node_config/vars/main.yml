@@ -101,4 +101,3 @@ mysql_db_create_query:
     )
 mysql_database_create_failure_msg: |
   The creation of the MySQL database {{ mysql_database }} has failed.
-
