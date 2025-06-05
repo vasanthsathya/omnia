@@ -100,15 +100,15 @@
         name: service_node_config
         tasks_from: pcs_container_deployment.yml
 
-# - name: Update prometheus configuration in OIM
-#   hosts: oim
-#   connection: ssh
-#   gather_facts: false
-#   tasks:
-#     - name: Render PCS template for telemetry
-#       ansible.builtin.include_role:
-#         name: service_node_config
-#         tasks_from: prometheus_config_update.yml
+- name: Update prometheus configuration in OIM
+  hosts: oim
+  connection: ssh
+  gather_facts: false
+  tasks:
+    - name: Render PCS template for telemetry
+      ansible.builtin.include_role:
+        name: service_node_config
+        tasks_from: prometheus_config_update.yml
 
 - name: Enable idrac telemetry in OIM
   hosts: localhost
