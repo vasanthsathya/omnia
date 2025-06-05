@@ -24,7 +24,7 @@ invalid_creds_msg: |
   Please verify the credentials and run the update_bmc_group_data.yml utility.
 unreachable_bmc_msg: |
   The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
-  Please ensure these BMCs are reachable from OIM and run the update_bmc_group_data.yml utility.
+  Please ensure these BMC IPs are reachable from OIM and run the update_bmc_group_data.yml utility.
 invalid_bmc_fail_msg: |
   [Failed] Some BMC IPs could not be added to the CSV file. Kindly address the issues mentioned above and
   run the update_bmc_group_data.yml utility to add IPs in bmc_group_data.csv.
