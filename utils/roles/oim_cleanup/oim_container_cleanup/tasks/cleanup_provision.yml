@@ -49,6 +49,13 @@
       loop: "{{ xcat_firewall_ports }}"
       changed_when: true
 
+    - name: Remove NTP service from firewalld
+      ansible.posix.firewalld:
+        service: "{{ ntp_firewall_service }}"
+        permanent: true
+        state: disabled
+        immediate: true
+
   rescue:
     - name: Provision container removal failed
       ansible.builtin.fail:
