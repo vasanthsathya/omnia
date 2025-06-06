@@ -59,14 +59,14 @@ def schema(
 
                 # Custom error messages for regex pattern failures
                 if "Groups" == error_path:
-                    error.message = en_us_validation_msg.invalid_group_name_msg
+                    error.message = en_us_validation_msg.INVALID_GROUP_NAME_MSG
                 elif "location_id" in error_path:
-                    error.message = en_us_validation_msg.invalid_location_id_msg
+                    error.message = en_us_validation_msg.INVALID_LOCATION_ID_MSG
                 elif "ports" in error_path:
-                    error.message = en_us_validation_msg.invalid_switch_ports_msg
+                    error.message = en_us_validation_msg.INVALID_SWITCH_PORTS_MSG
                 # TODO: Add a syntax error message for roles
                 # elif 'is not of type' in error.message:
-                #     error.message = en_us_validation_msg.invalid_attributes_role_msg
+                #     error.message = en_us_validation_msg.INVALID_ATTRIBUTES_ROLE_MSG
                 error_msg = f"Validation Error at {error_path}: {error.message}"
 
                 # For passwords, mask the value so that no password values are logged
