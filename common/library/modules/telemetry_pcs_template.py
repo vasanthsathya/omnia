@@ -43,7 +43,7 @@ def main():
 		telemetry_vars_file (str): The path to the telemetry variables file (default: None).
 
 	Returns:
-		- A JSON object containing the results of processing each node,including the 
+		- A JSON object containing the results of processing each node,including the
         changed status, a message describing the result, and the path to the written file.
 
     """
@@ -154,7 +154,7 @@ def main():
             if os.path.exists(passive_service_tag_dir):
                 shutil.rmtree(passive_service_tag_dir)
 
-            shutil.copytree(service_dir, passive_service_tag_dir)
+            shutil.copytree(service_dir, passive_service_tag_dir, symlinks=True)
             results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
 
     # Exit the module
