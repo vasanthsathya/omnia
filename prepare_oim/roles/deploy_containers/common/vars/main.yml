@@ -68,6 +68,8 @@ internal_nfs_services:
   - nfs
   - rpc-bind
 
+ntp_firewall_service: ntp
+
 squid_firewall_ports:
   - "{{ squid_proxy_port }}/tcp"
 
