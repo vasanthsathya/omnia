@@ -18,6 +18,7 @@ echo "Telemetry resource creation script"
 
 {% if idrac_telemetry_support %}
 pcs resource group add {{ telemetry_pcs_group }}
+pcs constraint colocation add {{ pcs_group }} with {{ telemetry_pcs_group }} INFINITY
 # Resource for MySQL container
 pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     name={{ mysql_container_name }} \
@@ -54,7 +55,6 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
 
 # Resource for prometheus and prometheus_pump
 {% if idrac_telemetry_support and idrac_telemetry_collection_type == "prometheus" %}
-pcs resource group add {{ telemetry_pcs_group }}
 # Resource for prometheus pump container
 pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
   name={{ prometheus_pump_container_name }} \
