@@ -27,7 +27,7 @@
       ansible.builtin.set_fact:
         kubespray_image: "{{ kubespray_image_raw.stdout.split(':')[0] }}"
 
-    - name: Check in Podman if the image exists for {{ kubespray_image }}:{{ kube_version }}
+    - name: Check in Podman if the kubespray image exists
       containers.podman.podman_image_info:
         name: "{{ kubespray_image }}:{{ kube_version }}"
       register: kubespray_image_info

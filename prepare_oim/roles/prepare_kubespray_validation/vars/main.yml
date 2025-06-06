@@ -16,6 +16,7 @@
 kube_version: "{{ hostvars['localhost']['kubespray_version'] }}"
 k8s_compatible_tag: "{{ hostvars['localhost']['k8s_to_kubespray_comp_ver']['compatible_tags'].keys() | list }}"
 k8s_version: "{{ hostvars['localhost']['k8s_version'] }}"
+# The source of the supported k8s versions is kubespray/roles/kubespray_defaults/vars/main.yml in the Kubespray repository.
 supported_k8s_version:
   "v2.26.0": [v1.30.4, v1.28.0]
   "v2.27.0": [v1.31.4, v1.29.0]
