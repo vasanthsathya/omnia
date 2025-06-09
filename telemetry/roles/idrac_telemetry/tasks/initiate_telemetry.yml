@@ -15,11 +15,11 @@
 
 # Include and initialize variables
 - name: Initiate telemetry process if idrac_support is enabled
-  when: idrac_telemetry_support is true
+  when: hostvars['localhost']['idrac_telemetry_support'] is true
   block:
     - name: Set server host
       ansible.builtin.set_fact:
-        server_host: >-
+        service_node_hostname: >-
           {{
             hostvars[inventory_hostname]['service_tag']
             if inventory_hostname != 'localhost'
@@ -60,8 +60,8 @@
               community.mysql.mysql_query:
                 login_host: "{{ mysqldb_host }}"
                 login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
+                login_user: "{{ hostvars['localhost']['mysqldb_user'] }}"
+                login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
                 query: "SHOW TABLES FROM {{ mysqldb_name }}"
               register: services_table_exists
               until: services_table_exists is not failed and services_table_exists.query_result[0] | length != 0
@@ -73,8 +73,8 @@
               community.mysql.mysql_query:
                 login_host: "{{ mysqldb_host }}"
                 login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
+                login_user: "{{ hostvars['localhost']['mysqldb_user'] }}"
+                login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
                 query: "SELECT ip from {{ mysqldb_name + '.services' }}"
               register: db_idrac_ip
               until: db_idrac_ip is not failed
@@ -88,7 +88,7 @@
 
             - name: Generate filtered iDRAC IP list
               ansible.builtin.set_fact:
-                filtered_bmc_ips: "{{ hostvars['localhost']['bmc_ips'][server_host] | difference(db_idrac_ips) }}"
+                filtered_bmc_ips: "{{ hostvars['localhost']['bmc_ips'][service_node_hostname] | difference(db_idrac_ips) }}"
       rescue:
         - name: Show failure msg
           ansible.builtin.fail:

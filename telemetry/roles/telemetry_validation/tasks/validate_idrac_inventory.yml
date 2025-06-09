@@ -72,7 +72,7 @@
 
     - name: Group service_nodes BMC_IPs
       ansible.builtin.set_fact:
-        manager_bmc_ips: >-
+        oim_bmc_ips: >-
           {{
             bmc_dict_list
             | selectattr('PARENT', 'falsy')
@@ -84,7 +84,7 @@
       ansible.builtin.set_fact:
         bmc_ips: >-
           {{
-            sn_bmc_ips | combine({ 'oim': manager_bmc_ips })
+            sn_bmc_ips | combine({ 'oim': oim_bmc_ips })
           }}
 
 - name: Extract all unique BMC_IP values
