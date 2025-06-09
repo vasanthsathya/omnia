@@ -21,6 +21,12 @@ The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the foll
 * ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the Pulp container present on the OIM.
 * ``telemetry_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about running the iDRAC telemetry service on the cluster.
 
+Prerequisite
+-------------
+
+Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
+
+
 1. ``network_spec.yml``
 ------------------------
 
