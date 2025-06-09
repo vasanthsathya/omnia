@@ -38,7 +38,6 @@
       ansible.builtin.set_fact:
         idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
         idrac_telemetry_scripting_stable_commit: "1f4bb26"
-        idrac_telemetry_scripting_folder: iDRAC-Telemetry-Scripting
         min_firmware_version_reqd: 4
         datacenter_license: false
         firmware_version: false
@@ -111,16 +110,17 @@
         - name: Git clone telemetry initialization repo
           ansible.builtin.git:
             repo: "{{ idrac_telemetry_scripting_repo }}"
-            dest: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+            dest: "{{ telemetry_dir_path }}{{ idrac_telemetry_scripting_folder }}"
             version: "{{ idrac_telemetry_scripting_stable_commit }}"
           register: telemetry_collection
+          when: service_node_hostname == 'oim'
 
         - name: Enable telemetry collection on iDRACs
           ansible.builtin.command: >-
             "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
             -u "{{ bmc_username }}" -p "{{ bmc_password }}" -s Enabled
           args:
-            chdir: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+            chdir: "{{ telemetry_dir_path }}{{ idrac_telemetry_scripting_folder }}"
           with_items: "{{ telemetry_idrac }}"
           changed_when: false
           no_log: true
