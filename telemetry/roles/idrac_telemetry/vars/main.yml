@@ -20,8 +20,10 @@ timescaledb_name: "telemetry_metrics"
 telemetry_report_path: "/opt/omnia/telemetry/idrac_telemetry_report.yml"
 idrac_telemetry_container: "idrac_telemetry_receiver"
 # report_template_path: "/opt/omnia/telemetry/templates/telemetry_report.j2"
+omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
 idrac_telemetry_scripting_folder: "iDRAC-Telemetry-Scripting"
-telemetry_dir_path: "{{ omnia_nfs_share }}/omnia/telemetry if inventory_hostname != 'localhost' else '/opt/omnia/telemetry/'"
+telemetry_dir_path: >-
+  {{ (omnia_nfs_share ~ '/telemetry') if inventory_hostname != 'localhost' else '/opt/omnia/telemetry/' }}
 mysqldb_insert_fail_msg: "Failed to add/get iDRAC credential details in the mysql database.
  This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
 db_retries: 10

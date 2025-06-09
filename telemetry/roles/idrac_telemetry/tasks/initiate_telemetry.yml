@@ -117,8 +117,8 @@
 
         - name: Enable telemetry collection on iDRACs
           ansible.builtin.command: >-
-            "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
-            -u "{{ bmc_username }}" -p "{{ bmc_password }}" -s Enabled
+            python3 ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
+            -u "{{ hostvars['localhost']['bmc_username'] }}" -p "{{ hostvars['localhost']['bmc_password'] }}" -s Enabled
           args:
             chdir: "{{ telemetry_dir_path }}{{ idrac_telemetry_scripting_folder }}"
           with_items: "{{ telemetry_idrac }}"
@@ -137,8 +137,8 @@
           community.mysql.mysql_query:
             login_host: "{{ mysqldb_host }}"
             login_port: "{{ mysqldb_container_port }}"
-            login_user: "{{ mysqldb_user }}"
-            login_password: "{{ mysqldb_password }}"
+            login_user: "{{ hostvars['localhost']['mysqldb_user'] }}"
+            login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
             login_db: "{{ mysqldb_name }}"
             query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
                   VALUES (%s, %s, %s ,'{"password":"{{ bmc_password | quote }}","username":"{{ bmc_username | quote }}"}')
