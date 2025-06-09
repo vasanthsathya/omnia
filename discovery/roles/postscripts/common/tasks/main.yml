@@ -21,6 +21,11 @@
 - name: Include vars from the pcs container
   ansible.builtin.include_vars: "{{ pcs_vars }}"
   when: enable_oim_ha or service_role_required
+    
+- name: Include telemetry role vars
+  ansible.builtin.include_tasks: "{{ item }}"
+  with_items: "{{ telemetry_vars }}"
+  when: enable_oim_ha
 
 - name: Configure postscripts
   environment:
