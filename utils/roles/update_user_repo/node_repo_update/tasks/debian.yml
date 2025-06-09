@@ -1,4 +1,4 @@
-# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,4 @@
 # limitations under the License.
 ---
 
-- name: Check if repo file exists on node
-  ansible.builtin.stat:
-    path: "{{ repo_path }}/{{ item.name }}.repo"
-  register: repo_file_check
-
-- name: Update list if repo file is missing
-  ansible.builtin.set_fact:
-    new_repos: "{{ new_repos | default([]) + [item.url] }}"
-  when: not repo_file_check.stat.exists
+# This need to be updated when we support for ubuntu
