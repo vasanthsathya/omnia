@@ -69,6 +69,8 @@ mkdir -p $SECRET_PATH/filedriver
 chmod 700 $SECRET_PATH/filedriver
 cp -f {{ oim_shared_path }}/omnia/.secrets/secrets.json $SECRET_PATH/secrets.json
 cp -f {{ oim_shared_path }}/omnia/.secrets/secretsdata.json $SECRET_PATH/filedriver/secretsdata.json
+chmod 600 $SECRET_PATH/secrets.json
+chmod 600 $SECRET_PATH/filedriver/secretsdata.json
 {% endif %}
 
 {% if idrac_telemetry_support %}
