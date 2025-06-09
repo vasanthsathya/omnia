@@ -78,3 +78,8 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
   --group {{ telemetry_pcs_group }}
 {% endif %}
+
+# Create a file which signifies the pcs resources were created.
+# This file also contains the resources and its state which ansible can check against.
+echo "$(date): PCS Container Resources Have Been Created"
+pcs resource | awk -F' ' '{print $2 " " $4}' | sed 's/^\s*//;s/\s*$//' > {{ pcs_sn_container_resources_finished }}

@@ -26,6 +26,7 @@ start_interval: "0s"
 start_timeout: "20s"
 stop_interval: "0s"
 stop_timeout: "60s"
+pcs_sn_container_resources_finished: "/opt/omnia/pcs/pcs_sn_container_resources_finished"
 
 ####################################
 # MySQL Container Configuration
@@ -71,9 +72,12 @@ idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
 oim_idrac_telemetry_receiver_dir_path: "{{ oim_telemetry_dir_path }}/idrac_telemetry/idrac_telemetry_receiver"
 oim_idrac_telemetry_reference_path: "{{ oim_telemetry_dir_path }}/idrac_telemetry/idrac_telemetry_receiver/iDRAC-Telemetry-Reference-Tools"
 idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
+idrac_telemetry_receiver_log_dir: "{{ telemetry_log_dir }}/idrac_telemetry_receiver"
 
 idrac_telemetry_receiver_run_opts: >-
   --network=host
+  --log-driver=json-file
+  --log-opt path={{ idrac_telemetry_receiver_log_dir }}/idrac_telemetry_receiver.log
   --secret {{ mysql_user }},type=env,target=MYSQL_USER
   --secret {{ mysql_user_password }},type=env,target=MYSQL_PASSWORD
   --volume {{ oim_idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools
@@ -112,6 +116,7 @@ prometheus_run_opts: >-
 ####################################
 # Prometheus Pump Container
 ####################################
+prometheus_log_dir: "{{ telemetry_log_dir }}/prometheus"
 prometheus_pump_entry_script: "/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh"
 prometheus_pump_container_name: "prometheus_pump"
 oim_prometheus_pump_dir: "{{ oim_telemetry_dir_path }}/prometheus_pump"
@@ -122,6 +127,8 @@ prometheus_pump_receiver_env:
 prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_run_opts: >-
   --network=host
+  --log-driver=json-file
+  --log-opt path={{ prometheus_log_dir }}/prometheus.log
   --env MESSAGEBUS_HOST="locahost"
   --env MESSAGEBUS_PORT="61613"
   --env PROMETHEUSDB_SERVER="prometheus"
