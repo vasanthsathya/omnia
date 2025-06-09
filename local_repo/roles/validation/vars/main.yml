@@ -212,9 +212,6 @@ subgroup_warning_msg: "bcm_roce_libraries attribute is not mentioned in the bcm_
 bcm_roce_libraries_warning_msg: "bcm_roce_libraries object not found in bcm_roce.json,
  so bcm_roce_libraries will not be installed during post provisioning."
 
-# Usage: validate_domain_name.yml
-server_domain_name_blank_msg: "Failed. domain_name is not set in hostname. It should have hostname.domain_name format"
-
 # Usage: validate_site_config.yml
 site_config_file: "{{ project_input_path }}/site_config.yml"
 invalid_proxy_failure_msg: "Failed. Both http_proxy and https_proxy should be set for proxy variable provided in site_config.yml"
