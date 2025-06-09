@@ -39,6 +39,14 @@
     - item.nfs_server is defined
     - item.nfs_server
 
+# TODO: Preventing NFS setup on OIM since conflict with provision NFS Server
+- name: Fail NFS server setup on the Omnia Infrastructure Manager - {{ admin_nic_ip }}
+  ansible.builtin.fail:
+    msg: "{{ oim_nfs_server_fail_msg }}"
+  when:
+    - nfs_server_support
+    - item.server_ip in ["localhost", "127.0.0.1", admin_nic_ip]
+
 - name: Initialize variables
   ansible.builtin.set_fact:
     nfs_client_declaration: false

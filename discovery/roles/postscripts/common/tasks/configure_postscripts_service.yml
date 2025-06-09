@@ -13,10 +13,6 @@
 # limitations under the License.
 ---
 
-- name: Remove NTP postscript from service_node group
-  ansible.builtin.command: "{{ xcat_path }}/chdef service_node -m postscripts=setupntp"
-  changed_when: true
-
 - name: Copy genesis package
   ansible.builtin.copy:
     src: "{{ item.src }}"
