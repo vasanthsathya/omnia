@@ -76,6 +76,12 @@ oim_ha_node_not_found_msg: |
 nfs_internal_warning_msg: |
   "WARNING: It is recommended to use External NFS for hierarchical cluster.
   If you must use Internal NFS, ensure OIM has enough storage space and sufficient hardware resources."
+service_node_no_parent_msg: |
+  "Failed. The service_node role is defined in roles_config.yml, but none of the groups have a parent field specified.
+  This execution is for compute layer provisioning, and no groups have a valid parent field defined.
+  If this is unintentional, stop the execution, define the parent field in the compute layer groups within roles_config.yml
+  for hierarchical provisioning, and re-run the playbook.
+  If all nodes are to be provisioned from oim then comment out the service_node role in roles_config.yml and re-run the playbook."
 ha_nfs_error_msg: |
   ERROR: Internal NFS is not supported with HA OIM or Service HA.
   Please configure External NFS for HA capabilities.
