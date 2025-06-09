@@ -45,4 +45,4 @@
   ansible.builtin.copy:
     content: "{{ metadata | to_nice_yaml }}"
     dest: "{{ k8s_local_repo_metadata_file_path }}"
-    mode: '0644'
+    mode: "{{ file_mode }}"

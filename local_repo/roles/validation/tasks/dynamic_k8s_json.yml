@@ -25,16 +25,12 @@
       ansible.builtin.copy:
         src: "{{ base_k8s_json_file }}"
         dest: "{{ base_k8s_json_bkp_file }}"
-        owner: root
-        group: root
         mode: "{{ dnf_max_mode }}"
 
     - name: Copy the generated json to input folder
       ansible.builtin.copy:
         src: "{{ dynamic_k8s_json_file }}"
         dest: "{{ base_k8s_json_file }}"
-        owner: root
-        group: root
         mode: "{{ dnf_max_mode }}"
         force: true
 
@@ -66,15 +62,11 @@
       ansible.builtin.copy:
         src: "{{ base_k8s_json_file }}"
         dest: "{{ base_k8s_json_bkp_file }}"
-        owner: root
-        group: root
         mode: "{{ dnf_max_mode }}"
 
     - name: Copy the generated json to input folder
       ansible.builtin.copy:
         src: "{{ dynamic_k8s_json_file }}"
         dest: "{{ base_k8s_json_file }}"
-        owner: root
-        group: root
         mode: "{{ dnf_max_mode }}"
         force: true
