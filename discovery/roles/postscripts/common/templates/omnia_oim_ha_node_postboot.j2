@@ -67,8 +67,8 @@ echo -e "INFO: Copying secrets from NFS." >> "$LOGFILE"
 SECRET_PATH = /var/lib/containers/storage/secrets
 mkdir -p $SECRET_PATH/filedriver
 chmod 700 $SECRET_PATH/filedriver
-cp -f {{ oim_shared_path }}/omnia/pcs/secrets/secrets.json $SECRET_PATH/secrets.json
-cp -f {{ oim_shared_path }}/omnia/pcs/secrets/secretsdata.json $SECRET_PATH/filedriver/secretsdata.json
+cp -f {{ oim_shared_path }}/omnia/pcs/.secrets/secrets.json $SECRET_PATH/secrets.json
+cp -f {{ oim_shared_path }}/omnia/pcs/.secrets/secretsdata.json $SECRET_PATH/filedriver/secretsdata.json
 {% endif %}
 
 {% if idrac_telemetry_support %}
