@@ -15,6 +15,17 @@
 
 # Usage: update_software_csv.yml
 software_csv_path: "/opt/omnia/log/local_repo/software.csv"
+usage_message: |
+  "WARNING:
+  If you have modified any <software_name>.json file (e.g., `additional_software.json`),
+  please run this playbook using:
+    ansible-playbook local_repo.yml -e '{"softwares": ["<software_name>"]}'
+
+  Example:
+    ansible-playbook local_repo.yml -e '{"softwares": ["additional_software"]}'
+
+  If you have NOT modified any software JSON files, you can run:
+    ansible-playbook local_repo.yml"
 
 # Usage: dynamic_k8s_json.yml
 dynamic_k8s_json_file: "{{ dynamic_k8s_json_folder }}/v{{ k8s_version }}/k8s_v{{ k8s_version }}.json"

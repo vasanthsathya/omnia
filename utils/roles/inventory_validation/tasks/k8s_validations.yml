@@ -100,8 +100,3 @@
       when:
         - user_inventory_path is defined
         - (user_inventory_path | length > 0)
-
-    - name: Append IP to inventory entries
-      append_ip_to_inventory:
-        src: "{{ k8s_nfs_share }}/inv_k8s"
-        dest: "{{ k8s_nfs_share }}/inv_k8s"

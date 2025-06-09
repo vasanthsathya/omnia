@@ -14,12 +14,12 @@
 ---
 
 - name: Skip if softwares variable is not provided
-  debug:
+  ansible.builtin.debug:
     msg: "No softwares variable provided. Skipping."
   when: softwares is not defined
 
 - name: Fail if any software_name is invalid
-  fail:
+  ansible.builtin.fail:
     msg: "Invalid software_name(s) found: {{ softwares | difference(software_names) }}. Allowed values: {{ software_names }}"
   when:
     - softwares is defined
