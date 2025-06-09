@@ -15,8 +15,17 @@
 
 # Include and initialize variables
 - name: Initiate telemetry process if idrac_support is enabled
-  when: idrac_telemetry_support is true
+  when: hostvars['localhost']['idrac_telemetry_support'] is true
   block:
+    - name: Set server host
+      ansible.builtin.set_fact:
+        service_node_hostname: >-
+          {{
+            hostvars[inventory_hostname]['service_tag']
+            if inventory_hostname != 'localhost'
+            else 'oim'
+          }}
+
     - name: Include telemetry common vars
       ansible.builtin.include_vars: "{{ playbook_dir }}/roles/telemetry_validation/vars/main.yml"
       no_log: true
@@ -29,7 +38,6 @@
       ansible.builtin.set_fact:
         idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
         idrac_telemetry_scripting_stable_commit: "1f4bb26"
-        idrac_telemetry_scripting_folder: iDRAC-Telemetry-Scripting
         min_firmware_version_reqd: 4
         datacenter_license: false
         firmware_version: false
@@ -51,8 +59,8 @@
               community.mysql.mysql_query:
                 login_host: "{{ mysqldb_host }}"
                 login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
+                login_user: "{{ hostvars['localhost']['mysqldb_user'] }}"
+                login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
                 query: "SHOW TABLES FROM {{ mysqldb_name }}"
               register: services_table_exists
               until: services_table_exists is not failed and services_table_exists.query_result[0] | length != 0
@@ -64,8 +72,8 @@
               community.mysql.mysql_query:
                 login_host: "{{ mysqldb_host }}"
                 login_port: "{{ mysqldb_container_port }}"
-                login_user: "{{ mysqldb_user }}"
-                login_password: "{{ mysqldb_password }}"
+                login_user: "{{ hostvars['localhost']['mysqldb_user'] }}"
+                login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
                 query: "SELECT ip from {{ mysqldb_name + '.services' }}"
               register: db_idrac_ip
               until: db_idrac_ip is not failed
@@ -79,7 +87,7 @@
 
             - name: Generate filtered iDRAC IP list
               ansible.builtin.set_fact:
-                filtered_bmc_ips: "{{ bmc_ips | difference(db_idrac_ips) }}"
+                filtered_bmc_ips: "{{ hostvars['localhost']['bmc_ips'][service_node_hostname] | difference(db_idrac_ips) }}"
       rescue:
         - name: Show failure msg
           ansible.builtin.fail:
@@ -102,16 +110,17 @@
         - name: Git clone telemetry initialization repo
           ansible.builtin.git:
             repo: "{{ idrac_telemetry_scripting_repo }}"
-            dest: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+            dest: "{{ telemetry_dir_path }}{{ idrac_telemetry_scripting_folder }}"
             version: "{{ idrac_telemetry_scripting_stable_commit }}"
           register: telemetry_collection
+          when: service_node_hostname == 'oim'
 
         - name: Enable telemetry collection on iDRACs
           ansible.builtin.command: >-
-            "{{ python_version }}" ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
-            -u "{{ bmc_username }}" -p "{{ bmc_password }}" -s Enabled
+            python3 ./ConfigurationScripts/EnableOrDisableAllTelemetryReports.py -ip "{{ item }}"
+            -u "{{ hostvars['localhost']['bmc_username'] }}" -p "{{ hostvars['localhost']['bmc_password'] }}" -s Enabled
           args:
-            chdir: "/opt/omnia/telemetry/{{ idrac_telemetry_scripting_folder }}"
+            chdir: "{{ telemetry_dir_path }}{{ idrac_telemetry_scripting_folder }}"
           with_items: "{{ telemetry_idrac }}"
           changed_when: false
           no_log: true
@@ -128,8 +137,8 @@
           community.mysql.mysql_query:
             login_host: "{{ mysqldb_host }}"
             login_port: "{{ mysqldb_container_port }}"
-            login_user: "{{ mysqldb_user }}"
-            login_password: "{{ mysqldb_password }}"
+            login_user: "{{ hostvars['localhost']['mysqldb_user'] }}"
+            login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
             login_db: "{{ mysqldb_name }}"
             query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
                   VALUES (%s, %s, %s ,'{"password":"{{ bmc_password | quote }}","username":"{{ bmc_username | quote }}"}')
@@ -147,18 +156,6 @@
         - name: Show failure msg
           ansible.builtin.fail:
             msg: "{{ mysqldb_insert_fail_msg }}"
-
-# Initiate iDRAC collection
-    - name: Initiate telemetry collection
-      when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
-      block:
-        - name: Initiate telemetry-collector
-          containers.podman.podman_container_exec:
-            name: "{{ idrac_telemetry_container }}"
-            command: "nohup go run cmd/redfishread/redfishread.go &"
-            detach: true
-          delegate_to: oim
-          connection: ssh
 
     - name: Create and update telemetry report from template
       block:
