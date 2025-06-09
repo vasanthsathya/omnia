@@ -154,7 +154,7 @@ def main():
 
 
             if not os.path.exists(passive_service_tag_telemetry_dir):
-                shutil.copytree(telemetry_dir, passive_service_tag_telemetry_dir)
+                shutil.copytree(telemetry_dir, passive_service_tag_telemetry_dir, symlinks=True)
 
             if not os.path.exists(passive_service_tag_log_dir):
                 shutil.copytree(log_dir, passive_service_tag_log_dir, symlinks=True)
