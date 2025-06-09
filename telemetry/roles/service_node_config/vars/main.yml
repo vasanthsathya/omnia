@@ -46,19 +46,16 @@ mysql_log_dir: "{{ telemetry_log_dir }}/mysqldb"
 mysqldb_podman_volumes:
   - { name: "mysqldb_data", path: "{{ mysql_data_dir }}" }
   - { name: "mysqldb_log", path: "{{ mysql_log_dir }}" }
-mysql_container_name: "mysqldb"
 
 # activemq
 activemq_log_dir: "{{ telemetry_log_dir }}/activemq"
 activemq_podman_volumes:
   - { name: "activemq_log", path: "{{ activemq_log_dir }}" }
-activemq_container_name: "activemq"
 
 # idrac_telemetry_receiver
 idrac_telemetry_receiver_log_dir: "{{ telemetry_log_dir }}/idrac_telemetry_receiver"
 idrac_telemetry_receiver_podman_volumes:
   - { name: "idrac_telemetry_receiver_log", path: "{{ idrac_telemetry_receiver_log_dir }}" }
-idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
 
 # prometheus
 prometheus_log_dir: "{{ telemetry_log_dir }}/prometheus"
@@ -66,7 +63,6 @@ prometheus_data_dir: "{{ telemetry_data_dir }}/prometheus/prometheus_data"
 prometheus_podman_volumes:
   - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
   - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
-prometheus_container_name: "prometheus"
 
 # Usage: pull_podman_images.yml
 omnia_images_tar: "{{ omnia_nfs_share }}/images/omnia_images.tar"
