@@ -198,7 +198,8 @@ def get_data_from_db(db="omniadb", table_name="cluster.nodeinfo", filter_dict=No
     """
     conn = get_db_connection(db)
     cursor = conn.cursor(cursor_factory=DictCursor)
-    filter_dict = {}
+    if filter_dict is None:
+        filter_dict = {}
     filter_query, params = create_filter_query(filter_dict)
 
     query = f"SELECT * FROM {table_name} WHERE true{filter_query}"
