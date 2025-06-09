@@ -66,59 +66,6 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
-    softwares = data["softwares"]
-    need_additional_software_info = ["bcm_roce", "amdgpu", "vllm", "pytorch", "tensorflow", "intelgaudi"]
-    filtered_softwares = [item for item in softwares if item.get("name") in need_additional_software_info]
-
-    for software_name in filtered_softwares:
-        name = software_name["name"]
-        if not data.get(name):
-            errors.append(
-                create_error_msg(
-                    f"{name}", None,
-                    en_us_validation_msg.software_mandatory_fail_msg(name)))
-
-    return errors
-
-# Below is a validation function for each file in the input folder
-def validate_local_repo_config(
-        input_file_path, data, logger,
-        module, omnia_base_dir,
-        module_utils_base, project_name):
-    """
-    Validates local repository configuration based on the cluster OS type.
-
-    Checks whether the appropriate OS URL (`ubuntu_os_url` or `rhel_os_url`) is provided
-    in the input data based on the detected cluster OS type from the software config file.
-
-    Args:
-        input_file_path (str): Path to the main input file.
-        data (dict): Input data containing OS URLs.
-        logger: Logger object for logging (not used here).
-        module: Ansible module object (not used here).
-        omnia_base_dir (str): Base directory for Omnia (not used here).
-        module_utils_base (str): Base directory for module utilities (not used here).
-        project_name (str): Project name (not used here).
-
-    Returns:
-        list: A list of error messages if validation fails.
-    """
-    errors = []
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    cluster_os_type = software_config_json["cluster_os_type"]
-
-    ubuntu_os_url = data["ubuntu_os_url"]
-    if cluster_os_type == "ubuntu":
-        if validation_utils.is_string_empty(ubuntu_os_url):
-            errors.append(create_error_msg("ubuntu_os_url", ubuntu_os_url, en_us_validation_msg.ubuntu_os_url_msg))
-
-    rhel_os_url = data["rhel_os_url"]
-    if cluster_os_type == "rhel":
-        if validation_utils.is_string_empty(rhel_os_url):
-            errors.append(create_error_msg("rhel_os_url", rhel_os_url, en_us_validation_msg.rhel_os_url_msg))
-        errors.append(create_error_msg("iso_file_path", iso_file_path, not_valid_iso_msg))
-
     #software groups and subgroups l2 validation
 
     #create the subgroups and softwares dictionary with version details
@@ -130,6 +77,7 @@ def validate_local_repo_config(
     software_list = get_software_names(input_file_path)
     validation_results = []
     failures=[]
+    fail_data=[]
     for software in software_list:
         json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
         # Check if json_path is None or if the JSON syntax is invalid
@@ -191,20 +139,52 @@ def validate_network_config(input_file_path, data, logger, module, omnia_base_di
 
 def validate_storage_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
-    nfs_client_params = data["nfs_client_params"][0]
-    client_mount_options = nfs_client_params["client_mount_options"]
+    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+    software_config_json = json.load(open(software_config_file_path, "r"))
+    softwares = software_config_json["softwares"]
+    for software in softwares:
+        if software.get('name') == 'beegfs' and 'version' not in software:
+            errors.append(create_error_msg("beegfs", "", en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
 
     allowed_options = {"nosuid", "rw", "sync", "hard", "intr"}
-    client_mount_options_set = set(client_mount_options.split(","))
+    slurm_share_val = False
+    k8s_share_val = False
+    multiple_slurm_share_val = False
+    multiple_k8s_share_val = False
+    for nfs_client_params in data["nfs_client_params"]:
+        client_mount_options = nfs_client_params["client_mount_options"]
+        client_mount_options_set = set(client_mount_options.split(","))
+        if not (client_mount_options_set.issubset(allowed_options)):
+            errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.CLIENT_MOUNT_OPTIONS_FAIL_MSG))
+        if nfs_client_params["slurm_share"] == "true":
+            if not slurm_share_val:
+                slurm_share_val = True
+            else:
+                multiple_slurm_share_val = True
 
-    if not (client_mount_options_set.issubset(allowed_options)):
-        errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.client_mount_options_fail_msg))
+        if nfs_client_params["k8s_share"] == "true":
+            if not k8s_share_val:
+                k8s_share_val = True
+            else:
+                multiple_k8s_share_val = True
+
+    if (contains_software(softwares, "slurm") and not slurm_share_val) or multiple_slurm_share_val:
+        errors.append(create_error_msg("slurm_share", slurm_share_val, en_us_validation_msg.SLURM_SHARE_FAIL_MSG))
+
+    if (contains_software(softwares, "k8s") and not k8s_share_val) or multiple_k8s_share_val:
+        errors.append(create_error_msg("k8s_share", k8s_share_val, en_us_validation_msg.K8S_SHARE_FAIL_MSG))
+
+    if contains_software(softwares, "ucx") or contains_software(softwares, "openmpi"):
+        if not k8s_share_val or not slurm_share_val:
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.BENCHMARK_TOOLS_FAIL_MSG))
+        elif multiple_slurm_share_val or multiple_k8s_share_val:
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.MULT_SHARE_FAIL_MSG))
 
     beegfs_mounts = data["beegfs_mounts"]
     if beegfs_mounts != "/mnt/beegfs":
         beegfs_unmount_client = data["beegfs_unmount_client"]
         if not beegfs_unmount_client:
-            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.beegfs_unmount_client_fail_msg))
+            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.BEEGFS_UMOUNT_CLIENT_FAIL_MSG))
 
     return errors
 
@@ -213,9 +193,9 @@ def validate_usernames(input_file_path, data, logger, module, omnia_base_dir, mo
     errors = []
 
     k8s_access_config_file_path = create_file_path(input_file_path, file_names["k8s_access_config"])
-    k8s_access_config_json = validation_utils.load_yaml_as_json(k8s_access_config_file_path, omnia_base_dir, module_utils_base, project_name, logger, module)
+    k8s_access_config_json = validation_utils.load_yaml_as_json(k8s_access_config_file_path, omnia_base_dir, project_name, logger, module)
     passwordless_ssh_config_file_path = create_file_path(input_file_path, file_names["passwordless_ssh_config"])
-    passwordless_ssh_config_json = validation_utils.load_yaml_as_json(passwordless_ssh_config_file_path, omnia_base_dir, module_utils_base, project_name, logger, module)
+    passwordless_ssh_config_json = validation_utils.load_yaml_as_json(passwordless_ssh_config_file_path, omnia_base_dir, project_name, logger, module)
 
     k8s_user_name = k8s_access_config_json["user_name"]
     pw_ssh_user_name = passwordless_ssh_config_json["user_name"]
@@ -452,7 +432,6 @@ def validate_telemetry_config(input_file_path, data, logger, module, omnia_base_
     does_overlap, overlap_ips = validation_utils.check_overlap(ip_ranges)
     if does_overlap:
         errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.telemetry_ip_overlap_fail_msg))
-
     return errors
 
 def validate_additional_software(
@@ -528,5 +507,4 @@ def validate_additional_software(
                     "software_config.json",
                     None,
                     en_us_validation_msg.MISSING_IN_ADDITIONAL_SOFTWARE_MSG.format(sub_group)))
-
     return errors

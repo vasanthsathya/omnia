@@ -24,6 +24,11 @@
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['provision']) | unique }}"
         cacheable: true
 
+- name: Invoke validate_config.yml to perform L1 and L2 validations
+  when: not config_file_status | default(false) | bool
+  ansible.builtin.import_playbook: ../input_validation/validate_config.yml
+  tags: management_layer
+
 - name: Invoke get_config_credentials.yml
   when: not config_file_status | default(false) | bool
   ansible.builtin.import_playbook: ../utils/credential_utility/get_config_credentials.yml
@@ -109,7 +114,7 @@
       when: hostvars['omnia_provision']['hierarchical_provision_status'] | default(false)
 
 - name: Set facts for kernel parameters update
-  hosts: all:!localhost:!omnia_provision:!service_nodes
+  hosts: all:!localhost:!omnia_provision:!service_nodes:!oim
   connection: local
   gather_facts: true
   vars_files:
