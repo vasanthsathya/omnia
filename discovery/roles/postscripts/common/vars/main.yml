@@ -28,7 +28,7 @@ telemetry_vars:
   - "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/loki/vars/main.yml"
 
 # Usage: check_nodes_all.yml
-all_nodes_warning_msg: 
+all_nodes_warning_msg: |
   "[WARNING] Not found any nodes using the given discovery mechanism.
   Verify all the input parameters are valid and re-run discovery_provision.yml"
 

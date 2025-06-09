@@ -18,7 +18,7 @@
     - name: Set service_node_config role role_path
       ansible.builtin.set_fact:
         service_node_config_role_path: "{{ role_path }}/../service_node_config/tasks"
-    
+
     - name: Include telemetry role vars
       ansible.builtin.include_vars: "{{ item }}"
       with_items: "{{ telemetry_vars }}"

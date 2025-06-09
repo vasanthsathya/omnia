@@ -13,7 +13,7 @@
 #  limitations under the License.
 ---
 
-- name: Check if {{ podman_container_name }} container is present
+- name: Check if container is present - {{ podman_container_name }}
   containers.podman.podman_container_info:
     name: "{{ podman_container_name }}"
   register: podman_container_info
