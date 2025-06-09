@@ -79,7 +79,7 @@ nfs_internal_warning_msg: |
 service_node_no_parent_msg: |
   "Failed. The service_node role is defined in roles_config.yml, but none of compute layer groups have a parent field specified.
   This execution is for compute layer provisioning, and no groups have a valid parent field defined.
-  If this is unintentional, stop the execution, define the parent field in the compute layer groups within roles_config.yml
+  If this is unintentional, define the parent field in the compute layer groups within roles_config.yml
   for hierarchical provisioning, and re-run the playbook.
   If all nodes are to be provisioned from oim then comment out the service_node role in roles_config.yml and re-run the playbook."
 ha_nfs_error_msg: |
