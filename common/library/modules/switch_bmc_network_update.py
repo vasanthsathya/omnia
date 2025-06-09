@@ -11,12 +11,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
- 
+
+# pylint: disable=import-error,no-name-in-module,line-too-long
+
 #!/usr/bin/python3
+"""Ansible module to update BMC network entries in xCAT's networks table."""
 
-
-from ansible.module_utils.basic import AnsibleModule
 import subprocess
+from ansible.module_utils.basic import AnsibleModule
 
 def main():
     module_args = dict(
@@ -75,7 +77,7 @@ def main():
         msg += "\n Failed to create network table entry for :\n" + "\n".join([f"{g}: {err}" for g, err in failed_networks])
     if not msg:
         msg = "No new networks created."
- 
+
     module.exit_json(
         changed=True,
         msg = msg

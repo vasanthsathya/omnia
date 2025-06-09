@@ -82,3 +82,5 @@ kubespray_container_name: "omnia_kubespray_{{ hostvars['localhost']['kubespray_v
 kubespray_cleanup_directory:
   - "{{ omnia_nfs_share }}/kubespray"
   - "{{ omnia_nfs_share }}/log/kubespray"
+
+ntp_firewall_service: ntp

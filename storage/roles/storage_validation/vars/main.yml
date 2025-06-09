@@ -46,6 +46,8 @@ oim_nfs_server_warning_msg: |
   "In storage_config.yml, under the nfs_client_params variable, server_ip is set to localhost/{{ admin_nic_ip }} and nfs_server is set to true.
   The NFS server will be set up on the Omnia Infrastructure Manager using the admin NIC IP address {{ admin_nic_ip }}.
   The playbook logs will contain the NFS server setup details for the Omnia Infrastructure Manager with IP {{ admin_nic_ip }}."
+oim_nfs_server_fail_msg: "Hosting NFS on the Omnia Infrastructure Manager is not supported.
+ In storage_config.yml, under the nfs_client_params variable, server_ip is set to localhost/{{ admin_nic_ip }} and nfs_server is set to true."
 oim_port: "22"
 
 # Usage: fetch_beegfs_inputs.yml, fetch_nfs_client_params.yml
