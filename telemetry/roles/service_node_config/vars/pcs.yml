@@ -19,6 +19,7 @@ telemetry_data_dir: "{{ omnia_nfs_share }}/service_nodes/{{ service_tag }}/telem
 telemetry_log_dir: "{{ omnia_nfs_share }}/service_nodes/{{ service_tag }}/log/telemetry"
 oim_telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
 oim_idrac_telemetry_dir: "{{ oim_telemetry_dir_path }}/idrac_telemetry"
+pcs_group: "omnia"
 telemetry_pcs_group: "omnia_telemetry"
 monitor_interval: "30s"
 monitor_timeout: "60s"
