@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import json
+import ansible.module_utils.input_validation.common_utils.data_fetch as get
+from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
@@ -66,7 +68,21 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
-    #software groups and subgroups l2 validation
+
+    # Check for the additional software field
+    if "additional_software" in data:
+        # Call validate_additional_software()
+        extensions = config.extensions
+        json_files = get.files_recursively(omnia_base_dir + "/" + project_name, extensions['json'])
+        json_files_dic = {}
+        for file_path in json_files:
+            json_files_dic.update({get.file_name_from_path(file_path): file_path})
+        additional_software_data = json.load(open(json_files_dic["additional_software.json"], "r"))
+
+        additional_software_errors = validate_additional_software(
+            input_file_path, additional_software_data,
+            logger, module, omnia_base_dir, module_utils_base, project_name)
+        errors.extend(additional_software_errors)
 
     #create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
@@ -497,7 +513,7 @@ def validate_additional_software(
     software_config_json = json.load(open(software_config_file_path, "r"))
 
     # check if additional_software is present in software_config.json
-    if "addtional_software" not in software_config_json:
+    if "additional_software" not in software_config_json:
         logger.warn("The additional_software field is not present in software_config.json")
         software_config_json["additional_software"] = []
 

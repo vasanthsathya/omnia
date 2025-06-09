@@ -35,20 +35,27 @@
 - name: Invoke validate_config.yml to perform L1 and L2 validations with additional_software tag
   ansible.builtin.import_playbook: ../../input_validation/validate_config.yml
 
-- name: Warn if additional_software.yml is not defined
+- name: Check for additional_software in software_config.json
   hosts: localhost
   connection: local
   gather_facts: false
   tasks:
-    - name: Check for additional_software.yml
-      ansible.builtin.stat:
-        path: "{{ playbook_dir }}/roles/software_update/tasks/additional_software.yml"
-      register: additional_software_file
+    - name: Parse software_config.json
+      ansible.builtin.set_fact:
+        software_config: "{{ include_software_config.content | b64decode | from_json }}"
+      when: software_config_content.content is defined
+      ignore_errors: true
 
-    - name: Warn if additional_software.yml is not present
-      ansible.builtin.debug:
-        msg: "Warning: additional_software.yml is not defined."
-      when: not additional_software_file.stat.exists
+    - name: Check if additional_software is present in software_config.json
+      ansible.builtin.set_fact:
+        additional_software_present: "{{ 'additional_software' in software_config }}"
+      when: software_config is defined
+      ignore_errors: true
+
+    - name: Warn if additional_software is not present in software_config.json
+      ansible.builtin.pause:
+        prompt: "Warning: 'additional_software' section is not defined in software_config.json. Press ENTER to continue"
+      when: additional_software_present is not defined or not additional_software_present
 
 - name: Get the additional software organized by group
   hosts: localhost
