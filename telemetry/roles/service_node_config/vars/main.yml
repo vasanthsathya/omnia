@@ -67,7 +67,7 @@ file_permissions: '0755'
 # Usage: pcs_container_deployment.yml
 wait_time_pcs_start: 120
 pcs_telemetry_resource_script_path: "/opt/omnia/pcs/pcs_telemetry.sh"
-pcs_sn_container_resources_shared_finished: "{{ omnia_nfs_share }}/service_nodes/{{ service_tag }}/pcs/config/pcs_sn_container_resources_finished"
+pcs_sn_container_resources_shared_finished: "/opt/omnia/service_nodes/{{ service_tag }}/pcs/config/pcs_sn_container_resources_finished"
 pcs_telemetry_failed_msg: "pcs_telemetry.sh execution failed."
 pcs_container_name: "omnia_pcs"
 xcat_resource_name: "XCATD-CHECK"
