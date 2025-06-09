@@ -45,8 +45,8 @@
   ansible.builtin.set_fact:
     container_images: >-
       {{ container_images + [
-          'docker.io/grafana/grafana:' + grafana_image_tag
-          'docker.io/grafana/loki' + loki_image_tag
+          'docker.io/grafana/grafana:' + grafana_image_tag,
+          'docker.io/grafana/loki' + loki_image_tag,
           'docker.io/grafana/promtail' + promtail_image_tag
         ] }}
 
