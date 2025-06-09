@@ -5,4 +5,5 @@ Red Hat Enterprise Linux (RHEL)
 OS Version OIM           Cluster  Nodes
 ========== ============= ===============
 9.4        Yes           Yes
+9.6        Yes           Yes
 ========== ============= ===============
