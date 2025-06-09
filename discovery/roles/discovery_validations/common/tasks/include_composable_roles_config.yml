@@ -58,6 +58,7 @@
   ansible.builtin.fail:
     msg: "{{ service_node_no_parent_msg | replace('\n', ' ') }}"
   when:
+    - "'management_layer' not in ansible_run_tags"
     - "'service_node' in roles_data"
     - groups_roles_info | dict2items
       | selectattr('value.parent', 'truthy')
