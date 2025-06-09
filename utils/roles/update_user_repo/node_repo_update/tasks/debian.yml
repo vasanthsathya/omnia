@@ -14,8 +14,3 @@
 ---
 
 # This need to be updated when we support for ubuntu
-# - name: Update software repo for nodes on {{ cluster_os }}
-#   ansible.builtin.include_tasks: "update_user_repo.yml"
-
-# - name: Update software repo for nodes on {{ cluster_os }}
-#   ansible.builtin.include_tasks: "update_software_repo.yml"
