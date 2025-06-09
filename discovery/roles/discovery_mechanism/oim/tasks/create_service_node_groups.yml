@@ -22,5 +22,7 @@
     name: "{{ booted_service_nodes_data[item]['admin_ip'] }}"
     groups: "service_nodes"
     service_tag: "{{ booted_service_nodes_data[item]['service_tag'] }}"
-    # child_groups: "{{ booted_service_nodes_data[item]['child_groups'] | list }}"
+    active_service_tag: >-
+      {{ booted_service_nodes_data[item]['active_service_tag']
+         | default(booted_service_nodes_data[item]['service_tag']) }}
   loop: "{{ booted_service_nodes_data.keys() }}"
