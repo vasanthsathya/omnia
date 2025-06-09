@@ -119,6 +119,11 @@
       ansible.builtin.include_role: 
         name: idrac_telemetry
 
+- name: Initiate telemetry collection on OIM
+  hosts: oim
+  connection: ssh
+  gather_facts: false
+  tasks:
     - name: Initiate telemetry collection
       ansible.builtin.include_role:
         name: idrac_telemetry
@@ -126,7 +131,6 @@
       when: 
         - hostvars['localhost']['telemetry_idrac'] is defined
         - (hostvars['localhost']['telemetry_idrac'] | length > 0)
-      delegate_to: oim
 
 - name: Enable idrac telemetry in SN
   hosts: sn_active
