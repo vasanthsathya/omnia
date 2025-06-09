@@ -13,20 +13,25 @@
 # limitations under the License.
 ---
 
+- name: Convert comma-separated softwares to list
+  ansible.builtin.set_fact:
+    softwares_list: "{{ softwares.split(',') }}"
+  when: softwares is defined and softwares is string
+
 - name: Skip if softwares variable is not provided
   ansible.builtin.debug:
-    msg: "No softwares variable provided. Skipping."
+    msg: "{{ softwares_var_not_provided }}"
   when: softwares is not defined
 
 - name: Fail if any software_name is invalid
   ansible.builtin.fail:
-    msg: "Invalid software_name(s) found: {{ softwares | difference(software_names) }}. Allowed values: {{ software_names }}"
+    msg: "{{ softwares_invalid_msg }}"
   when:
     - softwares is defined
-    - (softwares | difference(software_names)) | length > 0
+    - (softwares_list | difference(software_names)) | length > 0
 
 - name: Remove matching entries from CSV
   manage_software_csv:
     csv_path: "{{ software_csv_path }}"
-    softwares: "{{ softwares }}"
+    softwares: "{{ softwares_list }}"
   when: softwares is defined
