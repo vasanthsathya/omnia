@@ -15,7 +15,7 @@ scrape_configs:
           - localhost
         labels:
           job: varlogs
-          __path__: /var/log/*log
+          __path__: /opt/omnia/log/*log
 
   - job_name: Omnia logs
     static_configs:
@@ -23,7 +23,7 @@ scrape_configs:
           - localhost
         labels:
           job: Omnia logs
-          __path__: /var/log/core/playbooks/omnia.log
+          __path__: /opt/omnia/log/core/playbooks/omnia.log
 
   - job_name: accelerator logs
     static_configs:
@@ -31,7 +31,7 @@ scrape_configs:
           - localhost
         labels:
           job: accelerator logs
-          __path__: /var/log/core/playbooks/accelerator.log
+          __path__: /opt/omnia/log/core/playbooks/accelerator.log
 
   - job_name: discovery logs
     static_configs:
@@ -39,7 +39,7 @@ scrape_configs:
           - localhost
         labels:
           job: discovery logs
-          __path__: /var/log/core/playbooks/discovery.log
+          __path__: /opt/omnia/log/core/playbooks/discovery.log
 
   - job_name: local_repo log
     static_configs:
@@ -47,7 +47,7 @@ scrape_configs:
           - localhost
         labels:
           job: local_repo log
-          __path__: /var/log/core/playbooks/local_repo.log
+          __path__: /opt/omnia/log/core/playbooks/local_repo.log
 
   - job_name: network logs
     static_configs:
@@ -55,7 +55,7 @@ scrape_configs:
           - localhost
         labels:
           job: network logs
-          __path__: /var/log/core/playbooks/network.log
+          __path__: /opt/omnia/log/core/playbooks/network.log
 
   - job_name: prepre_oim log
     static_configs:
@@ -63,7 +63,7 @@ scrape_configs:
           - localhost
         labels:
           job: prepre_oim log
-          __path__: /var/log/core/playbooks/prepare_oim.log
+          __path__: /opt/omnia/log/core/playbooks/prepare_oim.log
 
   - job_name: provision logs
     static_configs:
@@ -71,7 +71,7 @@ scrape_configs:
           - localhost
         labels:
           job: provision logs
-          __path__: /var/log/core/playbooks/provision.log
+          __path__: /opt/omnia/log/core/playbooks/provision.log
 
   - job_name: scheduler logs
     static_configs:
@@ -79,7 +79,7 @@ scrape_configs:
           - localhost
         labels:
           job: scheduler logs
-          __path__: /var/log/core/playbooks/scheduler.log
+          __path__: /opt/omnia/log/core/playbooks/scheduler.log
 
   - job_name: security logs
     static_configs:
@@ -87,7 +87,7 @@ scrape_configs:
           - localhost
         labels:
           job: security logs
-          __path__: /var/log/core/playbooks/security.log
+          __path__: /opt/omnia/log/core/playbooks/security.log
 
   - job_name: storage logs
     static_configs:
@@ -95,7 +95,7 @@ scrape_configs:
           - localhost
         labels:
           job: storage logs
-          __path__: /var/log/core/playbooks/storage.log
+          __path__: /opt/omnia/log/core/playbooks/storage.log
 
   - job_name: server_spec_update logs
     static_configs:
@@ -103,7 +103,7 @@ scrape_configs:
           - localhost
         labels:
           job: server_spec_update logs
-          __path__: /var/log/core/playbooks/server_spec_update.log
+          __path__: /opt/omnia/log/core/playbooks/server_spec_update.log
 
   - job_name: telemetry logs
     static_configs:
@@ -111,7 +111,7 @@ scrape_configs:
           - localhost
         labels:
           job: telemetry logs
-          __path__: /var/log/core/playbooks/telemetry.log
+          __path__: /opt/omnia/log/core/playbooks/telemetry.log
 
   - job_name: tools logs
     static_configs:
@@ -119,7 +119,7 @@ scrape_configs:
           - localhost
         labels:
           job: tools logs
-          __path__: /var/log/core/playbooks/tools.log
+          __path__: /opt/omnia/log/core/playbooks/tools.log
 
   - job_name: utils logs
     static_configs:
@@ -127,7 +127,7 @@ scrape_configs:
           - localhost
         labels:
           job: utils logs
-          __path__: /var/log/core/playbooks/utils.log
+          __path__: /opt/omnia/log/core/playbooks/utils.log
 
   - job_name: software_update logs
     static_configs:
@@ -135,7 +135,7 @@ scrape_configs:
           - localhost
         labels:
           job: software_update logs
-          __path__: /var/log/core/playbooks/software_update.log
+          __path__: /opt/omnia/log/core/playbooks/software_update.log
 
   - job_name: benchmarks log messages
     static_configs:
@@ -143,7 +143,7 @@ scrape_configs:
           - localhost
         labels:
           job: benchmarks log messages
-          __path__: /var/log/core/playbooks/benchmarks.log
+          __path__: /opt/omnia/log/core/playbooks/benchmarks.log
 
   - job_name: Cluster Provisioning Logs
     static_configs:
@@ -151,7 +151,7 @@ scrape_configs:
           - localhost
         labels:
           job: Cluster Provisioning Logs
-          __path__: /var/log/provision/xcat/*log
+          __path__: /opt/omnia/log/provision/xcat/*log
 
   - job_name: PCS container - pacemaker logs
     static_configs:
@@ -159,7 +159,7 @@ scrape_configs:
           - localhost
         labels:
           job: PCS container - pacemaker logs
-          __path__: /var/log/pcs/pacemaker/*log
+          __path__: /opt/omnia/log/pcs/pacemaker/*log
 
   - job_name: PCS container - corosync logs
     static_configs:
@@ -167,7 +167,7 @@ scrape_configs:
           - localhost
         labels:
           job: PCS container - corosync logs
-          __path__: /var/log/pcs/corosync/*log
+          __path__: /opt/omnia/log/pcs/corosync/*log
 
   - job_name: iDRAC Telemetry - activemq container logs
     static_configs:
@@ -175,7 +175,7 @@ scrape_configs:
           - localhost
         labels:
           job: iDRAC Telemetry - activemq container logs
-          __path__: /var/log/telemetry/activemq/*log
+          __path__: /opt/omnia/log/telemetry/activemq/*log
 
   - job_name: iDRAC Telemetry - mysqldb container logs
     static_configs:
@@ -183,7 +183,7 @@ scrape_configs:
           - localhost
         labels:
           job: iDRAC Telemetry - mysqldb container logs
-          __path__: /var/log/telemetry/mysqldb/*log
+          __path__: /opt/omnia/log/telemetry/mysqldb/*log
 
   - job_name: iDRAC Telemetry - idrac_telemetry_receiver container logs
     static_configs:
@@ -191,7 +191,7 @@ scrape_configs:
           - localhost
         labels:
           job: iDRAC Telemetry - idrac_telemetry_receiver container logs
-          __path__: /var/log/telemetry/idrac_telemetry_receiver/*log
+          __path__: /opt/omnia/log/telemetry/idrac_telemetry_receiver/*log
 
   - job_name: Telemetry - prometheus container logs
     static_configs:
@@ -199,7 +199,7 @@ scrape_configs:
           - localhost
         labels:
           job: Telemetry - prometheus container logs
-          __path__: /var/log/telemetry/prometheus/*log
+          __path__: /opt/omnia/log/telemetry/prometheus/*log
 
   - job_name: Telemetry - prometheus_pump container logs
     static_configs:
@@ -207,7 +207,7 @@ scrape_configs:
           - localhost
         labels:
           job: Telemetry - prometheus_pump container logs
-          __path__: /var/log/telemetry/prometheus_pump/*log
+          __path__: /opt/omnia/log/telemetry/prometheus_pump/*log
 
   - job_name: Visualization - grafana container logs
     static_configs:
@@ -215,7 +215,7 @@ scrape_configs:
           - localhost
         labels:
           job: Visualization - grafana container logs
-          __path__: /var/log/telemetry/grafana/*log
+          __path__: /opt/omnia/log/telemetry/grafana/*log
 
   - job_name: Pulp container logs
     static_configs:
@@ -223,7 +223,7 @@ scrape_configs:
           - localhost
         labels:
           job: Pulp container logs
-          __path__: /var/log/pulp/*log
+          __path__: /opt/omnia/log/pulp/*log
 
   - job_name: Local repo logs
     static_configs:
@@ -231,7 +231,7 @@ scrape_configs:
           - localhost
         labels:
           job: Local repo logs
-          __path__: /var/log/local_repo/*log
+          __path__: /opt/omnia/log/local_repo/*log
 
   - job_name: Kubespray logs
     static_configs:
@@ -239,7 +239,7 @@ scrape_configs:
           - localhost
         labels:
           job: Kubespray logs
-          __path__: /var/log/kubespray/*log
+          __path__: /opt/omnia/log/kubespray/*log
 
   - job_name: Core container logs
     static_configs:
@@ -247,4 +247,54 @@ scrape_configs:
           - localhost
         labels:
           job: Core container logs
-          __path__: /var/log/core/container/*log
+          __path__: /opt/omnia/log/core/container/*log
+
+  - job_name: Service nodes pacemaker logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes pacemaker logs
+          __path__: /opt/omnia/service_nodes/*/log/pcs/pacemaker/*log
+
+  - job_name: Service nodes corosync logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes corosync logs
+          __path__: /opt/omnia/service_nodes/*/log/pcs/corosync/*log
+
+  - job_name: Service nodes iDRAC Telemetry - activemq container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes iDRAC Telemetry - activemq container logs
+          __path__: /opt/omnia/service_nodes/*/log/telemetry/activemq/*log
+ 
+
+  - job_name: Service nodes iDRAC Telemetry - mysqldb container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes iDRAC Telemetry - mysqldb container logs
+          __path__: /opt/omnia/service_nodes/*/log/telemetry/mysqldb/*log
+ 
+  - job_name: Service nodes iDRAC Telemetry - idrac_telemetry_receiver container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes iDRAC Telemetry - idrac_telemetry_receiver container logs
+          __path__: /opt/omnia/service_nodes/*/log/telemetry/idrac_telemetry_receiver/*log
+
+  - job_name: Service nodes Telemetry - prometheus container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes Telemetry - prometheus container logs
+          __path__: /opt/omnia/service_nodes/*/log/telemetry/prometheus/*log
+
