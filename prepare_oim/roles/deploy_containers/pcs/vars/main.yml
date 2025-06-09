@@ -300,7 +300,7 @@ promtail_run_cmd: >-
 promtail_monitor_cmd: "/usr/bin/promtail -version"
 
 secret_dir_permission: "0700"
-podman_secrets_dir: "{{ pcs_container_dir }}/.secrets"
+podman_secrets_dir: "{{ oim_shared_path }}/omnia/.secrets"
 podman_secrets_file:
   - { src: "/var/lib/containers/storage/secrets/secrets.json", dest: "{{ podman_secrets_dir }}/secrets.json", mode: "0600" }
   - { src: "/var/lib/containers/storage/secrets/filedriver/secretsdata.json", dest: "{{ podman_secrets_dir }}/secretsdata.json", mode: "0600" }
