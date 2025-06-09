@@ -33,22 +33,26 @@
           ansible.builtin.include_tasks: "{{ service_node_config_role_path }}/create_podman_volume.yml"
           vars:
             podman_volume_name: "{{ mysqldb_podman_volumes }}"
+            podman_container_name: "{{ mysql_container_name }}"
 
         - name: Include tasks for podman volume - activemq
           ansible.builtin.include_tasks: "{{ service_node_config_role_path }}/create_podman_volume.yml"
           vars:
             podman_volume_name: "{{ activemq_podman_volumes }}"
+            podman_container_name: "{{ activemq_container_name }}"
 
         - name: Include tasks for podman volume - idrac_telemetry_receiver
           ansible.builtin.include_tasks: "{{ service_node_config_role_path }}/create_podman_volume.yml"
           vars:
             podman_volume_name: "{{ idrac_telemetry_receiver_podman_volumes }}"
+            podman_container_name: "{{ idrac_telemetry_receiver_container_name }}"
 
         - name: Include tasks for podman volume - prometheus
           ansible.builtin.include_tasks: "{{ service_node_config_role_path }}/create_podman_volume.yml"
           when: hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
           vars:
             podman_volume_name: "{{ prometheus_podman_volumes }}"
+            podman_container_name: "{{ prometheus_container_name }}"
 
     - name: Telemetry configuration in OIM HA node - visualization
       when: hostvars['localhost']['idrac_telemetry_support']
@@ -58,12 +62,14 @@
           when: hostvars['localhost']['visualization_support']
           vars:
             podman_volume_name: "{{ grafana_podman_volumes }}"
+            podman_container_name: "{{ grafana_container_name }}"
 
         - name: Include tasks for podman volume - loki
           ansible.builtin.include_tasks: "{{ service_node_config_role_path }}/create_podman_volume.yml"
           when: hostvars['localhost']['visualization_support']
           vars:
             podman_volume_name: "{{ loki_podman_volumes }}"
+            podman_container_name: "{{ loki_container_name }}"
 
     - name: Configure firewall ports
       ansible.builtin.include_tasks: firewall_settings.yml

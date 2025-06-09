@@ -74,21 +74,21 @@ chmod 600 $SECRET_PATH/filedriver/secretsdata.json
 {% endif %}
 
 {% if idrac_telemetry_support %}
-podman volume create --opt o=bind --opt device={{ mysql_data_dir }} mysqldb_data
-podman volume create --opt o=bind --opt device={{ mysql_log_dir }} mysqldb_log
-podman volume create --opt o=bind --opt device={{ activemq_log_dir }} activemq_log
-podman volume create --opt o=bind --opt device={{ idrac_telemetry_receiver_log_dir }} idrac_telemetry_receiver_log
+podman volume create --driver local --opt o=bind --opt device={{ mysql_data_dir }} mysqldb_data
+podman volume create --driver local --opt o=bind --opt device={{ mysql_log_dir }} mysqldb_log
+podman volume create --driver local --opt o=bind --opt device={{ activemq_log_dir }} activemq_log
+podman volume create --driver local --opt o=bind --opt device={{ idrac_telemetry_receiver_log_dir }} idrac_telemetry_receiver_log
 {% endif %}
 
 {% if idrac_telemetry_support and idrac_telemetry_collection_type == "prometheus" %}
-podman volume create --opt o=bind --opt device={{ prometheus_data_dir }} prometheus_data
-podman volume create --opt o=bind --opt device={{ prometheus_log_dir }} prometheus_log
+podman volume create --driver local --opt o=bind --opt device={{ prometheus_data_dir }} prometheus_data
+podman volume create --driver local --opt o=bind --opt device={{ prometheus_log_dir }} prometheus_log
 {% endif %}
 
 {% if visualization_support %}
-podman volume create --opt o=bind --opt device={{ grafana_data_dir }} grafana_data
-podman volume create --opt o=bind --opt device={{ grafana_log_dir }} grafana_log
-podman volume create --opt o=bind --opt device={{ loki_promtail_config_dir }} loki_promtail_config
+podman volume create --driver local --opt o=bind --opt device={{ grafana_data_dir }} grafana_data
+podman volume create --driver local --opt o=bind --opt device={{ grafana_log_dir }} grafana_log
+podman volume create --driver local --opt o=bind --opt device={{ loki_promtail_config_dir }} loki_promtail_config
 {% endif %}
 
 systemctl daemon-reload
