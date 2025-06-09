@@ -141,7 +141,7 @@
             login_password: "{{ hostvars['localhost']['mysqldb_password'] }}"
             login_db: "{{ mysqldb_name }}"
             query: INSERT IGNORE INTO {{ mysqldb_name + '.services' }} (ip, serviceType, authType, auth)
-                  VALUES (%s, %s, %s ,'{"password":"{{ bmc_password | quote }}","username":"{{ bmc_username | quote }}"}')
+                  VALUES (%s, %s, %s ,'{"password":"{{ hostvars['localhost']['bmc_password'] | quote }}","username":"{{ hostvars['localhost']['bmc_username'] | quote }}"}') # noqa: yaml[line-length]
             positional_args:
               - "{{ item }}"
               - "{{ service_type }}"
