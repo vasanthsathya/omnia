@@ -11,6 +11,12 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the containers required for iDRAC telemetry service (if ``idrac_telemetry_support`` is ``true`` in ``opt/omnia/input/project/defaut/telemetry_config.yml``): ``idrac_telemetry_receiver``, ``mysqldb``, and ``activemq``
 * Sets up the containers required for collecting iDRAC telemetry metrics using the Prometheus toolkit (If ``idrac_telemetry_service`` is set to ``true`` and ``idrac_telemetry_collection_type`` is ``prometheus``): ``prometheus`` and ``prometheus_pump`` 
 
+Prerequisite
+-------------
+
+Ensure that the system time is synchronized across all compute nodes and the OIM. 
+Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
+
 Input files for the playbook
 ------------------------------
 
@@ -20,12 +26,6 @@ The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the foll
 * ``software_config.json``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the software packages which are to be installed on the cluster.
 * ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the Pulp container present on the OIM.
 * ``telemetry_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about running the iDRAC telemetry service on the cluster.
-
-Prerequisite
--------------
-
-Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
-
 
 1. ``network_spec.yml``
 ------------------------
