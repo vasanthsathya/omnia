@@ -138,7 +138,7 @@ def main():
             if os.path.exists(passive_service_tag_dir):
                 shutil.rmtree(passive_service_tag_dir)
 
-            shutil.copytree(service_tag_dir, passive_service_tag_dir)
+            shutil.copytree(service_tag_dir, passive_service_tag_dir, symlinks=True)
             results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
 
     module.exit_json(changed=True, msg="Service node configurations rendered.", results=results)

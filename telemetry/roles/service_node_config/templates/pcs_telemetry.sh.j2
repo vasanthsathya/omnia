@@ -17,7 +17,7 @@
 echo "Telemetry resource creation script"
 
 {% if idrac_telemetry_support %}
-pcs resource group add {{ telemetry_pcs_group }}
+echo "Creating resources for mysql containers"
 # Resource for MySQL container
 pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     name={{ mysql_container_name }} \
@@ -26,9 +26,10 @@ pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     run_opts="{{ mysql_run_opts }}"  \
     op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
     op start interval={{ start_interval }} timeout={{ start_timeout }} \
-    op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-    --group {{ telemetry_pcs_group }}
+    op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
+
+echo "Creating resources for ActiveMQ containers"
 # Resource for ActiveMQ container
 pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
   name={{ activemq_container_name }} \
@@ -37,10 +38,11 @@ pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
   run_opts="{{ activemq_run_opts }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
 
 # Resource for iDRAC-telemetry-receiver container
+echo "Creating resources for idrac_telemetry_receiver container"
 pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:podman \
   name={{ idrac_telemetry_receiver_container_name }} \
   image={{ idrac_telemetry_receiver_go_image }} \
@@ -48,13 +50,17 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
   run_opts="{{ idrac_telemetry_receiver_run_opts }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
+
+echo "Adding mysql, activemq, and idrac_telemetry_receiver to omnia_telemetry group"
+pcs resource group add {{ telemetry_pcs_group }} {{ mysql_container_name }} {{ activemq_container_name }} {{ idrac_telemetry_receiver_container_name }}
+pcs constraint colocation add {{ pcs_group }} with {{ telemetry_pcs_group }} INFINITY
 {% endif %}
 
 # Resource for prometheus and prometheus_pump
 {% if idrac_telemetry_support and idrac_telemetry_collection_type == "prometheus" %}
-pcs resource group add {{ telemetry_pcs_group }}
+echo "Creating resources for prometheus and prometheus_pump containers"
 # Resource for prometheus pump container
 pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
   name={{ prometheus_pump_container_name }} \
@@ -63,8 +69,8 @@ pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
   run_opts="{{ prometheus_pump_run_opts }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
 
 # Resource for prometheus container
 pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
@@ -75,6 +81,8 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
+echo "Adding prometheus and prometheus_pump to telemetry group"
+pcs resource group add {{ telemetry_pcs_group }} {{ prometheus_pump_container_name }} {{ prometheus_container_name }}
 {% endif %}

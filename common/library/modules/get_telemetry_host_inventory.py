@@ -12,14 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=import-error
+
 #!/usr/bin/python
 
 """ This module is used to fetch telemetry host inventory"""
 
 import csv
+import configparser
 from ansible.module_utils.basic import AnsibleModule
 
-def fetch_parent_tags(file_path):
+def get_hosts_from_group(file_path, group_name, module):
+    """
+    This function retrieves a list of hosts for a specified group from an Ansible inventory file.
+    Parameters:
+        file_path (str): The path to the Ansible inventory file.
+        group_name (str): The name of the group for which to retrieve hosts.
+    Returns:
+        list: A list of hosts under the specified group.
+    """
+    if not file_path:
+        return []
+    config = configparser.ConfigParser(allow_no_value=True, delimiters=' ', comment_prefixes='#')
+    config.optionxform = str  # preserve case
+    config.read(file_path)
+
+    if group_name not in config:
+        module.warn(f"Group '{group_name}' not found in cluster_layout.")
+        return []
+
+    # Return list of hosts under the group
+    return list(config[group_name].keys())
+
+def fetch_valid_parent_tags(file_path, service_node_metadata, module):
     """
     This function fetches the parent tags from a given CSV file.
 
@@ -29,28 +54,36 @@ def fetch_parent_tags(file_path):
     Returns:
         set: A set of parent tags found in the CSV file.
     """
-    parent_tags = set()    
+    parent_tags = set()
+    invalid_tags = set()
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             parent = row.get('PARENT', '').strip()
             if parent:
+                if parent not in service_node_metadata:
+                    module.warn(f"Parent tag '{parent}' not found in service node metadata.")
+                    invalid_tags.add(parent)
+                    continue
                 parent_tags.add(parent)
-    return parent_tags
+    return parent_tags, invalid_tags
 
 
 
 def fetch_admin_ip(parent_tags, service_node_metadata):
     """
-    Fetches the admin IP and virtual IP addresses of service nodes based on the provided parent tags and service node metadata.
+    Fetches the admin IP and virtual IP addresses of service nodes based on the
+    provided parent tags and service node metadata.
 
     Parameters:
         parent_tags (list): A list of parent tags used to identify service nodes.
-        service_node_metadata (dict): A dictionary containing metadata about service nodes, including admin IP and virtual IP addresses.
+        service_node_metadata (dict): A dictionary containing metadata about
+            service nodes, including admin IP and virtual IP addresses.
 
     Returns:
-        tuple: A tuple containing two dictionaries. The first dictionary maps service tags to their corresponding admin IP addresses.
-               The second dictionary maps service tags to their corresponding virtual IP addresses.
+        tuple: A tuple containing two dictionaries. The first dictionary maps
+            service tags to their corresponding admin IP addresses. The second
+            dictionary maps service tags to their corresponding virtual IP addresses.
     """
     service_node_admin_ip = {}
     service_node_active_ip = {}
@@ -72,7 +105,7 @@ def fetch_admin_ip(parent_tags, service_node_metadata):
 
 def fetch_active_passive_servicetags(parent_tags, service_node_metadata):
     """
-    Fetches the active and passive service tags based 
+    Fetches the active and passive service tags based
     on the provided parent tags and service node metadata.
 
     Parameters:
@@ -101,18 +134,29 @@ def fetch_active_passive_servicetags(parent_tags, service_node_metadata):
 
 def main():
     """Main module function."""
-    module_args = dict(
-        bmc_group_data_path=dict(type="str", required=True),
-        service_node_metadata=dict(type="dict", required=True)
-    )
+    module_args = {
+        'bmc_group_data_path': {'type': "str", 'required': True},
+        'service_node_metadata': {'type': "dict", 'required': True},
+        'inventory_file_path': {'type': "str", 'required': False},
+    }
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
     bmc_group_data_path = module.params["bmc_group_data_path"]
     service_node_metadata = module.params["service_node_metadata"]
+    inventory_file_path = module.params.get("inventory_file_path", "")
     try:
-        parent_tags = fetch_parent_tags(bmc_group_data_path)
+        parent_tags, invalid_tags = fetch_valid_parent_tags(bmc_group_data_path,
+                                                            service_node_metadata, module)
+        if invalid_tags:
+            module.exit_json(
+                changed=False,
+                msg=f"Invalid parent tags found: {', '.join(invalid_tags)}.",
+                invalid_parent_tags=list(invalid_tags)
+            )
         sn_admin_ip, sn_active_ip = fetch_admin_ip(parent_tags, service_node_metadata)
-        module.exit_json(changed=False, sn_admin_ip=sn_admin_ip, sn_active_ip=sn_active_ip)
+        oim_ha_nodes = get_hosts_from_group(inventory_file_path, 'oim_ha_node', module)
+        module.exit_json(changed=False, sn_admin_ip=sn_admin_ip, sn_active_ip=sn_active_ip,
+                         oim_ha_hosts=oim_ha_nodes)
     except ValueError as e:
         module.fail_json(msg=f"Failed to to get Service Node Group data. {e}")
 

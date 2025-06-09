@@ -20,7 +20,15 @@
   get_telemetry_host_inventory:
     bmc_group_data_path: "{{ bmc_group_data_filename }}"
     service_node_metadata: "{{ service_nodes_metadata }}"
+    inventory_file_path: "{{ cluster_layout_path if enable_oim_ha else '' }}"
   register: host_inventory
+
+- name: Fail if invalid parent tags found
+  ansible.builtin.fail:
+    msg: "{{ invalid_parent_tags_message | replace('\n', ' ') }}"
+  when:
+    - host_inventory.invalid_parent_tags is defined
+    - host_inventory.invalid_parent_tags | length > 0
 
 - name: Add service node admin details to inventory
   ansible.builtin.add_host:
@@ -35,3 +43,12 @@
     groups: sn_active
     service_tag: "{{ item.key }}"
   loop: "{{ host_inventory.sn_active_ip | dict2items }}"
+
+- name: Add passive oim hosts to inventory
+  ansible.builtin.add_host:
+    name: "{{ item }}"
+    groups: "oim_ha_node"
+  loop: "{{ host_inventory.oim_ha_hosts }}"
+  when:
+    - enable_oim_ha
+    - host_inventory.oim_ha_hosts | length > 0
