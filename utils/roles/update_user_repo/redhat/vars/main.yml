@@ -31,3 +31,4 @@ repo_update_failure_msg: "The playbook failed due to an error while running dnf 
 
 # Usage:update_user_repo.yml,update_software_repo.yml
 os_type: "rhel"
+pulp_cert_path: "/etc/pki/ca-trust/source/anchors/pulp_webserver.crt"
