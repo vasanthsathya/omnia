@@ -11,6 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# pylint: disable=unused-argument,too-many-locals,too-many-branches
+"""
+This module contains functions for validating roles configuration.
+"""
 
 import json
 import ipaddress
@@ -297,7 +301,8 @@ def validate_roles_config(
         switch_ip_port_mapping = {}
         static_range_mapping = {}
         # # Check if the bmc_network is defined
-        # bmc_network_defined = check_bmc_network(input_file_path, logger, module, omnia_base_dir, project_name)
+        # bmc_network_defined = check_bmc_network(
+        #     input_file_path, logger, module, omnia_base_dir, project_name)
 
         for role in roles:
             # Check role-group association, all roles must have a group
