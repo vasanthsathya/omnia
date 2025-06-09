@@ -85,7 +85,7 @@ def validate_repo_mappings(yaml_data, json_data):
     Returns:
         list: A list of error messages for invalid repository mappings.
     """
-    valid_repos = [repo["name"] for repo in (yaml_data.get("user_repo_url", []) + yaml_data.get("omnia_repo_url_rhel", []))]
+    valid_repos = [repo["name"] for repo in yaml_data.get("omnia_repo_url_rhel", [])]
     valid_repos.extend(['baseos' , 'appstream', 'codeready-builder'])
     data = load_json(json_data)
 

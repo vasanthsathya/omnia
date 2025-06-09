@@ -42,5 +42,3 @@
   when:
     - user_repo_url is not none
     - user_repo_url is not defined
-    - user_repo_url | length == 0
-    - user_repo_url | type_debug != 'list'
