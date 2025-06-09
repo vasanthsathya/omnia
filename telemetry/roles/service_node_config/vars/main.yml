@@ -12,6 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
+# Usage:firewall_settings.yml
+idrac_firewall_ports:
+  - "61613/tcp"
+  - "8161/tcp"
+  - "3306/tcp"
+  - "3000/tcp"
+
+prometheus_firewall_ports:
+  - "2112/tcp"
+  - "9090/tcp"
 
 # Usage: create_podman_secrets.yml
 mysql_root_password: "mysql_root_password"
@@ -65,8 +75,24 @@ service_node_base_dir: "/opt/omnia/service_nodes"
 file_permissions: '0755'
 
 # Usage: pcs_container_deployment.yml
-pcs_container_name: omnia_pcs
+wait_time_pcs_start: 120
 pcs_telemetry_resource_script_path: "/opt/omnia/pcs/pcs_telemetry.sh"
+pcs_sn_container_resources_shared_finished: "/opt/omnia/service_nodes/{{ service_tag }}/pcs/config/pcs_sn_container_resources_finished"
+pcs_telemetry_failed_msg: "pcs_telemetry.sh execution failed."
+pcs_container_name: "omnia_pcs"
+xcat_resource_name: "XCATD-CHECK"
+activemq_container_name: "activemq"
+idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
+prometheus_pump_container_name: "prometheus_pump"
+prometheus_container_name: "prometheus"
+pcs_resources:
+  - "{{ xcat_resource_name }}"
+
+pcs_failed_resource_msg: |
+  The deployment of pcs telemetry resources have failed. To resolve this issue,
+  please run the utility/oim_cleanup.yml playbook to clean up any existing OIM resources.
+  After the cleanup, you can re-run the prepare_oim.yml, disocvery_provision.yml and then telmetry.yml
+  playbook to deploy the container and its resources on service_nodes.
 
 # Usage: prometheus_config_update.yml
 oim_prometheus_config_path: "{{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus.yml"
@@ -85,6 +111,7 @@ mysql_container_failure_msg: |
 pip_packages:
   - "PyMySQL==1.1.1"
   - "cryptography==44.0.1"
+  - "omsdk==1.2.518"
 mysql_port: 3306
 max_retries: 10
 delay_count: 5
