@@ -177,6 +177,10 @@ http_key: http
 meta_dest: "{{ nfs_shared_path }}/offline_repo/.data"
 metadata_file_path: "{{ meta_dest }}/localrepo_metadata.yml"
 
+# Usage: remove_k8s_line.yml
+software_csv_file_path: "/opt/omnia/log/local_repo/software.csv"
+k8s_local_repo_metadata_file_path: "/opt/omnia/log/local_repo/k8s_local_repo_metadata.yml"
+
 # Usage: validate_rhel_os_url.yml
 rhel_os_url_fail_msg: "Failed. Please ensure rhel_os_url is non empty list and
 check if there is any indentation error for variable names in {{ project_input_path }}/local_repo_config.yml"
