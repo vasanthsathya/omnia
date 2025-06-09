@@ -65,7 +65,6 @@ service_node_base_dir: "/opt/omnia/service_nodes"
 file_permissions: '0755'
 
 # Usage: pcs_container_deployment.yml
-pcs_container_name: omnia_pcs
 wait_time_pcs_start: 120
 pcs_telemetry_resource_script_path: "/opt/omnia/pcs/pcs_telemetry.sh"
 pcs_sn_container_resources_shared_finished: "{{ omnia_nfs_share }}/service_nodes/{{ service_tag }}/pcs/config/pcs_sn_container_resources_finished"
