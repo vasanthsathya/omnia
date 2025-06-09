@@ -86,3 +86,8 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
 echo "Adding prometheus and prometheus_pump to telemetry group"
 pcs resource group add {{ telemetry_pcs_group }} {{ prometheus_pump_container_name }} {{ prometheus_container_name }}
 {% endif %}
+
+# Create a file which signifies the pcs resources were created.
+# This file also contains the resources and its state which ansible can check against.
+echo "$(date): PCS Container Resources Have Been Created"
+pcs resource | awk -F' ' '{print $2 " " $4}' | sed 's/^\s*//;s/\s*$//' > {{ pcs_sn_container_resources_finished }}
