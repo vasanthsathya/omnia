@@ -213,6 +213,7 @@
     pxe_nic_ip: "{{ admin_nic_ip }}"
     pxe_nic_subnet: "{{ (admin_nic_ip + '/' + network_data.admin_network.netmask_bits) | ansible.utils.ipaddr('network') }}"
     pxe_nic_netmask: "{{ (admin_nic_ip + '/' + network_data.admin_network.netmask_bits) | ansible.utils.ipaddr('netmask') }}"
+    pxe_nic_netmask_bits: "{{ network_data.admin_network.netmask_bits }}"
 
 - name: Gather the MAC address of admin nic
   ansible.builtin.set_fact:

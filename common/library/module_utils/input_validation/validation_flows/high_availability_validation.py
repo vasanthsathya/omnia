@@ -486,13 +486,11 @@ def validate_oim_ha(
     admin_virtual_ip = ha_data.get("admin_virtual_ip_address", "")
     bmc_virtual_ip = ha_data.get("bmc_virtual_ip_address", "")
 
-    admin_nic_name = network_spec_data["admin_nic_name"]
-    admin_network = network_spec_data["admin_network"]
-    admin_netmaskbits = network_spec_data["admin_netmaskbits"]
-    oim_admin_ip = network_spec_data["oim_admin_ip"]
+    admin_network = network_spec_data['admin_network']
+    admin_netmaskbits = network_spec_data['admin_netmaskbits']
+    oim_admin_ip = network_spec_data['oim_admin_ip']
 
-    bmc_network = network_spec_data["bmc_network"]
-    bmc_nic_name = network_spec_data["bmc_nic_name"]
+    bmc_network = network_spec_data['bmc_network']
 
     if admin_virtual_ip:
         validate_vip_address(
@@ -505,7 +503,7 @@ def validate_oim_ha(
             oim_admin_ip,
         )
 
-    if admin_nic_name == bmc_nic_name:
+    if bmc_virtual_ip:
         roles_groups = roles_config_json.get("Groups", [])
         for _, group_data in roles_groups.items():
             static_range = group_data.get("bmc_details", {}).get("static_range", "")
@@ -514,13 +512,11 @@ def validate_oim_ha(
                     static_range, bmc_virtual_ip
                 )
                 if bmc_vip_conflict:
-                    errors.append(
-                        create_error_msg(
-                            f"{config_type} bmc_virtual_ip_address conflict with roles_config:",
-                            bmc_virtual_ip,
-                            en_us_validation_msg.bmc_virtual_ip_not_valid,
-                        )
-                    )
+                    errors.append(create_error_msg(
+                        f"{config_type} bmc_virtual_ip_address conflict with roles_config",
+                        bmc_virtual_ip,
+                        en_us_validation_msg.bmc_virtual_ip_not_valid
+                    ))
 
         bmc_vip_conflict_dynamic = False
         bmc_vip_conflict_dynamic_conversion = False
@@ -543,23 +539,11 @@ def validate_oim_ha(
             )
 
         if bmc_vip_conflict_dynamic or bmc_vip_conflict_dynamic_conversion:
-            errors.append(
-                create_error_msg(
-                    f"{config_type} bmc_virtual_ip_address conflict with network_spec",
-                    bmc_virtual_ip,
-                    en_us_validation_msg.bmc_virtual_ip_not_valid,
-                )
-            )
-    elif bmc_virtual_ip:
-        errors.append(
-            create_error_msg(
-                "bmc_virtual_ip_address",
+            errors.append(create_error_msg(
+                f"{config_type} bmc_virtual_ip_address conflict with network_spec",
                 bmc_virtual_ip,
-                "For use only with a LOM configuration, "
-                + en_us_validation_msg.feild_must_be_empty,
-            )
-        )
-
+                en_us_validation_msg.bmc_virtual_ip_not_valid
+            ))
 
 # Dispatch table maps config_type to validation handler
 ha_validation = {
@@ -678,8 +662,6 @@ def validate_high_availability_config(
                 if config_name == "oim_ha":
                     ha_role = "oim_ha_node"  # expected role to be defined in roles_config
                     check_and_validate_ha_role_in_roles_config(errors, roles_config_json, ha_role)
-                    if network_spec_info["admin_nic_name"] == network_spec_info["bmc_nic_name"]:
-                        mandatory_fields.append("bmc_virtual_ip_address")
                     validate_ha_config(ha_data, mandatory_fields, errors, config_type=config_name)
                 elif config_name == "service_node_ha":
                     ha_role = "service_node"  # expected role to be defined in roles_config

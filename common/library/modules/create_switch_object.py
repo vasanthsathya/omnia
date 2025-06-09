@@ -12,12 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-#!/usr/bin/python
+# pylint: disable=import-error,no-name-in-module,line-too-long
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils import omniadb_connection
-from ansible.module_utils.omniadb_connection import execute_select_query, insert_switch_info
+#!/usr/bin/python
+"""Ansible custom module to create switch object and create switchinfo table in omniadb."""
+
 import subprocess
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.discovery import omniadb_connection
+from ansible.module_utils.discovery.omniadb_connection import execute_select_query, insert_switch_info
 
 # Global variables
 switch_name_prefix = "switch"

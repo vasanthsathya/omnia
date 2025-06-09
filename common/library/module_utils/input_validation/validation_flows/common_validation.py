@@ -318,7 +318,6 @@ def validate_usernames(
     k8s_access_config_json = validation_utils.load_yaml_as_json(
         k8s_access_config_file_path,
         omnia_base_dir,
-        module_utils_base,
         project_name,
         logger,
         module,
@@ -329,7 +328,6 @@ def validate_usernames(
     passwordless_ssh_config_json = validation_utils.load_yaml_as_json(
         passwordless_ssh_config_file_path,
         omnia_base_dir,
-        module_utils_base,
         project_name,
         logger,
         module,
