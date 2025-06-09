@@ -149,12 +149,15 @@ def main():
 
         # Copy rendered active node directory to passive node directories
         for passive_service_tag in passive_nodes:
-            passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
+            passive_service_tag_telemetry_dir = os.path.join(base_dir, passive_service_tag, 'telemetry')
+            passive_service_tag_log_dir = os.path.join(base_dir, passive_service_tag, 'log', 'telemetry')
 
-            if os.path.exists(passive_service_tag_dir):
-                shutil.rmtree(passive_service_tag_dir)
 
-            shutil.copytree(service_dir, passive_service_tag_dir, symlinks=True)
+            if not os.path.exists(passive_service_tag_telemetry_dir):
+                shutil.copytree(telemetry_dir, passive_service_tag_telemetry_dir)
+
+            if not os.path.exists(passive_service_tag_log_dir):
+                shutil.copytree(log_dir, passive_service_tag_log_dir, symlinks=True)
             results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
 
     # Exit the module
