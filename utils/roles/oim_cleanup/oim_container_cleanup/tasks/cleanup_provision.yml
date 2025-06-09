@@ -38,6 +38,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
+        force: true
       with_items:
         - "{{ provision_cleanup_directory }}"
 
