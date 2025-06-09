@@ -56,6 +56,7 @@
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
+        remote_src: true
       loop: "{{ podman_secrets_file }}"
  
 - name: Re-create pcs-start.sh with all container resources
