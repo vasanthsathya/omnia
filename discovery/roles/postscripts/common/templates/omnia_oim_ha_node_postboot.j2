@@ -62,7 +62,33 @@ echo -e "INFO: Copying omnia_core ssh configs from NFS." >> "$LOGFILE"
 cp {{ oim_shared_path }}/omnia/ssh_config/.ssh/oim_rsa /root/.ssh/oim_rsa
 cp {{ oim_shared_path }}/omnia/ssh_config/.ssh/config /root/.ssh/config
 
+{% if hostvars['localhost']['idrac_telemetry_support'] or hostvars['localhost']['visualization_support'] %}
+echo -e "INFO: Copying secrets from NFS." >> "$LOGFILE"
+cp {{ oim_shared_path }}/omnia/pcs/secrets/secrets.json /var/lib/containers/storage/secrets/secrets.json
+cp {{ oim_shared_path }}/omnia/pcs/secrets/secretsdata.json /var/lib/containers/storage/secrets/filedriver/secretsdata.json
+{% endif %}
+
+{% if hostvars['localhost']['idrac_telemetry_support'] %}
+podman volume create --opt o=bind --opt device={{ mysql_data_dir }} mysqldb_data
+podman volume create --opt o=bind --opt device={{ mysql_log_dir }} mysqldb_log
+podman volume create --opt o=bind --opt device={{ activemq_log_dir }} activemq_log
+podman volume create --opt o=bind --opt device={{ idrac_telemetry_receiver_log_dir }} idrac_telemetry_receiver_log
+{% endif %}
+
+{% if hostvars['localhost']['idrac_telemetry_support'] and hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus" %}
+podman volume create --opt o=bind --opt device={{ prometheus_data_dir }} prometheus_data
+podman volume create --opt o=bind --opt device={{ prometheus_log_dir }} prometheus_log
+{% endif %}
+
+{% if hostvars['localhost']['visualization_support'] %}
+podman volume create --opt o=bind --opt device={{ grafana_data_dir }} grafana_data
+podman volume create --opt o=bind --opt device={{ grafana_log_dir }} grafana_log
+podman volume create --opt o=bind --opt device={{ loki_promtail_config_dir }} loki_promtail_config
+{% endif %}
+
 systemctl daemon-reload
+systemctl restart podman | { echo "ERROR: Restarting podman." >> "$LOGFILE"; exit 1; }
+
 # Enable and start podman.socket
 echo -e "INFO: Enabling and starting the podman socket." >> "$LOGFILE"
 sudo systemctl enable podman.socket || { echo "ERROR: Enabling podman.socket." >> "$LOGFILE"; exit 1; }

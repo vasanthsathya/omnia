@@ -298,3 +298,8 @@ promtail_run_opts: >-
 promtail_run_cmd: >-
   --config.file={{ container_config_mnt }}/promtail-config.yaml
 promtail_monitor_cmd: "/usr/bin/promtail -version"
+
+podman_secrets_dir: "{{ pcs_container_dir }}/secrets"
+podman_secrets_file:
+  - { src: "/var/lib/containers/storage/secrets/secrets.json", dest: "{{ podman_secrets_dir }}/secrets.json", mode: "0600" }
+  - { src: "/var/lib/containers/storage/secrets/filedriver/secretsdata.json", dest: "{{ podman_secrets_dir }}/secretsdata.json", mode: "0600" }
