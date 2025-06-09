@@ -23,7 +23,7 @@
   when: enable_oim_ha or service_role_required
     
 - name: Include telemetry role vars
-  ansible.builtin.include_tasks: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_items: "{{ telemetry_vars }}"
   when: enable_oim_ha
 
