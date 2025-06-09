@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# pylint: disable=unused-import,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,unused-argument
 """
 This module contains functions for validating common configuration files.
 """
