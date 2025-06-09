@@ -40,6 +40,16 @@
           'docker.io/prom/prometheus:' + prometheus_tag
         ] }}
 
+- name: Add telemetry to container image list if visualization_support is true
+  when: hostvars['localhost']['visualization_support'] | default(false)
+  ansible.builtin.set_fact:
+    container_images: >-
+      {{ container_images + [
+          'docker.io/grafana/grafana:' + grafana_image_tag
+          'docker.io/grafana/loki' + loki_image_tag
+          'docker.io/grafana/promtail' + promtail_image_tag
+        ] }}
+
 - name: Save container images (This task may take 10 mins)
   containers.podman.podman_save:
     image: "{{ container_images }}"

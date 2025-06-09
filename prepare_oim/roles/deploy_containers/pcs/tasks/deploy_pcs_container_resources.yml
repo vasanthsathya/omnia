@@ -49,8 +49,8 @@
       ansible.builtin.file:
         path: "{{ podman_secrets_dir }}"
         state: directory
-        mode: "{{ dir_permissions_755 }}"
-    
+        mode: "{{ secret_dir_permission }}"
+
     - name: Copy the secrets file from OIM
       ansible.builtin.copy:
         src: "{{ item.src }}"
