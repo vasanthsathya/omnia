@@ -67,20 +67,21 @@
     success_msg: "{{ server_domain_name_success_msg }}"
     fail_msg: "{{ server_domain_name_fail_msg }}"
 
-- name: Read hostname of Omnia Infrastructure Manager
-  ansible.builtin.command: hostname
-  changed_when: false
-  register: hostname_result
-
 - name: Set fact for the OIM node hostname and domain name
   ansible.builtin.set_fact:
     oim_domain_name: "{{ domain_name }}"
-    oim_hostname: "{{ hostname_result.stdout }}"
 
 - name: Add hosts file entry for Omnia Infrastructure Manager
   ansible.builtin.shell: |
     set -o pipefail
     grep -qxF '{{ pxe_nic_ip }} {{ oim_hostname }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} {{ oim_hostname }}' >> {{ hosts_file_path }}
+  changed_when: true
+
+- name: Add hosts file entry for the provisioning container
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -qxF '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}'
+    >> {{ hosts_file_path }}
   changed_when: true
 
 - name: Ensure 127.0.0.1 localhost entry exists uniquely using echo
