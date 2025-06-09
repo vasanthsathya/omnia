@@ -32,24 +32,22 @@ echo "Corosync and Pacemaker have started. Continuing with the script."
 pcs property set stonith-enabled=false
 pcs property set no-quorum-policy=ignore
 
-pcs resource group add {{ pcs_group }}
-pcs resource group add {{ vip_group }}
-pcs constraint colocation add {{ vip_group }} with {{ pcs_group }} INFINITY
-
 pcs resource defaults update migration-threshold={{ migration_threshold }}
 pcs resource defaults update failure-timeout={{ failure_timeout }}
 
 {% if hostvars['localhost']['enable_oim_ha'] %}
 pcs resource create admin_VIP ocf:heartbeat:IPaddr2 \
         ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.admin_virtual_ip_address }} nic={{ admin_nic }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
-        op monitor interval={{ monitor_interval }} --group {{ vip_group }}
+        op monitor interval={{ monitor_interval }}
+
+pcs resource group add {{ vip_group }} admin_VIP
 
 {% if hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address is defined %}
 pcs resource create bmc_VIP ocf:heartbeat:IPaddr2 \
         ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address }} nic={{ admin_nic }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
-        op monitor interval={{ monitor_interval }} --group {{ vip_group }}
+        op monitor interval={{ monitor_interval }}
+pcs resource group add {{ vip_group }} bmc_VIP
 {% endif %}
-
 pcs resource defaults update migration-threshold={{ ha_migration_threshold }}
 {% endif %}
 
@@ -60,7 +58,7 @@ pcs resource create {{ omnia_core_name }} ocf:heartbeat:podman \
  run_opts="{{ omnia_core_run_opts }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
  op start interval={{ start_interval }} timeout={{ start_timeout }} \
- op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+ op stop interval={{ stop_interval }}  timeout={{ stop_timeout }}
 
 pcs resource create {{ pulp_container_name }} ocf:heartbeat:podman \
  name={{ pulp_container_name }} \
@@ -69,7 +67,7 @@ pcs resource create {{ pulp_container_name }} ocf:heartbeat:podman \
  run_opts="{{ pulp_run_opts_https if pulp_protocol == 'https' else pulp_run_opts_http }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
  op start interval={{ start_interval }} timeout={{ start_timeout }} \
- op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+ op stop interval={{ stop_interval }}  timeout={{ stop_timeout }}
 
 pcs resource create {{ provision_container_name }} ocf:heartbeat:podman \
  name={{ provision_container_name }} \
@@ -78,7 +76,9 @@ pcs resource create {{ provision_container_name }} ocf:heartbeat:podman \
  run_opts="{{ provision_run_opts }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
  op start interval={{ start_interval }} timeout={{ start_timeout }} \
- op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+ op stop interval={{ stop_interval }}  timeout={{ stop_timeout }}
+
+pcs resource group add {{ pcs_group }} {{ omnia_core_name }} {{ pulp_container_name }} {{ provision_container_name }}
 
 {% if hostvars['localhost']['k8s_support'] %}
 pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
@@ -88,7 +88,9 @@ pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
  run_opts="{{ kubespray_run_opts }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
  op start interval={{ start_interval }} timeout={{ start_timeout }} \
- op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+ op stop interval={{ stop_interval }}  timeout={{ stop_timeout }}
+
+pcs resource group add {{ pcs_group }} {{ kubespray_name }}
 {% endif %}
 
 {% if hostvars['localhost']['enable_routed_internet'] %}
@@ -99,13 +101,19 @@ pcs resource create {{ squid_container_name }} ocf:heartbeat:podman \
  run_opts="{{ squid_run_opts }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
  op start interval={{ start_interval }} timeout={{ start_timeout }} \
- op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
+ op stop interval={{ stop_interval }}  timeout={{ stop_timeout }}
+
+pcs resource group add {{ pcs_group }} {{ squid_container_name }}
+{% endif %}
+
+{% if hostvars['localhost']['enable_oim_ha'] %}
+# Adding colocation constraints for VIP group
+pcs constraint colocation add {{ vip_group }} with {{ pcs_group }} INFINITY
 {% endif %}
 
 # Resource for idrac_telemetry containers
 {% if hostvars['localhost']['idrac_telemetry_support'] %}
-pcs resource group add {{ telemetry_pcs_group }}
-pcs constraint colocation add {{ vip_group }} with {{ telemetry_pcs_group }} INFINITY
+
 # Resource for MySQL container
 pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     name={{ mysql_container_name }} \
@@ -114,8 +122,7 @@ pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
     run_opts="{{ mysql_run_opts }}"  \
     op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
     op start interval={{ start_interval }} timeout={{ start_timeout }} \
-    op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-    --group {{ telemetry_pcs_group }}
+    op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
 # Resource for ActiveMQ container
 pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
@@ -125,8 +132,7 @@ pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
   run_opts="{{ activemq_run_opts }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
 # Resource for iDRAC-telemetry-receiver container
 pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:podman \
@@ -136,8 +142,10 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
   run_opts="{{ idrac_telemetry_receiver_run_opts }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
+pcs resource group add {{ telemetry_pcs_group }} {{ mysql_container_name }} {{ activemq_container_name }} {{ idrac_telemetry_receiver_container_name }}
+pcs constraint colocation add {{ pcs_group }} with {{ telemetry_pcs_group }} INFINITY
 {% endif %}
 
 # Resource for prometheus and prometheus_pump
@@ -150,8 +158,7 @@ pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
   run_opts="{{ prometheus_pump_run_opts }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
 # Resource for prometheus container
 pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
@@ -162,14 +169,14 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ telemetry_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
+pcs resource group add {{ telemetry_pcs_group }} {{ prometheus_container_name }} {{ prometheus_pump_container_name }}
 {% endif %}
 
 # Resource for omnia visualization containers
 {% if hostvars['localhost']['visualization_support'] %}
-pcs resource group add {{ visualization_pcs_group }}
-pcs constraint colocation add {{ vip_group }} with {{ visualization_pcs_group }} INFINITY
+
 # Resource for grafana container
 pcs resource create {{ grafana_container_name }} ocf:heartbeat:podman \
     name={{ grafana_container_name }} \
@@ -178,8 +185,7 @@ pcs resource create {{ grafana_container_name }} ocf:heartbeat:podman \
     run_opts="{{ grafana_run_opts }}"  \
     op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
     op start interval={{ start_interval }} timeout={{ start_timeout }} \
-    op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-    --group {{ visualization_pcs_group }}
+    op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
 # Resource for loki container
 pcs resource create {{ loki_container_name }} ocf:heartbeat:podman \
@@ -191,8 +197,7 @@ pcs resource create {{ loki_container_name }} ocf:heartbeat:podman \
   monitor_cmd="{{ loki_monitor_cmd }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ visualization_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
 # Resource for promtail container
 pcs resource create {{ promtail_container_name }} ocf:heartbeat:podman \
@@ -204,19 +209,13 @@ pcs resource create {{ promtail_container_name }} ocf:heartbeat:podman \
   monitor_cmd="{{ promtail_monitor_cmd }}" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
-  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
-  --group {{ visualization_pcs_group }}
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
+
+
+pcs resource group add {{ visualization_pcs_group }} {{ grafana_container_name }} {{ loki_container_name }} {{ promtail_container_name }}
+pcs constraint colocation add {{ pcs_group }} with {{ visualization_pcs_group }} INFINITY
 {% endif %}
 
-# Create ordering constraints
-# commenting as group and contraint does not work together
-# pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
-# pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
-# {% if hostvars['localhost']['k8s_support'] %}
-# {% endif %}
-# {% if hostvars['localhost']['enable_routed_internet'] %}
-# pcs constraint order start {{ omnia_core_name }} then start {{ squid_container_name }}
-# {% endif %}
 
 # Initialize the total sleep time
 total_sleep_time=0
