@@ -64,7 +64,7 @@ cp {{ oim_shared_path }}/omnia/ssh_config/.ssh/config /root/.ssh/config
 
 {% if idrac_telemetry_support or visualization_support %}
 echo -e "INFO: Copying secrets from NFS." >> "$LOGFILE"
-SECRET_PATH = /var/lib/containers/storage/secrets
+export SECRET_PATH=/var/lib/containers/storage/secrets
 mkdir -p $SECRET_PATH/filedriver
 chmod 700 $SECRET_PATH/filedriver
 cp -f {{ oim_shared_path }}/omnia/pcs/.secrets/secrets.json $SECRET_PATH/secrets.json
@@ -90,7 +90,7 @@ podman volume create --opt o=bind --opt device={{ loki_promtail_config_dir }} lo
 {% endif %}
 
 systemctl daemon-reload
-systemctl restart podman | { echo "ERROR: Restarting podman." >> "$LOGFILE"; exit 1; }
+systemctl enable podman | { echo "ERROR: Enabling podman." >> "$LOGFILE"; exit 1; }
 
 # Enable and start podman.socket
 echo -e "INFO: Enabling and starting the podman socket." >> "$LOGFILE"
