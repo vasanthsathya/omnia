@@ -37,6 +37,8 @@
         msg: "{{ pcs_telemetry_failed_msg }}"
       register: wait_result
       delegate_to: localhost
+      connection: local
+      run_once: true
 
     - name: Add idrac_telemetry containers to pcs-resources if idrac_telemetry_support is true
       ansible.builtin.set_fact:
