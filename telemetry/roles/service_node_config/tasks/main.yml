@@ -18,6 +18,9 @@
     - hostvars['localhost']['idrac_telemetry_support']
     - hostvars['localhost']['federated_idrac_telemetry_collection']
   block:
+    - name: Export firewall ports on servie_nodes
+      ansible.builtin.include_tasks: firewall_settings.yml
+
     - name: Include tasks for podman secrets
       ansible.builtin.include_tasks: create_podman_secrets.yml
 
