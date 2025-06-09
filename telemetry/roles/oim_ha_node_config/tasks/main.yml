@@ -18,6 +18,10 @@
     - name: Set service_node_config role role_path
       ansible.builtin.set_fact:
         service_node_config_role_path: "{{ role_path }}/../service_node_config/tasks"
+    
+    - name: Include telemetry role vars
+      ansible.builtin.include_vars: "{{ item }}"
+      with_items: "{{ telemetry_vars }}"
 
     - name: Telemetry configuration in OIM HA node - idrac_telemetry
       when: hostvars['localhost']['idrac_telemetry_support']
@@ -60,6 +64,9 @@
           when: hostvars['localhost']['visualization_support']
           vars:
             podman_volume_name: "{{ loki_podman_volumes }}"
+
+    - name: Configure firewall ports
+      ansible.builtin.include_tasks: firewall_settings.yml
 
     - name: Include tasks for podman images
       ansible.builtin.include_tasks: "{{ service_node_config_role_path }}/pull_podman_images.yml"
