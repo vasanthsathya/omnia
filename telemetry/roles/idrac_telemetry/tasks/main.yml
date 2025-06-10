@@ -18,3 +18,6 @@
   block:
     - name: Collect iDRAC IP and initiate telemetry collection
       ansible.builtin.include_tasks: initiate_telemetry.yml
+
+    - name: Generete telemetry report
+      ansible.builtin.include_tasks: create_telemetry_report.yml
