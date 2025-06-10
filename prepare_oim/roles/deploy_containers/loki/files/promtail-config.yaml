@@ -249,7 +249,7 @@ scrape_configs:
         labels:
           job: Core container logs
           __path__: /opt/omnia/log/core/container/*log
-   
+
   - job_name: squid logs
     static_configs:
       - targets:
