@@ -36,6 +36,7 @@
     groups: sn_admin
     service_tag: "{{ item.key }}"
   loop: "{{ host_inventory.sn_admin_ip | dict2items }}"
+  when: federated_idrac_telemetry_collection
 
 - name: Add active service nodes to inventory
   ansible.builtin.add_host:
@@ -43,6 +44,7 @@
     groups: sn_active
     service_tag: "{{ item.key }}"
   loop: "{{ host_inventory.sn_active_ip | dict2items }}"
+  when: federated_idrac_telemetry_collection
 
 - name: Add passive oim hosts to inventory
   ansible.builtin.add_host:
