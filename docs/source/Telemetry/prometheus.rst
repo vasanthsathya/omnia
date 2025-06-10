@@ -4,9 +4,13 @@ Visualization of iDRAC telemetry metrics collected by Prometheus
 Via Grafana UI
 -----------------
 
-1. Log in to the Grafana UI via port 5000. Enter the below URL into the browser's address bar: ::
+1. Log in to the Grafana UI via port 5000. Enter the below URL into the browser's address bar: 
+
+    ::
         
-    http://localhost:5000/login
+        http://localhost:5000/login
+
+    .. note:: In the above command, instead of ``localhost``, you can also provide the admin IP or public IP address to access the Grafana UI.
 
 2. In the Explore page, select **oim-prometheus** to view the metrics collected by the prometheus metrics exporter.
 
@@ -37,6 +41,8 @@ Via Prometheus UI
     ::
         
         http://localhost:9090
+
+    .. note:: In the above command, instead of ``localhost``, you can also provide the admin IP or public IP address to access the Grafana UI.
 
     .. image:: ../images/idrac_telemetry_prometheus_ui.png
         :width: 600px
