@@ -74,6 +74,7 @@ visualization_firewall_ports:
   - "3000/tcp"
   - "3001/tcp"
   - "5000/tcp"
+  - "3100/tcp"
 
 pcs_firewall_services:
   - "http"
