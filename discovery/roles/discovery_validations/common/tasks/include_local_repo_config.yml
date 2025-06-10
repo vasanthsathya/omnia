@@ -155,4 +155,3 @@
   ansible.builtin.set_fact:
     group_to_additional_sw_package_map: "{{ group_to_additional_sw_package_map.grp_pkg_map }}"
   when: additional_software_packages
-
