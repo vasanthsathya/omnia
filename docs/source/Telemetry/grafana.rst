@@ -78,5 +78,5 @@ Filter logs using Loki
     
         ::
 
-            { job="Omnia logs"} |= ""
+            { job="Omnia logs"} |= "
             { job="iDRAC Telemetry - idrac_telemetry_receiver container logs"} |= "
