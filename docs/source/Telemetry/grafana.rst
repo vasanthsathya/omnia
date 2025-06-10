@@ -44,7 +44,10 @@ Access the Grafana UI
         .. image:: ../images/Datasources_Grafana.png
             :width: 600px
 
+        <br>
         
+        </br>
+
         .. image:: ../images/Datasources_Grafana2.png
             :width: 600px
             
