@@ -110,5 +110,8 @@ fail_msg_high_availability_config_file: "high_availability_config.yml file doesn
 high_availability_config_syntax_fail_msg: "Failed. Syntax errors present in high_availability_config.yml. Fix errors and re-run playbook again."
 
 # Usage: validate_service_node_status.yml
-service_node_not_defined: "service_node is not defined in roles_config.yml. For federated_idrac_telemetry_collection service_node must be defined in roles_config.yml."
-service_node_not_booted: "The following service node with these BMC IPs are not booted: {{ validation_result.service_nodes_not_booted | join(', ') }}"
+service_node_not_defined: |
+  service_node is not defined in roles_config.yml.
+  Federated way of idrac telemetry collection is supported only for hierarchical cluster.
+  Please disable federated_idrac_telemetry_collection in telemetry_config.yml and execute telemetry.yml.
+service_node_not_booted: "The following service nodes with these BMC IPs are not booted: {{ validation_result.service_nodes_not_booted | join(', ') }}"

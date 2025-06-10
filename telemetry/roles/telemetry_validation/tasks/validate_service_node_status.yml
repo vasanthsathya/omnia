@@ -21,12 +21,10 @@
 
 - name: Fail if service_node is not defined in roles_config.yml
   ansible.builtin.fail:
-    msg: "{{ service_node_not_defined }}"
-  when:
-    - validation_result.service_node_defined not true
+    msg: "{{ service_node_not_defined | replace('\n', ' ')}}"
+  when: not validation_result.service_node_defined
 
 - name: Fail if service nodes in idrac inventory are not booted
   ansible.builtin.fail:
     msg: "{{ service_node_not_booted }}"
-  when:
-    - validation_result.service_nodes_not_booted
+  when: validation_result.service_nodes_not_booted
