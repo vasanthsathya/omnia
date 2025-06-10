@@ -85,6 +85,5 @@ def validate_input_logic(
         return validation_function(
             input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
         )
-    # else:
     message = f"Unsupported file: {input_file_path, data}"
     logger.error(message)
