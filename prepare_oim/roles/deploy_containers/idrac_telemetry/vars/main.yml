@@ -63,7 +63,7 @@ mysqldb_init_script:
   - {template: "mysqldb_init.sh.j2", dest: "{{ idrac_telemetry_dir }}/mysqldb_init.sh", mode: "{{ dir_permissions_755 }}" }
 mysqldb_volumes:
   - "mysqldb_data:/var/lib/mysql{{ selinux_option }}"
-  - "mysqldb_log:/var/log/mysql{{ selinux_option }}"
+  - "mysqldb_log:/var/log{{ selinux_option }}"
   - "{{ idrac_telemetry_dir }}/mysqldb_init.sh:{{ mysql_entry_script }}{{ selinux_option }}"
 mysql_db_create_query:
   - "CREATE DATABASE IF NOT EXISTS {{ mysql_database }}"

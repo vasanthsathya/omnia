@@ -185,6 +185,14 @@ scrape_configs:
           job: iDRAC Telemetry - activemq container logs
           __path__: /opt/omnia/log/telemetry/activemq/*log
 
+  - job_name: iDRAC Telemetry - mysqldb container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: iDRAC Telemetry - mysqldb container logs
+          __path__: /opt/omnia/log/telemetry/mysqldb/*log
+
   - job_name: iDRAC Telemetry - idrac_telemetry_receiver container logs
     static_configs:
       - targets:
@@ -281,6 +289,14 @@ scrape_configs:
           job: Service nodes iDRAC Telemetry - activemq container logs
           __path__: /opt/omnia/service_nodes/*/log/telemetry/activemq/*log
 
+  - job_name: Service nodes iDRAC Telemetry - mysqldb container logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Service nodes iDRAC Telemetry - mysqldb container logs
+          __path__: /opt/omnia/service_nodes/*/log/telemetry/mysqldb/*log
+
   - job_name: Service nodes iDRAC Telemetry - idrac_telemetry_receiver container logs
     static_configs:
       - targets:
@@ -297,3 +313,6 @@ scrape_configs:
           job: Service nodes Telemetry - prometheus container logs
           __path__: /opt/omnia/service_nodes/*/log/telemetry/prometheus/*log
 
+  /opt/omnia/log/core/playbooks/credential_utility.log
+
+  -
