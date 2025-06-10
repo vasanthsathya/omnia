@@ -8,14 +8,8 @@ IPs List:
   - {{ item }}
 {% endfor %}
 
-IP with Telemetry not supported: {{ failed_idrac_count }}
-IPs List (Telemetry not supported):
-{% for item in failed_idrac %}
-  - {{ item }}
-{% endfor %}
-
-IPs with Telemetry Initiated: {{ filtered_idrac_count }}
-IPs List (Telemetry Activated):
+IPs with Telemetry Initiated in last run: {{ filtered_idrac_count }}
+IPs List (Telemetry Activated in last run):
   {% for item in telemetry_idrac %}
   - {{ item }}
   {% endfor %}

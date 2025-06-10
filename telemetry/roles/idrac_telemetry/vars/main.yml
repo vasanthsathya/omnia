@@ -46,12 +46,6 @@ telemetry_report_sn: |
     - {{ item }}
   {% endfor %}
 
-  IP with Telemetry not supported: {{ failed_idrac_count }}
-  IPs List (Telemetry not supported):
-  {% for item in failed_idrac %}
-    - {{ item }}
-  {% endfor %}
-
   IPs with Telemetry Initiated: {{ filtered_idrac_count }}
   IPs List (Telemetry Activated):
   {% for item in telemetry_idrac %}
