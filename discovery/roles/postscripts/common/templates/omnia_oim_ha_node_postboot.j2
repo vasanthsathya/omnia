@@ -72,15 +72,5 @@ sudo systemctl start podman.socket || { echo "ERROR: Starting podman.socket." >>
 echo -e "INFO: Starting the omnia_pcs service." >> "$LOGFILE"
 sudo systemctl start omnia_pcs || { echo "ERROR: Starting omnia_pcs service." >> "$LOGFILE"; exit 1; }
 
-# Start ip forward
-echo "net.ipv4.ip_forward = 1" | sudo tee /etc/sysctl.d/99-ipforward.conf > /dev/null
-
-# Apply the new settings
-sudo sysctl --system
-
-# Confirm the setting is active
-echo "sysctl net.ipv4.ip_forward command output:" >> "$LOGFILE"
-sysctl net.ipv4.ip_forward >> "$LOGFILE"
-
 echo "$(date) - INFO - Finished OIM Passive node setup." >> "$LOGFILE"
 echo "---------------------------"
