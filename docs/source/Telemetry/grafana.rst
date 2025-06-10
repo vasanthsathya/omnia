@@ -35,7 +35,10 @@ Access the Grafana UI
             :width: 600px
 
 
+        .. role:: raw-role(raw)
+            :format: html latex
 
+        :raw-role:`<br/>`
 
 
         .. image:: ../images/Loki_logs.png
