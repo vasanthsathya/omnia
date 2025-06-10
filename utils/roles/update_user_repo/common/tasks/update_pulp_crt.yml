@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,9 +13,14 @@
 # limitations under the License.
 ---
 
-# This need to be updated when we support for ubuntu
-# - name: Update software repo for nodes on {{ cluster_os }}
-#   ansible.builtin.include_tasks: "update_user_repo.yml"
+- name: Copy Pulp certificate to nodes
+  ansible.builtin.copy:
+    src: "{{ pulp_cert_src }}"
+    dest: "{{ ca_trust_path }}"
+    mode: "{{ file_permission }}"
+  delegate_to: localhost
 
-# - name: Update software repo for nodes on {{ cluster_os }}
-#   ansible.builtin.include_tasks: "update_software_repo.yml"
+- name: Add Pulp certificate to TrustStore
+  ansible.builtin.command:
+    cmd: update-ca-trust extract
+  changed_when: false
