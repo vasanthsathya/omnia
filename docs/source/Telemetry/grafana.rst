@@ -74,9 +74,9 @@ Filter logs using Loki
         .. image:: ../images/Grafana_ControlPlaneLoki.png
             :width: 600px
 
-    3. The log browser allows you to filter logs by job, node, and/or user.
+    3. The log browser allows you to filter logs by the job name. Example: 
+    
+        ::
 
-    Example: ::
-
-        (job="cluster deployment logs") |= "nodename"
-        (job="compute log messages") |= "nodename" |="node_username"
+            { job="Omnia logs"} |= ""
+            { job="iDRAC Telemetry - idrac_telemetry_receiver container logs"} |= "
