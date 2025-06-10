@@ -1,4 +1,4 @@
-# Copyright 2022 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
 # limitations under the License.
 ---
 
-- name: Check if telemetry entry is present in software_config.json
-  when: hostvars['localhost']['idrac_telemetry_support']
+- name: Include telemetry_config.yml
   block:
-    - name: Collect iDRAC IP and initiate telemetry collection
-      ansible.builtin.include_tasks: initiate_telemetry.yml
-
-    - name: Generete telemetry report
-      ansible.builtin.include_tasks: create_telemetry_report.yml
+    - name: Include telemetry_config.yml
+      ansible.builtin.include_vars: "{{ telemetry_config_filename }}"
+      register: include_telemetry_config
+      tags: init
+  rescue:
+    - name: Failed to include  telemetry_config.yml
+      ansible.builtin.fail:
+        msg: "{{ telemetry_config_syntax_fail_msg }} Error: {{ include_telemetry_config.message }}"
