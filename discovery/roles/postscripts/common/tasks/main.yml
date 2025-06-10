@@ -41,6 +41,10 @@
     - name: Check omnia_oim group status
       ansible.builtin.include_tasks: check_nodes_oim_ha.yml
 
+    - name: Enable ip_forward on oim nodes
+      ansible.builtin.include_tasks: apply_ip_forward_oim.yml
+      when: enable_oim_ha
+
     - name: Check service_node group status
       ansible.builtin.include_tasks: check_nodes_service.yml
 
