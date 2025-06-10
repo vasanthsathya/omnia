@@ -61,6 +61,8 @@
       register: improper_resources
       failed_when: false
       changed_when: false
+      delegate_to: localhost
+      connection: local
 
     - name: Fail if PCS any resource is stopped or failed
       ansible.builtin.fail:
@@ -78,6 +80,8 @@
       register: resources
       failed_when: false
       changed_when: false
+      delegate_to: localhost
+      connection: local
 
     # - name: Log all created PCS resources
     #   ansible.builtin.debug:
