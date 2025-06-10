@@ -22,7 +22,7 @@
         mode: "{{ filemode }}"
         force: true
       when: service_node_hostname == 'oim'
-    
+
     - name: Update telemetry report for service node
       ansible.builtin.blockinfile:
         path: "{{ telemetry_report_path_sn }}"

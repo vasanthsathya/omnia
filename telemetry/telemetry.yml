@@ -171,4 +171,4 @@
   tasks:
     - name: Telemetry Report
       ansible.builtin.debug:
-        msg: "Check the file at {{ telemetry_report_path_oim }} for detailed telemetry report."
+        msg: "Check the file at {{ telemetry_report_path_oim }} in omnia_core container for detailed telemetry report."
