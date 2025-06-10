@@ -14,7 +14,7 @@ Access the Grafana UI
             http://localhost:5000/login
 
 
-       .. image:: ../images/Grafana_login.png
+        .. image:: ../images/Grafana_login.png
            :width: 600px
 
 
