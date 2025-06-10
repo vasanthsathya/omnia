@@ -28,4 +28,5 @@
         path: "{{ telemetry_report_path_sn }}"
         block: "{{ telemetry_report_sn }}"
         insertafter: EOF
+        marker: ""
       when: service_node_hostname != 'oim'
