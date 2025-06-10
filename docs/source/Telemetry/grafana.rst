@@ -11,32 +11,42 @@ Access the Grafana UI
     
         ::
         
-            http://localhost:5000/login
+            http://localhost:5000/login  
+
+
+    2. Enter the ``grafana_username`` and ``grafana_password`` as mentioned previously in the ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` input file. Click **Log in**.
 
 
         .. image:: ../images/Grafana_login.png
            :width: 600px
-
-
-    2. Enter the ``grafana_username`` and ``grafana_password`` as mentioned previously in the ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` input file.
+        
+    
+    3. Once you log in to the Grafana UI, go to **Dashboards > Browse** to view all Grafana dashboards available to you.
 
 
         .. image:: ../images/Grafana_Dashboards.png
             :width: 600px
 
 
-    3. Loki log collections can viewed on the explore section of the grafana UI.
+    3. Logs of individual containers collected by **Loki** can be viewed by clicking the ``loki`` dashboard, as shown in the below images:
 
 
         .. image:: ../images/Grafana_Loki.png
             :width: 600px
 
+        .. image:: ../images/Loki_logs.png
+            :width: 600px
 
-    4. Datasources configured by Omnia can be viewed below: 
+
+    4. To view the **Data Sources** configured by Omnia, go to **Configuration > Data Sources**. 
 
 
         .. image:: ../images/GrafanaDatasources.png
             :width: 600px
+
+        .. image:: ../images/GrafanaDatasources2.png
+            :width: 600px
+            
 
 Filter logs using Loki
 -----------------------
@@ -45,7 +55,7 @@ Filter logs using Loki
         
         http://localhost:5000/login
 
-    2. In the Explore page, select **oim-node-loki**.
+    2. In the Explore page, select **oim-loki** to view the log browser.
 
         .. image:: ../images/Grafana_ControlPlaneLoki.png
             :width: 600px
