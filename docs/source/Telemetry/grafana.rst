@@ -41,11 +41,11 @@ Access the Grafana UI
     4. To view the **Data Sources** configured by Omnia, go to **Configuration > Data Sources**. 
 
 
-        .. image:: ../images/GrafanaDatasources.png
+        .. image:: ../images/Datasources_Grafana.png
             :width: 600px
 
         
-        .. image:: ../images/GrafanaDatasources_2.png
+        .. image:: ../images/Datasources_Grafana2.png
             :width: 600px
             
 
