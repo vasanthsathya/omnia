@@ -156,16 +156,3 @@
         - name: Show failure msg
           ansible.builtin.fail:
             msg: "{{ mysqldb_insert_fail_msg }}"
-
-    - name: Create and update telemetry report from template
-      block:
-        - name: Create telemetry report
-          ansible.builtin.template:
-            src: telemetry_report.j2
-            dest: "{{ telemetry_report_path }}"
-            mode: "{{ filemode }}"
-            force: true
-
-        - name: Telemetry Report
-          ansible.builtin.debug:
-            msg: "{{ telemetry_report.splitlines() }}"
