@@ -27,6 +27,6 @@
       ansible.builtin.blockinfile:
         path: "{{ telemetry_report_path_sn }}"
         block: "{{ telemetry_report_sn }}"
-        insertafter: "----- Telemetry Report End -----"
+        insertafter: "===== Telemetry Report End ====="
         marker: ""
       when: service_node_hostname != 'oim'
