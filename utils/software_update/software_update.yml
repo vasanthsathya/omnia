@@ -44,13 +44,13 @@
       ansible.builtin.set_fact:
         software_config: "{{ include_software_config.content | b64decode | from_json }}"
       when: software_config_content.content is defined
-      ignore_errors: true
+      failed_when: false
 
     - name: Check if additional_software is present in software_config.json
       ansible.builtin.set_fact:
         additional_software_present: "{{ 'additional_software' in software_config }}"
       when: software_config is defined
-      ignore_errors: true
+      failed_when: false
 
     - name: Warn if additional_software is not present in software_config.json
       ansible.builtin.pause:
