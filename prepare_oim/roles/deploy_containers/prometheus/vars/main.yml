@@ -23,13 +23,6 @@ telemetry_log_dir: "{{ omnia_nfs_share }}/log/telemetry"
 # Usage: deploy_prometheus_pump_container.yml
 prometheus_pump_log_dir: "{{ telemetry_log_dir }}/prometheus_pump"
 prometheus_pump_dir: "{{ telemetry_data_dir }}/prometheus_pump"
-idrac_telemetry_scripting_git_clone_path: "/opt/omnia/telemetry/idrac_telemetry/iDRAC-Telemetry-Scripting"
-idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
-idrac_telemetry_scripting_stable_commit: "1f4bb26"
-idrac_git_clone_error_msg: |
-  Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_scripting_repo }}
-  to {{ idrac_telemetry_scripting_git_clone_path }}.
-  Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
 prometheus_pump_init_script:
  - template: "{{ role_path }}/templates/prometheus_pump_init.sh.j2"
    dest: "{{ prometheus_pump_dir }}/prometheus_pump.sh"
