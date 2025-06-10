@@ -34,6 +34,10 @@ Access the Grafana UI
         .. image:: ../images/Grafana_Loki.png
             :width: 600px
 
+
+
+
+        
         .. image:: ../images/Loki_logs.png
             :width: 600px
 
@@ -44,8 +48,9 @@ Access the Grafana UI
         .. image:: ../images/Datasources_Grafana.png
             :width: 600px
 
-    .. raw:: html
-            <br> <br>
+
+
+
 
         .. image:: ../images/Datasources_Grafana2.png
             :width: 600px
