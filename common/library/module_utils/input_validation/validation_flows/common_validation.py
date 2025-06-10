@@ -514,7 +514,7 @@ def validate_additional_software(
 
     # check if additional_software is present in software_config.json
     if "additional_software" not in software_config_json:
-        logger.warn("The additional_software field is not present in software_config.json")
+        logger.info("The additional_software field is not present in software_config.json")
         software_config_json["additional_software"] = []
 
     sub_groups_in_software_config = list(sub_group['name'] for sub_group in
