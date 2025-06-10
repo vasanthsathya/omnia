@@ -16,7 +16,7 @@
 
 #!/usr/bin/python
 
-""" This module is used to fetch telemetry host inventory"""
+""" This module is used to validate service node status"""
 
 import csv
 import os
