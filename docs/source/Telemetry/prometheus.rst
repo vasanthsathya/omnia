@@ -32,9 +32,11 @@ Via Grafana UI
 Via Prometheus UI
 -------------------
 
-1. To access the Prometheus UI via port 9090, enter the below URL into the browser's address bar: ::
+1. To access the Prometheus UI via port 9090, enter the below URL into the browser's address bar: 
+    
+    ::
         
-    http://localhost:9090
+        http://localhost:9090
 
     .. image:: ../images/idrac_telemetry_prometheus_ui.png
         :width: 600px
