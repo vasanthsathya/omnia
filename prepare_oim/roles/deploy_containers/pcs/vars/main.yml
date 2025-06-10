@@ -269,6 +269,8 @@ grafana_run_opts: >-
   --env GF_SERVER_HTTP_PORT={{ grafana_port }}
   --env GF_USERS_ALLOW_SIGN_UP=false
   --env GF_USERS_ALLOW_ORG_CREATE=false
+  --env GF_LOG_MODE=file
+  --env GF_PATHS_LOGS=/var/log/grafana
   {{ grafana_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
   --detach
   --entrypoint {{ grafana_entrypoint }}
