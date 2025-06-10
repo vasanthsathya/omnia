@@ -18,13 +18,13 @@
 # ***********************************************************************
 # By default, set to false to enable secure (HTTP) connection to the Pulp server.
 # Update to true if required to connect to the Pulp server using HTTPS.
-pulp_protocol_https: false
+pulp_protocol_https: true
 
 # enable_routed_internet should be set to true for clusters having partial or no dedicated internet access.
 # enable_routed_internet should be set to false for clusters having dedicated internet access.
 # When set to true, Squid Proxy will be deployed on OIM and will be used for routing requests from compute nodes.
 # By default, enable_routed_internet is set to true.
-enable_routed_internet: true
+enable_routed_internet: false
 
 # Optional
 # This variable accepts the repository urls of the user which contains the packages required for the cluster.
