@@ -24,7 +24,7 @@ Prerequisites
 Playbook execution
 -------------------
 
-Once the cluster nodes have been provisioned using the ``discovery_provision.yml`` playbook, you can initiate telemetry service on the cluster using the ``telemetry.yml`` playbook. To invoke the playbooks, use the below commands:
+Once the cluster nodes have been provisioned using the ``discovery_provision.yml`` playbook, you can initiate telemetry service on the cluster using the ``telemetry.yml`` playbook. To invoke the playbooks, use the below command:
 
 ::
 
