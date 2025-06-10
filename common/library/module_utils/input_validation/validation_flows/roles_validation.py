@@ -89,7 +89,7 @@ def validate_group_duplicates(input_file_path):
             create_error_msg(
                 "File",
                 f"Error reading {input_file_path}: {str(e)}",
-                "Failed to validate group duplicates",
+                "Failed to validate group duplicates"
             )
         )
 
@@ -117,7 +117,7 @@ def validate_layer_group_separation(logger, roles):
         "kube_control_plane",
         "etcd",
         "slurm_control_node",
-        "slurm_dbd",
+        "slurm_dbd"
     }
     compute_roles = {"kube_node", "slurm_node", "default"}
 
@@ -212,7 +212,7 @@ def validate_roles_config(
         "etcd",
         "slurm_control_plane",
         "slurm_dbd",
-        "auth_server",
+        "auth_server"
     }
 
     errors = []
@@ -222,7 +222,7 @@ def validate_roles_config(
             create_error_msg(
                 "roles_config.yml,",
                 None,
-                en_us_validation_msg.EMPTY_OR_SYNTAX_ERROR_ROLES_CONFIG_MSG,
+                en_us_validation_msg.EMPTY_OR_SYNTAX_ERROR_ROLES_CONFIG_MSG
             )
         )
         return errors
@@ -257,7 +257,7 @@ def validate_roles_config(
             create_error_msg(
                 groups,
                 "Current number of groups is 0:",
-                en_us_validation_msg.MIN_NUMBER_OF_GROUPS_MSG,
+                en_us_validation_msg.MIN_NUMBER_OF_GROUPS_MSG
             )
         )
     if not roles:
@@ -265,7 +265,7 @@ def validate_roles_config(
             create_error_msg(
                 roles,
                 "Current number of roles is 0:",
-                en_us_validation_msg.MIN_NUMBER_OF_ROLES_MSG,
+                en_us_validation_msg.MIN_NUMBER_OF_ROLES_MSG
             )
         )
     # Check maximum roles limit
@@ -274,7 +274,7 @@ def validate_roles_config(
             create_error_msg(
                 roles,
                 f"Current number of roles is {len(roles)}:",
-                en_us_validation_msg.MAX_NUMBER_OF_ROLES_MSG,
+                en_us_validation_msg.MAX_NUMBER_OF_ROLES_MSG
             )
         )
 
@@ -289,7 +289,7 @@ def validate_roles_config(
                 create_error_msg(
                     "software_config.yml",
                     None,
-                    en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG,
+                    en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG
                 )
             )
 
@@ -312,7 +312,7 @@ def validate_roles_config(
                     create_error_msg(
                         None,
                         f"Role {role[name]} must be associated with a group:",
-                        en_us_validation_msg.MIN_NUMBER_OF_GROUPS_MSG,
+                        en_us_validation_msg.MIN_NUMBER_OF_GROUPS_MSG
                     ),
                 )
             if role[name] == slurmworker or role[name] == k8worker:
@@ -331,7 +331,7 @@ def validate_roles_config(
                         create_error_msg(
                             role[name],
                             f"Current number of roles for {group} is {str(roles_per_group[group])}:",
-                            en_us_validation_msg.MAX_NUMBER_OF_ROLES_PER_GROUP_MSG,
+                            en_us_validation_msg.MAX_NUMBER_OF_ROLES_PER_GROUP_MSG
                         )
                     )
                 if group in groups:
@@ -346,7 +346,7 @@ def validate_roles_config(
                             create_error_msg(
                                 group,
                                 f"Group {group} should not have parent defined.",
-                                en_us_validation_msg.PARENT_SERVICE_NODE_MSG,
+                                en_us_validation_msg.PARENT_SERVICE_NODE_MSG
                             )
                         )
                     if not service_role_defined and (
@@ -362,7 +362,7 @@ def validate_roles_config(
                                 create_error_msg(
                                     group,
                                     f"Group {group} should not have parent defined.",
-                                    en_us_validation_msg.PARENT_SERVICE_ROLE_MSG,
+                                    en_us_validation_msg.PARENT_SERVICE_ROLE_MSG
                                 )
                             )
                     elif not service_role_defined and not validation_utils.is_string_empty(
@@ -372,7 +372,7 @@ def validate_roles_config(
                             create_error_msg(
                                 group,
                                 f"Group {group} parent is provided.",
-                                en_us_validation_msg.PARENT_SERVICE_ROLE_DNE_MSG,
+                                en_us_validation_msg.PARENT_SERVICE_ROLE_DNE_MSG
                             )
                         )
                 else:
@@ -381,7 +381,7 @@ def validate_roles_config(
                         create_error_msg(
                             group,
                             f"Group {group} does not exist.",
-                            en_us_validation_msg.GRP_EXIST_MSG,
+                            en_us_validation_msg.GRP_EXIST_MSG
                         )
                     )
 
@@ -401,7 +401,7 @@ def validate_roles_config(
                     create_error_msg(
                         group,
                         f"Group {group} is not associated with a role.",
-                        en_us_validation_msg.GRP_ROLE_MSG,
+                        en_us_validation_msg.GRP_ROLE_MSG
                     )
                 )
             if switch_ip_provided and switch_ports_provided:
@@ -413,7 +413,7 @@ def validate_roles_config(
                         create_error_msg(
                             group,
                             f"Group {group} switch ip is invalid:",
-                            en_us_validation_msg.INVALID_SWITCH_IP_MSG,
+                            en_us_validation_msg.INVALID_SWITCH_IP_MSG
                         )
                     )
                 if switch_ip in switch_ip_mapping:
@@ -427,7 +427,7 @@ def validate_roles_config(
                             create_error_msg(
                                 group,
                                 f"Group {group} has duplicate ports for switch ip {switch_ip}, this switch ip is shared with the following groups: {switch_ip_mapping[switch_ip]}.",
-                                en_us_validation_msg.DUPLICATE_SWITCH_IP_PORT_MSG,
+                                en_us_validation_msg.DUPLICATE_SWITCH_IP_PORT_MSG
                             )
                         )
                 if not validation_utils.check_port_ranges(
@@ -437,7 +437,7 @@ def validate_roles_config(
                         create_error_msg(
                             group,
                             f"Group {group} switch port range(s) are invalid, start > end:",
-                            en_us_validation_msg.INVALID_SWITCH_PORTS_MSG,
+                            en_us_validation_msg.INVALID_SWITCH_PORTS_MSG
                         )
                     )
                 switch_ip_mapping.setdefault(switch_ip, []).append(group)
@@ -453,7 +453,7 @@ def validate_roles_config(
                     create_error_msg(
                         group,
                         f"Group {group} switch details are incomplete:",
-                        en_us_validation_msg.SWITCH_DETAILS_INCOMPLETE_MSG,
+                        en_us_validation_msg.SWITCH_DETAILS_INCOMPLETE_MSG
                     )
                 )
             if (switch_ip_provided and switch_ports_provided) and not bmc_static_range_provided:
@@ -461,7 +461,7 @@ def validate_roles_config(
                     create_error_msg(
                         group,
                         f"Group {group} switch details provided:",
-                        en_us_validation_msg.SWITCH_DETAILS_NO_BMC_DETAILS_MSG,
+                        en_us_validation_msg.SWITCH_DETAILS_NO_BMC_DETAILS_MSG
                     )
                 )
 
@@ -481,7 +481,7 @@ def validate_roles_config(
                         create_error_msg(
                             group,
                             f"Group {group} BMC static range is invalid.",
-                            en_us_validation_msg.BMC_STATIC_RANGE_INVALID_MSG,
+                            en_us_validation_msg.BMC_STATIC_RANGE_INVALID_MSG
                         )
                     )
                 elif group not in static_range_mapping:
@@ -496,7 +496,7 @@ def validate_roles_config(
                             create_error_msg(
                                 group,
                                 f"Static range {static_range} overlaps with the following group(s): {grp_overlaps}.",
-                                en_us_validation_msg.OVERLAPPING_STATIC_RANGE,
+                                en_us_validation_msg.OVERLAPPING_STATIC_RANGE
                             )
                         )
                     static_range_mapping[group] = static_range
@@ -510,7 +510,7 @@ def validate_roles_config(
                     create_error_msg(
                         group,
                         f"Group {group} is missing resource_mgr_id.",
-                        en_us_validation_msg.RESOURCE_MGR_ID_MSG,
+                        en_us_validation_msg.RESOURCE_MGR_ID_MSG
                     )
                 )
             elif group not in set_resource_mgr_id and not validation_utils.is_string_empty(
@@ -522,7 +522,7 @@ def validate_roles_config(
                     create_error_msg(
                         group,
                         f"Group {group} should not have the resource_mgr_id set.",
-                        en_us_validation_msg.RESOURCE_MGR_ID_MSG,
+                        en_us_validation_msg.RESOURCE_MGR_ID_MSG
                     )
                 )
 
