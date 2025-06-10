@@ -288,7 +288,7 @@ def validate_vip_address(
     service_node_vip,
     admin_network,
     admin_netmaskbits,
-    oim_admin_ip,
+    oim_admin_ip
 ):
     """
         Validate a virtual IP address against a list of existing service node VIPs,
@@ -304,7 +304,8 @@ def validate_vip_address(
         - oim_admin_ip (str): The IP address of the OIM admin interface.
 
         Returns:
-        - None: The function does not return any value, it only appends error messages to the errors list.
+        - None: The function does not return any value, it only appends
+            error messages to the errors list.
     """
 
     # validate if the same virtual_ip_address is already use
@@ -352,7 +353,7 @@ def validate_k8s_head_node_ha(
     network_spec_data,
     roles_config_json,
     all_service_tags,
-    ha_node_vip_list,
+    ha_node_vip_list
 ):
     """
     Validates Kubernetes HA (High Availability) head node configuration for potential issues.
@@ -416,7 +417,7 @@ def validate_service_node_ha(
     network_spec_data,
     _roles_config_json,
     all_service_tags,
-    ha_node_vip_list,
+    ha_node_vip_list
 ):
     """
     Validates the high availability configuration for a service node.
@@ -456,7 +457,7 @@ def validate_service_node_ha(
             ha_node_vip_list,
             admin_network,
             admin_netmaskbits,
-            oim_admin_ip,
+            oim_admin_ip
         )
 
 
@@ -467,7 +468,7 @@ def validate_oim_ha(
     network_spec_data,
     roles_config_json,
     _all_service_tags,
-    ha_node_vip_list,
+    ha_node_vip_list
 ):
     """
     Validates the high availability configuration for a oim node.
@@ -501,7 +502,7 @@ def validate_oim_ha(
             ha_node_vip_list,
             admin_network,
             admin_netmaskbits,
-            oim_admin_ip,
+            oim_admin_ip
         )
 
     if bmc_virtual_ip:
@@ -552,7 +553,7 @@ ha_validation = {
     # Add more config_type functions here as needed
     "oim_ha": validate_oim_ha,
     # "slurm_head_node_ha":validation_slurm_head_node_ha
-    "k8s_head_node_ha": validate_k8s_head_node_ha,
+    "k8s_head_node_ha": validate_k8s_head_node_ha
 }
 
 
@@ -596,7 +597,7 @@ def validate_high_availability_config(
         "admin_uncorrelated_node_start_ip": get_admin_uncorrelated_node_start_ip(
             network_spec_json
         ),
-        "oim_admin_ip": get_primary_oim_admin_ip(network_spec_json),
+        "oim_admin_ip": get_primary_oim_admin_ip(network_spec_json)
     }
 
     # pylint: disable=too-many-branches
@@ -651,7 +652,7 @@ def validate_high_availability_config(
         ("oim_ha", ["admin_virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
         ("service_node_ha", ["service_nodes"]),
         ("slurm_head_node_ha", ["virtual_ip_address", "active_node_service_tag", "passive_nodes"]),
-        ("k8s_head_node_ha", ["virtual_ip_address", "active_node_service_tags"]),
+        ("k8s_head_node_ha", ["virtual_ip_address", "active_node_service_tags"])
     ]
 
     for config_name, mandatory_fields in ha_configs:
