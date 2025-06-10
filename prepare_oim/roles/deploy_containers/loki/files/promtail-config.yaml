@@ -129,7 +129,7 @@ scrape_configs:
         labels:
           job: utils logs
           __path__: /opt/omnia/log/core/playbooks/utils.log
-  
+
   - job_name: credential utility logs
     static_configs:
       - targets:
