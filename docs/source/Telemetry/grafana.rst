@@ -18,21 +18,21 @@ Access the Grafana UI
            :width: 600px
 
 
-    3. Enter the ``grafana_username`` and ``grafana_password`` as mentioned previously in the ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` input file.
+    2. Enter the ``grafana_username`` and ``grafana_password`` as mentioned previously in the ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` input file.
 
 
         .. image:: ../images/Grafana_Dashboards.png
             :width: 600px
 
 
-    4. Loki log collections can viewed on the explore section of the grafana UI.
+    3. Loki log collections can viewed on the explore section of the grafana UI.
 
 
         .. image:: ../images/Grafana_Loki.png
             :width: 600px
 
 
-    5. Datasources configured by Omnia can be viewed below: 
+    4. Datasources configured by Omnia can be viewed below: 
 
 
         .. image:: ../images/GrafanaDatasources.png
