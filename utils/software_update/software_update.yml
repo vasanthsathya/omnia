@@ -52,9 +52,9 @@
       when: software_config is defined
       failed_when: false
 
-    - name: Warn if additional_software is not present in software_config.json
-      ansible.builtin.pause:
-        prompt: "Warning: 'additional_software' section is not defined in software_config.json. Press ENTER to continue"
+    - name: Fail if additional_software is not present in software_config.json
+      ansible.builtin.fail:
+        msg: "'additional_software' field is not defined in software_config.json. Please define it to proceed."
       when: additional_software_present is not defined or not additional_software_present
 
 # Get all nodes to update repo

@@ -16,6 +16,7 @@ import json
 import ansible.module_utils.input_validation.common_utils.data_fetch as get
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import validation_utils
+from ansible.module_utils.input_validation.common_utils import data_verification
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
 from ansible.module_utils.input_validation.validation_flows import scheduler_validation
@@ -34,6 +35,7 @@ create_file_path = validation_utils.create_file_path
 contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
 flatten_sub_groups = validation_utils.flatten_sub_groups
+file_exists = data_verification.file_exists
 
 def validate_software_config(
     input_file_path, data,
@@ -77,10 +79,21 @@ def validate_software_config(
         json_files_dic = {}
         for file_path in json_files:
             json_files_dic.update({get.file_name_from_path(file_path): file_path})
+        new_file_path = json_files_dic.get("additional_software.json", None)
+
+        # Check for the addtional_software.json file exist
+        if new_file_path is None or not file_exists(new_file_path, module, logger):
+            logger.info("The additional_software.json does not exist...")
+            errors.append(
+                create_error_msg(
+                    "additional_software.json",
+                    new_file_path,
+                    en_us_validation_msg.MISSING_ADDITIONAL_SOFTWARE_JSON_FILE))
+            return errors
         additional_software_data = json.load(open(json_files_dic["additional_software.json"], "r"))
 
         additional_software_errors = validate_additional_software(
-            input_file_path, additional_software_data,
+            new_file_path, additional_software_data,
             logger, module, omnia_base_dir, module_utils_base, project_name)
         errors.extend(additional_software_errors)
 
