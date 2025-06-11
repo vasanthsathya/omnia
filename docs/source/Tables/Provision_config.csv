@@ -3,15 +3,16 @@
 
 ``string``
 
-Required",Path where user has placed the iso image that needs to be provisioned on target nodes. Accepted files are RHEL-9.4-DVD (full OS).  ``iso_file_path``  should contain the  ``provision_os``  and  ``provision_os_version``  values in the  filename.
+Required","* Path where user has placed the OS iso image that needs to be provisioned on target nodes. Accepted files are RHEL-9.4-DVD and RHEL-9.6-DVD (full OS).
+* ``iso_file_path``  should contain the  ``provision_os``  and  ``provision_os_version``  values in the  filename."
 "**node_name**
 
 ``string``
 
 Required","* Prefix for target node names, if dynamically allocated.
-* Hostname = node_name + '0000x' + domain_name
-* Hostname <= 65 characters
-* Example: servernode00001.Omnia.test , where  node_name =servernode,  domain_name =Omnia.test , 00001 used by Omnia.
+* Hostname: ``<node_name>0000x.<domain_name>``
+* Hostname should be less than or equal to 65 characters.
+* **Example**: ``servernode00001.Omnia.test``,  where  ``<node_name>`` is ``servernode``,  ``<domain_name> is ``Omnia.test``, and ``00001`` is appended by Omnia.
 
 **Default values**: ``node``"
 "**pxe_mapping_file_path**
@@ -19,10 +20,10 @@ Required","* Prefix for target node names, if dynamically allocated.
 ``string``
 
 Optional","* This variable is required to discover nodes using a mapping file.
-* The mapping file consists of the Service tag, Admin MAC,Hostname and its respective admin IP address and/or BMC IP.
+* The mapping file consists of the Service tag, Admin MAC, Hostname, Admin IP address, and/or BMC IP address.
 * Ensure that the admin IP addresses provided are within the ``admin_static_ranges``.
-* A sample file is provided here: examples/pxe_mapping_file.csv.
-* The headers of the CSV are SERVICE_TAG,ADMIN_MAC,HOSTNAME,ADMIN_IP,BMC_IP."
+* The headers of the ``.csv`` file are ``SERVICE_TAG``, ``ADMIN_MAC``, ``HOSTNAME``, ``ADMIN_IP``, and ``BMC_IP``
+* A sample file is provided here: ``examples/pxe_mapping_file.csv``"
 "**enable_switch_based**
 
 ``boolean`` [1]_
