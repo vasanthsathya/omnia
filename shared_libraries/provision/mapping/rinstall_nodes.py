@@ -56,7 +56,7 @@ def provision_map_nodes_bmc():
             mapping_bmc_nodes.append(node[0])
             command = f"/opt/xcat/bin/rinstall {node[0]}"
             command_list = command.split()
-            _ = subprocess.run(command_list, capture_output=True, check=True)
+            _ = subprocess.run(command_list, capture_output=True, check=False)
     print(mapping_bmc_nodes)
     cursor_x.close()
     conn_x.close()
