@@ -22,6 +22,9 @@ ansible_cfg_dest:
   - { path: "{{ playbook_dir }}/telemetry/ansible.cfg", log_path: "/var/log/omnia/omnia_telemetry.log", regexp: "/var/log/omnia.log" }
   - { path: "{{ playbook_dir }}/platforms/ansible.cfg", log_path: "/var/log/omnia/omnia_platforms.log", regexp: "/var/log/omnia.log" }
 
+# Usage: append_ip_to_inventory.yml
+k8s_nfs_share: "/opt/omnia/kubespray"
+
 # Usage: include_local_repo_config.yml
 local_repo_config_file: "{{ input_project_dir }}/local_repo_config.yml"
 local_repo_config_syntax_fail_msg: "Failed. Syntax errors present in local_repo_config.yml. Fix errors and re-run playbook again."

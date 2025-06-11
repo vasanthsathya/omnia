@@ -21,6 +21,7 @@ provision_dir: "{{ omnia_nfs_share }}/provision"
 provision_image_file: "omnia_provision"
 provision_image_name: "omnia_provision"
 provision_image_tag: "latest"
+domain_name: "{{ oim_hostname | regex_replace('^[^.]+\\.', '') }}"
 provision_container_name: "omnia_provision"
 provision_ssh_port: 2223
 wait_time: 5

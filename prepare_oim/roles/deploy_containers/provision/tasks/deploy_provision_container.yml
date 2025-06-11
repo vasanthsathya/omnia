@@ -74,7 +74,7 @@
         image: "{{ provision_image_name }}:{{ provision_image_tag }}"
         state: present
         restart_policy: "no"
-        hostname: "{{ oim_hostname }}"
+        hostname: "{{ provision_container_name }}.{{ domain_name }}"
         network_mode: host
         volumes: "{{ provision_volumes }}"
         privileged: true # Either make this true or uncomment below two
