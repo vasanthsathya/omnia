@@ -158,7 +158,7 @@
     telemetry_report: |
           ---- Telemetry Report Overview ({{ node_host }}) ----
           IP with Telemetry not supported: {{ failed_idrac_count }}
-          IPs with Telemetry Initiated: {{ filtered_idrac_count }}
+          IPs with Telemetry Initiated: {{ telemetry_idrac_count }}
 
           IPs List (Telemetry not supported):
           {% for item in failed_idrac %}
