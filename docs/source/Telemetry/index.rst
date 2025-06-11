@@ -12,7 +12,7 @@ Prerequisites
 
 * To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. 
 
-    * In a federated setup, telemetry data of the compute nodes is collected by their corresponding service nodes, and the telemetry data from the service nodes is further collected by the OIM. 
+    * In a federated setup, telemetry data from the compute nodes is collected by their corresponding service nodes, and the OIM then collects this data directly from the service nodes.    
     
     * Additionally, the ``idrac_telemetry_receiver``, ``activemq``, ``mysqldb``, ``prometheus``, and ``prometheus_pump`` containers are deployed on the service nodes to facilitate telemetry data collection. 
 
@@ -48,7 +48,3 @@ Once the cluster nodes have been provisioned using the ``discovery_provision.yml
 
     grafana
     prometheus
-
-
-
-
