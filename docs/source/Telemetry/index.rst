@@ -10,7 +10,9 @@ Prerequisites
 
 * To enable telemetry support, set ``idrac_telemetry_support`` to ``true`` and ``idrac_telemetry_collection_type`` to ``prometheus`` in the ``telemetry_config.yml`` file. Then, run the ``prepare_oim.yml`` playbook, which deploys the containers necessary for the telemetry service. For more information, `click here <../OmniaInstallGuide/RHEL_new/prepare_oim.html#telemetry-config-yml>`_.
 
-* To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. In this setup, the iDRAC telemetry container gathers data from all service nodes, each of which collects telemetry from its associated compute nodes. This enables centralized monitoring, analysis, and visualization.
+* To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. In a federated setup, telemetry data collected by the compute nodes is passed to their corresponding service nodes, which aggregate and forward it to the iDRAC telemetry container. This setup enables centralized monitoring, analysis, and visualization across the infrastructure.
+
+.. note:: Federated telemetry support is only available for a `hierarchical cluster <../OmniaInstallGuide/RHEL_new/xcat_hierarchical.html>`_. For a non-hierarchical cluster, telemetry data for all nodes in the cluster is collected by the OIM.
 
 .. csv-table:: telemetry_config.yml
    :file: ../Tables/telemetry_config.csv
