@@ -65,9 +65,7 @@
 
     - name: Warning - plugins will not be deployed
       ansible.builtin.debug:
-        msg: |
-          WARNING: Additional installation of Plugins will not be deployed because k8s nfs server_ip is "{{ k8s_nfs_server_ip }}".
-          Please configure a valid NFS server IP in storage_config.yml.
+        msg: "{{ plugins_warning_msg }}"
       when: plugins_deployment is false
 
     - name: Wait for 30 seconds to allow user to read warning
