@@ -12,9 +12,9 @@ Prerequisites
 
 * To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. 
 
-    * In a federated setup, telemetry data of the compute nodes is collected by their corresponding service nodes, and the ``idrac_telemetry_container`` present on the OIM collects it from the service nodes. 
+  * In a federated setup, telemetry data of the compute nodes is collected by their corresponding service nodes, and the ``idrac_telemetry_container`` present on the OIM collects it from the service nodes. 
     
-    * Additionally, the ``idrac_telemetry_receiver``, ``activemq``, ``mysqldb``, ``prometheus``, and ``prometheus_pump`` containers are deployed on the service nodes to facilitate telemetry data collection. 
+  * Additionally, the ``idrac_telemetry_receiver``, ``activemq``, ``mysqldb``, ``prometheus``, and ``prometheus_pump`` containers are deployed on the service nodes to facilitate telemetry data collection. 
 
 .. note:: Federated telemetry support is only available for a `hierarchical cluster <../OmniaInstallGuide/RHEL_new/xcat_hierarchical.html>`_. For a non-hierarchical cluster, telemetry data for all nodes in the cluster is collected by the OIM. 
 
