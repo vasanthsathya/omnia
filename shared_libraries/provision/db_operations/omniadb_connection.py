@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 """Database connection utilities for Omnia modules. """
+
 import psycopg2 as pg
 from cryptography.fernet import Fernet
 

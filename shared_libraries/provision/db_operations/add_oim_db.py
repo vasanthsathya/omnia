@@ -14,6 +14,7 @@
 """
 This module contains functions for inserting OIM details into the database.
 """
+
 import sys
 import ipaddress
 import omniadb_connection

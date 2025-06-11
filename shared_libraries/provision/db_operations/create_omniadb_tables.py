@@ -16,6 +16,7 @@ This script setups the omniadb.
 
 The module creates the omniadb database and cluster.nodeinfo table
 """
+
 import sys
 from cryptography.fernet import Fernet
 import psycopg2
