@@ -35,7 +35,7 @@ omnia_release=2.0.0.0
 core_container_status=false
 omnia_path=""
 hashed_passwd=""
-domain_name = ""
+domain_name=""
 
 is_local_ip() {
     local ip_to_check="$1"
