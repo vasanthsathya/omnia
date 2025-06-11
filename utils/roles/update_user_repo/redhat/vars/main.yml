@@ -36,4 +36,4 @@ os_type: "rhel"
 pulp_cert_path: /etc/pki/ca-trust/source/anchors/pulp_webserver.crt
 
 # Usage: create_omnia_repo.yml
-omnia_repo_baseurl_fail_msg: "Baseurl not defined for {{ item.final_repo_name }}. Please run local_repo.yml playbook and then run update_user_repo.yml
+omnia_repo_baseurl_fail_msg: "Baseurl not defined for {{ item.final_repo_name }}. Please run local_repo.yml playbook and then run update_user_repo.yml"
