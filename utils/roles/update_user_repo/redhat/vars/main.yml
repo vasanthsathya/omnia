@@ -17,7 +17,6 @@
 repo_path: "/etc/yum.repos.d"
 
 # Usage:create_software_repo.yml
-baseurl_fail_msg: "Baseurl not defined for {{ software_item }}. Please run local_repo.yml playbook and then run update_user_repo.yml"
 repo_config_template_src: "repo_config_template.j2"
 
 # Usage:update_user_repo.yml

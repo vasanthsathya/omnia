@@ -38,11 +38,6 @@
            | list
            | length > 0) | bool }}
 
-- name: Fail if baseurl is not present
-  ansible.builtin.fail:
-    msg: "{{ baseurl_fail_msg }}"
-  when: not baseurl_present
-
 - name: Create repo file on node
   ansible.builtin.template:
     src: "{{ repo_config_template_src }}"
