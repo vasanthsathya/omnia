@@ -24,7 +24,7 @@
 
 - name: Fail if baseurl is not present for {{ item.final_repo_name }}
   ansible.builtin.fail:
-    msg: "baseurl not defined for {{ item.final_repo_name }}. Please run local repo and then run update_user_repo.yml"
+    msg: "{{ omnia_repo_baseurl_fail_msg }}"
   when: not baseurl_present
 
 - name: Configure omnia repositories
