@@ -47,9 +47,9 @@ telemetry_report_template: "telemetry_report.j2"
 telemetry_report_sn: |
   ----- Telemetry Summary Report for {{ node_host }} -----
 
-  Total IPs Found in the {{ bmc_group_data_filename }}: {{ idrac_ip_count }}
+  Total IPs Found in the {{ bmc_group_data_filename }}: {{ bmc_ips[node_host] | length }}
   IPs List:
-  {% for item in idrac_ip %}
+  {% for item in bmc_ips[node_host] %}
     - {{ item }}
   {% endfor %}
 
