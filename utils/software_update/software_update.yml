@@ -54,7 +54,7 @@
 
     - name: Fail if additional_software is not present in software_config.json
       ansible.builtin.fail:
-        msg: "'additional_software' field is not defined in software_config.json. Please define it to proceed."
+        msg: "Failed! Update additional_software entry in software_config.json and provide packages details in additional_software.json"
       when: additional_software_present is not defined or not additional_software_present
 
 # Get all nodes to update repo
