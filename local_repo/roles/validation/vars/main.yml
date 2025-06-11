@@ -13,6 +13,23 @@
 # limitations under the License.
 ---
 
+# Usage: update_software_csv.yml
+software_csv_path: "/opt/omnia/log/local_repo/software.csv"
+usage_message: |
+  "WARNING:
+  If you have modified any <software_name>.json file (e.g., `additional_software.json`),
+  please run this playbook using:
+    ansible-playbook local_repo.yml -e "softwares=<list of softwares names seprated by comma>"
+
+  Example:
+    ansible-playbook local_repo.yml -e "softwares=additional_software"
+    ansible-playbook local_repo.yml -e "softwares=k8s,slurm"
+
+  If you have NOT modified any software JSON files, you can run:
+    ansible-playbook local_repo.yml"
+softwares_var_not_provided: "No softwares variable provided. Skipping."
+softwares_invalid_msg: "Invalid software_name(s) found: {{ softwares_list | difference(software_names) }}. Allowed values: {{ software_names }}"
+
 # Usage: dynamic_k8s_json.yml
 dynamic_k8s_json_file: "{{ dynamic_k8s_json_folder }}/v{{ k8s_version }}/k8s_v{{ k8s_version }}.json"
 base_k8s_json_file: "{{ project_input_path }}/config/{{ cluster_os_type }}/{{ cluster_os_version }}/k8s.json"
