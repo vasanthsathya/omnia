@@ -96,7 +96,7 @@
         - name: Failed to filter iDRACs
           ansible.builtin.fail:
             msg: "{{ filter_idrac_fail_msg }} Error: {{ filter_idrac_output.msg }}"
-  
+
     - name: Update the telemetry variables with filtered iDRACs
       ansible.builtin.set_fact:
         telemetry_idrac: "{{ filter_idrac_output.telemetry_idrac }}"
