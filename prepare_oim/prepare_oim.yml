@@ -184,19 +184,32 @@
         name: deploy_containers/pcs
         tasks_from: deploy_pcs_container_resources.yml
 
+# - name: Save container images to NFS share
+#   hosts: oim
+#   connection: ssh
+#   gather_facts: false
+#   tags: oim_ha
+#   roles:
+#     - role: save_container_images  # noqa:role-name[path]
+#       when: >
+#         omnia_share_option == 'NFS' and
+#         (
+#           (hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.enable_oim_ha | default(false)) or
+#           (hostvars['localhost']['has_service_role'] | default(false))
+#         )
+
 - name: Save container images to NFS share
-  hosts: oim
-  connection: ssh
-  gather_facts: false
-  tags: oim_ha
-  roles:
-    - role: save_container_images  # noqa:role-name[path]
-      when: >
-        omnia_share_option == 'NFS' and
-        (
-          (hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.enable_oim_ha | default(false)) or
-          (hostvars['localhost']['has_service_role'] | default(false))
-        )
+  ansible.builtin.import_playbook: ../utils/save_container_images.yml
+  vars:
+    k8s_support: "{{ hostvars['localhost']['k8s_support'] | default(false) }}"
+    idrac_telemetry_support: "{{ hostvars['localhost']['idrac_telemetry_support'] | default(false) }}"
+    visualization_support: "{{ hostvars['localhost']['visualization_support'] | default(false) }}"
+  when: >
+    omnia_share_option == 'NFS' and
+    (
+      (hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.enable_oim_ha | default(false)) or
+      (hostvars['localhost']['has_service_role'] | default(false))
+    )
 
 - name: Prepare oim completion
   hosts: localhost

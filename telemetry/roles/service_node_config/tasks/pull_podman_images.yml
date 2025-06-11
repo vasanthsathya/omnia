@@ -12,11 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+---
+
 - name: Pull podman images from tar file
   block:
-    - name: Load podman images
+    - name: Find all tar files in the image directory
+      ansible.builtin.find:
+        paths: "{{ tar_directory }}"
+        patterns: "*.tar"
+        recurse: false
+      register: found_tarballs
+
+    - name: Load image tarballs using podman
       containers.podman.podman_load:
-        input: "{{ omnia_images_tar }}"
+        input: "{{ item.path }}"
+      loop: "{{ found_tarballs.files }}"
+      loop_control:
+        label: "{{ item.path }}"
   rescue:
     - name: Failed to load the telemetry images
       ansible.builtin.fail:
