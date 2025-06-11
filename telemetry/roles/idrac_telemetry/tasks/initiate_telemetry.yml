@@ -89,7 +89,7 @@
             bmc_ip_list: "{{ filtered_bmc_ip_list }}"
             bmc_username: "{{ hostvars['localhost']['bmc_username'] }}"
             bmc_password: "{{ hostvars['localhost']['bmc_password'] }}"
-            min_firmware_version_reqd: 4
+            min_firmware_version_reqd: "{{ min_firmware_version_reqd }}"
           no_log: true
           register: filter_idrac_output
       rescue:
