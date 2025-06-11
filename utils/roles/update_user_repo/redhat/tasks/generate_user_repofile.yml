@@ -17,10 +17,15 @@
   ansible.builtin.set_fact:
     baseurl_present: >-
       {{ (pulp_dist_result
-          | selectattr('name', 'equalto', item.name)
-          | map(attribute='base_url')
-          | list
-          | length) > 0 }}
+           | selectattr('name', 'equalto', item.name)
+           | map(attribute='base_url')
+           | list
+           | length > 0) | bool }}
+
+- name: Fail if baseurl is not present
+  ansible.builtin.fail:
+    msg: "{{ userrepo_baseurl_fail_msg }}"
+  when: not baseurl_present
 
 - name: Configure user repository
   ansible.builtin.template:
@@ -28,3 +33,4 @@
     dest: "{{ repo_path }}/{{ item.name }}.repo"
     mode: "{{ file_permission }}"
   when: baseurl_present
+

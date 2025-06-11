@@ -1,0 +1,23 @@
+---
+
+- name: Check if base_url is present for each omnia repo
+  ansible.builtin.set_fact:
+    baseurl_present: >-
+      {{ (hostvars['localhost']['pulp_output_fact']
+           | selectattr('name', 'equalto', item.final_repo_name)
+           | map(attribute='base_url')
+           | list
+           | length > 0) | bool }}
+
+- name: Fail if baseurl is not present for {{ item.final_repo_name }}
+  ansible.builtin.fail:
+    msg: "baseurl not defined for {{ item.final_repo_name }}. Please run local repo and then run update_user_repo.yml"
+  when: not baseurl_present
+
+- name: Configure omnia repositories
+  ansible.builtin.template:
+    src: "{{ omnia_repo_config_template_src }}"
+    dest: "{{ repo_path }}/{{ item.final_repo_name }}.repo"
+    mode: "{{ file_permission }}"
+  when: baseurl_present
+
