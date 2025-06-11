@@ -6,18 +6,18 @@ Omnia can deploy and configure PowerEdge servers (a.k.a. nodes), and build clust
 1. **Omnia Infrastructure Manager (OIM)**: The OIM is like a central node in a cluster, separate from the actual computing nodes. It acts as the main hub of the cluster, hosting the Omnia provisioning and monitoring tool. When setting up the cluster, the Omnia repository is copied and downloaded to the OIM.
 2. **Head Node**: The head node in an Omnia cluster is a server that is responsible for hosting the scheduling manager (``kube_control_plane`` or ``slurm_control_node``). Similar to the OIM, the head node is separate from the compute nodes in the cluster. It plays a crucial role in managing the scheduling of tasks within the cluster.
 
-Omnia "AI" cluster
+"AI" cluster
 -------------------
 
-Components of an AI-driven Omnia cluster are:
+Components of an AI-driven cluster are:
 
 * **Head node**: In an AI workload-driven Omnia cluster, the head node is nothing but the ``kube_control_plane`` used to manage Kubernetes jobs on the cluster.
 * **Compute nodes**: In an AI cluster, a compute node is nothing but a ``kube_node``.
 
-Omnia "HPC" cluster
+"HPC" cluster
 --------------------
 
-Components of an HPC Omnia cluster are:
+Components of an HPC cluster are:
 
 * **Head node**: In an HPC cluster, the head node is nothing but the ``slurm_control_node`` used to manage slurm jobs on the cluster.
 * **Compute nodes**: In an HPC cluster, a compute node is nothing but a ``slurm_node``.
