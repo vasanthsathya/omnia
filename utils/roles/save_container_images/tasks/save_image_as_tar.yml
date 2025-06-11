@@ -73,23 +73,42 @@
     - "{{ image_tar_path }}"
     - "{{ image_digest_path }}"
   when: image_changed | default(true)
+- name: Save image as tar
+  block:
 
-- name: Save {{ image_name }} image as tar at {{ image_tar_path }} (this may take a few minutes)
-  containers.podman.podman_save:
-    image: "{{ image_name }}"
-    dest: "{{ image_tar_path }}"
-  register: saved_result
-  when:
-    - image_changed | default(true) or not tar_file_check.stat.exists
+    - name: Save {{ image_name }} image as tar at {{ image_tar_path }} (this may take a few minutes)
+      containers.podman.podman_save:
+        image: "{{ image_name }}"
+        dest: "{{ image_tar_path }}"
+      register: saved_result
+      when:
+        - image_changed | default(true) or not tar_file_check.stat.exists
 
-- name: Add image to saved list if it was saved
-  ansible.builtin.set_fact:
-    saved_images: "{{ saved_images + [image_name] }}"
-  when: saved_result is defined and saved_result is changed
+    - name: Add image to saved list if it was saved
+      ansible.builtin.set_fact:
+        saved_images: "{{ saved_images + [image_name] }}"
+      when: saved_result is defined and saved_result is changed
 
-- name: Save current digest
-  ansible.builtin.copy:
-    content: "{{ current_digest }}"
-    dest: "{{ image_digest_path }}"
-  when:
-    - image_changed | default(true) or not tar_file_check.stat.exists
+    - name: Save current digest
+      ansible.builtin.copy:
+        content: "{{ current_digest }}"
+        dest: "{{ image_digest_path }}"
+      when:
+        - image_changed | default(true) or not tar_file_check.stat.exists
+        - saved_result is defined and saved_result is changed
+
+  rescue:
+
+    - name: Cleanup tar if save operation failure
+      ansible.builtin.file:
+        path: "{{ image_tar_path }}"
+        state: absent
+
+    - name: Cleanup digest if save operation failure
+      ansible.builtin.file:
+        path: "{{ image_digest_path }}"
+        state: absent
+
+    - name: Fail the task
+      ansible.builtin.debug:
+        msg: "Image `{{ image_name }}` save failed and partial tar and digest was removed."
