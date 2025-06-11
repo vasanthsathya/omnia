@@ -35,6 +35,28 @@
 - name: Invoke validate_config.yml to perform L1 and L2 validations with additional_software tag
   ansible.builtin.import_playbook: ../../input_validation/validate_config.yml
 
+- name: Check for additional_software in software_config.json
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Parse software_config.json
+      ansible.builtin.set_fact:
+        software_config: "{{ include_software_config.content | b64decode | from_json }}"
+      when: software_config_content.content is defined
+      failed_when: false
+
+    - name: Check if additional_software is present in software_config.json
+      ansible.builtin.set_fact:
+        additional_software_present: "{{ 'additional_software' in software_config }}"
+      when: software_config is defined
+      failed_when: false
+
+    - name: Fail if additional_software is not present in software_config.json
+      ansible.builtin.fail:
+        msg: "Failed! Update additional_software entry in software_config.json and provide packages details in additional_software.json"
+      when: additional_software_present is not defined or not additional_software_present
+
 # Get all nodes to update repo
 - name: Get the nodes to update repo from DB and create new group
   hosts: localhost

@@ -119,6 +119,7 @@ openldap_organizational_unit_fail_msg = "openldap_organizational_unit is empty. 
 # software_config.json
 iso_file_path_fail_msg = "The provided ISO file path is invalid. Please ensure that the ISO file exists at the specified iso_file_path."
 iso_file_path_not_contain_iso_msg = "The provided ISO file path must have the .iso extension."
+MISSING_ADDITIONAL_SOFTWARE_JSON_FILE = "The software_config.json has addtional_software field but missing the additional_software.json file."
 def iso_file_path_not_contain_os_msg(iso_file_path, provision_os, provision_os_version):
     return f'Make sure iso_file_path variable in provision_config.yml contains value mentioned in the variables cluster_type: {provision_os} and cluster_os_version: {provision_os_version} mentioned in software_config.json'
 def os_version_fail_msg(cluster_os_type, min_version, max_version):
@@ -191,7 +192,7 @@ ADDITIONAL_SOFTWARE_FAIL_MSG = "The additional_software is mandatory in addition
 ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG = ("The role or group name, [{0}] is present in subgroup "
                                          "but not present in roles_config.yml")
 MISSING_IN_ADDITIONAL_SOFTWARE_MSG = ("The role or group name is present in software_config.json, "
-                                     "but [{0}] is not present in additional_software.yml")
+                                     "but [{0}] is not present in additional_software.json")
 
 # login_node_security
 def restrict_softwares_fail_msg(software):
