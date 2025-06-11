@@ -4,7 +4,7 @@
 
 Total IPs Found: {{ bmc_ips | length }}
 IPs List:
-{% for item in bmc_ips %}
+{% for item in bmc_ips[node_host] %}
   - {{ item }}
 {% endfor %}
 

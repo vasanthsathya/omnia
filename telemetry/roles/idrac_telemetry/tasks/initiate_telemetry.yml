@@ -15,11 +15,11 @@
 
 # Include and initialize variables
 - name: Initiate telemetry process if idrac_support is enabled
-  when: hostvars['localhost']['idrac_telemetry_support'] is true
+  when: hostvars['localhost']['idrac_telemetry_support']
   block:
     - name: Set server host
       ansible.builtin.set_fact:
-        service_node_hostname: >-
+        node_host: >-
           {{
             hostvars[inventory_hostname]['service_tag']
             if inventory_hostname != 'localhost'
@@ -76,7 +76,7 @@
 
             - name: Generate filtered iDRAC IP list
               ansible.builtin.set_fact:
-                filtered_bmc_ip_list: "{{ hostvars['localhost']['bmc_ips'][service_node_hostname] | difference(db_idrac_ip_list) }}"
+                filtered_bmc_ip_list: "{{ hostvars['localhost']['bmc_ips'][node_host] | difference(db_idrac_ip_list) }}"
       rescue:
         - name: Failed to connect mysqldb
           ansible.builtin.fail:
