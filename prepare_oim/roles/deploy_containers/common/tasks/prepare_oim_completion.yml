@@ -14,6 +14,19 @@
 
 ---
 
+- name: Check if bmc group data file exists
+  ansible.builtin.stat:
+    path: "{{ bmc_group_data_filename }}"
+  register: bmc_group_data_status
+  failed_when: false
+
+- name: Create bmc group data file if it doesn't exist
+  ansible.builtin.template:
+    src: "{{ bmc_group_data_template }}"
+    dest: "{{ bmc_group_data_filename }}"
+    mode: "{{ file_permissions }}"
+  when: not bmc_group_data_status..stat.exists
+
 - name: Prepare oim completion
   ansible.builtin.debug:
     msg: "{{ prepare_oim_completion_msg }}"
