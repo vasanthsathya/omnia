@@ -14,15 +14,6 @@ Required","* Prefix for target node names, if dynamically allocated.
 * Example: servernode00001.Omnia.test , where  node_name =servernode,  domain_name =Omnia.test , 00001 used by Omnia.
 
 **Default values**: ``node``"
-"**domain_name**
-
-``string``
-
-Required","* Domain name the user intends to configure on the cluster.
-* Hostname = node_name + '0000x' + domain_name
-* Hostname <= 65 characters
-* Please provide a valid domain name according to the domain name standards.
-* Example: servernode00001.Omnia.test , where node_name=servernode, domain_name=Omnia.test , 00001 used by Omnia."
 "**pxe_mapping_file_path**
 
 ``string``
