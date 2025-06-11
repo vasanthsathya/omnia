@@ -1,5 +1,5 @@
-Uninstalling the OIM tools
-------------------------------
+OIM cleanup
+===============
 
 Run this script to roll back all modifications made to the OIM, such as configured local repositories, provisioning tools, and telemetry configurations.
 
