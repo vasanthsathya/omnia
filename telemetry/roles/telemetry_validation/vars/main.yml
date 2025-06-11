@@ -114,4 +114,6 @@ service_node_not_defined: |
   service_node is not defined in roles_config.yml.
   Federated way of idrac telemetry collection is supported only for hierarchical cluster.
   Please disable federated_idrac_telemetry_collection in telemetry_config.yml and execute telemetry.yml.
-service_node_not_booted: "The following service nodes with these BMC IPs are not booted: {{ validation_result.service_nodes_not_booted | join(', ') }}"
+service_node_not_booted: |
+  The following service nodes with these service tags are currently not booted: {{ validation_result.service_nodes_not_booted | join(', ') }}.
+  Please wait for the nodes to boot or re-provision the nodes in case of failure.
