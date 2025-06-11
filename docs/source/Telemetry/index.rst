@@ -12,7 +12,7 @@ Prerequisites
 
 * To enable federated telemetry support, set ``federated_idrac_telemetry_collection`` to ``true`` in the ``telemetry_config.yml`` file. In a federated setup, telemetry data collected by the compute nodes is passed to their corresponding service nodes, which aggregate and forward it to the iDRAC telemetry container. This setup enables centralized monitoring, analysis, and visualization across the infrastructure.
 
-.. note:: Federated telemetry support is only available for a `hierarchical cluster <../OmniaInstallGuide/RHEL_new/xcat_hierarchical.html>`_. For a non-hierarchical cluster, telemetry data for all nodes in the cluster is collected by the OIM.
+.. note:: Federated telemetry support is only available for a `hierarchical cluster <../OmniaInstallGuide/RHEL_new/xcat_hierarchical.html>`_. For a non-hierarchical cluster, telemetry data for all nodes in the cluster (management node, service nodes, and compute nodes) is collected by the OIM.
 
 .. csv-table:: telemetry_config.yml
    :file: ../Tables/telemetry_config.csv
