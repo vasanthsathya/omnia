@@ -269,6 +269,8 @@ grafana_run_opts: >-
   --env GF_SERVER_HTTP_PORT={{ grafana_port }}
   --env GF_USERS_ALLOW_SIGN_UP=false
   --env GF_USERS_ALLOW_ORG_CREATE=false
+  --env GF_LOG_MODE=file
+  --env GF_PATHS_LOGS=/var/log/grafana
   {{ grafana_volumes | map('regex_replace', '^', '--volume ') | join(' ') }}
   --detach
   --entrypoint {{ grafana_entrypoint }}
@@ -293,7 +295,7 @@ promtail_run_opts: >-
   --add-host=loki:127.0.0.1
   --add-host=promtail:127.0.0.1
   --volume loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}
-  --volume {{ omnia_nfs_share }}/log:/var/log{{ selinux_option }}
+  --volume {{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}
   --detach
 promtail_run_cmd: >-
   --config.file={{ container_config_mnt }}/promtail-config.yaml

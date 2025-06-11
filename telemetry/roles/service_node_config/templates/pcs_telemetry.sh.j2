@@ -55,7 +55,7 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
 
 echo "Adding mysql, activemq, and idrac_telemetry_receiver to omnia_telemetry group"
 pcs resource group add {{ telemetry_pcs_group }} {{ mysql_container_name }} {{ activemq_container_name }} {{ idrac_telemetry_receiver_container_name }}
-pcs constraint colocation add {{ pcs_group }} with {{ telemetry_pcs_group }} INFINITY
+pcs constraint colocation add {{ telemetry_pcs_group }} with{{ pcs_group }} INFINITY
 {% endif %}
 
 # Resource for prometheus and prometheus_pump

@@ -54,7 +54,7 @@ promtail_container_name: "promtail"
 promtail_image: docker.io/grafana/promtail
 promtail_image_tag: "3.4.1"
 promtail_volumes:
-  - "{{ omnia_nfs_share }}/log:/var/log{{ selinux_option }}"
+  - "{{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}"
   - "loki_promtail_config:{{ container_config_mnt }}{{ selinux_option }}"
 promtail_config_file_path:
   - { src: "files/promtail-config.yaml", dest: "{{ loki_promtail_config_dir }}", mode: "0644" }

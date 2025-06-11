@@ -49,7 +49,7 @@ mysql_run_opts: >-
   --secret {{ mysql_user_password }},type=env,target=MYSQL_PASSWORD
   --env MYSQL_DATABASE={{ mysql_database }}
   --volume mysqldb_data:/var/lib/mysql
-  --volume mysqldb_log:/var/log/mysql
+  --volume mysqldb_log:/var/log
   --volume {{ oim_idrac_telemetry_dir }}/mysqldb_init.sh:{{ mysql_entry_script }}
   --entrypoint {{ mysql_entry_script }}
   --detach
@@ -130,7 +130,7 @@ prometheus_pump_run_opts: >-
   --network=host
   --log-driver=json-file
   --log-opt path={{ prometheus_log_dir }}/prometheus.log
-  --env MESSAGEBUS_HOST="locahost"
+  --env MESSAGEBUS_HOST="127.0.0.1"
   --env MESSAGEBUS_PORT="61613"
   --env PROMETHEUSDB_SERVER="prometheus"
   --volume {{ oim_idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools
