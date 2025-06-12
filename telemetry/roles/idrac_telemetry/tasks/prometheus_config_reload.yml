@@ -13,7 +13,7 @@
 # limitations under the License.
 ---
 
-- name: Reload Prometheus configuration
+- name: Reload Prometheus configuration # noqa command-instead-of-module
   ansible.builtin.command: curl -X POST "{{ prometheus_reload.url }}"
   changed_when: false
   when:
