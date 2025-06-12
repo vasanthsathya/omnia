@@ -153,7 +153,7 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  task:
+  tasks:
     name: Reload prometheus config
     ansible.builtin.include_role:
       name: idrac_telemetry

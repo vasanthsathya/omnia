@@ -22,7 +22,7 @@
   retries: "{{ prometheus_reload.retries }}"
   delay: "{{ prometheus_reload.delay }}"
   until: prometheus_reload_result.status == 200
-  when: 
+  when:
     - idrac_telemetry_support
     - federated_idrac_telemetry_collection
     - idrac_telemetry_collection_type == "prometheus"
