@@ -264,7 +264,7 @@ scrape_configs:
         labels:
           job: Omnia input validation report logs
           __path__: /opt/omnia/log/core/playbooks/validation_omnia_project_default.log
-  
+
   - job_name: Omnia input validation playbook logs
     static_configs:
       - targets:
