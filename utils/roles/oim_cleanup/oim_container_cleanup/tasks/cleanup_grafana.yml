@@ -53,6 +53,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
+        force: true
       loop:
         - "{{ grafana_data_dir }}"
         - "{{ grafana_logs_dir }}"

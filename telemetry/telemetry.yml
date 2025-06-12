@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@
       ansible.builtin.set_fact:
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['telemetry']) | unique }}"
         cacheable: true
+
+- name: Invoke validate_config.yml to perform L1 and L2 validations
+  ansible.builtin.import_playbook: ../input_validation/validate_config.yml
 
 - name: Invoke get_config_credentials.yml
   ansible.builtin.import_playbook: ../utils/credential_utility/get_config_credentials.yml
@@ -63,9 +66,128 @@
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
 #   when: not ( hostvars['127.0.0.1']['update_user_repo_executed'] | default(false) | bool )
 
-- name: Telemetry for omnia
+- name: Configure oim ha node for telemetry
+  hosts: oim_ha_node
+  connection: ssh
+  gather_facts: false
+  roles:
+    - oim_ha_node_config
+
+- name: Render template for telemetry
   hosts: localhost
   connection: local
   gather_facts: false
+  tasks:
+    - name: Render template for telemetry
+      ansible.builtin.include_role:
+        name: service_node_config
+        tasks_from: render_telemetry_template.yml
+
+- name: Configure service nodes for telemetry
+  hosts: sn_admin
+  connection: ssh
+  gather_facts: false
   roles:
-    - idrac_telemetry
+    - service_node_config
+
+- name: Deployment of telemetry container in service node
+  hosts: sn_active
+  connection: ssh
+  gather_facts: false
+  tasks:
+    - name: Deployment of telemetry container in service node
+      ansible.builtin.include_role:
+        name: service_node_config
+        tasks_from: pcs_container_deployment.yml
+
+- name: Update prometheus configuration in OIM
+  hosts: oim
+  connection: ssh
+  gather_facts: false
+  tasks:
+    - name: Render PCS template for telemetry
+      ansible.builtin.include_role:
+        name: service_node_config
+        tasks_from: prometheus_config_update.yml
+
+- name: Enable idrac telemetry in OIM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Enable idrac telemetry
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+
+- name: Initiate telemetry collection on OIM
+  hosts: oim
+  connection: ssh
+  gather_facts: false
+  tasks:
+    - name: Initiate telemetry collection
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+        tasks_from: trigger_telemetry_collection.yml
+      when:
+        - hostvars['localhost']['telemetry_idrac'] is defined
+        - (hostvars['localhost']['telemetry_idrac'] | length > 0)
+
+- name: Enable idrac telemetry in SN
+  hosts: sn_active
+  connection: ssh
+  gather_facts: false
+  tasks:
+    - name: Enable idrac telemetry
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+
+    - name: Initiate telemetry collection
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+        tasks_from: trigger_telemetry_collection.yml
+      when:
+        - telemetry_idrac is defined
+        - (telemetry_idrac | length > 0)
+
+- name: Reload prometheus config
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Reload prometheus config
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+        tasks_from: prometheus_config_reload.yml
+
+- name: Telemetry report overview
+  hosts: localhost, sn_active
+  connection: ssh
+  gather_facts: false
+  vars:
+    node_host: "{{ hostvars[inventory_hostname]['service_tag'] if inventory_hostname != 'localhost' else 'oim' }}"
+    telemetry_report: |
+          ---- Telemetry Report Overview ({{ node_host }}) ----
+          IP with Telemetry not supported: {{ failed_idrac_count }}
+          IPs with Telemetry Initiated: {{ telemetry_idrac_count }}
+
+          IPs List (Telemetry not supported):
+          {% for item in failed_idrac %}
+            - {{ item }}
+          {% endfor %}
+  tasks:
+    - name: Telemetry Report Overview
+      ansible.builtin.debug:
+        msg: "{{ telemetry_report.splitlines() }}"
+      when: hostvars['localhost']['idrac_telemetry_support']
+
+- name: Detailed Telemetry Report
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    telemetry_report_path_oim: "/opt/omnia/telemetry/idrac_telemetry_report.yml"
+  tasks:
+    - name: Detailed Telemetry Report
+      ansible.builtin.debug:
+        msg: "Check the file at {{ telemetry_report_path_oim }} in omnia_core container for detailed telemetry report."
+      when: hostvars['localhost']['idrac_telemetry_support']

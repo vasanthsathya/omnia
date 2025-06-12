@@ -1,0 +1,62 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+
+- name: Check service node metadata file exists
+  ansible.builtin.stat:
+    path: "{{ service_node_metadata_path }}"
+  register: service_node_metadata_exists
+
+- name: Include service node metadata vars
+  ansible.builtin.include_vars: "{{ service_node_metadata_path }}"
+  when: service_node_metadata_exists.stat.exists
+
+- name: Get updated host inventory
+  get_telemetry_host_inventory:
+    bmc_group_data_path: "{{ bmc_group_data_filename }}"
+    service_node_metadata: "{{ service_nodes_metadata | default({}) }}"
+    inventory_file_path: "{{ cluster_layout_path if enable_oim_ha else '' }}"
+  register: host_inventory
+
+- name: Fail if invalid parent tags found
+  ansible.builtin.fail:
+    msg: "{{ invalid_parent_tags_message | replace('\n', ' ') }}"
+  when:
+    - host_inventory.invalid_parent_tags is defined
+    - host_inventory.invalid_parent_tags | length > 0
+
+- name: Add service node admin details to inventory
+  ansible.builtin.add_host:
+    name: "{{ item.value }}"
+    groups: sn_admin
+    service_tag: "{{ item.key }}"
+  loop: "{{ host_inventory.sn_admin_ip | dict2items }}"
+  when: federated_idrac_telemetry_collection
+
+- name: Add active service nodes to inventory
+  ansible.builtin.add_host:
+    name: "{{ item.value }}"
+    groups: sn_active
+    service_tag: "{{ item.key }}"
+  loop: "{{ host_inventory.sn_active_ip | dict2items }}"
+  when: federated_idrac_telemetry_collection
+
+- name: Add passive oim hosts to inventory
+  ansible.builtin.add_host:
+    name: "{{ item }}"
+    groups: "oim_ha_node"
+  loop: "{{ host_inventory.oim_ha_hosts }}"
+  when:
+    - enable_oim_ha
+    - host_inventory.oim_ha_hosts | length > 0

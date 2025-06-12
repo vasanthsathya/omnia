@@ -52,6 +52,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
+        force: true
       loop:
         - "{{ mysql_data_dir }}"
         - "{{ mysql_log_volume }}"

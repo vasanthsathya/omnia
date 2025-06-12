@@ -42,8 +42,8 @@ pcs resource group add {{ pcs_group }}  XCATD-CHECK
 # Constrain preferred active node
 {% if active_node is defined %}
 # Add a Service Node Virtual IP (VIP) resource
-pcs resource create SNVIP IPaddr2 ip={{ active_node.virtual_ip }} cidr_netmask={{ network_data.admin_network.netmask_bits }} \
-  nic={{ network_data.admin_network.oim_nic_name }} op monitor interval={{ monitor_interval_30s }}
+pcs resource create SNVIP IPaddr2 ip={{ active_node.virtual_ip }} cidr_netmask={{ admin_netmask }} \
+  nic={{ admin_nic }} op monitor interval={{ monitor_interval_30s }}
 # Add SNVIP to group
 pcs resource group add {{ pcs_group }} SNVIP
 
@@ -55,6 +55,13 @@ pcs constraint location {{ pcs_group }} prefers {{ active_node.hostname }}=100
 pcs constraint location {{ pcs_group }} prefers {{ node.hostname }}=100
 {% endfor %}
 {% endif %}
+
+if [ -f /opt/omnia/pcs/pcs_telemetry.sh ]; then
+    echo "Found pcs_telemetry.sh. Running using bash..."
+    bash /opt/omnia/pcs/pcs_telemetry.sh
+else
+    echo "pcs_telemetry.sh not found in the current directory. Skipping..."
+fi
 
 # Stickiness to avoid unnecessary failover
 pcs resource defaults resource-stickiness=100

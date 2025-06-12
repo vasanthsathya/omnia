@@ -21,14 +21,22 @@ perl_badlang_env: 0
 xcat_path: /opt/xcat/bin
 omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
 pcs_vars: "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/pcs/vars/main.yml"
+telemetry_vars:
+  - "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/idrac_telemetry/vars/main.yml"
+  - "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/prometheus/vars/main.yml"
+  - "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/grafana/vars/main.yml"
+  - "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/loki/vars/main.yml"
+
 # Usage: check_nodes_all.yml
-all_nodes_warning_msg: "[WARNING] Not found any nodes using the given discovery mechanism.
-Verify all the input parameters are valid and re-run discovery_provision.yml"
+all_nodes_warning_msg: |
+  "[WARNING] Not found any nodes using the given discovery mechanism.
+  Verify all the input parameters are valid and re-run discovery_provision.yml"
 
 # Usage: check_nodes_service.yml
-service_nodes_warning_msg: "[WARNING] Service nodes not found. The service_node role is mentioned in the roles_config.yml file,
-but no nodes were found for this role using the specified discovery mechanism.
-Please verify that all the input parameters are valid and re-run the discovery_provision.yml"
+service_nodes_warning_msg: |
+  "[WARNING] Service nodes not found. The service_node role is mentioned in the roles_config.yml file,
+  but no nodes were found for this role using the specified discovery mechanism.
+  Please verify that all the input parameters are valid and re-run the discovery_provision.yml"
 
 # Usage: generate_postscripts_slurm.yml
 role_template_path: "{{ role_path }}/templates/omnia_{{ item }}.j2"
