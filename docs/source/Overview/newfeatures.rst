@@ -3,4 +3,4 @@ New Features
 
 * Omnia containerization
 
-* RHEL 9.4 OS support
+* RHEL 9.6 OS support

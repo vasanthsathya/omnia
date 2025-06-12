@@ -68,7 +68,7 @@ software_config.json for RHEL
 
         {
             "cluster_os_type": "rhel",
-            "cluster_os_version": "9.4",
+            "cluster_os_version": "9.6",
             "iso_file_path": "",
             "repo_config": "always",
             "softwares": [
