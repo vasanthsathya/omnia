@@ -14,6 +14,18 @@
 
 ---
 
+- name: Include idarc_telemetry vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../idrac_telemetry/vars/main.yml"
+
+- name: Include prometheus vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../prometheus/vars/main.yml"
+
+- name: Include grafana vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../grafana/vars/main.yml"
+
+- name: Include loki and promtail vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../loki/vars/main.yml"
+
 - name: Run pulp status command on omnia_core container
   ansible.builtin.command: /usr/local/bin/pulp status
   delegate_to: localhost
