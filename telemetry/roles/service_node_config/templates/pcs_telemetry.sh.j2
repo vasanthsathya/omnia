@@ -78,7 +78,7 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   image={{ prometheus_image }} \
   reuse=true \
   run_opts="{{ prometheus_run_opts }}" \
-  run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
+  run_cmd="--config.file=/config/prometheus.yml --web.enable-lifecycle --storage.tsdb.path=/prometheus" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
