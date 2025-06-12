@@ -135,9 +135,6 @@ def main():
             passive_service_tag = p_node['service_tag']
             passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
 
-            # if os.path.exists(passive_service_tag_dir):
-            #     shutil.rmtree(passive_service_tag_dir)
-
             shutil.copytree(service_tag_dir, passive_service_tag_dir, dirs_exist_ok=True, symlinks=True)
             results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
 
