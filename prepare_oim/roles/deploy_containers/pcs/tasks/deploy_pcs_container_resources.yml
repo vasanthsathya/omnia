@@ -14,6 +14,18 @@
 
 ---
 
+- name: Include idarc_telemetry vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../idrac_telemetry/vars/main.yml"
+
+- name: Include prometheus vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../prometheus/vars/main.yml"
+
+- name: Include grafana vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../grafana/vars/main.yml"
+
+- name: Include loki and promtail vars file
+  ansible.builtin.include_vars: "{{ role_path }}/../loki/vars/main.yml"
+
 - name: Run pulp status command on omnia_core container
   ansible.builtin.command: /usr/local/bin/pulp status
   delegate_to: localhost
@@ -28,6 +40,24 @@
   ansible.builtin.set_fact:
     pulp_protocol: "{{ pulp_content_origin | urlsplit('scheme') | lower }}"
     pulp_server_port: "{{ pulp_content_origin | urlsplit('port') }}"
+
+- name: Create the podman secrets directory when telemetry or visualization support is true
+  when:
+    - hostvars['localhost']['idrac_telemetry_support'] or hostvars['localhost']['visualization_support']
+  block:
+    - name: Create the podman secrets directory
+      ansible.builtin.file:
+        path: "{{ podman_secrets_dir }}"
+        state: directory
+        mode: "{{ secret_dir_permission }}"
+
+    - name: Copy the secrets file from OIM
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        remote_src: true
+      loop: "{{ podman_secrets_file }}"
 
 - name: Re-create pcs-start.sh with all container resources
   ansible.builtin.template:

@@ -1,0 +1,23 @@
+===== Telemetry Summary Report =====
+
+----- Telemetry Report for OIM -----
+
+Total IPs Found in the {{ bmc_group_data_filename }}: {{ bmc_ips[node_host] | length }}
+IPs List:
+{% for item in bmc_ips[node_host] %}
+  - {{ item }}
+{% endfor %}
+
+IPs with Telemetry Initiated in latest run: {{ telemetry_idrac_count }}
+IPs List (Telemetry Activated in latest run):
+  {% for item in telemetry_idrac %}
+  - {{ item }}
+  {% endfor %}
+
+Total IPs with Telemetry activated: {{ (db_idrac_ip_list | length) + (telemetry_idrac | length) }}
+Telemetry enabled IPs List:
+{% for item in db_idrac_ip_list + telemetry_idrac %}
+  - {{ item }}
+{% endfor %}
+
+===== Telemetry Report End =====
