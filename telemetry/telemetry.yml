@@ -154,10 +154,10 @@
   connection: local
   gather_facts: false
   tasks:
-    name: Reload prometheus config
-    ansible.builtin.include_role:
-      name: idrac_telemetry
-      tasks_from: prometheus_config_reload.yml
+    - name: Reload prometheus config
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+        tasks_from: prometheus_config_reload.yml
 
 - name: Telemetry report overview
   hosts: localhost, sn_active
