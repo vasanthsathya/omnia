@@ -1,4 +1,4 @@
-# Copyright 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -60,7 +60,18 @@
     - name: Set fact for plugins deployment to false when nfs server ip is localhost
       ansible.builtin.set_fact:
         plugins_deployment: false
-      when: k8s_nfs_server_ip == hostvars['localhost']['admin_nic_ip']
+      when:
+        k8s_nfs_server_ip == hostvars['localhost']['admin_nic_ip'] or k8s_nfs_server_ip == ""
+
+    - name: Warning - plugins will not be deployed
+      ansible.builtin.debug:
+        msg: "{{ plugins_warning_msg }}"
+      when: plugins_deployment is false
+
+    - name: Wait for 30 seconds to allow user to read warning
+      ansible.builtin.pause:
+        seconds: 30
+      when: plugins_deployment is false
 
     - name: Get server_share_path where k8s_share is true
       ansible.builtin.set_fact:
