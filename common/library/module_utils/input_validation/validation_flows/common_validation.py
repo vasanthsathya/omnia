@@ -13,7 +13,10 @@
 # limitations under the License.
 
 import json
+import ansible.module_utils.input_validation.common_utils.data_fetch as get
+from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import validation_utils
+from ansible.module_utils.input_validation.common_utils import data_verification
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
 from ansible.module_utils.input_validation.validation_flows import scheduler_validation
@@ -32,6 +35,7 @@ create_file_path = validation_utils.create_file_path
 contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
 flatten_sub_groups = validation_utils.flatten_sub_groups
+file_exists = data_verification.file_exists
 
 def validate_software_config(
     input_file_path, data,
@@ -66,7 +70,32 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
-    #software groups and subgroups l2 validation
+
+    # Check for the additional software field
+    if "additional_software" in data:
+        # Call validate_additional_software()
+        extensions = config.extensions
+        json_files = get.files_recursively(omnia_base_dir + "/" + project_name, extensions['json'])
+        json_files_dic = {}
+        for file_path in json_files:
+            json_files_dic.update({get.file_name_from_path(file_path): file_path})
+        new_file_path = json_files_dic.get("additional_software.json", None)
+
+        # Check for the addtional_software.json file exist
+        if new_file_path is None or not file_exists(new_file_path, module, logger):
+            logger.info("The additional_software.json does not exist...")
+            errors.append(
+                create_error_msg(
+                    "additional_software.json",
+                    new_file_path,
+                    en_us_validation_msg.MISSING_ADDITIONAL_SOFTWARE_JSON_FILE))
+            return errors
+        additional_software_data = json.load(open(json_files_dic["additional_software.json"], "r"))
+
+        additional_software_errors = validate_additional_software(
+            new_file_path, additional_software_data,
+            logger, module, omnia_base_dir, module_utils_base, project_name)
+        errors.extend(additional_software_errors)
 
     #create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
@@ -139,20 +168,52 @@ def validate_network_config(input_file_path, data, logger, module, omnia_base_di
 
 def validate_storage_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
-    nfs_client_params = data["nfs_client_params"][0]
-    client_mount_options = nfs_client_params["client_mount_options"]
+    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+    software_config_json = json.load(open(software_config_file_path, "r"))
+    softwares = software_config_json["softwares"]
+    for software in softwares:
+        if software.get('name') == 'beegfs' and 'version' not in software:
+            errors.append(create_error_msg("beegfs", "", en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
 
     allowed_options = {"nosuid", "rw", "sync", "hard", "intr"}
-    client_mount_options_set = set(client_mount_options.split(","))
+    slurm_share_val = False
+    k8s_share_val = False
+    multiple_slurm_share_val = False
+    multiple_k8s_share_val = False
+    for nfs_client_params in data["nfs_client_params"]:
+        client_mount_options = nfs_client_params["client_mount_options"]
+        client_mount_options_set = set(client_mount_options.split(","))
+        if not (client_mount_options_set.issubset(allowed_options)):
+            errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.CLIENT_MOUNT_OPTIONS_FAIL_MSG))
+        if nfs_client_params["slurm_share"] == "true":
+            if not slurm_share_val:
+                slurm_share_val = True
+            else:
+                multiple_slurm_share_val = True
 
-    if not (client_mount_options_set.issubset(allowed_options)):
-        errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.client_mount_options_fail_msg))
+        if nfs_client_params["k8s_share"] == "true":
+            if not k8s_share_val:
+                k8s_share_val = True
+            else:
+                multiple_k8s_share_val = True
+
+    if (contains_software(softwares, "slurm") and not slurm_share_val) or multiple_slurm_share_val:
+        errors.append(create_error_msg("slurm_share", slurm_share_val, en_us_validation_msg.SLURM_SHARE_FAIL_MSG))
+
+    if (contains_software(softwares, "k8s") and not k8s_share_val) or multiple_k8s_share_val:
+        errors.append(create_error_msg("k8s_share", k8s_share_val, en_us_validation_msg.K8S_SHARE_FAIL_MSG))
+
+    if contains_software(softwares, "ucx") or contains_software(softwares, "openmpi"):
+        if not k8s_share_val or not slurm_share_val:
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.BENCHMARK_TOOLS_FAIL_MSG))
+        elif multiple_slurm_share_val or multiple_k8s_share_val:
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.MULT_SHARE_FAIL_MSG))
 
     beegfs_mounts = data["beegfs_mounts"]
     if beegfs_mounts != "/mnt/beegfs":
         beegfs_unmount_client = data["beegfs_unmount_client"]
         if not beegfs_unmount_client:
-            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.beegfs_unmount_client_fail_msg))
+            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.BEEGFS_UMOUNT_CLIENT_FAIL_MSG))
 
     return errors
 
@@ -383,7 +444,7 @@ def validate_additional_software(
     """
     errors = []
     # Get all keys in the data
-    sub_groups = flatten_sub_groups(list(data.keys()))
+    sub_groups = set(flatten_sub_groups(list(data.keys())))
 
     # Check if additional_software is not given in the config
     if "additional_software" not in sub_groups:
@@ -423,6 +484,11 @@ def validate_additional_software(
     # also present in additioanl_software.json
     software_config_file_path = create_file_path(config_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
+
+    # check if additional_software is present in software_config.json
+    if "additional_software" not in software_config_json:
+        logger.info("The additional_software field is not present in software_config.json")
+        software_config_json["additional_software"] = []
 
     sub_groups_in_software_config = list(sub_group['name'] for sub_group in
                                             software_config_json["additional_software"])
