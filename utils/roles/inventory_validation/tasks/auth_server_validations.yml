@@ -23,3 +23,8 @@
     that: "groups['auth_server'] | length | int == 1"
     fail_msg: "{{ auth_server_group_fail_msg }}"
     success_msg: "{{ auth_server_group_success_msg }}"
+
+- name: Validate auth_server and etcd nodes do not overlap
+  ansible.builtin.assert:
+    that: "groups['etcd'] | intersect(groups['auth_server']) | length == 0"
+    fail_msg: "{{ auth_etcd_fail_msg }}"

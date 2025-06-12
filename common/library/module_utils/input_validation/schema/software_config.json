@@ -18,7 +18,7 @@
     },
     "repo_config": {
       "type": "string",
-      "enum": ["always", "partial"],
+      "enum": ["always", "partial", "never"],
       "description": "Specifies how repository configurations are handled."
     },
     "softwares": {

@@ -100,19 +100,3 @@
       when:
         - user_inventory_path is defined
         - (user_inventory_path | length > 0)
-
-# Need to discuss for this flow, will update later
-# - name: Initialize variables
-#   ansible.builtin.set_fact:
-#     unreachable_kube_control_plane: []
-
-# - name: Set unreachable_kube_control_plane
-#   ansible.builtin.set_fact:
-#     unreachable_kube_control_plane: "{{ unreachable_kube_control_plane + [item] }}"
-#   when: item not in ansible_play_hosts
-#   with_items: "{{ groups['kube_control_plane'] }}"
-
-# - name: Unreachable kube_control_plane in inventory
-#   ansible.builtin.fail:
-#     msg: "{{ unreachable_kube_control_plane_fail_msg }}"
-#   when: unreachable_kube_control_plane | length >= 1

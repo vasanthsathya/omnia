@@ -13,6 +13,23 @@
 # limitations under the License.
 ---
 
+# Usage: update_software_csv.yml
+software_csv_path: "/opt/omnia/log/local_repo/software.csv"
+usage_message: |
+  "WARNING:
+  If you have modified any <software_name>.json file (e.g., `additional_software.json`),
+  please run this playbook using:
+    ansible-playbook local_repo.yml -e "softwares=<list of softwares names seprated by comma>"
+
+  Example:
+    ansible-playbook local_repo.yml -e "softwares=additional_software"
+    ansible-playbook local_repo.yml -e "softwares=k8s,slurm"
+
+  If you have NOT modified any software JSON files, you can run:
+    ansible-playbook local_repo.yml"
+softwares_var_not_provided: "No softwares variable provided. Skipping."
+softwares_invalid_msg: "Invalid software_name(s) found: {{ softwares_list | difference(software_names) }}. Allowed values: {{ software_names }}"
+
 # Usage: dynamic_k8s_json.yml
 dynamic_k8s_json_file: "{{ dynamic_k8s_json_folder }}/v{{ k8s_version }}/k8s_v{{ k8s_version }}.json"
 base_k8s_json_file: "{{ project_input_path }}/config/{{ cluster_os_type }}/{{ cluster_os_version }}/k8s.json"
@@ -187,9 +204,6 @@ subgroup_warning_msg: "bcm_roce_libraries attribute is not mentioned in the bcm_
  so bcm_roce_libraries will not be installed on the nodes post provisioning."
 bcm_roce_libraries_warning_msg: "bcm_roce_libraries object not found in bcm_roce.json,
  so bcm_roce_libraries will not be installed during post provisioning."
-
-# Usage: validate_domain_name.yml
-server_domain_name_blank_msg: "Failed. domain_name is not set in hostname. It should have hostname.domain_name format"
 
 # Usage: validate_site_config.yml
 site_config_file: "{{ project_input_path }}/site_config.yml"
