@@ -62,12 +62,12 @@
     cluster_os_type: "{{ software_config.cluster_os_type }}"
     cluster_os_version: "{{ software_config.cluster_os_version }}"
     repo_config: "{{ software_config.repo_config }}"
-    softwares: "{{ software_config.softwares }}"
+    software: "{{ software_config.softwares }}"
 
 - name: Check if softwares list is empty
   ansible.builtin.assert:
     that:
-      - softwares | default([]) | length > 0
+      - software | default([]) | length > 0
     fail_msg: "{{ software_config_softwares_fail_msg }}"
 
 - name: Generate software JSON file names
