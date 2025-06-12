@@ -15,7 +15,7 @@
 
 - name: Create and update telemetry report from template
   block:
-    - name: Create telemetry report
+    - name: Create telemetry report for OIM
       ansible.builtin.template:
         src: "{{ telemetry_report_template }}"
         dest: "{{ telemetry_report_path_oim }}"
