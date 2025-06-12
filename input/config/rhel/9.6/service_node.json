@@ -19,7 +19,7 @@
         "type": "pip_module"
       },
       {
-        "package": "cffi>=1.12",
+        "package": "cffi==1.17.1",
         "type": "pip_module"
       }
       ]
