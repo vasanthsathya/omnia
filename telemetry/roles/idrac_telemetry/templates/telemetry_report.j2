@@ -2,9 +2,9 @@
 
 ----- Telemetry Report for OIM -----
 
-Total IPs Found in the {{ bmc_group_data_filename }}: {{ bmc_ips[node_host] | length }}
+Total IPs Found in the {{ bmc_group_data_filename }}: {{ hostvars['localhost']['bmc_ips'][node_host] | length }}
 IPs List:
-{% for item in bmc_ips[node_host] %}
+{% for item in hostvars['localhost']['bmc_ips'][node_host] %}
   - {{ item }}
 {% endfor %}
 
