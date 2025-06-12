@@ -14,7 +14,7 @@
 ---
 
 - name: Check service node metadata file exists
-  ansible.builtin.file:
+  ansible.builtin.stat:
     path: "{{ service_node_metadata_path }}"
   register: service_node_metadata_exists
 
