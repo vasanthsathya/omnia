@@ -20,6 +20,8 @@ read_write_mode: "0644"
 container_tag: "latest"
 container_tar_file: "omnia_images.tar"
 kubespray_tag: "v2.27.0"
+squid_tag: "6.6-24.04_beta"
+pulp_tag: "3.80"
 container_images:
   - "omnia_core:{{ container_tag }}"
   - "omnia_pcs:{{ container_tag }}"
