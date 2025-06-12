@@ -115,7 +115,7 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Render PCS template for telemetry
+    - name: Enable idrac telemetry
       ansible.builtin.include_role:
         name: idrac_telemetry
 
@@ -137,7 +137,7 @@
   connection: ssh
   gather_facts: false
   tasks:
-    - name: Render PCS template for telemetry
+    - name: Enable idrac telemetry
       ansible.builtin.include_role:
         name: idrac_telemetry
 
@@ -148,6 +148,16 @@
       when:
         - telemetry_idrac is defined
         - (telemetry_idrac | length > 0)
+
+- name: Reload prometheus config
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Reload prometheus config
+      ansible.builtin.include_role:
+        name: idrac_telemetry
+        tasks_from: prometheus_config_reload.yml
 
 - name: Telemetry report overview
   hosts: localhost, sn_active

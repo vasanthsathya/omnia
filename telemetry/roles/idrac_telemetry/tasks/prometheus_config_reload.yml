@@ -13,20 +13,10 @@
 # limitations under the License.
 ---
 
-- name: Create and update telemetry report from template
-  block:
-    - name: Create telemetry report for OIM
-      ansible.builtin.template:
-        src: "{{ telemetry_report_template }}"
-        dest: "{{ telemetry_report_path_oim }}"
-        mode: "{{ filemode }}"
-        force: true
-      when: node_host == 'oim'
-
-    - name: Update telemetry report for service node
-      ansible.builtin.blockinfile:
-        path: "{{ telemetry_report_path_sn }}"
-        block: "{{ telemetry_report_sn }}"
-        insertafter: "===== Telemetry Report End ====="
-        marker: ""
-      when: node_host != 'oim'
+- name: Reload Prometheus configuration # noqa command-instead-of-module
+  ansible.builtin.command: curl -X POST "{{ prometheus_reload.url }}"
+  changed_when: false
+  when:
+    - idrac_telemetry_support
+    - federated_idrac_telemetry_collection
+    - idrac_telemetry_collection_type == "prometheus"
