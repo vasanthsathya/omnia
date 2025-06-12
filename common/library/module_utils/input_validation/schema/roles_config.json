@@ -83,7 +83,7 @@
               "slurm_control_node",
               "slurm_node",
               "slurm_dbd",
-              "login_node",
+              "login",
               "auth_server",
               "compiler_node"
             ]
