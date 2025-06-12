@@ -13,10 +13,12 @@
 # limitations under the License.
 ---
 
-# Initiate iDRAC collection
-- name: Initiate telemetry-collector
-  containers.podman.podman_container_exec:
-    name: "{{ idrac_telemetry_container }}"
-    command: "nohup go run cmd/redfishread/redfishread.go &"
-    detach: true
-  when: hostvars['localhost']['idrac_telemetry_support']
+- name: Show warning if 'softwares' is not defined
+  ansible.builtin.debug:
+    msg: "{{ usage_message.splitlines() }}"
+  when: softwares is not defined
+
+- name: Pause for 30 seconds to let user read the warning
+  ansible.builtin.pause:
+    seconds: 30
+  when: softwares is not defined

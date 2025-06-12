@@ -109,7 +109,7 @@ tftpboot_dir: "{{ provision_dir }}/tftpboot"
 hosts_file: "{{ omnia_nfs_share }}/hosts"
 provision_logs_dir: "{{ omnia_nfs_share }}/log/provision"
 provision_run_opts: >-
-  --network=host --restart=always --hostname {{ oim_hostname }} --privileged
+  --network=host --restart=always --hostname {{ provision_container_name }}.{{ hostvars['localhost']['domain_name'] }} --privileged
   -v {{ omnia_nfs_share }}/ssh_config/.ssh:/root/.ssh{{ selinux_option }}
   -v {{ omnia_nfs_share }}:/opt/omnia{{ selinux_option }}
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro

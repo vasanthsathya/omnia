@@ -102,9 +102,6 @@ idrac_telemetry_receiver_run_opts: >-
 prometheus_dir: "{{ telemetry_data_dir }}/prometheus"
 prometheus_container_name: "prometheus"
 prometheus_image: "docker.io/prom/prometheus:v2.36.0"
-prometheus_env:
-  PROMETHEUS_DB: "poweredge_telemetry_metrics"
-  node.name: "127.0.0.1"
 prometheus_run_opts: >-
   --network=host
   --env PROMETHEUS_DB="poweredge_telemetry_metrics"
@@ -121,10 +118,6 @@ prometheus_log_dir: "{{ telemetry_log_dir }}/prometheus"
 prometheus_pump_entry_script: "/opt/omnia/telemetry/prometheus_pump/prometheus_pump.sh"
 prometheus_pump_container_name: "prometheus_pump"
 oim_prometheus_pump_dir: "{{ oim_telemetry_dir_path }}/prometheus_pump"
-prometheus_pump_receiver_env:
-  MESSAGEBUS_HOST: "localhost"
-  MESSAGEBUS_PORT: "61613"
-  PROMETHEUSDB_SERVER: "prometheus"
 prometheus_pump_image: "docker.io/library/golang:1.17"
 prometheus_pump_run_opts: >-
   --network=host

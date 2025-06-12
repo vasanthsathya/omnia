@@ -13,18 +13,10 @@
 #  limitations under the License.
 ---
 
-- name: Invalid auth_server inventory format
-  ansible.builtin.fail:
-    msg: "{{ invalid_auth_server_inventory_fail_msg }}"
-  when: "'auth_server' not in groups"
-
-- name: Validate auth_server group to contain exactly 1 node
-  ansible.builtin.assert:
-    that: "groups['auth_server'] | length | int == 1"
-    fail_msg: "{{ auth_server_group_fail_msg }}"
-    success_msg: "{{ auth_server_group_success_msg }}"
-
-- name: Validate auth_server and etcd nodes do not overlap
-  ansible.builtin.assert:
-    that: "groups['etcd'] | intersect(groups['auth_server']) | length == 0"
-    fail_msg: "{{ auth_etcd_fail_msg }}"
+- name: Append ip to inventory
+  when: k8s_support
+  block:
+    - name: Append IP to inventory entries
+      append_ip_to_inventory:
+        src: "{{ k8s_nfs_share }}/inv_k8s"
+        dest: "{{ k8s_nfs_share }}/inv_k8s"

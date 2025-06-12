@@ -108,6 +108,13 @@
     permanent: true
   loop: "{{ squid_firewall_ports }}"
 
+- name: Add NTP service to firewalld
+  ansible.posix.firewalld:
+    service: "{{ ntp_firewall_service }}"
+    permanent: true
+    state: enabled
+    immediate: true
+
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload
   changed_when: true
