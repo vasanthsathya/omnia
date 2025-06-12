@@ -133,7 +133,7 @@ kubespray_run_opts: >-
 
 # Usage: pcs-start.sh.j2: pulp
 pulp_container_name: "pulp"
-pulp_image: "docker.io/pulp/pulp"
+pulp_image: "docker.io/pulp/pulp:3.80"
 pulp_port_http: "{{ pulp_server_port }}:80"
 pulp_port_https: "{{ pulp_server_port }}:{{ pulp_server_port }}"
 pulp_share: "{{ omnia_nfs_share }}/pulp"
@@ -164,7 +164,7 @@ pulp_run_opts_https: >-
 # Usage: pcs-start.sh.j2: squid
 squid_container_name: "squid"
 squid_name: "squid"
-squid_image: "docker.io/ubuntu/squid"
+squid_image: "docker.io/ubuntu/squid:6.6-24.04_beta"
 squid_port: "{{ hostvars['localhost']['admin_nic_ip'] }}:{{ hostvars['oim']['squid_proxy_port'] }}:{{ hostvars['oim']['squid_proxy_port'] }}"
 squid_share: "{{ omnia_nfs_share }}/squid"
 squid_run_opts: >-
