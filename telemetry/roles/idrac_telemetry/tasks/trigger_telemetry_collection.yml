@@ -19,4 +19,4 @@
     name: "{{ idrac_telemetry_container }}"
     command: "nohup go run cmd/redfishread/redfishread.go &"
     detach: true
-  when: hostvars['localhost']['idrac_telemetry_support'] is true
+  when: hostvars['localhost']['idrac_telemetry_support']

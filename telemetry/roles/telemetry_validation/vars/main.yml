@@ -19,9 +19,14 @@ telemetry_config_file: "{{ input_project_dir }}/telemetry_config.yml"
 fail_msg_telemetry_config_file: "telemetry_config.yml file doesn't exist."
 pause_time_15: 15
 warning_telemetry_support_false: |
-  "Warning. idrac_telemetry_support and visualization_support are false in input/telemetry_config.yml.
+  "Warning. idrac_telemetry_support and visualization_support are false in telemetry_config.yml.
   Omnia does not deploy telemetry feature if none of the support category is true."
 telemetry_config_syntax_fail_msg: "Failed. Syntax errors present in telemetry_config.yml. Fix errors and re-run playbook again."
+warning_idrac_telemetry_support_false: |
+  "Warning: idrac_telemetry_support is set to false in telemetry_config.yml. This means iDRAC telemetry will not be activated.
+  To use telemetry, set idrac_telemetry_support to true in telemetry_config.yml.
+  Note that Omnia does not support disabling telemetry if containers are already running.
+  To remove telemetry containers, use the utils/oim_cleanup.yml playbook."
 
 # # Usage: include_provision_config.yml
 # provision_config_file: "{{ input_project_dir }}/provision_config.yml"
