@@ -39,11 +39,20 @@
   ansible.builtin.command: "python3 -m ensurepip"
   changed_when: false
 
-- name: Install python packages using pip3
+# - name: Install python packages using pip3
+#   ansible.builtin.pip:
+#     name: "{{ item }}"
+#     state: present
+#     executable: pip3
+#   loop: "{{ pip_packages }}"
+
+- name: Install pip packages from offline repo
   ansible.builtin.pip:
     name: "{{ item }}"
-    state: present
-    executable: pip3
+    extra_args: >
+      --find-links={{ hostvars['localhost']['offline_pip_module_path'] }}/{{ item }}/
+      --trusted-host={{ hostvars['localhost']['pulp_server_ip'] }}
+      --no-index
   loop: "{{ pip_packages }}"
 
 - name: Create MySQL database and table

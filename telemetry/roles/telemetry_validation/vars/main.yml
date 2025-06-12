@@ -39,7 +39,7 @@ warning_idrac_telemetry_support_false: |
 # prometheus_scrape_interval_fail_msg: "Failed. prometheus_scrape_interval accepts integer values greater than 0"
 # # local repo
 # software_config_file: "{{ input_project_dir }}/software_config.json"
-# local_repo_access_path: "/opt/omnia/offline/local_repo_access.yml"
+local_repo_access_path: "/opt/omnia/provision/local_repo_access.yml"
 # telemetry_packages_file: "{{ input_project_dir }}/config/{{ software_config.cluster_os_type }}/{{ software_config.cluster_os_version }}/telemetry.json"
 
 # # Usage: validate_prometheus_gaudi.yaml

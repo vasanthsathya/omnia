@@ -110,8 +110,10 @@ mysql_container_failure_msg: |
 
 pip_packages:
   - "PyMySQL==1.1.1"
+  - "cffi>=1.12"
   - "cryptography==44.0.1"
   - "omsdk==1.2.518"
+
 mysql_port: 3306
 max_retries: 10
 delay_count: 5

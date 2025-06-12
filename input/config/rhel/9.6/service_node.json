@@ -5,6 +5,22 @@
         "package": "xCATsn",
         "type": "rpm",
         "repo_name": "xcat-core"
+      },
+      {
+        "package": "PyMySQL==1.1.1",
+        "type": "pip_module"
+      },
+      {
+        "package": "cryptography==44.0.1",
+        "type": "pip_module"
+      },
+      {
+        "package": "omsdk==1.2.518",
+        "type": "pip_module"
+      },
+      {
+        "package": "cffi>=1.12",
+        "type": "pip_module"
       }
       ]
     }
