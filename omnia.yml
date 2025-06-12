@@ -36,6 +36,10 @@
   ansible.builtin.import_playbook: utils/include_input_dir.yml
   when: not (project_dir_status | default(false) | bool)
 
+- name: Update Inventory with ansible_host information
+  ansible.builtin.import_playbook: utils/servicetag_host_mapping.yml
+  when: not (update_inventory_executed | default(false) | bool)
+
 - name: Validate inventory
   ansible.builtin.import_playbook: utils/inventory_validation.yml
   when: not (inventory_validation_executed | default(false) | bool)
@@ -48,10 +52,6 @@
     - name: Set flag to indicate check_package_lock.yml has been executed
       ansible.builtin.set_fact:
         apt_lock_status: true
-
-- name: Update Inventory with ansible_host information
-  ansible.builtin.import_playbook: utils/servicetag_host_mapping.yml
-  when: not (update_inventory_executed | default(false) | bool)
 
 - name: Gather facts from all the nodes
   hosts: slurm_control_node, slurm_node, slurm_dbd, login, kube_control_plane, kube_node, etcd, auth_server

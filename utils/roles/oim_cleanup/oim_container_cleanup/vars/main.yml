@@ -98,6 +98,7 @@ visualization_firewall_ports:
 
 loki_firewall_ports:
   - "3100/tcp"
+ntp_firewall_service: ntp
 
 # Usage: cleanup_kubespray.yml
 kubespray_image_tag: "{{ hostvars['localhost']['kubespray_version'] }}"

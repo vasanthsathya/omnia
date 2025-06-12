@@ -13,9 +13,12 @@
 # limitations under the License.
 ---
 
-- name: Copy genesis package
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-  with_items: "{{ genesis_package_path }}"
+- name: Show warning if 'softwares' is not defined
+  ansible.builtin.debug:
+    msg: "{{ usage_message.splitlines() }}"
+  when: softwares is not defined
+
+- name: Pause for 30 seconds to let user read the warning
+  ansible.builtin.pause:
+    seconds: 30
+  when: softwares is not defined

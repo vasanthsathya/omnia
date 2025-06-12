@@ -46,11 +46,11 @@ mount -t nfs -o nosuid,rw,sync,hard,intr,timeo=30 {{ nfs_server_ip }}:{{ nfs_ser
 
 # Task 1: Rsync <oim_shared_path>/omnia/provision/install to /, excluding 'autoinst'
 echo "Syncing /install" >> "$LOGFILE"
-rsync -au --exclude='autoinst' {{ oim_shared_path }}/omnia/provision/install/ /
+rsync -au --exclude='autoinst' {{ oim_shared_path }}/omnia/provision/install /
 
 # Task 2: Rsync <oim_shared_path>/omnia/provision/tftpboot to /
 echo "Syncing /tftpboot" >> "$LOGFILE"
-rsync -au {{ oim_shared_path }}/omnia/provision/tftpboot/ /
+rsync -au {{ oim_shared_path }}/omnia/provision/tftpboot /
 
 sudo rm -rf /etc/hosts
 ln -s {{ oim_shared_path }}/omnia/hosts /etc/hosts
