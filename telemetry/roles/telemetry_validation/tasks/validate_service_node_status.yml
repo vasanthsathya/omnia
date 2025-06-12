@@ -26,5 +26,5 @@
 
 - name: Fail if service nodes in idrac inventory are not booted
   ansible.builtin.fail:
-    msg: "{{ service_node_not_booted }}"
+    msg: "{{ service_node_not_booted | replace('\n', ' ')}}"
   when: validation_result.service_nodes_not_booted

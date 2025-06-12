@@ -84,6 +84,8 @@ internal_nfs_services:
   - nfs
   - rpc-bind
 
+ntp_firewall_service: ntp
+
 squid_firewall_ports:
   - "{{ squid_proxy_port }}/tcp"
 
@@ -93,7 +95,7 @@ prepare_oim_completion_msg: |
   registry for the cluster nodes, please execute the playbook local_repo/local_repo.yml as the next step.
 
 # podman_login.yml
-login_cmd: "podman login -u {{ docker_username }} -p {{ docker_password }}"
+login_cmd: "podman login docker.io -u {{ docker_username }} -p {{ docker_password }}"
 retry_count: "5"
 delay_time: "10"
 podman_login_fail_msg: "Podman login failed. Please ensure the podman login credentials in the input/omnia_config_credentials.yml are valid.
