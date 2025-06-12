@@ -257,13 +257,21 @@ scrape_configs:
           job: squid logs
           __path__: /opt/omnia/log/squid/*log
 
-  - job_name: Omnia input validation logs
+  - job_name: Omnia input validation report logs
     static_configs:
       - targets:
           - localhost
         labels:
-          job: Omnia input validation logs
+          job: Omnia input validation report logs
           __path__: /opt/omnia/log/core/playbooks/validation_omnia_project_default.log
+
+  - job_name: Omnia input validation playbook logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: Omnia input validation playbook logs
+          __path__: /opt/omnia/log/core/playbooks/input_validation.log
 
   - job_name: Service nodes pacemaker logs
     static_configs:
