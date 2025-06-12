@@ -50,7 +50,3 @@
 - name: Parse service_node_ha_data
   ansible.builtin.set_fact:
     service_node_ha_data: "{{ high_availability_config.ansible_facts.service_node_ha | default({}) }}"
-
-- name: Register OIM node name
-  ansible.builtin.set_fact:
-    oim_node_name: "{{ oim_hostname }}"
