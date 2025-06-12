@@ -14,14 +14,8 @@
 ---
 
 - name: Reload Prometheus configuration
-  ansible.builtin.uri:
-    url: "{{ prometheus_reload.url }}"
-    method: POST
-    status_code: 200
-  register: prometheus_reload_result
-  retries: "{{ prometheus_reload.retries }}"
-  delay: "{{ prometheus_reload.delay }}"
-  until: prometheus_reload_result.status == 200
+  ansible.builtin.command: curl -X POST "{{ prometheus_reload.url }}"
+  changed_when: false
   when:
     - idrac_telemetry_support
     - federated_idrac_telemetry_collection
