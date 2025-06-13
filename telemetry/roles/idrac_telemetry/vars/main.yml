@@ -50,8 +50,8 @@ unreachable_bmc_msg: |
   Please provide BMC IPs which are reachable from OIM
   else remove unreachable BMC entries from {{ bmc_group_data_filename }} file.
 invalid_bmc_warning_msg: |
-  [WARNING] Some BMC IPs are not valid. Kindly address the issues mentioned above and
-  execute telemetry.yml. Telemetry feature wont be enabled for these BMC IPs from {{ bmc_group_data_filename }} file.
+  [WARNING] Some BMC IPs are not valid. Kindly address the issues mentioned above and execute telemetry.yml.
+  Telemetry feature wont be enabled for these BMC IPs from {{ bmc_group_data_filename }} file.
 
 # Usage: trigger_telemetry_collection.yml
 idrac_telemetry_container: "idrac_telemetry_receiver"
