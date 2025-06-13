@@ -172,7 +172,7 @@ def verify_bmc_entries(nodes, bmc_creds, module, result):
 def main():
     "Main function for the custom ansible module - update_bmc_group_entry"
     module_args = {
-        'csv_path': {'type': 'str', 'required': False},
+        'csv_path': {'type': 'str', 'required': False, 'default': '/opt/omnia/telemetry/bmc_group_entries.csv' },
         'nodes': {'type': 'list', 'elements': 'dict', 'required': False, 'default': []},
         'bmc_username': {'type': 'str', 'required': False, 'no_log': True},
         'bmc_password': {'type': 'str', 'required': False, 'no_log': True},
