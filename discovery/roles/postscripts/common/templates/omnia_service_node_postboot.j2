@@ -100,6 +100,7 @@ if [[ -f "$SERVICE_TAG_MAP" ]]; then
 
     # Use mapped value if found
     if [[ -n "$mapped_value" ]]; then
+        log "[INFO]: Active node service tag found using - $mapped_value"
         active_node_id="$mapped_value"
     else
         log "[INFO]: No mapping found for $nodeid in $SERVICE_TAG_MAP. Using $active_node_id"
