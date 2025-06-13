@@ -84,11 +84,11 @@
 
     - name: Convert filtered_bmc_ip_list to a dictionary with bmc_ip
       ansible.builtin.set_fact:
-        bmc_ips_dict: "{{ filtered_bmc_ip_list | map('community.general.dict', bmc_ip=_) | list }}"
+        filtered_bmc_ip_dict_list: "{{ filtered_bmc_ip_list | map('regex_replace', '^(.+)$', '{\"bmc_ip\": \"\\1\"}') | map('from_json') | list }}"
 
     - name: Validate BMC reachability
       update_bmc_group_entry:
-        nodes: "{{ bmc_ips_dict }}"
+        nodes: "{{ filtered_bmc_ip_dict_list }}"
         bmc_username: "{{ hostvars['localhost']['bmc_username'] }}"
         bmc_password: "{{ hostvars['localhost']['bmc_password'] }}"
         verify_bmc: true
@@ -132,6 +132,7 @@
             min_firmware_version_reqd: "{{ min_firmware_version_reqd }}"
           no_log: true
           register: filter_idrac_output
+          when: filtered_bmc_ip_list | length > 0
       rescue:
         - name: Failed to filter iDRACs
           ansible.builtin.fail:
@@ -143,6 +144,7 @@
         telemetry_idrac_count: "{{ filter_idrac_output.telemetry_idrac_count }}"
         failed_idrac_count: "{{ filter_idrac_output.failed_idrac_count }}"
         failed_idrac: "{{ filter_idrac_output.failed_idrac }}"
+      when: filter_idrac_output is defined
 
     - name: Enable telemetry collection on iDRAC
       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)

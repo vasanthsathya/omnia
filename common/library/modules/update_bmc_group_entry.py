@@ -149,12 +149,12 @@ def add_bmc_entries(nodes, existing_entries, bmc_creds, module, result):
                     result['unreachable_bmc'].append(bmc_ip)
             result['changed'] = True
 
-def verify_bmc_entries(existing_entries, bmc_creds, module, result):
+def verify_bmc_entries(nodes, bmc_creds, module, result):
     """
     Verify reachability and authentication of BMC entries in the existing entries.
     """
 
-    for bmc_ip, _ in existing_entries.items():
+    for bmc_ip in nodes.items():
         is_valid, code = is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'),
                                                   bmc_creds.get('password'), module)
         if is_valid:
@@ -203,7 +203,7 @@ def main():
         delete_bmc_entries(nodes, existing_entries, result)
         write_entries_csv(csv_path, existing_entries)
     elif verify_bmc:
-        verify_bmc_entries(existing_entries, bmc_creds, module, result)
+        verify_bmc_entries(nodes, bmc_creds, module, result)
     else:
         add_bmc_entries(nodes, existing_entries, bmc_creds, module, result)
         write_entries_csv(csv_path, existing_entries)
