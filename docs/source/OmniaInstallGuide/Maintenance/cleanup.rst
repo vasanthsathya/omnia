@@ -10,14 +10,14 @@ Behavior based on cluster configuration
 
 1. **Non-hierarchical, non-HA** configuration
 
-    In this setup, when executed from the OIM node, this playbook will:
+In this setup, when executed from the OIM node, this playbook will:
 
     * Clean up all containers, log files, and metadata on the OIM node.
     * Update the firewall ports on the OIM node to its default setting.
 
 2. **Hierarchical, non-HA** configuration
 
-    In this setup, when executed from the OIM node, this playbook will:
+In this setup, when executed from the OIM node, this playbook will:
 
     * Disable the boot option on all service nodes.
 
@@ -29,27 +29,27 @@ Behavior based on cluster configuration
 
 3. **Hierarchical, HA** configuration
 
-    a. **When executed from the Primary OIM node:**
+a. **When executed from the Primary OIM node:**
 
-        * Disables boot options on:
+    * Disables boot options on:
           
-            i. All service nodes
-            ii. The passive OIM node
+        i. All service nodes
+        ii. The passive OIM node
 
-        * Reboots:
+    * Reboots:
 
-            i. All service nodes
-            ii. Passive OIM node
+        i. All service nodes
+        ii. Passive OIM node
 
-        * Cleans up containers, log files, and metadata from the **primary** OIM node.
-        * Updates firewall ports on the **primary** OIM node to its default setting.
+    * Cleans up containers, log files, and metadata from the **primary** OIM node.
+    * Updates firewall ports on the **primary** OIM node to its default setting.
 
-    b. **When executed from the OIM-HA node:** (previously passive, now active due to failover):
+b. **When executed from the OIM-HA node:** (previously passive, now active due to failover)
 
-        * Disables boot options on all service nodes (including passive)
-        * Reboots all service nodes
-        * Cleans up containers, log files, and metadata from **both OIM nodes** (active and passive).
-        * Updates firewall ports on **both OIM nodes** (active and passive) to its default setting.
+    * Disables boot options on all service nodes (including passive)
+    * Reboots all service nodes
+    * Cleans up containers, log files, and metadata from **both OIM nodes** (active and passive).
+    * Updates firewall ports on **both OIM nodes** (active and passive) to its default setting.
 
 Playbook execution
 -------------------
