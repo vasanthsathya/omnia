@@ -1,0 +1,20 @@
+
+- name: Validate k8s json
+  when: k8s_support is true
+  block:
+    - name: Load k8s.json
+      ansible.builtin.set_fact:
+        k8s_packages_json: "{{ lookup('file', base_k8s_json_file) | from_json }}"
+
+    - name: Extract and set facts for tarball URLs
+      ansible.builtin.set_fact:
+        kubeadm_package: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'tarball') | selectattr('package', 'search', 'kubeadm') | map(attribute='package') | join }}" # noqa: yaml[line-length]
+    
+    - name: Set default fact for dynamic k8s generation
+      ansible.builtin.set_fact:
+        dynamic_k8s_generation: false
+      
+    - name: Set fact for dynamic genaration when k8s is not equal to 1.31.4
+      ansible.builtin.set_fact:
+        dynamic_k8s_generation: true
+      when: kubeadm_package != kubeadm_package_name

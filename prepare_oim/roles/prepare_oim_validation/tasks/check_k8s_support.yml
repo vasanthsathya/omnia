@@ -21,11 +21,26 @@
     cluster_os_type: "{{ software_config.cluster_os_type }}"
     cluster_os_version: "{{ software_config.cluster_os_version }}"
 
-- name: Extract k8s version
-  ansible.builtin.set_fact:
-    k8s_version: "{{ software_config.softwares | selectattr('name', 'equalto', 'k8s') | map(attribute='version') | first }}"
+- name: Validate dynamic_k8s_generation
   when: k8s_support
-  # noqa: var-naming[no-jinja]
+  block:
+    - name: Extract k8s version
+      ansible.builtin.set_fact:
+        k8s_version: "{{ software_config.softwares | selectattr('name', 'equalto', 'k8s') | map(attribute='version') | first }}" # noqa: var-naming[no-jinja]
+
+    - name: Set fact for kubespray version
+      ansible.builtin.set_fact:
+        kubespray_version: "v2.28.0"
+      when: k8s_version == '1.31.4'
+
+    - name: Set default fact for dynamic k8s generation
+      ansible.builtin.set_fact:
+        dynamic_k8s_generation: false
+      
+    - name: Set fact for dynamic genaration when k8s is not equal to 1.31.4
+      ansible.builtin.set_fact:
+        dynamic_k8s_generation: true
+      when: k8s_version != '1.31.4'
 
 - name: Check if file exists
   ansible.builtin.stat:
@@ -37,7 +52,10 @@
     msg: "{{ k8s_version }}"
 
 - name: Validate k8s_support variable
-  when: k8s_support and not file_stat.stat.exists
+  when: 
+    - k8s_support
+    - not file_stat.stat.exists
+    - dynamic_k8s_generation
   block:
     - name: Create a directory for base_path to store the k8s dynamic json
       ansible.builtin.file:
