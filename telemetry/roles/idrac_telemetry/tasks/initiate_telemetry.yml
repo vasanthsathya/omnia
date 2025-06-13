@@ -119,20 +119,23 @@
         (bmc_result.redfish_disabled | length > 0) or
         (bmc_result.invalid_creds | length > 0) or
         (bmc_result.unreachable_bmc | length > 0)
-      ansible.builtin.fail:
-        msg: "{{ invalid_bmc_fail_msg | replace('\n', ' ') }}"
+      ansible.builtin.pause:
+        seconds: "{{ waiting_time_30 }}" 
+        prompt: "{{ invalid_bmc_warning_msg | replace('\n', ' ') }}"
 
     - name: Filter iDRACs based on telemetry pre-requisites
       block:
         - name: Filter iDRACs matching telemetry pre-requisites (This task may take more time based on number of iDRACs)
           idrac_telemetry_filter:
-            bmc_ip_list: "{{ filtered_bmc_ip_list }}"
+            bmc_ip_list: "{{ bmc_result.verified_bmc }}"
             bmc_username: "{{ hostvars['localhost']['bmc_username'] }}"
             bmc_password: "{{ hostvars['localhost']['bmc_password'] }}"
             min_firmware_version_reqd: "{{ min_firmware_version_reqd }}"
           no_log: true
           register: filter_idrac_output
-          when: filtered_bmc_ip_list | length > 0
+          when:
+            - bmc_result.verified_bmc is defined
+            - bmc_result.verified_bmc | length > 0
       rescue:
         - name: Failed to filter iDRACs
           ansible.builtin.fail:

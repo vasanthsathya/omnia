@@ -29,6 +29,7 @@ mysqldb_container_port: 3306
 filemode: "0644"
 mysqldb_host: "127.0.0.1"
 min_firmware_version_reqd: 4
+waiting_time_30: 30
 idrac_telemetry_enable_fail_msg: |
   Failed. Error enabling telemetry on iDRAC. Possible causes include timeout or Redfish connectivity issues.
   Please retry the playbook after some time.
@@ -48,9 +49,9 @@ unreachable_bmc_msg: |
   The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
   Please provide BMC IPs which are reachable from OIM
   else remove unreachable BMC entries from {{ bmc_group_data_filename }} file.
-invalid_bmc_fail_msg: |
-  [Failed] Some BMC IPs are not valid. Kindly address the issues mentioned above and
-  execute telemetry.yml. If issues not resolved, please remove the invalid BMC IPs from {{ bmc_group_data_filename }} file.
+invalid_bmc_warning_msg: |
+  [WARNING] Some BMC IPs are not valid. Kindly address the issues mentioned above and
+  execute telemetry.yml. Telemetry feature wont be enabled for these BMC IPs from {{ bmc_group_data_filename }} file.
 
 # Usage: trigger_telemetry_collection.yml
 idrac_telemetry_container: "idrac_telemetry_receiver"
