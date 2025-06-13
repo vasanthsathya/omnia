@@ -144,7 +144,9 @@
         telemetry_idrac_count: "{{ filter_idrac_output.telemetry_idrac_count }}"
         failed_idrac_count: "{{ filter_idrac_output.failed_idrac_count }}"
         failed_idrac: "{{ filter_idrac_output.failed_idrac }}"
-      when: filter_idrac_output is defined
+      when:
+        - filter_idrac_output.telemetry_idrac is defined
+        - filter_idrac_output.telemetry_idrac_count is defined
 
     - name: Enable telemetry collection on iDRAC
       when: telemetry_idrac is defined and (telemetry_idrac | length > 0)
