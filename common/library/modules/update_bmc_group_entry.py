@@ -154,7 +154,8 @@ def verify_bmc_entries(nodes, bmc_creds, module, result):
     Verify reachability and authentication of BMC entries in the existing entries.
     """
 
-    for bmc_ip in nodes.items():
+    for node in nodes:
+        bmc_ip = node.get('bmc_ip')
         is_valid, code = is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'),
                                                   bmc_creds.get('password'), module)
         if is_valid:
