@@ -97,7 +97,7 @@
     - name: Show verified BMC entries
       when: bmc_result.verified_bmc | length > 0
       ansible.builtin.debug:
-        msg: "BMC entries valid for IPs: {{ bmc_result.verified_bmc | join(', ') }}."
+        msg: "BMC entries valid for IPs: {{ bmc_result.verified_bmc | join(', ') }}"
 
     - name: Show Redfish Disabled Warning
       when: bmc_result.redfish_disabled | length > 0
