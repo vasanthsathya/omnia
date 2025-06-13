@@ -84,7 +84,7 @@
 
     - name: Convert filtered_bmc_ip_list to a dictionary with bmc_ip
       ansible.builtin.set_fact:
-        filtered_bmc_ip_dict_list: "{{ filtered_bmc_ip_list | map('regex_replace', '^(.+)$', '{\"bmc_ip\": \"\\1\"}') | map('from_json') | list }}"
+        filtered_bmc_ip_dict_list: "{{ filtered_bmc_ip_list | map('community.general.dict_kv', 'bmc_ip') | list }}"
 
     - name: Validate BMC reachability
       update_bmc_group_entry:
