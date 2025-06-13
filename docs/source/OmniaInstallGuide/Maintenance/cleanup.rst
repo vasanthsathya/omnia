@@ -33,13 +33,13 @@ a. **When executed from the Primary OIM node:**
 
     * Disables boot options on:
           
-        i. All service nodes
-        ii. The passive OIM node
+        * All service nodes
+        * The passive OIM node
 
     * Reboots:
 
-        i. All service nodes
-        ii. Passive OIM node
+        * All service nodes
+        * Passive OIM node
 
     * Cleans up containers, log files, and metadata from the **primary** OIM node.
     * Updates firewall ports on the **primary** OIM node to its default setting.
