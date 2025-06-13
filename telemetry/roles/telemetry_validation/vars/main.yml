@@ -30,7 +30,9 @@ warning_idrac_telemetry_support_false: |
   To remove telemetry containers, use the utils/oim_cleanup.yml playbook."
 warning_idrac_telemetry_support_true: |
   "[WARNING] idrac_telemetry_support is set to true in telemetry_config.yml.
-  This means iDRAC telemetry will be activated for all the BMC IPs mentioned in the {{ bmc_group_data_filename  }}."
+  iDRAC telemetry will be activated for all BMC IPs listed in {{ bmc_group_data_filename }}.
+  Confirm that all BMC IPs are reachable from the OIM and respective service nodes for telemetry to function properly.
+  Additionally, ensure that Redfish is enabled and the iDRAC has a datacenter license with a firmware version greater than 4."
 
 
 # # Usage: include_provision_config.yml

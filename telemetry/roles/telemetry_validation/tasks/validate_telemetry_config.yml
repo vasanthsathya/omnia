@@ -60,7 +60,7 @@
     prompt: "{{ warning_idrac_telemetry_support_false }}"
   when: not idrac_telemetry_support
 
-- name: Warning for idrac_telemetry_support is currently set to false
+- name: Warning for idrac_telemetry_support is currently set to true
   ansible.builtin.pause:
     seconds: "{{ pause_time_15 }}"
     prompt: "{{ warning_idrac_telemetry_support_true }}"
