@@ -172,7 +172,7 @@ def verify_bmc_entries(existing_entries, bmc_creds, module, result):
 def main():
     "Main function for the custom ansible module - update_bmc_group_entry"
     module_args = {
-        'csv_path': {'type': 'str', 'required': True},
+        'csv_path': {'type': 'str', 'required': False},
         'nodes': {'type': 'list', 'elements': 'dict', 'required': False, 'default': []},
         'bmc_username': {'type': 'str', 'required': False, 'no_log': True},
         'bmc_password': {'type': 'str', 'required': False, 'no_log': True},
