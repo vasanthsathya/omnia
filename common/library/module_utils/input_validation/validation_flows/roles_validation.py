@@ -200,7 +200,7 @@ def validate_roles_config(
     mbc_details = "bmc_details"
     static_range = "static_range"
     resource_mgr_id = "resource_mgr_id"
-    roles_per_group = 5
+    max_roles_per_group = 5
     max_roles = 100
 
     roles_per_group = {}
@@ -326,7 +326,7 @@ def validate_roles_config(
                 if group in groups_used:
                     groups_used.remove(group)
                 roles_per_group[group] = roles_per_group.get(group, 0) + 1
-                if roles_per_group[group] > roles_per_group:
+                if roles_per_group[group] > max_roles_per_group:
                     errors.append(
                         create_error_msg(
                             role[name],
