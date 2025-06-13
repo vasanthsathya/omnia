@@ -121,7 +121,7 @@
         (bmc_result.unreachable_bmc | length > 0)
       ansible.builtin.pause:
         seconds: "{{ waiting_time_30 }}" 
-        prompt: "{{ invalid_bmc_warning_msg | replace('\n', ' ') }}"
+        prompt: "{{ invalid_bmc_warning_msg }}"
 
     - name: Filter iDRACs based on telemetry pre-requisites
       block:
