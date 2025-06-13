@@ -35,6 +35,22 @@ idrac_telemetry_enable_fail_msg: |
 filter_idrac_fail_msg: |
   Failed. Error filtering iDRACs. Possible causes include timeout or Redfish connectivity issues.
   Please retry the playbook after some time.
+bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
+redfish_disabled_msg: |
+  Redfish is disabled on the following BMC IPs: {{ bmc_result.redfish_disabled | join(', ') }}.
+  Please enable Redfish on above BMC IPs and execute telemetry.yml.
+invalid_creds_msg: |
+  The following BMC IPs have invalid credentials: {{ bmc_result.invalid_creds | join(', ') }}.
+  Kinldy make sure corect `bmc_username` and `bmc_password` is present in omnia_config_credential.yml file.
+  And all nodes BMC credentials should be same.
+  Rectify the issue and re-execute telemetry.yml.
+unreachable_bmc_msg: |
+  The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
+  Please provide BMC IPs which are reachable from OIM
+  else remove unreachable BMC entries from {{ bmc_group_data_filename }} file.
+invalid_bmc_fail_msg: |
+  [Failed] Some BMC IPs are not valid. Kindly address the issues mentioned above and
+  execute telemetry.yml. If issues not resolved, please remove the invalid BMC IPs from {{ bmc_group_data_filename }} file.
 
 # Usage: trigger_telemetry_collection.yml
 idrac_telemetry_container: "idrac_telemetry_receiver"
