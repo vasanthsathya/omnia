@@ -35,6 +35,11 @@
       ansible.builtin.fail:
         msg: "{{ mysql_container_failure_msg.splitlines() | join(' ') }}"
 
+- name: Install python
+  ansible.builtin.package:
+    name: "{{ hostvars['localhost']['python_package_name'] }}"
+    state: present
+
 - name: Ensure pip3 is available using ensurepip
   ansible.builtin.command: "{{ hostvars['localhost']['python_version'] }} -m ensurepip"
   changed_when: false
