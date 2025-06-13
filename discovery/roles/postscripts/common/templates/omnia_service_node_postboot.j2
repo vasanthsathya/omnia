@@ -6,6 +6,7 @@
 #################################################################################################################
 # Define log file
 LOGFILE="/var/log/xcat/xcat.log"
+SERVICE_TAG_MAP="{{ oim_shared_path }}/omnia/service_nodes/service_tag_map.json"
 
 log() {
   echo "$1" >> "$LOGFILE"
@@ -86,7 +87,26 @@ fi
 # Get node serial
 log "INFO:--- Getting node serial ---"
 nodeid=$(dmidecode -s system-serial-number 2>>"$LOGFILE")
+nodeid=$(echo "$nodeid" | xargs)  # trim spaces
 log "[DEBUG] Current node serial: $nodeid"
+
+# Default to nodeid
+active_node_id="$nodeid"
+
+# Check if file exists
+if [[ -f "$SERVICE_TAG_MAP" ]]; then
+    log "[DEBUG] Fetch active node service tag"
+    mapped_value=$(jq -r --arg nodeid "$nodeid" '.[$nodeid] // empty' "$SERVICE_TAG_MAP")
+
+    # Use mapped value if found
+    if [[ -n "$mapped_value" ]]; then
+        active_node_id="$mapped_value"
+    else
+        log "[INFO]: No mapping found for $nodeid in $SERVICE_TAG_MAP. Using $active_node_id"
+    fi
+else
+    echo "[INFO]: $SERVICE_TAG_MAP not found. Using nodeid directly." >> "$LOGFILE"
+fi
 
 log "INFO:--- Restarting xcatd ---"
 run_or_fail sudo /opt/xcat/sbin/restartxcatd -v
