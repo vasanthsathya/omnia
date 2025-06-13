@@ -36,24 +36,16 @@
         msg: "{{ mysql_container_failure_msg.splitlines() | join(' ') }}"
 
 - name: Ensure pip3 is available using ensurepip
-  ansible.builtin.command: "python3 -m ensurepip"
+  ansible.builtin.command: "{{ hostvars['localhost']['python_version'] }} -m ensurepip"
   changed_when: false
-
-# - name: Install python packages using pip3
-#   ansible.builtin.pip:
-#     name: "{{ item }}"
-#     state: present
-#     executable: pip3
-#   loop: "{{ pip_packages }}"
 
 - name: Install pip packages from offline repo
   ansible.builtin.pip:
     name: "{{ item }}"
     extra_args: >
       --find-links={{ hostvars['localhost']['offline_pip_module_path'] }}/{{ item }}/
-      --trusted-host={{ hostvars['localhost']['pulp_server_ip'] }}
       --no-index
-  loop: "{{ pip_packages }}"
+  loop: "{{ hostvars['localhost']['sn_pip_packages'] }}"
 
 - name: Create MySQL database and table
   block:
