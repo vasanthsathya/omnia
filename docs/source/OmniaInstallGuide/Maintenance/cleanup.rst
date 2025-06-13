@@ -1,3 +1,4 @@
+===============
 OIM cleanup
 ===============
 
@@ -6,9 +7,10 @@ It removes containers, log files, and metadata from the OIM node(s), resets fire
 Its behavior varies based on the type of cluster configuration: non-hierarchical, hierarchical, and whether High Availability (HA) is enabled or not.
 
 Behavior based on cluster configuration
-----------------------------------------
+=========================================
 
 1. **Non-hierarchical, non-HA** configuration
+------------------------------------------------
 
 In this setup, when executed from the OIM node, this playbook will:
 
@@ -16,6 +18,7 @@ In this setup, when executed from the OIM node, this playbook will:
     * Update the firewall ports on the OIM node to its default setting.
 
 2. **Hierarchical, non-HA** configuration
+----------------------------------------------
 
 In this setup, when executed from the OIM node, this playbook will:
 
@@ -28,6 +31,7 @@ In this setup, when executed from the OIM node, this playbook will:
     * Update firewall ports on the OIM node to its default setting.
 
 3. **Hierarchical, HA** configuration
+------------------------------------------
 
 a. **When executed from the Primary OIM node:**
 
@@ -46,13 +50,13 @@ a. **When executed from the Primary OIM node:**
 
 b. **When executed from the OIM-HA node:** (previously passive, now active due to failover)
 
-    * Disables boot options on all service nodes (including passive)
-    * Reboots all service nodes
+    * Disables boot options on all service nodes (including passive).
+    * Reboots all service nodes.
     * Cleans up containers, log files, and metadata from **both OIM nodes** (active and passive).
     * Updates firewall ports on **both OIM nodes** (active and passive) to its default setting.
 
 Playbook execution
--------------------
+=====================
 
 Use the below command to execute the playbook: ::
 
