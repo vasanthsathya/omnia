@@ -65,6 +65,7 @@
         volumes: "{{ prometheus_volumes }}"
         command:
           - "--config.file=/config/prometheus.yml"
+          - "--web.enable-lifecycle"
           - "--storage.tsdb.path=/prometheus"
         log_driver: "json-file"
         log_opt:

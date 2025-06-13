@@ -20,7 +20,7 @@
   block:
     - name: Create directories and render configuration files for HA nodes
       telemetry_pcs_template:
-        service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
+        service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] | default({}) }}"
         service_node_base_dir: "{{ service_node_base_dir }}"
         file_permissions: "{{ file_permissions }}"
         oim_shared_path: "{{ oim_shared_path }}"
@@ -30,7 +30,7 @@
 
     - name: Create Prometheus configuration file for each service node
       telemetry_prom_config:
-        service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] }}"
+        service_nodes_metadata: "{{ hostvars['localhost']['service_nodes_metadata'] | default({}) }}"
         service_node_base_dir: "{{ service_node_base_dir }}"
         file_permissions: "{{ file_permissions }}"
         tmpl_telemetry: "{{ role_path }}/templates/prometheus_yml_sn.j2"
