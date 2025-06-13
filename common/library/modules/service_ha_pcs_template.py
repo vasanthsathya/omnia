@@ -134,13 +134,13 @@ def main():
 
         results.append(f"Configured HA group: {service_tag}")
 
-        # Copy rendered active node directory to passive node directories
-        for p_node in passive_nodes:
-            passive_service_tag = p_node['service_tag']
-            passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
+        # # Copy rendered active node directory to passive node directories
+        # for p_node in passive_nodes:
+        #     passive_service_tag = p_node['service_tag']
+        #     passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
 
-            shutil.copytree(service_tag_dir, passive_service_tag_dir, dirs_exist_ok=True, symlinks=True)
-            results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
+        #     shutil.copytree(service_tag_dir, passive_service_tag_dir, dirs_exist_ok=True, symlinks=True)
+        #     results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
     update_json(sn_to_active_sn, "/opt/omnia/service_nodes/service_tag_map.json")
     module.exit_json(changed=True, msg="Service node configurations rendered.", results=results)
 
