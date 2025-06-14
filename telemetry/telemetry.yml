@@ -167,15 +167,15 @@
     node_host: "{{ hostvars[inventory_hostname]['service_tag'] if inventory_hostname != 'localhost' else 'oim' }}"
     telemetry_report: |
           ---- Telemetry Report Overview ({{ node_host }}) ----
-          IP with Telemetry not supported: {{ failed_idrac_count + invalid_idrac_count }}
-          IPs with Telemetry Initiated: {{ telemetry_idrac_count }}
+          IP with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
+          IPs with Telemetry Initiated: {{ telemetry_idrac_count | int }}
 
-          {% if failed_idrac_count + invalid_idrac_count > 0 %}
+          {% if (failed_idrac_count | int + invalid_idrac_count | int) > 0 %}
           Potential reasons for telemetry not being initiated include Redfish connectivity problems, timeout issues,
           iDRAC9 datacenter license constraints, or firmware-related problems.
           {% endif %}
 
-          {% if invalid_idrac_count > 0 %}
+          {% if invalid_idrac_count | int > 0 %}
 
           {% if idrac_redfish_disabled | length > 0 %}
           IPs with Redfish disabled:
