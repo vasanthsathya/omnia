@@ -247,6 +247,7 @@ def validate_roles_config(
         if errors:
             return errors
 
+    groups_used = set()  # Initialize as empty set
     # List of groups used in roles
     if groups:
         groups_used = set(groups.keys())
@@ -330,7 +331,8 @@ def validate_roles_config(
                     errors.append(
                         create_error_msg(
                             role[name],
-                            f"Current number of roles for {group} is {str(roles_per_group[group])}:",
+                            f"Current number of roles for {group} "
+                            f"is {str(roles_per_group[group])}:",
                             en_us_validation_msg.MAX_NUMBER_OF_ROLES_PER_GROUP_MSG
                         )
                     )
@@ -408,7 +410,7 @@ def validate_roles_config(
                 switch_ip = groups[group][switch_details][ip]
                 try:
                     ipaddress.IPv4Address(switch_ip)
-                except Exception as e:
+                except Exception as _e:
                     errors.append(
                         create_error_msg(
                             group,
@@ -426,7 +428,9 @@ def validate_roles_config(
                         errors.append(
                             create_error_msg(
                                 group,
-                                f"Group {group} has duplicate ports for switch ip {switch_ip}, this switch ip is shared with the following groups: {switch_ip_mapping[switch_ip]}.",
+                                f"Group {group} has duplicate ports for switch ip {switch_ip}, "
+                                f"this switch ip is shared with "
+                                f"the following groups: {switch_ip_mapping[switch_ip]}.",
                                 en_us_validation_msg.DUPLICATE_SWITCH_IP_PORT_MSG
                             )
                         )
@@ -472,7 +476,9 @@ def validate_roles_config(
                 # # Check if bmc details are defined, but enable_switch_based
                 # is true or the bmc_network is not defined
                 # if enable_switch_based or not bmc_network_defined:
-                #     errors.append(create_error_msg(group, "Group " + group + " BMC static range invalid use case.", en_us_validation_msg.bmc_static_range_msg))
+                #     errors.append(create_error_msg(group,
+                #                   "Group " + group + " BMC static range invalid use case.",
+                #                    en_us_validation_msg.bmc_static_range_msg))
                 # Validate the static range is properly defined
                 if not validation_utils.validate_ipv4_range(
                     groups[group].get(mbc_details, {}).get(static_range, "")
@@ -495,7 +501,8 @@ def validate_roles_config(
                         errors.append(
                             create_error_msg(
                                 group,
-                                f"Static range {static_range} overlaps with the following group(s): {grp_overlaps}.",
+                                f"Static range {static_range} "
+                                f"overlaps with the following group(s): {grp_overlaps}.",
                                 en_us_validation_msg.OVERLAPPING_STATIC_RANGE
                             )
                         )
