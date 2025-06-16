@@ -167,6 +167,7 @@
     node_host: "{{ hostvars[inventory_hostname]['service_tag'] if inventory_hostname != 'localhost' else 'oim' }}"
     telemetry_report: |
           ---- Telemetry Report Overview ({{ node_host }}) ----
+
           IP with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
           IPs with Telemetry Initiated: {{ telemetry_idrac_count | int }}
 
