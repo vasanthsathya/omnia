@@ -84,14 +84,6 @@ def validate_provision_config(
             create_error_msg("language", input_file_path, en_us_validation_msg.LANGUAGE_FAIL_MSG)
         )
 
-    # Validate domain name
-    domain_name = data.get("domain_name", "")
-    domain_pattern = r"^[a-zA-Z0-9.-]+$"
-    if not domain_name or not re.match(domain_pattern, domain_name):
-        errors.append(
-            create_error_msg("domain_name", domain_name, en_us_validation_msg.DOMAIN_NAME_FAIL_MSG)
-        )
-
     timezone_file_path = os.path.join(
         module_utils_base, "input_validation", "common_utils", "timezone.txt"
     )
