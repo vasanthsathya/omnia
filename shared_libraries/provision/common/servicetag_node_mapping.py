@@ -11,12 +11,15 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
-import os
+"""
+This script is used to map service tags to node names in the inventory file.
+"""
 import sys
 import syslog
 import subprocess
 import ipaddress
+
+import omniadb_connection as omniadb  # Import Omnia database connection module
 
 # Get input arguments
 file_path = sys.argv[1]
@@ -25,7 +28,6 @@ kernel_params = sys.argv[3]
 
 # Add the database connection path
 sys.path.insert(0, file_path)
-import omniadb_connection as omniadb  # Import Omnia database connection module
 
 
 def is_ip_address(value):
@@ -94,8 +96,9 @@ def service_tag_node_mapping():
             subprocess.run(command, check=True)
 
         if not node_name:
-           print(f"WARNING:service_tag_node_mapping: No node found for input: {inventory_hostname}", file=sys.stderr)
-           sys.exit(1)  # Exit with error to trigger Ansible failure
+            print(f"WARNING:service_tag_node_mapping: No node found for input: "
+                    f"{inventory_hostname}", file=sys.stderr)
+            sys.exit(1)  # Exit with error to trigger Ansible failure
 
 
         # Close the cursor and connection

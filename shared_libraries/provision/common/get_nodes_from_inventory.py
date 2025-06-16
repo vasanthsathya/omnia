@@ -11,17 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import sys, os
-import subprocess
+"""
+This script reads the inventory file and fetches the node names from the database
+    based on the given identifiers.
+"""
+import sys
+import os
 import re
+
+import omniadb_connection
+
 
 # Paths to the inventory file and database module
 inventory_file_paths = sys.argv[2][1:-1].split(',')  # Extract the inventory file path correctly
 db_path = os.path.abspath(sys.argv[1])
 
 sys.path.insert(0, db_path)
-import omniadb_connection
 
 # Read the inventory file line-by-line, ignoring sections like [nodes]
 node_identifiers = []
@@ -93,5 +98,5 @@ def get_nodes_name():
     conn.close()
     return node_names
 
-node_names = get_nodes_name()
-print(','.join(set(node_names)))
+list_of_node_names = get_nodes_name()
+print(','.join(set(list_of_node_names)))
