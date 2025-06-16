@@ -41,7 +41,7 @@ def get_count(line: str) -> int:
     return 0
 
 
-def get_node_info_db(cursor: cursor, node: str) -> tuple: # pylint: disable=redefined-outer-name
+def get_node_info_db(cursor: cursor, node: str) -> tuple:
     """
     Retrieves the node information from the database.
 
@@ -187,7 +187,7 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
             syslog.LOG_ERR,
             f"parse_syslog:get_updated_cpu_gpu_info: Error reading file '{computes_log_file_path}'",
         )
-    except Exception as err: # pylint: disable=broad-except
+    except Exception as err:
         # Log an error if there is any other exception
         syslog.syslog(
             syslog.LOG_ERR,
@@ -202,7 +202,7 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
     return (cpu, gpu, cpu_count, gpu_count)
 
 
-def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None: # pylint: disable=redefined-outer-name
+def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
     """
     Update the database with the provided updated node information.
 
@@ -270,7 +270,7 @@ def remove_hostname_inventory(inventory_file: str, hostname: str) -> None:
         with open(inventory_file, "w", encoding="utf-8") as configfile:
             config.write(configfile, space_around_delimiters=False)
 
-    except (OSError, Exception) as err: # pylint: disable=broad-except
+    except (OSError, Exception) as err:
         syslog.syslog(
             syslog.LOG_ERR,
             f"parse_syslog:remove_hostname_inventory: {str(type(err))} {str(err)}",
@@ -307,7 +307,7 @@ def add_hostname_inventory(inventory_file: str, hostname: str) -> None:
         with open(inventory_file, "w", encoding="utf-8") as configfile:
             config.write(configfile, space_around_delimiters=False)
 
-    except (OSError, Exception) as err: # pylint: disable=broad-except
+    except (OSError, Exception) as err:
         syslog.syslog(
             syslog.LOG_ERR,
             f"parse_syslog:add_hostname_inventory: {str(type(err))} {str(err)}",
@@ -371,7 +371,7 @@ def generate_inventory_for_node(node_info_db: tuple) -> None:
             config.write(configfile, space_around_delimiters=False)
             configfile.flush()
 
-    except (OSError, Exception) as err: # pylint: disable=broad-except
+    except (OSError, Exception) as err:
         syslog.syslog(
             syslog.LOG_ERR,
             f"parse_syslog:generate_inventory_for_node: {str(type(err))} {str(err)}",
@@ -456,7 +456,7 @@ def update_inventory(node_info_db: tuple, updated_node_info: tuple) -> None:
                 elif updated_gpu == "intel":
                     inventory_file_str = "compute_gpu_intel"
                 add_hostname_inventory(inventory_file_str, hostname)
-    except Exception as e: # pylint: disable=broad-except
+    except Exception as e:
         syslog.syslog(
             syslog.LOG_ERR,
             f"parse_syslog:update_inventory: Exception occurred: {str(type(e))} {str(e)}",

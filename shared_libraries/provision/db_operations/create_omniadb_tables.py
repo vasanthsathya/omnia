@@ -23,7 +23,7 @@ import psycopg2
 
 db_path = sys.argv[1]
 sys.path.insert(0, db_path)
-import omniadb_connection # pylint: disable=wrong-import-position
+import omniadb_connection
 
 KEY_FILE_PATH = "/opt/omnia/.postgres/.postgres_pass.key"
 PASS_FILE_PATH = "/opt/omnia/.postgres/.encrypted_pwd"

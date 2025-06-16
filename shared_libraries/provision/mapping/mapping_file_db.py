@@ -29,7 +29,7 @@ admin_ip = []
 bmc_ip = []
 nan = float('nan')
 
-def mapping_file_db_update(): # pylint: disable=too-many-locals
+def mapping_file_db_update():
     """
     Updates the database with node information from the provided JSON mapping_details.
 

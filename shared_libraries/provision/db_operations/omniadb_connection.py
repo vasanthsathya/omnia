@@ -78,7 +78,7 @@ def create_connection_xcatdb():
     return conn
 
 
-def insert_node_info(service_tag, node, hostname, admin_mac, admin_ip, bmc_ip, group_name, # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
+def insert_node_info(service_tag, node, hostname, admin_mac, admin_ip, bmc_ip, group_name,
                      role, parent, location_id, architecture, discovery_mechanism, bmc_mode,
                      switch_ip, switch_name, switch_port):
     """
