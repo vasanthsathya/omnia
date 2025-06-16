@@ -127,7 +127,7 @@ def main():
 
         # Create the template context
         context = {
-            'service_tag': service_tag,
+            'active_service_tag': service_tag,
             'service_admin_nic_ip': service_admin_nic_ip,
             'oim_shared_path': oim_shared_path,
             **extra_vars,
