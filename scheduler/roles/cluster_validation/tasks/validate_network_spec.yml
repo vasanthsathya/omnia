@@ -37,6 +37,14 @@
     admin_nic: "{{ network_data.admin_network.oim_nic_name }}"
     netmask: "{{ network_data.admin_network.netmask_bits }}"
 
+- name: Set admin network CIDR
+  ansible.builtin.set_fact:
+    admin_nic_cidr: "{{ (admin_nic_ip + '/' + netmask) | ansible.utils.ipaddr('network/prefix') }}"
+
+- name: Debug admin network CIDR
+  ansible.builtin.debug:
+    var: admin_nic_cidr
+
 - name: Overwrite admin nic IP with virtual IP if OIM high availability is enabled
   ansible.builtin.set_fact:
     original_admin_nic_ip: "{{ admin_nic_ip }}"
