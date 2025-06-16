@@ -40,8 +40,7 @@
                   "package": { "type": "string", "minLength": 1 },
                   "type": { "const": "image" },
                   "tag": { "type": "string" },
-                  "digest": { "type": "string" },
-                  "reboot_required": { "type": "boolean", "minLength": 1 }
+                  "digest": { "type": "string" }
                 },
                 "required": ["package", "type"],
                 "oneOf": [
