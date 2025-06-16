@@ -28,3 +28,4 @@
   ansible.builtin.assert:
     that: "groups['etcd'] | intersect(groups['auth_server']) | length == 0"
     fail_msg: "{{ auth_etcd_fail_msg }}"
+  when: "'etcd' in groups"
