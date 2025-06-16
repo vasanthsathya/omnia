@@ -28,18 +28,18 @@
   when:
     - groups['all'] is defined
     - (groups['all'] | length == 0)
-#    - not cluster_layout_check.stat.exists
+    - not cluster_layout_check.stat.exists
 
-# - name: Create inventory from cluster_layout when inventory not provided
-#   when:
-#     - groups['all'] is defined
-#     - (groups['all'] | length == 0)
-#     - cluster_layout_check.stat.exists
-#   block:
-#     - name: Warning - inventory not provided, using omnia generated inventory
-#       ansible.builtin.pause:
-#         seconds: "{{ warning_wait_time }}"
-#         prompt: "{{ inventory_warn_msg }}"
+- name: Create inventory from cluster_layout when inventory not provided
+  when:
+    - groups['all'] is defined
+    - (groups['all'] | length == 0)
+    - cluster_layout_check.stat.exists
+  block:
+    - name: Warning - inventory not provided, using omnia generated inventory
+      ansible.builtin.pause:
+        seconds: "{{ warning_wait_time }}"
+        prompt: "{{ inventory_warn_msg }}"
 
 # Validate K8s requirements for all the nodes
 - name: Validate K8s nodes requirements

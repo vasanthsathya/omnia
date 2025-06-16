@@ -178,7 +178,7 @@ def validate_service_node_in_software_config(input_file_path):
 
 
 def validate_roles_config(
-    input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
+    input_file_path, data, logger, _module, _omnia_base_dir, _module_utils_base, _project_name
 ):
     """
     Validates the L2 logic of the roles_config.yaml file.
