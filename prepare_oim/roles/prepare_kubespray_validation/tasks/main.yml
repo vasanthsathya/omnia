@@ -14,10 +14,10 @@
 ---
 
 - name: Kubespray Validation
-  when: 
-    - k8s_support
-    - not file_stat.stat.exists
-    - dynamic_k8s_generation
+  when:
+    - hostvars['localhost']['k8s_support']
+    - not hostvars['localhost']['already_ran']
+    - hostvars['localhost']['dynamic_k8s_generation']
   block:
     - name: Get kubespray image with version {{ kube_version }}
       ansible.builtin.shell: >
