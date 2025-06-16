@@ -49,7 +49,8 @@
 - name: Set service_node_downloaded true if line is present
   ansible.builtin.set_fact:
     service_node_downloaded: true
-  when: sw_log_lines | select('search', 'service_node,success') | list | length > 0
+  when:
+    - "'service_node,success' in sw_log_lines"
 
 - name: Fail if service_node,success not found
   ansible.builtin.fail:
