@@ -152,7 +152,6 @@ def update_db_nicinfo():
                 db_data['category'] = cat_nm
                 for col in value:
                     for grp_key, grp_value in col.items():
-                        # for network in grp_value:
                         if grp_key == 'Network' or grp_key == 'network':
                             for network in grp_value:
                                 for net_key, net_value in network.items():
