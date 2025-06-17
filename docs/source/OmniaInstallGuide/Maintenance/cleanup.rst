@@ -3,57 +3,25 @@ OIM cleanup
 ===============
 
 The ``oim_cleanup.yml`` playbook can be utilized to roll back any configurations made on the OIM. 
-It removes containers, log files, and metadata from the OIM node(s), resets firewall ports, and reboots service nodes to prepare the infrastructure for future provisioning tasks. 
-Its behavior varies based on the type of cluster configuration: non-hierarchical, hierarchical, and whether High Availability (HA) is enabled or not.
+
+Tasks performed by the playbook
+================================
+
+The ``oim_cleanup.yml`` playbook performs the following tasks:
+
+* Clean up all containers, log files, and metadata on the OIM node.
+* Rollback the firewall ports on the OIM node to its default setting.
 
 Behavior based on cluster configuration
 =========================================
 
-1. **Non-hierarchical, non-HA** configuration
-------------------------------------------------
+Apart from the common tasks mentioned above, the ``oim_cleanup.yml`` playbook also performs few additional tasks based on the cluster configuration - specifically, whether the cluster is hierarchical and if High Availability (HA) is enabled or not.
+Check out the table below for more information.
 
-In this setup, when executed from the OIM node, this playbook will:
-
-    * Clean up all containers, log files, and metadata on the OIM node.
-    * Update the firewall ports on the OIM node to its default setting.
-
-2. **Hierarchical, non-HA** configuration
-----------------------------------------------
-
-In this setup, when executed from the OIM node, this playbook will:
-
-    * Disable the boot option on all service nodes.
-
-    * Reboot all service nodes so that they pause and wait for boot media.
-
-    * Clean up containers, logs, and metadata on the OIM node.
-
-    * Update firewall ports on the OIM node to its default setting.
-
-3. **Hierarchical, HA** configuration
-------------------------------------------
-
-a. **When executed from the Primary OIM node:**
-
-    * Disables boot options on:
-          
-        * All service nodes
-        * The passive OIM node
-
-    * Reboots:
-
-        * All service nodes
-        * Passive OIM node
-
-    * Cleans up containers, log files, and metadata from the **primary** OIM node.
-    * Updates firewall ports on the **primary** OIM node to its default setting.
-
-b. **When executed from the OIM-HA node:** (previously passive, now active due to failover)
-
-    * Disables boot options on all service nodes (including passive).
-    * Reboots all service nodes.
-    * Cleans up containers, log files, and metadata from **both OIM nodes** (active and passive).
-    * Updates firewall ports on **both OIM nodes** (active and passive) to its default setting.
+.. csv-table:: 
+    :file: ../../Tables/oim_cleanup.csv
+    :header-rows: 1
+    :keepspace:
 
 Playbook execution
 =====================
