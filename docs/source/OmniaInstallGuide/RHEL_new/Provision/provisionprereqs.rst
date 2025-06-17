@@ -22,19 +22,19 @@ Prerequisites
 
     .. include:: ../../../Appendices/hostnamereqs.rst
 
-For example, ``controlplane.omnia.test`` is an acceptable hostname. Use the below command as a reference while configuring your hostname: ::
+    For example, ``controlplane.omnia.test`` is an acceptable hostname. Use the below command as a reference while configuring your hostname: ::
 
-    hostnamectl set-hostname <hostname>
+        hostnamectl set-hostname <hostname>
 
-.. note:: The domain name specified for the OIM should be the same as the one specified under ``domain_name`` in ``input/provision_config.yml``.
+    .. note:: The domain name specified for the OIM should be the same as the one specified under ``domain_name`` in ``input/provision_config.yml``.
 
 * To provision the bare metal servers, download the following ISO to the OIM:
 
     * `RHEL 9.x <https://access.redhat.com/products/red-hat-enterprise-linux>`_
 
-.. note:: Ensure the ISO provided has downloaded seamlessly (No corruption). Verify the SHA checksum or download size of the ISO file before provisioning to avoid failures.
+    .. note:: Ensure the ISO provided has downloaded seamlessly (No corruption). Verify the SHA checksum or download size of the ISO file before provisioning to avoid failures.
 
-Note the compatibility between cluster OS and OIM OS below:
+    Note the compatibility between cluster OS and OIM OS below:
 
         +---------------------+--------------------+------------------+
         |                     |                    |                  |
@@ -56,13 +56,13 @@ Note the compatibility between cluster OS and OIM OS below:
 
              ip link show
 
-  In the event of a mismatch, edit the file ``/etc/sysconfig/network-scripts/ifcfg-<nic name>`` using the vi editor.
+    In the event of a mismatch, edit the file ``/etc/sysconfig/network-scripts/ifcfg-<nic name>`` using the vi editor.
 
 * When discovering nodes via mapping files, all cluster nodes should be set up in PXE mode before running the playbooks.
 
 .. note::
 
-    * After the cluster has been deployed, changing the OIM is not supported. If you need to change the OIM, you must redeploy the entire cluster.
+    * After the cluster has been configured and deployed, changing the OIM node is not supported. If you need to change the OIM node, you must redeploy the entire cluster.
 
     * For servers with an existing OS being discovered via BMC, ensure that the first PXE device on target nodes should be the designated active NIC for PXE booting.
 
