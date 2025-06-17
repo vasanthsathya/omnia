@@ -18,6 +18,7 @@
 
 import os
 import yaml
+import json
 from jinja2 import Template
 
 
@@ -67,3 +68,22 @@ def render_template_multi_pass(src: str, dest: str, context: dict, passes: int =
             f.write(rendered)
     except Exception as e:
         raise RuntimeError(f"Template render error ({src} → {dest}): {e}") from e
+
+def update_json(new_data, filepath):
+    """Save new data to a JSON file. Create if not exists; update if exists."""
+    if os.path.exists(filepath):
+        # Load existing data
+        with open(filepath, 'r') as f:
+            try:
+                existing_data = json.load(f)
+            except json.JSONDecodeError:
+                existing_data = {}
+    else:
+        existing_data = {}
+
+    # Update with new data
+    existing_data.update(new_data)
+
+    # Write back to file
+    with open(filepath, 'w') as f:
+        json.dump(existing_data, f, indent=2)
