@@ -582,7 +582,7 @@ def validate_omnia_config(
     admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
     bmc_static_range = admin_bmc_networks["bmc_network"]["static_range"]
     bmc_dynamic_range = admin_bmc_networks["bmc_network"]["dynamic_range"]
-    pod_external_ip_range = data["pod_external_ip_range"]
+    _pod_external_ip_range = data["pod_external_ip_range"]
     k8s_service_addresses = data["k8s_service_addresses"]
     k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
 
@@ -746,6 +746,7 @@ def validate_telemetry_config(
                 "IP overlap -", None, en_us_validation_msg.TELEMETRY_IP_OVERLAP_FAIL_MSG
             )
         )
+    '''
     return errors
 
 
