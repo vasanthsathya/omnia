@@ -51,7 +51,7 @@
 
     - name: Loop through user repos and configure repofile
       ansible.builtin.include_tasks: generate_user_repofile.yml
-      loop: "{{ user_repo_url }}"
+      loop: "{{ user_repo_url | default([], true) }}"
       loop_control:
         label: "{{ item.name }}"
       when: item.url in new_repos and software_version_default not in item.url
