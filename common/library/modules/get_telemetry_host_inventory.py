@@ -83,14 +83,23 @@ def fetch_active_passive_servicetags(parent_tags, service_node_metadata):
     """
     svc_node_info = {}
     for service_tag, data in service_node_metadata.items():
-        temp = {}
+        node_info = {}
         if service_tag in parent_tags:
-            svc_tag = data.get('active_service_tag', service_tag)
-            temp['active_service_tag'] =  svc_tag
+            active_service_tag = data.get('active_service_tag', service_tag)
+            node_info['active_service_tag'] =  active_service_tag
             sn_active_ip = data.get('virtual_ip_address', data['admin_ip'])
-            temp['active_ip'] = sn_active_ip
-            temp['admin_ip'] = data['admin_ip']
-            svc_node_info[svc_tag] = temp
+            node_info['active_ip'] = sn_active_ip
+            node_info['admin_ip'] = data['admin_ip']
+            svc_node_info[active_service_tag] = node_info
+            if data.get('active', False):
+                passive_service_tags = data.get('passive_nodes', [])
+                for passive_tag in passive_service_tags:
+                    if passive_tag not in svc_node_info:
+                        svc_node_info[passive_tag] = {
+                            'active_service_tag': active_service_tag,
+                            'active_ip': sn_active_ip,
+                            'admin_ip': service_node_metadata[passive_tag]['admin_ip']
+                        }
 
     return svc_node_info
 
