@@ -1,17 +1,13 @@
 ﻿Software ,Disc utilization (size)
-AMD ROCM,4 GB
-CUDA,4 GB
+AMD GPU (ROCm),3.6 GB
+CUDA,5.9 GB
 OFED,234 MB
-FreeIPA,NA [1]_
+Service Node,355 MB
+FreeIPA,246 MB
 OpenLDAP,87 MB
-Secure login node,65 MB
-NFS,NA [1]_
+NFS,75 MB
 BeeGFS,152 MB
-Slurm,190 MB
-Kubernetes,5 GB
-Telemetry,1 GB
-Intel benchmarks,28 GB
-AMD benchmarks,NA [1]_
-Utils,200 KB
+Slurm,168 MB
+Kubernetes,7 GB
 UCX,153 MB
 OpenMPI,220 MB
