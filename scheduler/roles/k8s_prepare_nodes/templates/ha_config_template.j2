@@ -7,4 +7,4 @@ loadbalancer_apiserver:
   port: {{ lb_port if lb_port is defined and lb_port | string | length > 0 else 6443 }}
 kube_vip_enableServicesElection: true 
 kube_vip_lb_enable: {{ true | lower if external_lb_ip | length > 0 else false | lower }}
-kube_vip_cidr: {{ admin_nic_cidr }}
+kube_vip_cidr: {{ netmask }}

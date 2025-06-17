@@ -89,3 +89,13 @@ k8s_node_not_ready: "Some nodes are NotReady: {{ k8s_status.not_ready_nodes }}"
 k8s_pods_failed_msg: "Some pods failed: {{ k8s_status.failed_pods }}"
 k8s_cluster_issue_msg: "Cluster issues detected."
 k8s_status_success_msg: "All Kubernetes nodes are Ready and all pods are Running or Succeeded."
+
+# Usage: set_environment.yml
+proxy_port: "3128"
+_no_proxy_list: "localhost,127.0.0.1,{{ hostvars['localhost']['admin_nic_ip'] }},{{ hostvars['localhost']['k8s_service_addresses'] }},{{ hostvars['localhost']['k8s_pod_network_cidr'] }},{{ hostvars['localhost']['oim_hostname'] }},{{ hostvars['localhost']['domain_name'] }}"   # noqa: yaml[line-length]
+_routed_env:
+  http_proxy: "http://{{ hostvars['localhost']['admin_nic_ip'] }}:{{ proxy_port }}"
+  https_proxy: "http://{{ hostvars['localhost']['admin_nic_ip'] }}:{{ proxy_port }}"
+  no_proxy: "{{ _no_proxy_list }}"
+_direct_env:
+  no_proxy: "{{ _no_proxy_list }}"

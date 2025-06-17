@@ -16,14 +16,6 @@
 - name: Set environment
   ansible.builtin.set_fact:
     compute_env: "{{ {} if hostvars['localhost']['k8s_offline_install'] else (_routed_env if hostvars['localhost']['enable_routed_internet'] else _direct_env) }}" # noqa: yaml[line-length]
-  vars:
-    _no_proxy_list: "localhost,127.0.0.1,{{ hostvars['localhost']['admin_nic_ip'] }},{{ hostvars['localhost']['k8s_service_addresses'] }},{{ hostvars['localhost']['k8s_pod_network_cidr'] }},{{ hostvars['localhost']['oim_hostname'] }},{{ hostvars['localhost']['domain_name'] }}"   # noqa: yaml[line-length]
-    _routed_env:
-      http_proxy: "http://{{ hostvars['localhost']['admin_nic_ip'] }}:{{ proxy_port }}"
-      https_proxy: "http://{{ hostvars['localhost']['admin_nic_ip'] }}:{{ proxy_port }}"
-      no_proxy: "{{ _no_proxy_list }}"
-    _direct_env:
-      no_proxy: "{{ _no_proxy_list }}"
 
 - name: Debug environment
   ansible.builtin.debug:
@@ -47,12 +39,12 @@
 
 - name: Extract and set online URLs from k8s_packages_json
   ansible.builtin.set_fact:
-    mpi_operator_yaml_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'mpi') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
+    mpi_operator_yaml_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'mpi-operator') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
     xilinx_device_plugin_yaml_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'xilinx-device-plugin') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
     multus_daemonset_yaml_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'multus-daemonset') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
-    whereabouts_git_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'git') | selectattr('package', 'equalto', 'whereabouts') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
-    whereabouts_git_version: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'git') | selectattr('package', 'equalto', 'whereabouts') | map(attribute='version') | list | first }}" # noqa: yaml[line-length]
-    nfs_subdir_external_provisioner_repo: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'tarball') | selectattr('package', 'equalto', 'nfs-subdir-external-provisioner') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
+    whereabouts_git_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'git') | selectattr('package', 'search', 'whereabouts') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
+    whereabouts_git_version: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'git') | selectattr('package', 'search', 'whereabouts') | map(attribute='version') | list | first }}" # noqa: yaml[line-length]
+    nfs_subdir_external_provisioner_repo: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'tarball') | selectattr('package', 'search', 'nfs-subdir-external-provisioner') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
     rocm_device_plugin_yaml_url: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'manifest') | selectattr('package', 'search', 'rocm-device-plugin') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
     nvidia_device_plugin_repo: "{{ k8s_packages_json['k8s']['cluster'] | selectattr('type', 'equalto', 'tarball') | selectattr('package', 'search', 'nvidia-device-plugin') | map(attribute='url') | list | first }}" # noqa: yaml[line-length]
   when: not hostvars['localhost']['k8s_offline_install']
