@@ -17,6 +17,8 @@
   group_package_map:
     input_path: "{{ hostvars['localhost']['input_project_dir'] }}"
   register: grouped_packages
+  delegate_to: localhost
+  connection: local
 
 - name: Get all discovered nodes from DB
   community.postgresql.postgresql_query:
