@@ -19,8 +19,6 @@ import syslog
 import subprocess
 import ipaddress
 
-import omniadb_connection as omniadb  # Import Omnia database connection module
-
 # Get input arguments
 file_path = sys.argv[1]
 inventory_hostname = sys.argv[2]
@@ -28,7 +26,7 @@ kernel_params = sys.argv[3]
 
 # Add the database connection path
 sys.path.insert(0, file_path)
-
+import omniadb_connection as omniadb  # Import Omnia database connection module
 
 def is_ip_address(value):
     """

@@ -22,11 +22,10 @@ import time
 import json
 from distutils.util import strtobool
 import yaml
-import omniadb_connection
 
 db_path = sys.argv[2]
 sys.path.insert(0, db_path)
-
+import omniadb_connection
 
 network_spec_file_path = os.path.abspath(sys.argv[1])
 

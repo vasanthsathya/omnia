@@ -19,14 +19,12 @@ import sys
 import os
 import re
 
-import omniadb_connection
-
-
 # Paths to the inventory file and database module
 inventory_file_paths = sys.argv[2][1:-1].split(',')  # Extract the inventory file path correctly
 db_path = os.path.abspath(sys.argv[1])
 
 sys.path.insert(0, db_path)
+import omniadb_connection
 
 # Read the inventory file line-by-line, ignoring sections like [nodes]
 node_identifiers = []

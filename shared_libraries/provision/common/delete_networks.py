@@ -19,11 +19,10 @@ import sys
 import os
 import subprocess
 import yaml
-import omniadb_connection
 
 db_path = sys.argv[1]
 sys.path.insert(0, db_path)
-
+import omniadb_connection
 
 network_spec_path = os.path.abspath(sys.argv[2])
 nw_names = []

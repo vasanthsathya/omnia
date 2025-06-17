@@ -16,9 +16,9 @@ This module deletes the switch ports from the database.
 """
 import sys
 import subprocess
-import omniadb_connection
 
 sys.path.append('/opt/omnia/shared_libraries/provision/db_operations')
+import omniadb_connection
 
 switch_ip = sys.argv[1]
 switch_ports = sys.argv[2]

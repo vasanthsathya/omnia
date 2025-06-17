@@ -15,11 +15,6 @@
 This module fetches the list of booted nodes from the database.
 """
 import sys
-# import os
-# import yaml
-# import ipaddress
-# import uncorrelated_add_ip
-# import correlation_admin_add_nic
 
 def get_booted_nodes(db_path):
     """

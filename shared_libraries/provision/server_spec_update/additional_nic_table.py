@@ -17,10 +17,10 @@ This script is used to create a 'nicinfo' table in the 'cluster' schema of the d
 import sys
 import os
 import yaml
-import omniadb_connection
 
 node_db_path = sys.argv[2]
 sys.path.insert(0, node_db_path)
+import omniadb_connection
 
 network_spec_file_path = os.path.abspath(sys.argv[1])
 with open(network_spec_file_path, "r", encoding="utf-8") as file:
