@@ -40,7 +40,7 @@ def update_node_status(node_obj):
     update_status_query = """
         UPDATE cluster.nodeinfo
         SET status = 'booted'
-        WHERE node_obj = %s
+        WHERE node = %s
     """
     cursor.execute(update_status_query, (node_obj,))
     cursor.close()
