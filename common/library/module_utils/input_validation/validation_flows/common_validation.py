@@ -13,12 +13,15 @@
 # limitations under the License.
 
 import json
+import os
 import ansible.module_utils.input_validation.common_utils.data_fetch as get
+import ansible.module_utils.input_validation.common_utils.data_validation as validate
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import validation_utils
 from ansible.module_utils.input_validation.common_utils import data_verification
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
+from ansible.modules.validate_input import generate_log_failure_message
 from ansible.module_utils.input_validation.validation_flows import scheduler_validation
 
 from ansible.module_utils.local_repo.software_utils import (
@@ -73,13 +76,37 @@ def validate_software_config(
 
     # Check for the additional software field
     if "additional_software" in data:
-        # Call validate_additional_software()
+        # Run schema validation and call validate_additional_software()
+        schema_base_file_path = os.path.join(module_utils_base,'input_validation','schema')
+        passwords_set = config.passwords_set
         extensions = config.extensions
+        fname = "additional_software"
+        schema_file_path = schema_base_file_path + "/" + fname + extensions['json']
         json_files = get.files_recursively(omnia_base_dir + "/" + project_name, extensions['json'])
         json_files_dic = {}
+
         for file_path in json_files:
             json_files_dic.update({get.file_name_from_path(file_path): file_path})
         new_file_path = json_files_dic.get("additional_software.json", None)
+
+        # Validate the schema of the input file (L1)
+        validation_status = {}
+        vstatus = []
+        project_data = {project_name: {"status": [], "tag": "additional_software"}}
+        validation_status.update(project_data)
+        schema_status = validate.schema(
+            new_file_path, schema_file_path, passwords_set,
+            omnia_base_dir, project_name, logger, module)
+        vstatus.append(schema_status)
+
+        # Append the validation status for the input file
+        validation_status[project_name]["status"].append(
+            {new_file_path: "Passed" if schema_status else "Failed"})
+
+        if False in vstatus:
+            log_file_name = os.path.join(
+                config.input_validator_log_path, f"validation_omnia_{project_name}.log")
+            generate_log_failure_message(log_file_name, project_name, validation_status, module)
 
         # Check for the addtional_software.json file exist
         if new_file_path is None or not file_exists(new_file_path, module, logger):
@@ -444,10 +471,11 @@ def validate_additional_software(
     """
     errors = []
     # Get all keys in the data
-    sub_groups = set(flatten_sub_groups(list(data.keys())))
+    raw_subgroups = list(data.keys())
+    flattened_sub_groups = set(flatten_sub_groups(list(data.keys())))
 
     # Check if additional_software is not given in the config
-    if "additional_software" not in sub_groups:
+    if "additional_software" not in flattened_sub_groups:
         errors.append(
             create_error_msg(
                 "additional_software.json",
@@ -472,7 +500,7 @@ def validate_additional_software(
     available_roles_and_groups.update(group for role in valid_roles for group in role['groups'])
 
     # Check if a role or group name is present in the roles config file
-    for sub_group in sub_groups:
+    for sub_group in flattened_sub_groups:
         if sub_group not in available_roles_and_groups:
             errors.append(
                 create_error_msg(
@@ -495,7 +523,7 @@ def validate_additional_software(
 
     # Check for the additional_software key in software_config.json
     for sub_group in sub_groups_in_software_config:
-        if sub_group not in sub_groups:
+        if sub_group not in raw_subgroups:
             errors.append(
                 create_error_msg(
                     "software_config.json",
