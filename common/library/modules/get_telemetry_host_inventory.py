@@ -97,7 +97,7 @@ def fetch_active_passive_servicetags(parent_tags, service_node_metadata):
                     if passive_tag not in svc_node_info:
                         svc_node_info[passive_tag] = {
                             'active_service_tag': active_service_tag,
-                            'active_ip': sn_active_ip,
+                            'active_ip': service_node_metadata[passive_tag]['virtual_ip_address'],
                             'admin_ip': service_node_metadata[passive_tag]['admin_ip']
                         }
 

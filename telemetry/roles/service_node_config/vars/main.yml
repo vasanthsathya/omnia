@@ -36,8 +36,9 @@ mysql_secrets:
 dir_permissions_755: "0755"
 oim_shared_path: "{{ hostvars['localhost']['oim_shared_path'] }}"
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
-telemetry_data_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['active_service_tag'] }}/telemetry"
-telemetry_log_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['active_service_tag'] }}/log/telemetry"
+sn_base_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['active_service_tag'] }}"
+telemetry_data_dir: "{{ sn_base_dir }}/telemetry"
+telemetry_log_dir: "{{ sn_base_dir }}/log/telemetry"
 idrac_telemetry_dir: "{{ telemetry_data_dir }}/idrac_telemetry"
 
 # mysql

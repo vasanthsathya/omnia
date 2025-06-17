@@ -82,7 +82,7 @@ def main():
         os.chmod(prometheus_config_file_path, file_mode)
 
         # Add the result to the list
-        results.append(f"PPrometheus config generated for {service_tag}")
+        results.append(f"Prometheus config generated for {service_tag}")
 
     # Exit the module
     module.exit_json(changed=True, msg="Prometheus config generated successfully", results=results)
