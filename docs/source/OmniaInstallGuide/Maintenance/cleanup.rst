@@ -15,7 +15,7 @@ The ``oim_cleanup.yml`` playbook performs the following tasks:
 Behavior based on cluster configuration
 =========================================
 
-Apart from the common tasks mentioned above, the ``oim_cleanup.yml`` playbook also performs few additional tasks based on the cluster configuration - specifically, whether the cluster is hierarchical and if High Availability (HA) is enabled or not.
+Apart from the common tasks mentioned above, the ``oim_cleanup.yml`` playbook also performs few additional tasks based on the cluster configuration — specifically, whether the cluster is hierarchical and if High Availability (HA) is enabled or not.
 Check out the table below for more information.
 
 .. csv-table:: 
