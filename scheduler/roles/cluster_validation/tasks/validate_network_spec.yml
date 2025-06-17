@@ -43,6 +43,10 @@
     admin_nic_ip: "{{ oim_ha_data.ansible_facts.oim_ha.admin_virtual_ip_address }}"
   when: enable_oim_ha and oim_ha_data.ansible_facts.oim_ha.admin_virtual_ip_address is defined
 
+- name: Set admin network CIDR
+  ansible.builtin.set_fact:
+    admin_nic_cidr: "{{ (admin_nic_ip + '/' + netmask) | ansible.utils.ipaddr('network/prefix') }}"
+
 - name: Get all IPv4 addresses assigned to the NIC
   ansible.builtin.set_fact:
     admin_nic_ips: >-

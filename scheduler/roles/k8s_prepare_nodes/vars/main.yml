@@ -25,6 +25,9 @@ hosts_file_mode: "0644"
 hosts_update_fail_msg: "Failed to update hosts file with node details.
 Remove unreachable IP addresses from kube_node or etcd group of inventory and re-run the playbook."
 
+# Usage: update_inv.yml
+k8s_nfs_share: "/opt/omnia/kubespray"
+
 # Usage: prereq.yml
 python_package_name: "{{ hostvars['localhost']['python_package'] }}"
 pip_packages:
