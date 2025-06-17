@@ -90,7 +90,6 @@ def valid_ip(df):
     Returns:
         None
     """
-    # nan = float('NaN')
     try:
         for ip in df['ADMIN_IP']:
             if not ipaddress.IPv4Address(ip):
