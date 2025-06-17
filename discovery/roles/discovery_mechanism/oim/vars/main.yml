@@ -1,4 +1,4 @@
-# Copyright 2023 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -35,6 +35,22 @@ empty_discover_node_msg: |
   "Failed. No nodes were discovered. Please ensure the input related to discovery details is correct inside provision_config.yml and network_spec.yml
    and check if IPMI is enabled on the nodes if using BMC discovery mechanism."
 
+# Usage: update_idrac_group_csv.yml
+telemetry_shared_path: "/opt/omnia/telemetry"
+bmc_group_csv_path: "{{ telemetry_shared_path }}/bmc_group_data.csv"
+waiting_time_30: 30
+redfish_disabled_msg: |
+  Redfish is disabled on the following BMC IPs: {{ bmc_result.redfish_disabled | join(', ') }}.
+  Please enable Redfish on these BMC IPs and run the update_bmc_group_data.yml utility.
+invalid_creds_msg: |
+  The following BMC IPs have invalid credentials: {{ bmc_result.invalid_creds | join(', ') }}.
+  Please verify the credentials and run the update_bmc_group_data.yml utility.
+unreachable_bmc_msg: |
+  The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
+  Please ensure these BMC IPs are reachable from OIM and run the update_bmc_group_data.yml utility.
+invalid_bmc_warning_msg: |
+  [WARNING] Some BMC IPs could not be added to the CSV file. Kindly address the issues mentioned above and
+  run the update_bmc_group_data.yml utility to add IPs in bmc_group_data.csv.
 # Usage: service_node_postgres_setting.yml
 no_service_node_msg: "[Warning] No new service nodes discovered, skipping service node configurations."
 waiting_time_10: 10
