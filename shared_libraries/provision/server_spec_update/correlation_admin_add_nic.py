@@ -17,11 +17,10 @@ This module is used to calculate the correlated admin ip
 
 import ipaddress
 import sys
-import calculate_ip_details
 
 CAL_PATH = "/opt/omnia/shared_libraries/provision/mtms"
 sys.path.insert(0, CAL_PATH)
-
+import calculate_ip_details
 
 def check_valid_nb(nic_nb, admin_nb):
     """
