@@ -15,7 +15,7 @@ Prerequisites
 ----------------
 
 * Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
-* If you intend to set up a `hierarchical cluster <xcat_hierarchical.html>`_, ensure that the ``service_node`` role has been defined in the ``/opt/omnia/input/project_defaultroles_config.yml`` input file before executing ``prepare_oim.yml`` playbook.
+* If you intend to set up a `hierarchical cluster <xcat_hierarchical.html>`_, ensure that the ``service_node`` role has been defined in the ``/opt/omnia/input/project_default/roles_config.yml`` input file before executing ``prepare_oim.yml`` playbook.
 
 Input files for the playbook
 ------------------------------
