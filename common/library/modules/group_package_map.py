@@ -22,7 +22,7 @@ import yaml
 from ansible.module_utils.basic import AnsibleModule
 
 RPM_LIST_BASE = "rpm"
-REBOOT_KEY = "reboot"
+REBOOT_KEY = "reboot_required"
 
 # Read JSON file
 
@@ -131,7 +131,7 @@ def get_type_dict(clust_list):
             type_dict[RPM_LIST_BASE] = type_dict.get(
                RPM_LIST_BASE, []) + pkg_dict.get('package_list')
 
-        elif pkgtype == 'image' and pkg_dict.get('tag') is not None: 
+        elif pkgtype == 'image' and pkg_dict.get('tag') is not None:
             # Add package:tag to type_dict
             type_dict[pkgtype] = type_dict.get(
                 pkgtype, []) + [pkg_dict.get('package') + ":" + pkg_dict.get('tag')]
@@ -224,7 +224,7 @@ def main():
         addl_soft = module.params.get('software_bundle')
         roles_config = module.params.get('roles_config')
         sw_cfg_data = read_json_file(module.params.get('software_config'), module)
-  
+
     sw_list = [sw_dict.get('name') for sw_dict in sw_cfg_data.get('softwares')]
     if addl_key not in sw_list:
         module.exit_json(
