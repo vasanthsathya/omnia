@@ -30,7 +30,7 @@
       when:
         - "'rpm' in grouped_packages.grp_pkg_map[grp.key]"
         - dnf_install.changed
-        - grouped_packages.grp_pkg_map[grp.key].reboot
+        - grouped_packages.grp_pkg_map[grp.key].reboot_required
       delegate_to: "{{ node }}"
 
   rescue:
