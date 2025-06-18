@@ -26,6 +26,15 @@
       "policy": {
         "type": "string",
         "enum": ["always", "partial", "never"]
+      },
+      "sslcacert": {
+        "type": ["string","null"]
+      },
+      "sslclientkey": {
+        "type": ["string","null"]
+      },
+      "sslclientcert": {
+        "type": ["string","null"]
       }
     },
     "required": ["gpgkey", "url", "name"],
