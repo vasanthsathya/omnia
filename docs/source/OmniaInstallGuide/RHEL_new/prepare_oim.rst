@@ -192,4 +192,4 @@ After you have filled in the input files as mentioned above, execute the followi
     cd /omnia/prepare_oim
     ansible-playbook prepare_oim.yml
 
-.. note:: After ``prepare_oim.yml`` execution, ``ssh omnia_core`` may fail if you switch from a non-root to root user using ``sudo`` command. To avoid this, log in directly as a ``root`` user or follow the steps mentioned `here <../../Troubleshooting/KnownIssues/Common/Login.html>`_.
+.. note:: After ``prepare_oim.yml`` execution, ``ssh omnia_core`` may fail if you switch from a non-root to root user using ``sudo`` command. To avoid this, log in directly as a ``root`` user before executing the playbook or follow the steps mentioned `here <../../Troubleshooting/KnownIssues/Common/Login.html>`_.
