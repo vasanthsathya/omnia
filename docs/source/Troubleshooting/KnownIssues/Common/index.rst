@@ -16,3 +16,4 @@ This topic highlights the common known issues related to:
     Telemetry
     AITools
     HA
+    Hierarchical
