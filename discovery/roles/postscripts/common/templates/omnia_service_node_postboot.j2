@@ -52,6 +52,7 @@ rsync -au --exclude='autoinst' {{ oim_shared_path }}/omnia/provision/install /
 echo "Syncing /tftpboot" >> "$LOGFILE"
 rsync -au {{ oim_shared_path }}/omnia/provision/tftpboot /
 
+# Task 3: symlink of <oim_shared_path>/omnia/hosts to /etc/hosts
 sudo rm -rf /etc/hosts
 ln -s {{ oim_shared_path }}/omnia/hosts /etc/hosts
 # sudo rm -rf /etc/dhcp
