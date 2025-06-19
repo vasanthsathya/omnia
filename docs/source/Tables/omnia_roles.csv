@@ -100,12 +100,12 @@ Slurm DB daemon role - ``slurm_dbd``,Management,"* This role is used to configur
     groups:
       - grp0
       - grp1"
-Login - ``login_node``,Management,"* This role is used to configure the nodes for user logins. The nodes included in this role will have the necessary tools and configurations to support user login activities.
+Login node - ``login``,Management,"* This role is used to configure the nodes for user logins. The nodes included in this role will have the necessary tools and configurations to support user login activities.
 
 **Example**:
 ::
     Roles:
-  - name: ""login_node""
+  - name: ""login""
     groups:
       - grp0
       - grp1"

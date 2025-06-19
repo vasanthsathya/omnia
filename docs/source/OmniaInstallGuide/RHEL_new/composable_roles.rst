@@ -77,7 +77,7 @@ Here's a sample (using mapping file) for your reference:
           groups:
             - grp0
 
-        - name: "service"
+        - name: "service_node"
           groups:
             - grp1
 
