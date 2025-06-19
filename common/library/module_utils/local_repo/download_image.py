@@ -13,19 +13,21 @@
 # limitations under the License.
 
 # pylint: disable=import-error,no-name-in-module,line-too-long
+"""This module handles mirroring of container images in the local repository."""
+
 import re
 import json
-import subprocess
+import subprocess # pylint: disable=unused-import
 from jinja2 import Template
-from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
+from ansible.module_utils.local_repo.standard_logger import setup_standard_logger # pylint: disable=unused-import
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
 from ansible.module_utils.local_repo.user_image_utility import handle_user_image_registry
-from ansible.module_utils.local_repo.config import (
+from ansible.module_utils.local_repo.config import ( # pylint: disable=unused-import
     pulp_container_commands,
     OMNIA_CREDENTIALS_YAML_PATH,
     OMNIA_CREDENTIALS_VAULT_PATH
 )
-from ansible.module_utils.local_repo.container_repo_utils import (
+from ansible.module_utils.local_repo.container_repo_utils import ( # pylint: disable=unused-import
     create_container_repository,
     extract_existing_tags,
     sync_container_repository,
@@ -33,7 +35,7 @@ from ansible.module_utils.local_repo.container_repo_utils import (
     repository_creation_lock,
     remote_creation_lock
 )
-import yaml
+import yaml # pylint: disable=unused-import
 
 
 def create_container_remote_with_auth(remote_name, remote_url, package, policy_type, tag, logger, docker_username, docker_password):
