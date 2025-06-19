@@ -12,16 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-- name: Install firewalld
-  ansible.builtin.package:
-    name: firewalld
-    state: present
-
-- name: Start and enable firewalld
-  ansible.builtin.service:
-    name: firewalld
-    state: started
-    enabled: true
 
 - name: Enable nfs ports
   ansible.posix.firewalld:
