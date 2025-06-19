@@ -241,7 +241,8 @@ def main():
 
     roles_dict, all_groups = read_roles_config(roles_config, module)
     temp_addl_pkgs = req_addl_soft.pop(addl_key, {})
-    req_addl_soft[','.join(all_groups)] = temp_addl_pkgs
+    key = ','.join(all_groups)
+    req_addl_soft.setdefault(key, {'cluster': []})['cluster'].extend(temp_addl_pkgs['cluster'])
     addl_software_dict = modify_addl_software(req_addl_soft)
     split_comma_dict = split_comma_keys(addl_software_dict)
 
