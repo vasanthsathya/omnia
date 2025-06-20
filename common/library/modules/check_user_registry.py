@@ -25,7 +25,6 @@ from ansible.module_utils.local_repo.registry_utils import (
 from ansible.module_utils.local_repo.config import (
     USER_REG_CRED_INPUT
 )
-import yaml
 
 def main():
     """
@@ -56,9 +55,7 @@ def main():
 
     if user_registry:
         # Load credentials
-        with open(USER_REG_CRED_INPUT, "r") as f:
-            file2_data = yaml.safe_load(f)
-
+        file2_data = load_yaml_file(USER_REG_CRED_INPUT)
         cred_lookup = {
             entry['name']: entry
             for entry in file2_data.get('user_registry_credential', [])
