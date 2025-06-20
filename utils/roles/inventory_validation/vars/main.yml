@@ -92,3 +92,5 @@ invalid_auth_server_inventory_fail_msg: |
   Invalid inventory format, specify auth_sever group in inventory and re-run playbook."
 auth_server_group_fail_msg: "Failed, auth_server group should contain exactly 1 node"
 auth_server_group_success_msg: "Success, inventory file is valid"
+auth_etcd_fail_msg: "Failed, etcd and auth_server nodes cannot be the same. Please fix
+  the inventory file and re-run the playbook."

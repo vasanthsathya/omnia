@@ -40,3 +40,15 @@
         - ansible_facts.services["slapd-ltb.service"] is defined
         - ansible_facts.services["slapd-ltb.service"].state == "running"
         - schema_output is search(schema_search_string)
+
+    - name: Check if Security Certs directory exists
+      ansible.builtin.stat:
+        path: "{{ oim_certs_dir }}"
+      register: certs_dir_stat
+
+    - name: Create Security Certs directory if missing
+      ansible.builtin.file:
+        path: "{{ oim_certs_dir }}"
+        state: directory
+        mode: "{{ dir_mode }}"
+      when: not certs_dir_stat.stat.exists

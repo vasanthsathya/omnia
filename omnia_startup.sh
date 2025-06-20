@@ -35,6 +35,7 @@ omnia_release=2.0.0.0
 core_container_status=false
 omnia_path=""
 hashed_passwd=""
+domain_name=""
 
 is_local_ip() {
     local ip_to_check="$1"
@@ -397,8 +398,8 @@ init_container_config() {
             # Validate if NFS server share path is mounted
             echo -e "${BLUE} Validating if NFS server share path is mounted.${NC}"
             # strip the trailing slash from nfs_server_share_path
-            strip_nfs_server_share_path="${nfs_server_share_path%/}"
-            if grep -qs "$nfs_server_ip:$strip_nfs_server_share_path" /proc/mounts; then
+            nfs_server_share_path="${nfs_server_share_path%/}"
+            if grep -qs "$nfs_server_ip:$nfs_server_share_path" /proc/mounts; then
                 echo -e "${GREEN} NFS server share path is mounted.${NC}"
             else
                 echo -e "${RED} NFS server share path is not mounted. Provide valid NFS server details. ${NC}"
@@ -701,6 +702,8 @@ post_setup_config() {
             echo "oim_shared_path: $omnia_path"
             echo "omnia_version: $omnia_release"
             echo "oim_hostname: $(hostname)"
+            echo "oim_node_name: $(hostname -s)"
+            echo "domain_name: $domain_name"
             echo "omnia_core_hashed_passwd: $hashed_passwd"
             echo "omnia_share_option: $share_option"
         } >> "$oim_metadata_file"
@@ -746,6 +749,8 @@ start_container_session() {
                 - Use the playbook /omnia/utils/oim_cleanup.yml to safely remove the shared directory and Omnia containers (except the core container).
                 - If you need to delete the core container or redeploy the core container with new input configs, please rerun the omnia_startup.sh script.
                 - Provide any file paths (ISO, mapping files, etc.) that are mentioned in input files in the /opt/omnia directory.
+                - The domain name that will be used for Omnia is $domain_name, if you wish to change the domain name please cleanup Omnia, 
+                  change the Omnia Infrastructure Manager's domain name and rerun omnia_startup.sh. 
 
     --------------------------------------------------------------------------------------------------------------------------------------------------
     ${NC}"

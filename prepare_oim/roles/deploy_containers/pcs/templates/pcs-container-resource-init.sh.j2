@@ -33,6 +33,25 @@ pcs property set stonith-enabled=false
 pcs property set no-quorum-policy=ignore
 
 pcs resource group add {{ pcs_group }}
+pcs resource group add {{ vip_group }}
+pcs constraint colocation add {{ vip_group }} with {{ pcs_group }} INFINITY
+
+pcs resource defaults update migration-threshold={{ migration_threshold }}
+pcs resource defaults update failure-timeout={{ failure_timeout }}
+
+{% if hostvars['localhost']['enable_oim_ha'] %}
+pcs resource create admin_VIP ocf:heartbeat:IPaddr2 \
+        ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.admin_virtual_ip_address }} nic={{ admin_nic }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
+        op monitor interval={{ monitor_interval }} --group {{ vip_group }}
+
+{% if hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address is defined %}
+pcs resource create bmc_VIP ocf:heartbeat:IPaddr2 \
+        ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address }} nic={{ admin_nic }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
+        op monitor interval={{ monitor_interval }} --group {{ vip_group }}
+{% endif %}
+
+pcs resource defaults update migration-threshold={{ ha_migration_threshold }}
+{% endif %}
 
 pcs resource create {{ omnia_core_name }} ocf:heartbeat:podman \
  image={{ omnia_core_image }} \
@@ -83,32 +102,120 @@ pcs resource create {{ squid_container_name }} ocf:heartbeat:podman \
  op stop interval={{ stop_interval }}  timeout={{ stop_timeout }} --group {{ pcs_group }}
 {% endif %}
 
+# Resource for idrac_telemetry containers
+{% if hostvars['localhost']['idrac_telemetry_support'] %}
+pcs resource group add {{ telemetry_pcs_group }}
+# Resource for MySQL container
+pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
+    name={{ mysql_container_name }} \
+    image={{ mysql_docker_image }}:{{ mysql_image_tag }} \
+    reuse=true \
+    run_opts="{{ mysql_run_opts }}"  \
+    op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+    op start interval={{ start_interval }} timeout={{ start_timeout }} \
+    op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+    --group {{ telemetry_pcs_group }}
+
+# Resource for ActiveMQ container
+pcs resource create {{ activemq_container_name }} ocf:heartbeat:podman \
+  name={{ activemq_container_name }} \
+  image={{ activemq_image }} \
+  reuse=true \
+  run_opts="{{ activemq_run_opts }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+
+# Resource for iDRAC-telemetry-receiver container
+pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:podman \
+  name={{ idrac_telemetry_receiver_container_name }} \
+  image={{ idrac_telemetry_receiver_go_image }} \
+  reuse=true \
+  run_opts="{{ idrac_telemetry_receiver_run_opts }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+{% endif %}
+
+# Resource for prometheus and prometheus_pump
+{% if hostvars['localhost']['idrac_telemetry_support'] and hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus" %}
+pcs resource group add {{ telemetry_pcs_group }}
+# Resource for prometheus pump container
+pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
+  name={{ prometheus_pump_container_name }} \
+  image={{ prometheus_pump_image }} \
+  reuse=true \
+  run_opts="{{ prometheus_pump_run_opts }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+
+# Resource for prometheus container
+pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
+  name={{ prometheus_container_name }} \
+  image={{ prometheus_image }} \
+  reuse=true \
+  run_opts="{{ prometheus_run_opts }}" \
+  run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ telemetry_pcs_group }}
+{% endif %}
+
+# Resource for omnia visualization containers
+{% if hostvars['localhost']['visualization_support'] %}
+pcs resource group add {{ visualization_pcs_group }}
+# Resource for grafana container
+pcs resource create {{ grafana_container_name }} ocf:heartbeat:podman \
+    name={{ grafana_container_name }} \
+    image={{ grafana_image }}:{{ grafana_image_tag }} \
+    reuse=true \
+    run_opts="{{ grafana_run_opts }}"  \
+    op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+    op start interval={{ start_interval }} timeout={{ start_timeout }} \
+    op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+    --group {{ visualization_pcs_group }}
+
+# Resource for loki container
+pcs resource create {{ loki_container_name }} ocf:heartbeat:podman \
+  name={{ loki_container_name }} \
+  image={{ loki_image }}:{{ loki_image_tag }} \
+  reuse=true \
+  run_opts="{{ loki_run_opts }}" \
+  run_cmd="{{ loki_run_cmd }}" \
+  monitor_cmd="{{ loki_monitor_cmd }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ visualization_pcs_group }}
+
+# Resource for promtail container
+pcs resource create {{ promtail_container_name }} ocf:heartbeat:podman \
+  name={{ promtail_container_name }} \
+  image={{ promtail_image }}:{{ promtail_image_tag }} \
+  reuse=true \
+  run_opts="{{ promtail_run_opts }}" \
+  run_cmd="{{ promtail_run_cmd }}" \
+  monitor_cmd="{{ promtail_monitor_cmd }}" \
+  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
+  op start interval={{ start_interval }} timeout={{ start_timeout }} \
+  op stop interval={{ stop_interval }} timeout={{ stop_timeout }} \
+  --group {{ visualization_pcs_group }}
+{% endif %}
+
 # Create ordering constraints
-pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
-pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
-{% if hostvars['localhost']['k8s_support'] %}
-pcs constraint order start {{ omnia_core_name }} then start {{ kubespray_name }}
-{% endif %}
-{% if hostvars['localhost']['enable_routed_internet'] %}
-pcs constraint order start {{ omnia_core_name }} then start {{ squid_container_name }}
-{% endif %}
-
-pcs resource defaults update migration-threshold={{ migration_threshold }}
-
-{% if hostvars['localhost']['enable_oim_ha'] %}
-pcs resource create admin_VIP ocf:heartbeat:IPaddr2 \
-        ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.admin_virtual_ip_address }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
-        op monitor interval={{ monitor_interval }} --group {{ pcs_group }}
-
-{% if hostvars['localhost']['network_interface_type'] == 'lom' %}
-pcs resource create bmc_VIP ocf:heartbeat:IPaddr2 \
-        ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
-        op monitor interval={{ monitor_interval }} --group {{ pcs_group }}
-{% endif %}
-
-pcs resource defaults update migration-threshold={{ ha_migration_threshold }}
-pcs resource defaults update failure-timeout={{ failure_timeout }}
-{% endif %}
+# commenting as group and contraint does not work together
+# pcs constraint order start {{ omnia_core_name }} then start {{ pulp_container_name }}
+# pcs constraint order start {{ omnia_core_name }} then start {{ provision_container_name }}
+# {% if hostvars['localhost']['k8s_support'] %}
+# {% endif %}
+# {% if hostvars['localhost']['enable_routed_internet'] %}
+# pcs constraint order start {{ omnia_core_name }} then start {{ squid_container_name }}
+# {% endif %}
 
 # Initialize the total sleep time
 total_sleep_time=0
@@ -128,6 +235,6 @@ for ((i=0; i<max_iterations; i++)); do
 done
 
 # Create a file which signifies the pcs resources were created.
-# This file also contains the resources and its state which ansible can check against. 
+# This file also contains the resources and its state which ansible can check against.
 echo "$(date): PCS Container Resources Have Been Created"
 pcs resource | awk -F' ' '{print $2 " " $4}' | sed 's/^\s*//;s/\s*$//' > {{ pcs_container_resources_finished }}

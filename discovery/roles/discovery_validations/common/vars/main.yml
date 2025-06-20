@@ -76,11 +76,22 @@ oim_ha_node_not_found_msg: |
 nfs_internal_warning_msg: |
   "WARNING: It is recommended to use External NFS for hierarchical cluster.
   If you must use Internal NFS, ensure OIM has enough storage space and sufficient hardware resources."
+service_node_no_parent_msg: |
+  Failed. The service_node role is defined in roles_config.yml, but none of the compute layer groups have a parent field specified.
+  The issue arises because the playbook is attempting to provision the compute layer, but none of the groups have a valid parent
+  field defined. To fix this, define the parent field in the compute layer groups within roles_config.yml for hierarchical provisioning,
+  and re-run the playbook.
+  If all nodes are to be provisioned from oim, then comment out the service_node role in roles_config.yml and re-run the playbook.
 ha_nfs_error_msg: |
   ERROR: Internal NFS is not supported with HA OIM or Service HA.
   Please configure External NFS for HA capabilities.
 warning_wait_time_10s: 10
-
+hierarchical_provision_warning_msg: |
+  "WARNING: The service_node role is defined in roles_config.yml, but none of the groups have a parent field specified.
+  This execution is for compute layer provisioning, and no groups have a valid parent field defined. If this is intentional,
+  you may ignore this warning and proceed with the playbook execution.
+  If this is unintentional, stop the execution, define the parent field in the compute layer groups within roles_config.yml
+  for hierarchical provisioning, and re-run the playbook."
 # Usage: include_local_repo_config.yml
 local_repo_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/local_repo_config.yml"
 software_config_file: "{{ hostvars['localhost']['input_project_dir'] }}/software_config.json"
@@ -223,13 +234,8 @@ desired_capacity_success_msg: "desired_capacity of disk_partition successfully v
 desired_capacity_fail_msg: "Failed. Provide valid integer value to desired_capacity of disk_partition"
 
 # Usage: validate_domain_name.yml
-domain_name_success_msg: "domain_name successfully validated"
-domain_name_fail_msg: "Failed. Check whether domain_name is in proper format in provision_config.yml."
 server_hostname_success_msg: "Hostname in server hostname validated"
 server_hostname_fail_msg: "Failed. Hostname set is not valid"
-server_domain_name_blank_msg: "Failed. domain_name is not set in hostname. It should have hostname.domain_name format"
-server_domain_name_success_msg: "domain_name in server hostname validated"
-server_domain_name_fail_msg: "Failed. domain_name set is not same as domain_name in provision_config.yml"
 hosts_file_path: "/opt/omnia/hosts"
 hosts_file_mode: "0644"
 hostname_success_msg: "Hostname length successfully validated."

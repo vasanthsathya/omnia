@@ -67,16 +67,6 @@ def validate_provision_config(input_file_path, data, logger, module, omnia_base_
             en_us_validation_msg.language_fail_msg
         ))
 
-    # Validate domain name
-    domain_name = data.get("domain_name", "")
-    domain_pattern = r'^[a-zA-Z0-9.-]+$'
-    if not domain_name or not re.match(domain_pattern, domain_name):
-        errors.append(create_error_msg(
-            "domain_name",
-            domain_name,
-            en_us_validation_msg.domain_name_fail_msg
-        ))
-
     timezone_file_path = os.path.join(module_utils_base,'input_validation','common_utils','timezone.txt')
     pxe_mapping_file_path = data.get("pxe_mapping_file_path", '')
     if pxe_mapping_file_path and not (validation_utils.verify_path(pxe_mapping_file_path)):
