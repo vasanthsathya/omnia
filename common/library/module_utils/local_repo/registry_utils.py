@@ -17,21 +17,47 @@ from ansible.module_utils.local_repo.common_functions import is_file_exists
 
 def validate_user_registry(user_registry):
     """
-    Validates a user registry by checking if each item is a dictionary and contains 'host' and 'cert_path' keys.
-    
+    Validates a list of user registry entries.
+
+    Rules:
+    - Each entry must be a dictionary with a non-empty 'host'.
+    - If 'requires_auth' is true:
+        - 'username' and 'password' must be non-empty.
+        - Either both 'cert_path' and 'key_path' must exist, or neither.
+
     Args:
-        user_registry (list): A list of dictionaries representing user registry entries.
-    
+        user_registry (list): List of user registry dictionaries.
+
     Returns:
-        tuple: A boolean indicating whether the user registry is valid, and a string describing any errors encountered.
+        tuple: (bool, str) indicating validity and error message if invalid.
     """
-    for item in user_registry:
+    if not isinstance(user_registry, list):
+        return False, "user_registry must be a list."
+
+    for idx, item in enumerate(user_registry):
         if not isinstance(item, dict):
-            return False, "Each item in user_registry must be a dictionary."
+            return False, f"Entry at index {idx} must be a dictionary."
+
         if not item.get('host'):
-            return False, f"Missing or empty 'host' in entry: {item}"
-        if not item.get('cert_path'):
-            return False, f"Missing 'cert_path' in entry: {item}"
+            return False, f"Missing or empty 'host' in entry at index {idx}: {item}"
+
+        requires_auth = item.get('requires_auth', False)
+        if requires_auth:
+            if not item.get('username') or not item.get('password'):
+                return False, (
+                    f"'requires_auth' is true but 'username' or 'password' is missing or empty "
+                    f"in entry at index {idx}: {item}"
+                )
+
+            has_cert = 'cert_path' in item and item['cert_path']
+            has_key = 'key_path' in item and item['key_path']
+
+            if has_cert != has_key:  # XOR condition
+                return False, (
+                    f"If authentication is enabled, both 'cert_path' and 'key_path' must be present "
+                    f"or both omitted in entry at index {idx}: {item}"
+                )
+
     return True, ""
 
 def check_reachability(user_registry, timeout):
@@ -59,15 +85,37 @@ def check_reachability(user_registry, timeout):
 
 def find_invalid_cert_paths(user_registry):
     """
-    Finds and returns a list of invalid certificate paths in the given user registry.
+    Finds invalid certificate/key path configurations in the user registry.
+
+    Rules:
+    - If cert_path is provided, key_path must also be provided, and vice versa.
+    - If either path is provided, the corresponding file must exist.
 
     Args:
-        user_registry (list): A list of dictionaries representing user registry entries.
+        user_registry (list): List of dictionaries representing user registry entries.
 
     Returns:
-        list: A list of invalid certificate paths.
+        list: A list of error strings describing invalid entries.
     """
-    return [
-        item['cert_path'] for item in user_registry
-        if item.get('cert_path') and not is_file_exists(item['cert_path'])
-    ]
+    invalid_entries = []
+
+    for idx, item in enumerate(user_registry):
+        cert_path = item.get('cert_path')
+        key_path = item.get('key_path')
+        name_or_host = item.get('name') or item.get('host') or f"entry {idx}"
+
+        # If only one of cert or key is provided
+        if bool(cert_path) != bool(key_path):
+            invalid_entries.append(
+                f"{name_or_host}: Both 'cert_path' and 'key_path' must be provided together or not at all."
+            )
+            continue
+
+        # If both are provided, validate file existence
+        if cert_path and not is_file_exists(cert_path):
+            invalid_entries.append(f"{name_or_host}: cert_path '{cert_path}' does not exist.")
+
+        if key_path and not is_file_exists(key_path):
+            invalid_entries.append(f"{name_or_host}: key_path '{key_path}' does not exist.")
+
+    return invalid_entries

@@ -22,6 +22,9 @@ from ansible.module_utils.local_repo.registry_utils import (
     check_reachability,
     find_invalid_cert_paths
 )
+from ansible.module_utils.local_repo.config import (
+    USER_REG_CRED_INPUT
+)
 
 def main():
     """
@@ -49,6 +52,24 @@ def main():
         module.fail_json(msg=str(e))
 
     user_registry = get_repo_list(config_data, "user_registry")
+
+    if user_registry:
+        # Load credentials
+        with open(USER_REG_CRED_INPUT, "r") as f:
+            file2_data = yaml.safe_load(f)
+
+        cred_lookup = {
+            entry['name']: entry
+            for entry in file2_data.get('user_registry_credential', [])
+        }
+
+        # Update user_registry entries with credentials if required
+        for registry in user_registry:
+            if registry.get("requires_auth"):
+                creds = cred_lookup.get(registry.get("name"))
+                if creds:
+                    registry["username"] = creds.get("username")
+                    registry["password"] = creds.get("password")
 
     # Exit early if user_registry is empty
     if not user_registry:
