@@ -34,6 +34,8 @@ provision_shared_path: "/opt/omnia/provision"
 repos_share_path: "{{ syncfiles_share_path }}/repos"
 dir_permission: "0755"
 file_permission: "0644"
+pip_conf_src: "{{ role_path }}/templates/pip.conf.j2"
+pip_conf_dest: "{{ syncfiles_share_path }}/conf/pip.conf"
 
 # Usage: create_files_local_repo_redhat.yml
 omnia_repo_template_src: "roles/configure_synclist/templates/omnia_repo_template.j2"
