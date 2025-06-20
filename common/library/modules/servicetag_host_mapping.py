@@ -25,6 +25,7 @@ playbook or role.
 """
 
 import os
+import re
 from ansible.module_utils.basic import AnsibleModule
 import  ansible.module_utils.discovery.omniadb_connection as omniadb # pylint: disable=all
 
