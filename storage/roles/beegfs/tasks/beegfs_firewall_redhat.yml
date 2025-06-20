@@ -15,9 +15,9 @@
 
 - name: Start and enable firewalld
   ansible.builtin.service:
-   name: firewalld
-   state: started
-   enabled: true
+    name: firewalld
+    state: started
+    enabled: true
 
 - name: Configure firewalld ports for BeeGFS client
   ansible.builtin.command: "firewall-cmd --permanent --add-port={{ item }}"
@@ -30,6 +30,6 @@
 
 - name: Stop and disable firewalld
   ansible.builtin.service:
-   name: firewalld
-   state: stopped
-   enabled: false
+    name: firewalld
+    state: stopped
+    enabled: false
