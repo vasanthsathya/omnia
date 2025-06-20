@@ -11,7 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+# pylint: disable=import-error,unused-argument,unused-import,unused-variable,no-name-in-module,line-too-long,too-many-positional-arguments,too-many-arguments
+"""
+Validates local repository configuration files for Omnia.
+"""
 import json
 import os
 from ansible.module_utils.input_validation.common_utils import validation_utils
@@ -24,6 +27,9 @@ create_file_path = validation_utils.create_file_path
 
 # Below is a validation function for each file in the input folder
 def validate_local_repo_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+    """
+    Validates local repo configuration by checking cluster_os_type and omnia_repo_url_rhel fields are present and accessible.
+    """
     # check to make sure associated os info is filled out
     #keeping this function for future if any additional check srequired
     errors = []
