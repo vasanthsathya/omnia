@@ -44,7 +44,7 @@
     - name: Copy Certificate to Omnia Infrastructure Manager for client setup
       ansible.builtin.fetch:
         src: "{{ tls_certificates_directory_path }}/{{ rhel_cert_file }}"
-        dest: "{{ tls_cert_path }}"
+        dest: "{{ oim_certs_dir }}"
         flat: true
       when: not openldap_status
 
@@ -72,7 +72,7 @@
     - name: Copy Certificate to Omnia Infrastructure Manager for client setup
       ansible.builtin.copy:
         src: "{{ hostvars['127.0.0.1']['tls_ca_certificate'] }}"
-        dest: "{{ tls_cert_path }}"
+        dest: "{{ oim_certs_dir }}"
         mode: "{{ openldap_cert_permissions }}"
       delegate_to: localhost
       connection: local

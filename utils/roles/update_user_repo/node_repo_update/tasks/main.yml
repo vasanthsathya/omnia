@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +13,8 @@
 # limitations under the License.
 ---
 
-- name: Update repo - Ubuntu
-  ansible.builtin.command: apt update
-  changed_when: false
-  when: ansible_distribution | lower == os_supported_ubuntu
+- name: Validate the input files and values
+  ansible.builtin.include_tasks: validation.yml
 
-- name: Update repo - RHEL/Rocky
-  ansible.builtin.command: dnf clean all
-  changed_when: false
-  when:
-    - ansible_distribution | lower == os_supported_rhel or
-      ansible_distribution | lower == os_supported_rocky
+- name: Create repo base on os_type
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"

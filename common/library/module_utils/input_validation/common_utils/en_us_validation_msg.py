@@ -216,6 +216,15 @@ def tls_ext_fail_msg(valid_extensions):
     return f"should have {extensions_list} extension"
 
 # storage
+BEEGFS_VERSION_FAIL_MSG = "Failed, Ensure version of beegfs is mentioned in software_config.json"
+CLIENT_MOUNT_OPTIONS_FAIL_MSG = "should only contain nosuid,rw,sync,hard as options"
+SLURM_SHARE_FAIL_MSG = "Exactly one entry should be present in nfs_client_params with slurm_share as true in storage_config.yml"
+K8S_SHARE_FAIL_MSG = "Exactly one entry should be present in nfs_client_params with k8s_share as true in storage_config.yml"
+BENCHMARK_TOOLS_FAIL_MSG = "Atleast one out of k8s_share or slurm_share in storage_config.yml should be true \
+  when ucx/openmpi mentioned in software_config.json."
+MULT_SHARE_FAIL_MSG = "Exactly one entry should be present in nfs_client_params with slurm_share as true or \
+    k8s_share as true in storage_config.yml"
+BEEGFS_UMOUNT_CLIENT_FAIL_MSG = "should be set to true since beegfs_mounts value has been changed"
 CLIENT_MOUNT_OPTIONS_FAIL_MSG = "should only contain nosuid,rw,sync,hard as options"
 BEEGFS_UNMOUNT_CLIENT_FAIL_MSG = "should be set to true since beegfs_mounts value has been changed"
 
@@ -259,7 +268,7 @@ ADDITIONAL_SOFTWARE_FAIL_MSG = "The additional_software is mandatory in addition
 ADDITIONAL_SOFTWARE_SUBGROUP_FAIL_MSG = ("The role or group name, [{0}] is present in subgroup "
                                          "but not present in roles_config.yml")
 MISSING_IN_ADDITIONAL_SOFTWARE_MSG = ("The role or group name is present in software_config.json, "
-                                     "but [{0}] is not present in additional_software.yml")
+                                     "but [{0}] is not present in additional_software.json")
 
 # login_node_security
 def restrict_softwares_fail_msg(software):
