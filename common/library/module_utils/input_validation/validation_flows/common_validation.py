@@ -74,6 +74,7 @@ def validate_software_config(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
 
+    #software groups and subgroups l2 validation
     # Check for the additional software field
     if "additional_software" in data:
         # Run schema validation and call validate_additional_software()
