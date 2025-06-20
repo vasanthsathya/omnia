@@ -22,6 +22,9 @@
     - name: Run pre requesties
       ansible.builtin.include_tasks: prereq.yml
 
+    - name: Set environment
+      ansible.builtin.include_tasks: set_environment.yml
+
     - name: Evaluate the track file
       ansible.builtin.include_tasks: track_file.yml
 
