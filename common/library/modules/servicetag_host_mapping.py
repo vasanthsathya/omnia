@@ -166,8 +166,9 @@ def update_inventory_file_entries(
                     next_line, is_content_modified = get_host_admin_ip(
                         host, group_status, token)
 
-        # Append service tag string to result lines.
-        result_lines.append(next_line.strip())
+        if next_line:
+            # Append service tag string to result lines.
+            result_lines.append(next_line.strip())
     return result_lines, is_content_modified
 
 def host_ip_update(row, host, group_status, token):
