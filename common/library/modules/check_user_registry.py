@@ -25,6 +25,7 @@ from ansible.module_utils.local_repo.registry_utils import (
 from ansible.module_utils.local_repo.config import (
     USER_REG_CRED_INPUT
 )
+import yaml
 
 def main():
     """

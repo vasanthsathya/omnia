@@ -46,16 +46,19 @@ def validate_user_registry(user_registry):
             if not item.get('username') or not item.get('password'):
                 return False, (
                     f"'requires_auth' is true but 'username' or 'password' is missing or empty "
-                    f"in entry at index {idx}: {item}"
+                    f"in entry for (host: {item.get('host', 'N/A')})"
                 )
 
-            has_cert = 'cert_path' in item and item['cert_path']
-            has_key = 'key_path' in item and item['key_path']
+            cert_path = item.get('cert_path')
+            key_path = item.get('key_path')
+
+            has_cert = bool(cert_path)
+            has_key = bool(key_path)
 
             if has_cert != has_key:  # XOR condition
                 return False, (
                     f"If authentication is enabled, both 'cert_path' and 'key_path' must be present "
-                    f"or both omitted in entry at index {idx}: {item}"
+                    f"or both omitted in entry for (host: {item.get('host', 'N/A')})"
                 )
 
     return True, ""
