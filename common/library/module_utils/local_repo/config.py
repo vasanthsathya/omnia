@@ -32,7 +32,7 @@ USER_JSON_FILE_DEFAULT = ""
 DEFAULT_STATUS_FILENAME = "status.csv"
 STATUS_CSV_HEADER = 'name,type,status\n'
 SOFTWARE_CSV_HEADER = "name,status"
-
+USER_REG_CRED_INPUT = "/opt/omnia/input/project_default/user_registry_credential.yml"
 # ----------------------------
 # Software tasklist Defaults
 # Used by prepare_tasklist.py

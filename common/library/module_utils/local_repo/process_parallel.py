@@ -25,7 +25,8 @@ from jinja2 import Template
 from ansible.module_utils.local_repo.common_functions import load_yaml_file
 from ansible.module_utils.local_repo.config import (
     OMNIA_CREDENTIALS_YAML_PATH,
-    OMNIA_CREDENTIALS_VAULT_PATH
+    OMNIA_CREDENTIALS_VAULT_PATH,
+    USER_REG_CRED_INPUT
 )
 # Global lock for logging synchronization
 log_lock = multiprocessing.Lock()
@@ -249,7 +250,19 @@ def worker_process(task, determine_function, user_data,version_variables, repo_s
         # If an error occurs, put a failure result in the queue indicating task failure
         result_queue.put({"task": task, "status": "FAILED", "output": "", "error": str(e)})
 
-def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_file_path,log_dir, user_data, version_variables, standard_logger, local_repo_config_path, timeout):
+def execute_parallel(
+    tasks,
+    determine_function,
+    nthreads,
+    repo_store_path,
+    csv_file_path,
+    log_dir,
+    user_data,
+    version_variables,
+    standard_logger,
+    local_repo_config_path,
+    timeout
+):
     """
     Executes a list of tasks in parallel using multiple worker processes.
     Args:
@@ -275,6 +288,24 @@ def execute_parallel(tasks, determine_function, nthreads, repo_store_path, csv_f
 
     config = load_yaml_file(local_repo_config_path)
     user_registries = config.get("user_registry", [])
+    if user_registries:
+        # Load credentials
+        with open(USER_REG_CRED_INPUT, "r") as f:
+            file2_data = yaml.safe_load(f)
+
+        cred_lookup = {
+            entry['name']: entry
+            for entry in file2_data.get('user_registry_credential', [])
+        }
+
+        # Update user_registry entries with credentials if required
+        for registry in user_registries:
+            if registry.get("requires_auth"):
+                creds = cred_lookup.get(registry.get("name"))
+                if creds:
+                    registry["username"] = creds.get("username")
+                    registry["password"] = creds.get("password")
+
     try:
         docker_username, docker_password = load_docker_credentials(OMNIA_CREDENTIALS_YAML_PATH, OMNIA_CREDENTIALS_VAULT_PATH)
     except RuntimeError as e:
