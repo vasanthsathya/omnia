@@ -289,15 +289,11 @@ def execute_parallel(
     config = load_yaml_file(local_repo_config_path)
     user_registries = config.get("user_registry", [])
     if user_registries:
-        # Load credentials
-        with open(USER_REG_CRED_INPUT, "r") as f:
-            file2_data = yaml.safe_load(f)
-
+        file2_data = load_yaml_file(USER_REG_CRED_INPUT)
         cred_lookup = {
             entry['name']: entry
             for entry in file2_data.get('user_registry_credential', [])
         }
-
         # Update user_registry entries with credentials if required
         for registry in user_registries:
             if registry.get("requires_auth"):
@@ -305,7 +301,7 @@ def execute_parallel(
                 if creds:
                     registry["username"] = creds.get("username")
                     registry["password"] = creds.get("password")
-
+                    
     try:
         docker_username, docker_password = load_docker_credentials(OMNIA_CREDENTIALS_YAML_PATH, OMNIA_CREDENTIALS_VAULT_PATH)
     except RuntimeError as e:
