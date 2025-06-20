@@ -225,8 +225,6 @@ BENCHMARK_TOOLS_FAIL_MSG = "Atleast one out of k8s_share or slurm_share in stora
 MULT_SHARE_FAIL_MSG = "Exactly one entry should be present in nfs_client_params with slurm_share as true or \
     k8s_share as true in storage_config.yml"
 BEEGFS_UMOUNT_CLIENT_FAIL_MSG = "should be set to true since beegfs_mounts value has been changed"
-CLIENT_MOUNT_OPTIONS_FAIL_MSG = "should only contain nosuid,rw,sync,hard as options"
-BEEGFS_UNMOUNT_CLIENT_FAIL_MSG = "should be set to true since beegfs_mounts value has been changed"
 
 # server_spec
 SERVER_SPEC_NICNETWORKS_FAIL_MSG = ("in server_spec.yml must exist within network_spec.yml as a "
