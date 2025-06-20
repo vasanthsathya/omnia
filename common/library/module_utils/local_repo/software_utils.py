@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pylint: disable=line-too-long,import-error,no-name-in-module
+
 from collections import defaultdict
 import os
 import json
