@@ -13,41 +13,35 @@
 #  limitations under the License.
 ---
 
-- name: Check if Pulp container is running after deployment
+- name: Check if Squid container is running after deployment
   containers.podman.podman_container_info:
-    name: "{{ pulp_container_name }}"
-  register: pulp_container_status
+    name: "{{ squid_container_name }}"
+  register: squid_container_status
   failed_when: false
 
-- name: Stop and Remove Pulp container
-  when: pulp_container_status.containers | length != 0
+- name: Stop and Remove Squid container
+  when: squid_container_status.containers | length != 0
   block:
-    - name: Stop the Pulp container
+    - name: Stop the Squid container
       containers.podman.podman_container:
-        name: "{{ pulp_container_name }}"
+        name: "{{ squid_container_name }}"
         state: stopped
       failed_when: false
 
-    - name: Remove Pulp container
+    - name: Remove Squid container
       containers.podman.podman_container:
-        name: "{{ pulp_container_name }}"
+        name: "{{ squid_container_name }}"
         state: absent
         force_delete: true
 
-    - name: Remove Pulp and Offline repo Directory
+    - name: Remove Squid Directories
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       with_items:
-        - "{{ pulp_cleanup_directory }}"
-
-    - name: Remove track file when pulp is in https
-      ansible.builtin.file:
-        path: "{{ track_file_path }}"
-        state: absent
-      when: hostvars['localhost']['pulp_protocol_https']
+        - "{{ squid_cleanup_directories }}"
 
   rescue:
-    - name: Pulp container removal failed
+    - name: Squid container removal failed
       ansible.builtin.fail:
-        msg: "{{ pulp_container_name }} {{ container_removal_failure_msg }}"
+        msg: "{{ squid_container_name }} {{ container_removal_failure_msg }}"
