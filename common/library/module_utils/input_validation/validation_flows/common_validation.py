@@ -96,7 +96,6 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
-        errors.append(create_error_msg("iso_file_path", iso_file_path, not_valid_iso_msg))
     
     #software groups and subgroups l2 validation
     # Check for the additional software field
@@ -149,7 +148,6 @@ def validate_software_config(
             logger, module, omnia_base_dir, module_utils_base, project_name)
         errors.extend(additional_software_errors)
 
-    # software groups and subgroups l2 validation
     # create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
     subgroup_dict, software_names = get_subgroup_dict(software_json_data)
