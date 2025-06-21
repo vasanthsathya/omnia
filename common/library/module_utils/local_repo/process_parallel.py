@@ -22,11 +22,12 @@ import time
 import threading
 import yaml
 from jinja2 import Template
-from ansible.module_utils.local_repo.common_functions import load_yaml_file
+from ansible.module_utils.local_repo.common_functions import load_yaml_file, is_encrypted, process_file
 from ansible.module_utils.local_repo.config import (
     OMNIA_CREDENTIALS_YAML_PATH,
     OMNIA_CREDENTIALS_VAULT_PATH,
-    USER_REG_CRED_INPUT
+    USER_REG_CRED_INPUT,
+    USER_REG_KEY_PATH
 )
 # Global lock for logging synchronization
 log_lock = multiprocessing.Lock()
@@ -289,6 +290,9 @@ def execute_parallel(
     config = load_yaml_file(local_repo_config_path)
     user_registries = config.get("user_registry", [])
     if user_registries:
+        if is_encrypted(USER_REG_CRED_INPUT):
+            process_file(USER_REG_CRED_INPUT, USER_REG_KEY_PATH, 'decrypt')
+
         file2_data = load_yaml_file(USER_REG_CRED_INPUT)
         cred_lookup = {
             entry['name']: entry
@@ -301,7 +305,7 @@ def execute_parallel(
                 if creds:
                     registry["username"] = creds.get("username")
                     registry["password"] = creds.get("password")
-                    
+
     try:
         docker_username, docker_password = load_docker_credentials(OMNIA_CREDENTIALS_YAML_PATH, OMNIA_CREDENTIALS_VAULT_PATH)
     except RuntimeError as e:

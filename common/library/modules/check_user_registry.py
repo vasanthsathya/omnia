@@ -16,14 +16,15 @@
 #!/usr/bin/python
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.local_repo.common_functions import load_yaml_file, get_repo_list
+from ansible.module_utils.local_repo.common_functions import load_yaml_file, get_repo_list, is_encrypted, process_file
 from ansible.module_utils.local_repo.registry_utils import (
     validate_user_registry,
     check_reachability,
     find_invalid_cert_paths
 )
 from ansible.module_utils.local_repo.config import (
-    USER_REG_CRED_INPUT
+    USER_REG_CRED_INPUT,
+    USER_REG_KEY_PATH
 )
 
 def main():
@@ -55,6 +56,9 @@ def main():
 
     if user_registry:
         # Load credentials
+        if is_encrypted(USER_REG_CRED_INPUT):
+            process_file(USER_REG_CRED_INPUT, USER_REG_KEY_PATH, 'decrypt')
+
         file2_data = load_yaml_file(USER_REG_CRED_INPUT)
         cred_lookup = {
             entry['name']: entry
