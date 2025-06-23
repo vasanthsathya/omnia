@@ -85,7 +85,7 @@ def get_bmc_license_info(bmc_ip, username, password, module):
         return False
 
     except requests.exceptions.RequestException as err:
-        module.warn(msg=f"Error querying iDRAC licenses: {err}")
+        module.warn(f"Error querying iDRAC licenses: {err}")
         return False
 
 
@@ -133,7 +133,7 @@ def get_bmc_firmware_info(bmc_ip, username, password, module, min_firmware_versi
         return False
 
     except requests.exceptions.RequestException as err:
-        module.warn(msg=f"Error querying iDRAC manager: {err}")
+        module.warn(f"Error querying iDRAC manager: {err}")
         return False
 
 
