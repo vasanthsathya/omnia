@@ -28,7 +28,7 @@
 
 - name: Get container info for each Kubespray container
   containers.podman.podman_container_info:
-    name: "{{ item }}"
+    name: "{{ kubespray_container_name }}"
   register: kubespray_container_status
   loop: "{{ kubespray_container_list }}"
   loop_control:
@@ -38,28 +38,24 @@
 
 - name: Stop Kubespray containers
   containers.podman.podman_container:
-    name: "{{ item }}"
+    name: "{{ item.1 }}"
     state: stopped
-  loop: "{{ kubespray_container_list }}"
-  loop_control:
-    loop_var: kubespray_container_name
+  with_indexed_items: "{{ kubespray_container_list }}"
   when:
-    - kubespray_container_status.results[loop.index0].containers is defined
-    - kubespray_container_status.results[loop.index0].containers | length > 0
-    - kubespray_container_status.results[loop.index0].containers[0].State == 'running'
+    - kubespray_container_status.results[item.0].containers is defined
+    - kubespray_container_status.results[item.0].containers | length > 0
+    - kubespray_container_status.results[item.0].containers[0].State.Status == 'running'
   failed_when: false
 
 - name: Remove Kubespray containers
   containers.podman.podman_container:
-    name: "{{ item }}"
+    name: "{{ item.1 }}"
     state: absent
     force_delete: true
-  loop: "{{ kubespray_container_list }}"
-  loop_control:
-    loop_var: kubespray_container_name
+  with_indexed_items: "{{ kubespray_container_list }}"
   when:
-    - kubespray_container_status.results[loop.index0].containers is defined
-    - kubespray_container_status.results[loop.index0].containers | length > 0
+    - kubespray_container_status.results[item.0].containers is defined
+    - kubespray_container_status.results[item.0].containers | length > 0
 
 - name: Remove Kubespray cleanup directories
   ansible.builtin.file:

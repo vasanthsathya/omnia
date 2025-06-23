@@ -88,9 +88,3 @@
   loop: "{{ enabled_boot_names }}"
   register: bios_disable_result
   failed_when: bios_disable_result.failed
-
-- name: Reboot the {{ node_info.node }}
-  ansible.builtin.reboot:
-    reboot_timeout: 600
-  delegate_to: "{{ node_info.node }}"
-  when: bios_disable_result is defined and bios_disable_result.changed

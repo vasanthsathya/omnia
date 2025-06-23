@@ -13,35 +13,48 @@
 #  limitations under the License.
 ---
 
-- name: Get all discovered OIM HA and service nodes from DB
+- name: Check DB connection to PostgreSQL
+  community.postgresql.postgresql_info:
+    login_user: postgres
+    login_password: "{{ postgresdb_password }}"
+    db: omniadb
+  become: true
+  become_user: postgres
+  register: db_connection_check
+  failed_when: db_connection_check.failed is defined and db_connection_check.failed
+  no_log: true
+  delegate_to: omnia_provision
+  connection: ssh
+
+- name: Get all discovered service nodes from DB
   community.postgresql.postgresql_query:
     db: omniadb
     login_user: postgres
     query: |
       SELECT node,bmc_ip
       FROM cluster.nodeinfo
-      WHERE role IN ('service_node', 'oim_ha_node') AND (status IS NOT NULL AND status = 'booted');
+      WHERE role = 'service_node' AND (status IS NOT NULL AND status = 'booted');
     login_password: "{{ postgresdb_password }}"
   become: true
   become_user: postgres
-  register: helper_node_info
+  register: service_node_info
   failed_when: false
   no_log: true
   delegate_to: omnia_provision
   connection: ssh
 
-- name: Check if any helper nodes were found
+- name: Check if any service nodes were found
   ansible.builtin.debug:
-    msg: "{{ helper_nodes_DB_status }}"
+    msg: "{{ service_nodes_DB_status }}"
   when:
-    - helper_node_info.query_result is defined
-    - helper_node_info.query_result | length > 0
+    - service_node_info.query_result is defined
+    - service_node_info.query_result | length > 0
 
-- name: Disable the boot option on the OIM HA and service nodes
+- name: Disable the boot option on service nodes
   ansible.builtin.include_tasks: disable_helper_node_boot.yml
-  loop: "{{ helper_node_info.query_result }}"
+  loop: "{{ service_node_info.query_result | default([]) | list }}"
   loop_control:
     loop_var: node_info
   when:
-    - helper_node_info.query_result is defined
-    - helper_node_info.query_result | length > 0
+    - service_node_info.query_result is defined
+    - service_node_info.query_result | length > 0
