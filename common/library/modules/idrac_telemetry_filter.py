@@ -188,7 +188,7 @@ def main():
                     bmc_ip, bmc_username, bmc_password, module, min_firmware_version_reqd
                 )
 
-                if license_status and firmware_status:
+                if license_status:
                     result["telemetry_idrac"].append(bmc_ip)
                     result["telemetry_idrac_count"] += 1
                 else:
