@@ -20,7 +20,6 @@ import os
 import ansible.module_utils.input_validation.common_utils.data_fetch as get
 import ansible.module_utils.input_validation.common_utils.data_validation as validate
 from ansible.modules.validate_input import generate_log_failure_message
-from ansible.module_utils.input_validation.validation_flows import scheduler_validation
 
 from ansible.module_utils.input_validation.common_utils import (
     validation_utils,
@@ -159,9 +158,6 @@ def validate_software_config(
     # create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
     subgroup_dict, software_names = get_subgroup_dict(software_json_data)
-    version_variables = set_version_variables(
-        software_json_data, software_names, cluster_os_version
-    )
 
     # check if the corresponding json files for softwares and subgroups exists in config folder
     software_list = get_software_names(input_file_path)
@@ -187,7 +183,7 @@ def validate_software_config(
                 with open(json_path, "r") as file:
                     json_data = json.load(file)
                 for subgroup_software in subgroup_softwares:
-                    result, fail_data = validation_utils.validate_softwaresubgroup_entries(
+                    _, fail_data = validation_utils.validate_softwaresubgroup_entries(
                         subgroup_software, json_path, json_data, validation_results, failures
                     )
 
@@ -573,7 +569,7 @@ def validate_server_spec(
     )
 
     for server in server_groups:
-        for key, value in server.items():
+        for _, value in server.items():
             for item in value:
                 # Handle network specifications
                 if "network" in item:
