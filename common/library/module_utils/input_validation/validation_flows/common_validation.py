@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=import-error
+# pylint: disable=import-error,no-name-in-module
 """
 This module contains functions for validating common configuration files.
 """
@@ -25,7 +25,7 @@ from ansible.module_utils.input_validation.common_utils import (
     validation_utils,
     config,
     en_us_validation_msg,
-    data_verification,
+    data_verification
 )
 
 from ansible.module_utils.input_validation.validation_flows import scheduler_validation
@@ -35,7 +35,7 @@ from ansible.module_utils.local_repo.software_utils import (
     set_version_variables,
     get_subgroup_dict,
     get_software_names,
-    get_json_file_path,
+    get_json_file_path
 )
 
 file_names = config.files
@@ -47,7 +47,7 @@ flatten_sub_groups = validation_utils.flatten_sub_groups
 file_exists = data_verification.file_exists
 
 
-def validate_software_config(
+def validate_software_config(*,
     input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
 ):
     """
