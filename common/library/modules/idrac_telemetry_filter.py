@@ -43,7 +43,7 @@ def get_bmc_license_info(bmc_ip, username, password, module):
     licenses_url = f"https://{bmc_ip}/redfish/v1/Managers/iDRAC.Embedded.1/Oem/Dell/DellLicenses"
 
     conditions = {
-        "iDRAC9": False,
+        "iDRAC": False,
         "Data": False,
         "License": False,
         "Healthy": False
@@ -67,8 +67,8 @@ def get_bmc_license_info(bmc_ip, username, password, module):
             license_primary_status = license_info.get("LicensePrimaryStatus", "")
 
             # Check for the required conditions in LicenseDescription
-            if any("idrac9" in desc.lower() for desc in license_desc):
-                conditions["iDRAC9"] = True
+            if any("idrac" in desc.lower() for desc in license_desc):
+                conditions["iDRAC"] = True
             if any("data" in desc.lower() for desc in license_desc):
                 conditions["Data"] = True
             if any("license" in desc.lower() for desc in license_desc):
