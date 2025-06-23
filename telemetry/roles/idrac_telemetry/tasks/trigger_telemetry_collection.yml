@@ -17,6 +17,6 @@
 - name: Initiate telemetry-collector
   containers.podman.podman_container_exec:
     name: "{{ idrac_telemetry_container }}"
-    command: "nohup go run cmd/redfishread/redfishread.go &"
+    command: "/bin/bash {{ idrac_telemetry_receiver_entry_script }}"
     detach: true
   when: hostvars['localhost']['idrac_telemetry_support']

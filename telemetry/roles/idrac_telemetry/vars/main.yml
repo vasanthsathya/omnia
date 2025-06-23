@@ -55,6 +55,7 @@ invalid_bmc_warning_msg: |
 
 # Usage: trigger_telemetry_collection.yml
 idrac_telemetry_container: "idrac_telemetry_receiver"
+idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
 
 # Usage: prometheus_config_reload.yml
 prometheus_reload:
