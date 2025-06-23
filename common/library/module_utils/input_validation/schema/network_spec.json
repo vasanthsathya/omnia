@@ -23,6 +23,7 @@
                   "oim_nic_name",
                   "netmask_bits",
                   "primary_oim_admin_ip",
+                  "primary_oim_bmc_ip",
                   "static_range",
                   "dynamic_range",
                   "correlation_to_admin",
@@ -41,7 +42,15 @@
                   },
                   "primary_oim_bmc_ip": {
                     "type": "string",
-                    "pattern": "^$|^(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})\\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})$"
+                    "oneOf": [
+                    {
+                     "maxLength": 0
+                    },
+                    {
+                      "minLength": 1,
+                      "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})\\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})$"
+                    }
+                    ]
                   },
                   "static_range": {
                     "type": "string",
