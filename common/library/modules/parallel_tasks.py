@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=import-error,no-name-in-module,line-too-long
 #!/usr/bin/python
-# pylint: disable=import-error,no-name-in-module,line-too-long
+# pylint: disable=import-error,no-name-in-module
 import os
 import re
 from datetime import datetime
