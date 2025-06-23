@@ -47,7 +47,7 @@ invalid_creds_msg: |
   Rectify the issue and re-execute telemetry.yml.
 unreachable_bmc_msg: |
   The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
-  Please provide BMC IPs which are reachable from OIM
+  Please provide BMC IPs which are reachable from Service Node: {{ node_host }}
   else remove unreachable BMC entries from {{ bmc_group_data_filename }} file.
 invalid_bmc_warning_msg: |
   [WARNING] Some BMC IPs are not valid. Kindly address the issues mentioned above and execute telemetry.yml.
