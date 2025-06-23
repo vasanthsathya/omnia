@@ -96,7 +96,7 @@ pcs_failed_resource_msg: |
   playbook to deploy the container and its resources on service_nodes.
 
 # Usage: prometheus_config_update.yml
-oim_prometheus_config_path: "{{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus.yml"
+oim_prometheus_config_path: "{{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus_config/prometheus.yml"
 prometheus_yml_oim_temp_src: "{{ role_path }}/templates/prometheus_yml_oim.j2"
 
 # Usage: mysqldb_creation.yml
