@@ -71,8 +71,8 @@ service_node_not_found_msg: |
   "Service role not defiened in roles_config.yml but enable_service_ha is made as True.
   Kindly define service_node role in roles config and rerun the playbook."
 oim_ha_node_not_found_msg: |
-  "Service role not defiened in roles_config.yml but enable_service_ha is made as True.
-  Kindly define service_node role in roles config and rerun the playbook."
+  "OIM HA role is not defiened in roles_config.yml but enable_oim_ha is set as True.
+  Kindly define oim_ha_node role in roles config and rerun the playbook."
 nfs_internal_warning_msg: |
   "WARNING: It is recommended to use External NFS for hierarchical cluster.
   If you must use Internal NFS, ensure OIM has enough storage space and sufficient hardware resources."
