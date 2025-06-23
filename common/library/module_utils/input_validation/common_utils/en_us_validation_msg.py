@@ -156,13 +156,25 @@ PROMETHEUS_SCRAPE_INTERVAL_FAIL_MSG = ("prometheus_scrape_interval must be at le
 
 # security_config.yml
 DOMAIN_NAME_FAIL_MSG = "domain_name is empty. Please provide a domain_name value."
-REALM_NAME_FAIL_MSG = "realm_name is empty. Please provide a realm_name value."
-LDAP_CONNECTION_TYPE_FAIL_MSG = ("ldap_connection_type is empty. "
-                                 "Please provide a ldap_connection_type value.")
+REALM_NAME_FAIL_MSG = "Failed. Incorrect realm_name formate in security_config.yml"
+LDAP_CONNECTION_TYPE_FAIL_MSG = "Failed. LDAP Connection type must be: SSL, TLS, ssl or tls"
 OPENLDAP_ORGANIZATION_FAIL_MSG = ("openldap_organization is empty. "
                                   "Please provide a openldap_organization value.")
 OPENLDAP_ORGANIZATIONAL_UNIT_FAIL_MSG = ("openldap_organizational_unit is empty. "
                                          "Please provide a openldap_organizational_unit value.")
+AUTHENTICATION_SYSTEM_FAIL_MSG = ("[WARNING] authentication_system variable in security_config.yml "
+                                 "should be either openldap or freeipa")
+AUTHENTICATION_SYSTEM_SUCCESS_MSG = "authentication_system variable successfully validated"
+FREEIPA_AND_OPENLDAP_TRUE_FAIL_MSG = ("Both freeipa and openldap "
+                                      "are present in software_config.json. "
+                                      "Please give only one of them in software_config.json")
+LDAP_CERT_PATH_FAIL_MSG = "Failed, LDAP certificate path doesn't exist."
+ALERT_EMAIL_WARNING_MSG = ("[WARNING] alert_email_address is empty. "
+                           "Authentication failure alerts won't be configured.")
+ALERT_EMAIL_FAIL_MSG = ("Failed. Incorrect alert_email_address value "
+                        "in login_node_security_config.yml")
+SMTP_SERVER_FAIL_MSG = ("Failed. smtp_server details are mandatory when "
+                        "alert_email_address provide in login_node_security_config.yml.")
 
 # software_config.json
 ISO_FILE_PATH_FAIL_MSG = ("The provided ISO file path is invalid. "

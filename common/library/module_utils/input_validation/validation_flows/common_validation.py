@@ -96,7 +96,7 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
-    
+
     #software groups and subgroups l2 validation
     # Check for the additional software field
     if "additional_software" in data:
@@ -199,6 +199,89 @@ def validate_software_config(
 
     return errors
 
+def validate_openldap_input_params(authentication_type, mandatory_fields, data, errors, _logger):
+
+    """
+    Validates the input parameters for the OpenLDAP authentication.
+
+    Args:
+        authentication_type (str): Type of authentication.
+        mandatory_fields (list): List of mandatory fields required for validation.
+        data (dict): Input data containing the parameters to be validated.
+        errors (list): List to store error messages.
+        logger (object): Logger object for logging information.
+
+    Notes:
+        - The function checks if all mandatory fields are present in the input data.
+        - It validates the `ldap_connection_type` field to ensure it is one of the supported types.
+        - It also validates the certificate paths for TLS connections.
+        - If any validation fails, an error message is appended to the `errors` list.
+
+    Validation Rules:
+        - All mandatory fields should be present in the input data.
+        - The `ldap_connection_type` field should be one of the supported types
+        (defined in `config.supported_ldap_connection_type`).
+        - The certificate paths for TLS connections should be valid and existing files.
+
+    Returns:
+        None
+    """
+
+    check_mandatory_fields(mandatory_fields, data, errors)
+
+    # validate ldap_connection_type
+    ldap_connection_type = data.get("ldap_connection_type","").upper()
+    if ldap_connection_type and ldap_connection_type not in config.supported_ldap_connection_type:
+        errors.append(
+            create_error_msg(authentication_type,
+                            "software",
+                            en_us_validation_msg.LDAP_CONNECTION_TYPE_FAIL_MSG)
+        )
+
+    certificates = {
+        "tls_ca_certificate": data.get("tls_ca_certificate", ""),
+        "tls_certificate": data.get("tls_certificate", ""),
+        "tls_certificate_key": data.get("tls_certificate_key",""),
+    }
+
+    for cert_name, cert_value in certificates.items():
+        if cert_value and not validation_utils.verify_path(cert_value):
+            errors.append(
+                create_error_msg(cert_name,
+                                cert_value,
+                                en_us_validation_msg.LDAP_CERT_PATH_FAIL_MSG)
+            )
+
+def validate_freeapi_input_params(authentication_type, mandatory_fields, data, errors, logger):
+
+    """
+    Validates the input parameters for the Free API.
+
+    Args:
+        authentication_type (str): Type of authentication.
+        mandatory_fields (list): List of mandatory fields required for validation.
+        data (dict): Input data containing the parameters to be validated.
+        errors (list): List to store error messages.
+        logger (object): Logger object for logging information.
+
+    Notes:
+        - The function checks if all mandatory fields are present in the input data.
+        - It validates the `realm_name` field to ensure it contains a dot (`.`) character.
+        - If any validation fails, an error message is appended to the `errors` list.
+
+    Returns:
+        None
+    """
+
+    check_mandatory_fields(mandatory_fields, data, errors)
+    # validate realm_name
+    realm_name = data.get("realm_name", "")
+    if realm_name and "." not in realm_name:
+        errors.append(
+            create_error_msg(authentication_type,
+                            "software",
+                            en_us_validation_msg.REALM_NAME_FAIL_MSG)
+        )
 
 def validate_security_config(
     input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
@@ -219,47 +302,39 @@ def validate_security_config(
         list: A list of errors encountered during validation.
     """
     errors = []
-    passwordless_ssh_config_file_path = create_file_path(
-        input_file_path, file_names["passwordless_ssh_config"]
+    software_config_json = create_file_path(
+        input_file_path, file_names["software_config"]
     )
-    passwordless_ssh_config_json = validation_utils.load_yaml_as_json(
-        passwordless_ssh_config_file_path,
-        omnia_base_dir,
-        module_utils_base,
-        project_name,
-        logger,
-        module,
-    )
+    software_list = get_software_names(software_config_json)
+    authentication_type = ""
+    required = {"openldap","freeipa"}
 
-    authentication_type = passwordless_ssh_config_json["authentication_type"]
+    matches = required.intersection(software_list)
+    if len(matches) == 2:
+        errors.append(
+                create_error_msg(authentication_type,
+                                 "software",
+                                 en_us_validation_msg.FREEIPA_AND_OPENLDAP_TRUE_FAIL_MSG)
+            )
+    elif matches:
+        authentication_type = next(iter(matches))
+        logger.info(f"{en_us_validation_msg.AUTHENTICATION_SYSTEM_SUCCESS_MSG}")
+    else:
+        logger.warn(f"{en_us_validation_msg.AUTHENTICATION_SYSTEM_FAIL_MSG}")
 
-    if authentication_type == "ldap":
+    if authentication_type == "openldap":
         mandatory_fields = [
+            "domain_name",
             "ldap_connection_type",
-            "openldap_db_username",
-            "openldap_db_password",
-            "openldap_config_username",
-            "openldap_config_password",
-            "openldap_monitor_password",
             "openldap_organization",
             "openldap_organizational_unit",
         ]
-        check_mandatory_fields(mandatory_fields, data, errors)
+        validate_openldap_input_params(authentication_type, mandatory_fields, data, errors, logger)
+
     elif authentication_type == "freeipa":
-        mandatory_fields = ["realm_name", "directory_manager_password", "kerberos_admin_password"]
-        check_mandatory_fields(mandatory_fields, data, errors)
-
-    certificates = {
-        "tls_ca_certificate": data["tls_ca_certificate"],
-        "tls_certificate": data["tls_certificate"],
-        "tls_certificate_key": data["tls_certificate_key"],
-    }
-
-    for cert_name, cert_value in certificates.items():
-        if cert_value and not validation_utils.verify_path(cert_value):
-            errors.append(
-                create_error_msg(cert_name, cert_value, en_us_validation_msg.FILE_PATH_FAIL_MSG)
-            )
+        mandatory_fields = ["domain_name"]
+        mandatory_fields = ["realm_name"]
+        validate_freeapi_input_params(authentication_type, mandatory_fields, data, errors, logger)
 
     return errors
 
@@ -339,7 +414,7 @@ def validate_storage_config(
                     en_us_validation_msg.CLIENT_MOUNT_OPTIONS_FAIL_MSG,
                 )
             )
-        
+
         if nfs_client_params["slurm_share"] == "true":
             if not slurm_share_val:
                 slurm_share_val = True
@@ -475,6 +550,121 @@ def validate_roce_plugin_config(
     errors = []
     return errors
 
+def validate_allowed_services(data, errors, logger):
+
+    """
+    Validates the restrict_softwares field in the input data against a list of allowed services.
+
+    Args:
+        data (dict): The input data containing the restrict_softwares field.
+        errors (list): A list to store error messages encountered during validation.
+        logger (Logger): A logger instance for logging purposes.
+
+    Returns:
+        None
+
+    Notes:
+        The allowed services are: telnet, lpd, bluetooth, rlogin, and rexec.
+        If a restrict_software is not in the allowed services list,
+        an error message is appended to the errors list.
+
+    Raises:
+        None
+    """
+    # validate allowed services
+    allowed_services = ["telnet", "lpd", "bluetooth", "rlogin", "rexec"]
+    restrict_softwares = data["restrict_softwares"].split(",")
+    for software in restrict_softwares:
+        if software not in allowed_services:
+            errors.append(
+                create_error_msg(
+                    "restrict_softwares",
+                    data["restrict_softwares"],
+                    en_us_validation_msg.restrict_softwares_fail_msg(software),
+                )
+            )
+
+def validate_alert_email_address(data, errors, logger):
+    """
+    Validates the alert email address provided in the input data.
+
+    Args:
+        data (dict): Input data containing the alert email address.
+        errors (list): List to store error messages.
+        logger (object): Logger object for logging warnings.
+
+    Returns:
+        list: List of validated alert email addresses.
+
+    Notes:
+        - If the alert email address is empty, a warning message is logged.
+        - Each email address is checked for maximum length and presence of a search key.
+        - Error messages are appended to the `errors` list for invalid email addresses.
+    """
+    alert_email_address = data.get("alert_email_address", "")
+    alert_email_address_list = []
+
+    if not alert_email_address:
+        logger.warn(en_us_validation_msg.ALERT_EMAIL_WARNING_MSG)
+    else:
+        alert_email_address_list = alert_email_address.split(",")
+
+    for email_id in alert_email_address_list:
+        if len(email_id) > config.EMAIL_MAX_LENGTH or config.EMAIL_SEARCH_KEY not in email_id:
+            errors.append(
+                create_error_msg(
+                    "email_id",
+                    email_id,
+                    en_us_validation_msg.ALERT_EMAIL_FAIL_MSG
+                )
+            )
+    return alert_email_address_list
+
+def validate_smtp_server(data, errors, logger):
+
+    """
+    Validates the SMTP server configuration provided in the input data.
+
+    Args:
+        data (dict): Input data containing the SMTP server configuration.
+        errors (list): List to store error messages.
+        logger (object): Logger object for logging information.
+
+    Notes:
+        - The function checks if the SMTP server configuration is a single, non-empty dictionary.
+        - It verifies that the configuration contains the required fields:
+        host, port, and sender address.
+        - If the configuration is invalid or missing required fields,
+        an error message is appended to the `errors` list.
+
+    Returns:
+        None
+    """
+
+    smtp_server = data.get("smtp_server","")
+    logger.info(f"smpt server info info {smtp_server}")
+    if len(smtp_server) != 1 or len(smtp_server) < 0:
+        errors.append(
+            create_error_msg(
+                "smpt_server",
+                smtp_server,
+                en_us_validation_msg.SMTP_SERVER_FAIL_MSG
+            )
+        )
+
+    if len(smtp_server) == 1:
+        host = smtp_server.get("host","")
+        port = smtp_server.get("port","")
+        sender_address = smtp_server.get("sender_address","")
+
+        if not host or not port or not sender_address:
+            errors.append(
+                create_error_msg(
+                        "smpt_server",
+                        smtp_server,
+                        en_us_validation_msg.SMTP_SERVER_FAIL_MSG
+                )
+            )
 
 def validate_login_node_security_config(
     input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
@@ -495,17 +685,24 @@ def validate_login_node_security_config(
         list: A list of errors encountered during validation.
     """
     errors = []
-    allowed_services = ["telnet", "lpd", "bluetooth", "rlogin", "rexec"]
-    restrict_softwares = data["restrict_softwares"].split(",")
-    for software in restrict_softwares:
-        if software not in allowed_services:
-            errors.append(
-                create_error_msg(
-                    "restrict_softwares",
-                    data["restrict_softwares"],
-                    en_us_validation_msg.restrict_softwares_fail_msg(software),
-                )
-            )
+
+    software_config_json = create_file_path(
+        input_file_path, file_names["software_config"]
+    )
+
+    software_list = get_software_names(software_config_json)
+
+    enable_secure_login_node = False
+
+    if "secure_login_node" in software_list:
+        enable_secure_login_node = True
+
+    if enable_secure_login_node:
+        logger.info("secure_login_node is enabled")
+        alert_email_address_list = validate_alert_email_address(data, errors, logger)
+        if len(alert_email_address_list) > 0:
+            validate_smtp_server(data, errors, logger)
+        validate_allowed_services(data, errors, logger)
     return errors
 
 

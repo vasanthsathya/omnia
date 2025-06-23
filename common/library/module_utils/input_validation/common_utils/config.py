@@ -59,10 +59,10 @@ input_file_inventory = {
     ],
     "server_spec": [files["server_spec"]],
     "security": [
+        files["software_config"],
         files["security_config"],
         files["login_node_security_config"],
-        files["passwordless_ssh_config"],
-        files["software_config"]
+        files["passwordless_ssh_config"]
     ],
     "telemetry": [files["telemetry_config"]],
     "local_repo": [files["local_repo_config"], files["software_config"]],
@@ -159,6 +159,11 @@ TYPE_REQUIREMENTS = {
 }
 
 supported_telemetry_collection_type = ["prometheus"]
+
+# used for security_config.yml login_node_security_config.yml validation
+supported_ldap_connection_type = ["TLS","SLS"]
+EMAIL_MAX_LENGTH = 320
+EMAIL_SEARCH_KEY = "@"
 
 # Dict of the file that can be encrypted and it's ansible vault key
 def get_vault_password(yaml_file):
