@@ -47,7 +47,7 @@ flatten_sub_groups = validation_utils.flatten_sub_groups
 file_exists = data_verification.file_exists
 
 
-def validate_software_config(*,
+def validate_software_config(
     input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
 ):
     """
@@ -157,7 +157,7 @@ def validate_software_config(*,
 
     # create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
-    subgroup_dict, software_names = get_subgroup_dict(software_json_data)
+    subgroup_dict, _ = get_subgroup_dict(software_json_data)
 
     # check if the corresponding json files for softwares and subgroups exists in config folder
     software_list = get_software_names(input_file_path)
@@ -591,7 +591,7 @@ def validate_server_spec(
                                     )
 
     # Collecting network_spec nicnetwork names
-    for key, network in network_spec_json.items():
+    for _, network in network_spec_json.items():
         for nw in network:
             for name, value in nw.items():
                 network_spec_networks.append(name)
