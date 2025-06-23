@@ -22,9 +22,9 @@
 # - 'MTU': Maximum Transmission Unit for the admin network.
 #
 # The 'bmc_network' section contains the following variables:
-# - 'oim_nic_name': The name of the interface on the OIM server associated with the BMC network.
+# - 'oim_nic_name': The name of the interface on the OIM server associated with the BMC network. If set, all BMC fields must be filled.
 # - 'netmask_bits': The number of bits in the subnet mask.
-# - 'dynamic_range': The range of dynamic IP addresses available on the BMC network.
+# - 'dynamic_range': The range of dynamic IP addresses available on the BMC network. If set, all BMC fields must be filled.
 # - 'dynamic_conversion_static_range': The range of static IP addresses that can be converted from dynamic IP addresses on the BMC network.
 # - 'reassignment_to_static': Whether the BMC IP addresses are reassigned to static IP addresses.
 # - 'network_gateway': The gateway IP address of the BMC network.
