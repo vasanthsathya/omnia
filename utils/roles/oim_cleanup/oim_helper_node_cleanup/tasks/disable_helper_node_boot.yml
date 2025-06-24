@@ -29,6 +29,7 @@
   register: set_boot_mode_result
   failed_when: set_boot_mode_result.failed
   ignore_errors: false
+  no_log: true
 
 - name: Get Redfish system URI data
   ansible.builtin.uri:
@@ -43,6 +44,7 @@
     headers: 'Accept=application/json'
   register: uri_data
   failed_when: uri_data.status != 200
+  no_log: true
 
 - name: Set BootSources URL
   ansible.builtin.set_fact:
@@ -88,3 +90,4 @@
   loop: "{{ enabled_boot_names }}"
   register: bios_disable_result
   failed_when: bios_disable_result.failed
+  no_log: true

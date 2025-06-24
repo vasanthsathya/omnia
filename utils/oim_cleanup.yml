@@ -32,12 +32,12 @@
   roles:
     - oim_cleanup/pre_requisite
 
-- name:  Cleanup OIM helper nodes
+- name: Cleanup OIM helper nodes
   hosts: localhost
-  connection: ssh
+  connection: local
   tasks:
-    - name: Include Omnia config credentials from common role
-      include_role:
+    - name: Include include_omnia_config_credentials from common role
+      ansible.builtin.include_role:
         name: common
         tasks_from: include_omnia_config_credentials.yml
 
