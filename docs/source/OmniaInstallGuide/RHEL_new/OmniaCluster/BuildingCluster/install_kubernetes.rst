@@ -1,7 +1,9 @@
+===================
 Set up Kubernetes
 ===================
 
-**Prerequisites**
+Prerequisites
+===============
 
 * Ensure that ``k8s`` entry is present in the ``softwares`` list in ``software_config.json``, as mentioned below:
     ::
@@ -16,7 +18,10 @@ Set up Kubernetes
 
 * Ensure that ``k8s_share`` is set to ``true`` in `storage_config.yml <../schedulerinputparams.html#storage-config-yml>`_, for one of the entries in ``nfs_client_params``.
 
-**Inventory details**
+
+
+Inventory details
+==================
 
 * All the applicable inventory groups are ``kube_control_plane``, ``kube_node``, and ``etcd``.
 * The inventory file must contain:
@@ -27,7 +32,8 @@ Set up Kubernetes
 
 .. note:: Ensure that the inventory includes an ``[etcd]`` node. etcd is a consistent and highly-available key value store used as Kubernetes' backing store for all cluster data. For more information, `click here. <https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/>`_
 
-**Sample inventory**
+Sample inventory
+=================
 
     ::
 
@@ -44,22 +50,8 @@ Set up Kubernetes
         10.5.1.101
 
 
-.. note::
-    If an additional NIC other than admin NIC is present on the cluster, inventory should be updated with argument ``ip``, and ``ip`` should have the value of required admin IP in case node has more than one network interface. If ``kube_control_plane`` has 2 interfaces ``eno1`` and ``eno2`` with IPs ``eno1=10.5.0.3`` and ``eno2=198.168.0.19``, inventory should have the following format: ::
-
-        [kube_control_plane]
-
-        10.5.0.3 ip=10.5.0.3
-
-        [kube_node]
-
-        10.5.0.4 ip=10.5.0.4
-
-        [etcd]
-
-        10.5.0.3 ip=10.5.0.3
-
-**To install Kubernetes**
+Deploy Kubernetes
+===================
 
 Run either of the following commands, where ``-i <inventory>`` denotes the file path of the user specified inventory:
 
@@ -87,7 +79,8 @@ Run either of the following commands, where ``-i <inventory>`` denotes the file 
 
 .. note:: To add new nodes to an existing cluster, click `here. <../../../Maintenance/addnode.html>`_
 
-**Additional installations**
+Additional installations
+=========================
 
 Omnia installs the following packages on top of the Kubernetes stack:
 
@@ -129,6 +122,30 @@ Omnia installs the following packages on top of the Kubernetes stack:
 
     Click `here <https://github.com/NVIDIA/k8s-device-plugin>`_ for more information.
 
-**Optional installation**
+7.  *gaudi-device-plugin*
 
-* `PowerScale CSI drivers <../../AdvancedConfigurationsRHEL/PowerScale_CSI.html>`_
+    The Gaudi device plugin is a Kubernetes device plugin implementation that enables the registration of Intel Gaudi AI accelerators in a container cluster. This plugin enables the efficient utilization of Gaudi accelerators for compute workloads within the cluster.
+    For the gaudi-device-plugin to function seamlessly, Omnia installs the “habanalabs-container-runtime” as part of the ``omnia.yml`` or ``scheduler.yml`` playbook execution.
+
+    The Gaudi device plugin for Kubernetes is a “DaemonSet” that allows you to automatically:
+
+        i. Enable the registration of Intel Gaudi accelerators in your Kubernetes cluster.
+        ii. Keep track of device health.
+        iii. Run jobs on the Intel Gaudi accelerators.
+
+    Click `here <https://docs.habana.ai/en/latest/Orchestration/Gaudi_Kubernetes/Device_Plugin_for_Kubernetes.html>`_ for more information.
+
+8. *whereabouts-cni-plugin*
+
+    Whereabouts is an IP address management (IPAM) CNI plugin that assigns dynamic IP addresses cluster-wide in Kubernetes, ensuring no IP address collisions across nodes.
+    It uses a range of IPs and tracks assignments with backends like etcd or Kubernetes Custom Resources.
+    Omnia installs the whereabouts plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
+
+    Click `here <https://github.com/k8snetworkplumbingwg/whereabouts>`_ for more information.
+
+9. *multus-cni-plugin*
+
+    Multus is a Kubernetes CNI (Container Network Interface) plugin that enables pods to have multiple network interfaces. It acts as a meta-plugin, allowing the use of multiple CNI plugins (for example, Flannel, Calico, Macvlan) within the same cluster.
+    Omnia installs the multus plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
+
+    Click `here <https://github.com/k8snetworkplumbingwg/multus-cni>`_ for more information.
