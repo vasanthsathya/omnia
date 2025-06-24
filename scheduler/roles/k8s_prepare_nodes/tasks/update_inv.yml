@@ -1,4 +1,4 @@
-#  Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
+#  Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,19 +13,11 @@
 #  limitations under the License.
 ---
 
-- name: Download MPI Operator manifest
-  ansible.builtin.get_url:
-    url: "{{ mpi_operator_yaml_url }}"
-    dest: "{{ mpi_operator_dest_url }}"
-    mode: "{{ file_mode }}"
-  environment: "{{ compute_env }}"
-
-- name: Install MPI Operator from URL
-  kubernetes.core.k8s:
-    state: present
-    src: "{{ mpi_operator_dest_url }}"
-
-- name: Include pod status
-  ansible.builtin.include_tasks: pod_status.yml
-  vars:
-    track_module_name: "mpi-operator"
+- name: Update inventory with kube vip interface
+  delegate_to: localhost
+  match_subnet_and_update_inv:
+    interfaces: "{{ ansible_facts | dict2items | selectattr('key', 'in', ansible_interfaces) | items2dict }}"
+    subnet: "{{ hostvars['127.0.0.1']['admin_nic_cidr'] }}"
+    hostname: "{{ inventory_hostname }}"
+    inventory_path: "{{ k8s_nfs_share }}/inv_k8s"
+  register: result
