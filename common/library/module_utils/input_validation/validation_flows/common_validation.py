@@ -11,16 +11,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=unused-import,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,unused-argument, too-many-positional-arguments
+# pylint: disable=import-error,no-name-in-module,too-many-arguments,unused-argument
 """
 This module contains functions for validating common configuration files.
 """
 import json
+import os
+import ansible.module_utils.input_validation.common_utils.data_fetch as get
+import ansible.module_utils.input_validation.common_utils.data_validation as validate
+from ansible.modules.validate_input import generate_log_failure_message
+
 from ansible.module_utils.input_validation.common_utils import (
     validation_utils,
     config,
     en_us_validation_msg,
+    data_verification
 )
+
 from ansible.module_utils.input_validation.validation_flows import scheduler_validation
 
 from ansible.module_utils.local_repo.software_utils import (
@@ -28,7 +35,7 @@ from ansible.module_utils.local_repo.software_utils import (
     set_version_variables,
     get_subgroup_dict,
     get_software_names,
-    get_json_file_path,
+    get_json_file_path
 )
 
 file_names = config.files
@@ -150,10 +157,7 @@ def validate_software_config(
 
     # create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
-    subgroup_dict, software_names = get_subgroup_dict(software_json_data)
-    version_variables = set_version_variables(
-        software_json_data, software_names, cluster_os_version
-    )
+    subgroup_dict, _ = get_subgroup_dict(software_json_data)
 
     # check if the corresponding json files for softwares and subgroups exists in config folder
     software_list = get_software_names(input_file_path)
@@ -179,7 +183,7 @@ def validate_software_config(
                 with open(json_path, "r") as file:
                     json_data = json.load(file)
                 for subgroup_software in subgroup_softwares:
-                    result, fail_data = validation_utils.validate_softwaresubgroup_entries(
+                    _, fail_data = validation_utils.validate_softwaresubgroup_entries(
                         subgroup_software, json_path, json_data, validation_results, failures
                     )
 
@@ -320,7 +324,8 @@ def validate_storage_config(
     softwares = software_config_json["softwares"]
     for software in softwares:
         if software.get('name') == 'beegfs' and 'version' not in software:
-            errors.append(create_error_msg("beegfs", "", en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
+            errors.append(create_error_msg("beegfs", "", 
+                                           en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
 
     allowed_options = {"nosuid", "rw", "sync", "hard", "intr"}
     slurm_share_val = False
@@ -564,7 +569,7 @@ def validate_server_spec(
     )
 
     for server in server_groups:
-        for key, value in server.items():
+        for _, value in server.items():
             for item in value:
                 # Handle network specifications
                 if "network" in item:
@@ -586,7 +591,7 @@ def validate_server_spec(
                                     )
 
     # Collecting network_spec nicnetwork names
-    for key, network in network_spec_json.items():
+    for _, network in network_spec_json.items():
         for nw in network:
             for name, value in nw.items():
                 network_spec_networks.append(name)
