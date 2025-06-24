@@ -17,9 +17,13 @@
   when:
     - hostvars['127.0.0.1']['k8s_support']
     - "'kube_control_plane' in group_names"
+    - hostvars['127.0.0.1']['plugins_deployment']
   block:
     - name: Run pre requesties
       ansible.builtin.include_tasks: prereq.yml
+
+    - name: Set environment
+      ansible.builtin.include_tasks: set_environment.yml
 
     - name: Evaluate the track file
       ansible.builtin.include_tasks: track_file.yml

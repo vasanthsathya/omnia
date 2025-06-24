@@ -1,4 +1,4 @@
-kube_version: "v{{ hostvars['localhost']['k8s_version'] }}"
+kube_version: "{{ hostvars['localhost']['k8s_version'] if hostvars['localhost']['matched_kubespray_version'] | regex_replace('^v', '') is version('2.28.0', '>=') else 'v' + hostvars['localhost']['k8s_version'] }}"
 container_manager: "containerd"
 dashboard_enabled: true 
 helm_enabled: true 

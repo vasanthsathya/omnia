@@ -34,9 +34,19 @@
 - name: Validate metadata
   ansible.builtin.include_tasks: validate_metadata.yml
 
+- name: Validate k8s json
+  ansible.builtin.include_tasks: validate_k8s_json.yml
+
 - name: Run Kubernetes JSON Generator
   ansible.builtin.include_tasks: dynamic_k8s_json.yml
-  when: dynamic_k8s_generation
+  when:
+    - dynamic_k8s_generation
+    - k8s_support
+
+- name: Remove k8s line from software.csv when new k8s version is provided
+  ansible.builtin.include_tasks: remove_k8s_line.yml
+  when:
+    - k8s_support
 
 - name: Validate user_repo certificates
   validate_user_repo:
