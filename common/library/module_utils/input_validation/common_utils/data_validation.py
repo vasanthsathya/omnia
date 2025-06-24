@@ -46,10 +46,10 @@ def schema(
             return False
 
         # Load schema
-        schema = json.load(open(schema_file_path, "r", encoding="utf-8"))
+        j_schema = json.load(open(schema_file_path, "r", encoding="utf-8"))
         logger.debug(en_us_validation_msg.get_validation_initiated(input_file_path))
 
-        validator = jsonschema.Draft7Validator(schema)
+        validator = jsonschema.Draft7Validator(j_schema)
         errors = sorted(validator.iter_errors(input_data), key=lambda e: e.path)
 
         # if errors exist, then print an error with the line number
@@ -70,7 +70,7 @@ def schema(
                 error_msg = f"Validation Error at {error_path}: {error.message}"
 
                 # For passwords, mask the value so that no password values are logged
-                if error.path[-1] in passwords_set:
+                if error.path and error.path[-1] in passwords_set:
                     parts = error.message.split(" ", 1)
                     if parts:
                         parts[0] = f"'{'*' * (len(parts[0]) - 2)}'"
