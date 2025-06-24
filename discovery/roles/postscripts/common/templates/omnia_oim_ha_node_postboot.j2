@@ -83,6 +83,7 @@ podman volume create --driver local --opt o=bind --opt device={{ idrac_telemetry
 {% if idrac_telemetry_support and idrac_telemetry_collection_type == "prometheus" %}
 podman volume create --driver local --opt o=bind --opt device={{ prometheus_data_dir }} prometheus_data
 podman volume create --driver local --opt o=bind --opt device={{ prometheus_log_dir }} prometheus_log
+podman volume create --driver local --opt o=bind --opt device={{ prometheus_config_dir }} prometheus_config
 {% endif %}
 
 {% if visualization_support %}

@@ -139,7 +139,6 @@
             bmc_username: "{{ hostvars['localhost']['bmc_username'] }}"
             bmc_password: "{{ hostvars['localhost']['bmc_password'] }}"
             min_firmware_version_reqd: "{{ min_firmware_version_reqd }}"
-          no_log: true
           register: filter_idrac_output
           when:
             - bmc_result.verified_bmc is defined

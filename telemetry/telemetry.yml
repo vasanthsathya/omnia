@@ -173,7 +173,7 @@
 
           {% if (failed_idrac_count | int + invalid_idrac_count | int) > 0 %}
           Potential reasons for telemetry not being initiated include Redfish connectivity problems, timeout issues,
-          iDRAC9 datacenter license constraints, or firmware-related problems.
+          iDRAC datacenter license constraints, or firmware-related problems.
           {% endif %}
           {% if idrac_redfish_disabled | length > 0 %}
           IPs with Redfish disabled:
@@ -194,7 +194,7 @@
           {% endfor %}
           {% endif %}
           {% if failed_idrac | length > 0 %}
-          Telemetry not supported because of iDrac9 Datacenter license constraints or firmware issues.
+          Telemetry not supported because of iDRAC Datacenter license constraints or firmware issues.
           IPs List:
           {% for item in failed_idrac %}
             - {{ item }}
