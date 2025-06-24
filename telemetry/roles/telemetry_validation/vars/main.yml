@@ -32,7 +32,8 @@ warning_idrac_telemetry_support_true: |
   "[WARNING] idrac_telemetry_support is set to true in telemetry_config.yml.
   iDRAC telemetry will be activated for all BMC IPs listed in {{ bmc_group_data_filename }}.
   Confirm that all BMC IPs are reachable from the OIM and respective service nodes for telemetry to function properly.
-  Additionally, ensure that Redfish is enabled and the iDRAC has a datacenter license with a firmware version greater than 4."
+  Make sure that Redfish is enabled and the iDRAC has a datacenter license. 
+  Also, ensure that the firmware version is greater than 4 for iDRAC9 or greater than 1 for iDRAC10."
 
 # # Usage: include_provision_config.yml
 # provision_config_file: "{{ input_project_dir }}/provision_config.yml"
