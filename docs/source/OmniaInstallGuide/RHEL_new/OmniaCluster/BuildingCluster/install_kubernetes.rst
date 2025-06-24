@@ -1,5 +1,5 @@
 ===================
-Set up Kubernetes
+Deploy Kubernetes
 ===================
 
 Prerequisites
@@ -17,8 +17,6 @@ Prerequisites
 * Once all the required parameters in `omnia_config.yml <../schedulerinputparams.html#id12>`_ are filled in, ``omnia.yml`` can be used to set up Kubernetes.
 
 * Ensure that ``k8s_share`` is set to ``true`` in `storage_config.yml <../schedulerinputparams.html#storage-config-yml>`_, for one of the entries in ``nfs_client_params``.
-
-
 
 Inventory details
 ==================
@@ -50,10 +48,10 @@ Sample inventory
         10.5.1.101
 
 
-Deploy Kubernetes
+Playbook execution
 ===================
 
-Run either of the following commands, where ``-i <inventory>`` denotes the file path of the user specified inventory:
+Run either of the following playbooks, where ``-i <inventory>`` denotes the file path of the user specified inventory:
 
     1. ::
 
@@ -81,6 +79,8 @@ Run either of the following commands, where ``-i <inventory>`` denotes the file 
 
 Additional installations
 =========================
+
+.. note:: Additional packages for Kubernetes will be deployed only if ``nfs`` entry is present in the ``/opt/omnia/input/project_default/software_config.json``.
 
 Omnia installs the following packages on top of the Kubernetes stack:
 
