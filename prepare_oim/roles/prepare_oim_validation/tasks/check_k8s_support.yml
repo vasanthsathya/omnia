@@ -76,9 +76,9 @@
             already_ran: false
           when: k8s_version not in metadata_dict.k8s_kubespray_versions
 
-- name: Print {{ k8s_version }}
-  ansible.builtin.debug:
-    msg: "{{ k8s_version }}"
+        - name: Print {{ k8s_version }}
+          ansible.builtin.debug:
+            msg: "{{ k8s_version }}"
 
 - name: Validate k8s_support variable
   when:
