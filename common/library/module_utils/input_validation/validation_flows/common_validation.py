@@ -282,8 +282,8 @@ def validate_freeapi_input_params(authentication_type, mandatory_fields, data, e
     realm_name = data.get("realm_name", "")
     if realm_name and "." not in realm_name:
         errors.append(
-            create_error_msg(authentication_type,
-                            "software",
+            create_error_msg("realm_name",
+                            realm_name,
                             en_us_validation_msg.REALM_NAME_FAIL_MSG)
         )
 
@@ -322,7 +322,8 @@ def validate_security_config(
             )
     elif matches:
         authentication_type = next(iter(matches))
-        logger.info(f"{en_us_validation_msg.AUTHENTICATION_SYSTEM_SUCCESS_MSG}")
+        logger.info(f"{authentication_type}: "
+                    f"{en_us_validation_msg.AUTHENTICATION_SYSTEM_SUCCESS_MSG}")
     else:
         logger.warn(f"{en_us_validation_msg.AUTHENTICATION_SYSTEM_FAIL_MSG}")
 
@@ -336,8 +337,7 @@ def validate_security_config(
         validate_openldap_input_params(authentication_type, mandatory_fields, data, errors, logger)
 
     elif authentication_type == "freeipa":
-        mandatory_fields = ["domain_name"]
-        mandatory_fields = ["realm_name"]
+        mandatory_fields = ["domain_name","realm_name"]
         validate_freeapi_input_params(authentication_type, mandatory_fields, data, errors, logger)
 
     return errors
@@ -399,7 +399,7 @@ def validate_storage_config(
     softwares = software_config_json["softwares"]
     for software in softwares:
         if software.get('name') == 'beegfs' and 'version' not in software:
-            errors.append(create_error_msg("beegfs", "", 
+            errors.append(create_error_msg("beegfs", "",
                                            en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
 
     allowed_options = {"nosuid", "rw", "sync", "hard", "intr"}

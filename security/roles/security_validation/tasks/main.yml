@@ -54,4 +54,3 @@
     - name: Generate LDAP password hashes
       ansible.builtin.include_tasks: generate_ldap_password_hashes.yml
       when: authentication_system == 'openldap'
-
