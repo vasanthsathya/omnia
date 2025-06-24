@@ -19,7 +19,7 @@ images_directory_path: "{{ oim_shared_path }}/omnia/images"
 read_write_mode: "0644"
 container_tag: "latest"
 container_tar_file: "omnia_images.tar"
-kubespray_tag: "v2.27.0"
+kubespray_tag: "v2.28.0"
 squid_tag: "6.6-24.04_beta"
 pulp_tag: "3.80"
 
