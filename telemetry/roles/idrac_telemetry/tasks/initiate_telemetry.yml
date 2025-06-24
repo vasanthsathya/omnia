@@ -112,7 +112,12 @@
     - name: Show Unreachable BMC IPs
       when: bmc_result.unreachable_bmc | length > 0
       ansible.builtin.debug:
-        msg: "{{ unreachable_bmc_msg | replace('\n', ' ') }}"
+        msg: >-
+          {{
+            unreachable_oim_bmc_msg | replace('\n', ' ')
+            if node_host == 'oim'
+            else unreachable_service_node_bmc_msg | replace('\n', ' ')
+          }}
 
     - name: Warning for user to fix BMC issues
       when: >
