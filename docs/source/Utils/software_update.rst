@@ -100,7 +100,9 @@ The below provided sample contains all the possible combinations for roles and g
                     "type": "rpm",
                     "repo_name": "baseos"
                 }
-            ], 
+            ]
+
+        }, 
             
         "default,compiler_node": {
         
