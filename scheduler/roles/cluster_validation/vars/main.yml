@@ -107,6 +107,7 @@ nfs_client_params_benchmarks_success_msg: "Entry found in nfs_client_params with
 plugins_warning_msg: |
   WARNING: Additional installation of Plugins will not be deployed because k8s nfs server_ip is "{{ k8s_nfs_server_ip }}".
   Please configure a valid NFS server IP in storage_config.yml.
+nfs_client_params_server_share_invalid_msg: "No valid 'server_share_path' found with 'k8s_share: true'. Please provide a valid server_share_path in 'nfs_client_params' under 'storage_config.yml'" # noqa: yaml[line-length]
 
 # Usage: validate_scheduler_type.yml
 scheduler_type_success_msg: "scheduler_type successfully validated"
