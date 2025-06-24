@@ -26,23 +26,3 @@
   ansible.builtin.fail:
     msg: "{{ fail_msg_ltb_dir }}"
   when: not dir_status.stat.exists
-
-- name: Validate Certificate directory
-  when:
-    - tls_ca_certificate != ''
-    - tls_certificate != ''
-    - tls_certificate_key != ''
-  block:
-    - name: Check certificate files exist
-      ansible.builtin.stat:
-        path: "{{ item }}"
-      register: file_status
-      failed_when: not file_status.stat.exists
-      loop:
-        - "{{ tls_ca_certificate }}"
-        - "{{ tls_certificate }}"
-        - "{{ tls_certificate_key }}"
-  rescue:
-    - name: Certificate path invalid
-      ansible.builtin.fail:
-        msg: "{{ ldap_cert_path_fail_msg }}"

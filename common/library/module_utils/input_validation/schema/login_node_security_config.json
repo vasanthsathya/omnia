@@ -6,7 +6,8 @@
       "max_failures": {
         "type": "integer",
         "default": 3,
-        "minimum": 1
+        "minimum": 3,
+        "maximum": 3
       },
       "failure_reset_interval": {
         "type": "integer",
