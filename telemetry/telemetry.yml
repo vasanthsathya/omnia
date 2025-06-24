@@ -168,8 +168,8 @@
     telemetry_report: |
           ---- Telemetry Report Overview ({{ node_host }}) ----
 
-          IPs with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
-          IPs with Telemetry activated in current execution: {{ telemetry_idrac_count | int }}
+          IP count with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
+          IP count with Telemetry activated in current execution: {{ telemetry_idrac_count | int }}
 
           {% if (failed_idrac_count | int + invalid_idrac_count | int) > 0 %}
           Potential reasons for telemetry not being initiated include Redfish connectivity problems, timeout issues,

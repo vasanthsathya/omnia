@@ -74,13 +74,13 @@ telemetry_report_template: "telemetry_report.j2"
 telemetry_report_sn: |
   ----- Telemetry Summary Report for {{ node_host }} -----
 
-  Total IPs with Telemetry activated: {{ (db_idrac_ip_list | length) + (telemetry_idrac | length) }}
+  Total IP count with Telemetry activated: {{ (db_idrac_ip_list | length) + (telemetry_idrac | length) }}
   Telemetry activated IPs List:
   {% for item in db_idrac_ip_list + telemetry_idrac %}
     - {{ item }}
   {% endfor %}
 
-  Total IPs with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
+  Total IP count with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
   Telemetry not supported IPs List:
   {% for item in failed_idrac + invalid_idrac_list %}
     - {{ item }}
