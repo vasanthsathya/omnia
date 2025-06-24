@@ -77,6 +77,11 @@
       ansible.builtin.set_fact:
         k8s_server_share_path: "{{ nfs_client_params | selectattr('k8s_share', 'equalto', true) | map(attribute='server_share_path') | first }}"
 
+    - name: Fail if server_share_path is not set in storage_config.yml
+      ansible.builtin.fail:
+        msg: "{{ nfs_client_params_server_share_invalid_msg }}"
+      when: plugins_deployment is true and k8s_server_share_path == ''
+
     - name: Get client_share_path where k8s_share is true
       ansible.builtin.set_fact:
         share_path: "{{ nfs_client_params | selectattr('k8s_share', 'equalto', true) | map(attribute='client_share_path') | first }}"
