@@ -33,7 +33,7 @@
 
 - name: Get Redfish system URI data
   ansible.builtin.uri:
-    url: "{{ iDrac_system_url }}"
+    url: "{{ idrac_system_url }}"
     user: "{{ bmc_username }}"
     password: "{{ bmc_password }}"
     validate_certs: false

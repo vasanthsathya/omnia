@@ -17,4 +17,4 @@
 service_nodes_DB_status : "Found {{ service_node_info.query_result | length }} OIM_HA and service node(s) with booted status."
 
 # Usage: disable_service_node_boot.yml
-iDrac_system_url: "https://{{ node_info.bmc_ip }}/redfish/v1/Systems/"
+idrac_system_url: "https://{{ node_info.bmc_ip }}/redfish/v1/Systems/"
