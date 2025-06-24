@@ -30,17 +30,17 @@
 
     - name: Set fact for kubespray version
       ansible.builtin.set_fact:
-        kubespray_version: k8s_kubespray_map[k8s_version_supported]
-      when: k8s_version == k8s_version_supported
+        kubespray_version: "v2.28.0"
+      when: k8s_version == '1.31.4'
 
     - name: Set default fact for dynamic k8s generation
       ansible.builtin.set_fact:
         dynamic_k8s_generation: false
 
-    - name: Set fact for dynamic genaration when k8s is not equal to {{ k8s_version_supported }}
+    - name: Set fact for dynamic genaration when k8s is not equal to 1.31.4
       ansible.builtin.set_fact:
         dynamic_k8s_generation: true
-      when: k8s_version != k8s_version_supported
+      when: k8s_version != '1.31.4'
 
     - name: Check if the k8s metadata file exists
       ansible.builtin.stat:
