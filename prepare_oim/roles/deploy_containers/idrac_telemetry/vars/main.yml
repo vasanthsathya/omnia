@@ -121,7 +121,7 @@ idrac_git_clone_error_msg: |
   Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
 idrac_telemetry_scripting_git_clone_path: "/opt/omnia/telemetry/idrac_telemetry/iDRAC-Telemetry-Scripting"
 idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
-idrac_telemetry_scripting_stable_commit: "1f4bb26"
+idrac_telemetry_scripting_stable_commit: "26417f2"
 idrac_script_git_clone_error_msg: |
   Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_scripting_repo }}
   to {{ idrac_telemetry_scripting_git_clone_path }}.
