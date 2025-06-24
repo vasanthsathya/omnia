@@ -412,7 +412,7 @@ def check_overlap(ip_list):
 
     # Convert IP ranges and CIDR to ipaddress objects
     for item in ip_list:
-        if item == '' or item == 'N/A':
+        if item in ('', 'N/A'):
             continue
         if "-" in item:
             start_ip, end_ip = item.split("-")
@@ -466,8 +466,7 @@ def validate_ipv4_range(ip_range) -> bool:
 
         if end_ip >= start_ip:
             return True
-        else:
-            return False
+        return False
     except ValueError:
         return False
 
@@ -485,8 +484,7 @@ def validate_netmask_bits(bits):
         bits_int = int(bits)
         if 1 <= bits_int <= 32:
             return True
-        else:
-            return False
+        return False
     except (ValueError, TypeError):
         return False
 

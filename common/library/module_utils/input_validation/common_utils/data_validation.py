@@ -23,19 +23,30 @@ from ansible.module_utils.input_validation.common_utils import en_us_validation_
 from ansible.module_utils.input_validation.common_utils import logical_validation
 
 
-def schema(
-    input_file_path, schema_file_path, passwords_set, omnia_base_dir, project_name, logger, module
-):
+def schema(config):
     """
     Validates the input file against a JSON schema.
 
     Args:
-        input_file_path (str): The path to the input file.
-        schema_file_path (str): The path to the schema file.
+        config: dict with keys:
+        - input_file_path
+        - schema_file_path
+        - passwords_set
+        - omnia_base_dir
+        - project_name
+        - logger
+        - module
 
     Returns:
         bool: True if the validation is successful, False otherwise.
     """
+    input_file_path = config["input_file_path"]
+    schema_file_path = config["schema_file_path"]
+    passwords_set = config["passwords_set"]
+    omnia_base_dir = config["omnia_base_dir"]
+    project_name = config["project_name"]
+    logger = config["logger"]
+    module = config["module"]
     try:
         input_data, extension = get.input_data(
             input_file_path, omnia_base_dir, project_name, logger, module
@@ -46,7 +57,8 @@ def schema(
             return False
 
         # Load schema
-        j_schema = json.load(open(schema_file_path, "r", encoding="utf-8"))
+        with open(schema_file_path, "r", encoding="utf-8") as schema_file:
+            j_schema = json.load(schema_file)
         logger.debug(en_us_validation_msg.get_validation_initiated(input_file_path))
 
         validator = jsonschema.Draft7Validator(j_schema)
@@ -115,16 +127,18 @@ def schema(
 
 
 # Code to run the L2 validation validate_input_logic function.
-def logic(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name):
+def logic(config):
     """
     Validates the logic of the input file.
 
     Args:
-        input_file_path (str): The path to the input file.
-        logger (logging.Logger): The logger object.
-        module (AnsibleModule): The Ansible module.
-        omnia_base_dir (str): The base directory of Omnia.
-        project_name (str): The name of the project.
+    config: dict with keys:
+        - input_file_path (str): The path to the input file.
+        - omnia_base_dir (str): The base directory of Omnia.
+        - module_utils_base (str): The base directory of the module utils.
+        - project_name (str): The name of the project.
+        - logger (logging.Logger): The logger object.
+        - module (AnsibleModule): The Ansible module.
 
     Returns:
         bool: True if the logic validation is successful, False otherwise.
@@ -133,6 +147,12 @@ def logic(input_file_path, logger, module, omnia_base_dir, module_utils_base, pr
         ValueError: If a value error occurs.
         Exception: If an unexpected error occurs.
     """
+    input_file_path = config["input_file_path"]
+    omnia_base_dir = config["omnia_base_dir"]
+    module_utils_base = config["module_utils_base"]
+    project_name = config["project_name"]
+    logger = config["logger"]
+    module = config["module"]
     try:
         input_data, extension = get.input_data(
             input_file_path, omnia_base_dir, project_name, logger, module
