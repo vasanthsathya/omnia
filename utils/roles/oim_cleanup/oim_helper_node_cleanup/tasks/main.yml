@@ -45,7 +45,7 @@
 
 - name: Check if any service nodes were found
   ansible.builtin.debug:
-    msg: "{{ service_nodes_DB_status }}"
+    msg: "{{ service_nodes_db_status }}"
   when:
     - service_node_info.query_result is defined
     - service_node_info.query_result | length > 0
