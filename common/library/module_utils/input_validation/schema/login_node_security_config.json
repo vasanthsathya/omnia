@@ -30,8 +30,7 @@
       "alert_email_address": {
         "type": "string",
         "default": "",
-        "format": "email",
-        "pattern": "^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        "format": "email"
       },
       "smtp_server": {
       "type": "array",

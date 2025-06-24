@@ -576,18 +576,20 @@ def validate_allowed_services(data, errors, logger):
     Raises:
         None
     """
-    # validate allowed services
-    allowed_services = ["telnet", "lpd", "bluetooth", "rlogin", "rexec"]
-    restrict_softwares = data["restrict_softwares"].split(",")
-    for software in restrict_softwares:
-        if software not in allowed_services:
-            errors.append(
-                create_error_msg(
-                    "restrict_softwares",
-                    data["restrict_softwares"],
-                    en_us_validation_msg.restrict_softwares_fail_msg(software),
+    restrict_program_support = data.get("restrict_program_support", False)
+    if restrict_program_support:
+        # validate allowed services
+        allowed_services = ["telnet", "lpd", "bluetooth", "rlogin", "rexec"]
+        restrict_softwares = data["restrict_softwares"].split(",")
+        for software in restrict_softwares:
+            if software not in allowed_services:
+                errors.append(
+                    create_error_msg(
+                        "restrict_softwares",
+                        data["restrict_softwares"],
+                        en_us_validation_msg.restrict_softwares_fail_msg(software),
+                    )
                 )
-            )
 
 def validate_alert_email_address(data, errors, logger):
     """
@@ -658,9 +660,9 @@ def validate_smtp_server(data, errors, logger):
         )
 
     if len(smtp_server) == 1:
-        host = smtp_server.get("host","")
-        port = smtp_server.get("port","")
-        sender_address = smtp_server.get("sender_address","")
+        host = smtp_server[0].get("host","")
+        port = smtp_server[0].get("port","")
+        sender_address = smtp_server[0].get("sender_address","")
 
         if not host or not port or not sender_address:
             errors.append(
