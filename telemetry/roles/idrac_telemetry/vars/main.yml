@@ -76,8 +76,8 @@ telemetry_report_sn: |
     - {{ item }}
   {% endfor %}
 
-  IPs with Telemetry Initiated: {{ telemetry_idrac_count }}
-  IPs List (Telemetry Activated):
+  IPs with Telemetry Initiated in latest run: {{ telemetry_idrac_count }}
+  IPs List (Telemetry Activated in latest run):
   {% for item in telemetry_idrac %}
     - {{ item }}
   {% endfor %}
