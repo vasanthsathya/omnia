@@ -24,12 +24,6 @@
 - name: Include security config file
   ansible.builtin.include_tasks: include_security_config.yml
 
-- name: Include security variable file login_node_security_config.yml
-  ansible.builtin.include_vars: "{{ login_node_security_config_file }}"
-
-- name: Include local repo access variable file
-  ansible.builtin.include_vars: "{{ local_repo_access_config_file }}"
-
 - name: Fetch software_config.json and check for authentication system
   ansible.builtin.include_tasks: fetch_software_config.yml
 
@@ -45,10 +39,6 @@
 
     - name: OpenLDAP Pre-requisites
       ansible.builtin.include_tasks: ldap_prereq.yml
-      when: authentication_system == 'openldap'
-
-    - name: Fetch LDAP server inputs
-      ansible.builtin.include_tasks: fetch_ldap_server_input.yml
       when: authentication_system == 'openldap'
 
     - name: Generate LDAP password hashes
