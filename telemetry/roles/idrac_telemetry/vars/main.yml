@@ -45,9 +45,13 @@ invalid_creds_msg: |
   Kinldy make sure corect `bmc_username` and `bmc_password` is present in omnia_config_credential.yml file.
   And all nodes BMC credentials should be same.
   Rectify the issue and re-execute telemetry.yml.
-unreachable_bmc_msg: |
+unreachable_oim_bmc_msg: |
   The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
-  Please provide BMC IPs which are reachable from Service Node: {{ node_host }}
+  Please provide BMC IPs which are reachable from {{ node_host}}
+  else remove unreachable BMC entries from {{ bmc_group_data_filename }} file.
+unreachable_service_node_bmc_msg: |
+  The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
+  Please provide BMC IPs which are reachable from service node:{{ node_host}}
   else remove unreachable BMC entries from {{ bmc_group_data_filename }} file.
 invalid_bmc_warning_msg: |
   [WARNING] Some BMC IPs are not valid. Kindly address the issues mentioned above and execute telemetry.yml.
