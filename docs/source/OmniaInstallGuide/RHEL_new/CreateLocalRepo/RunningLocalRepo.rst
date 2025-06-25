@@ -88,7 +88,7 @@ Examples
 
     ansible-playbook local_repo.yml -e "softwares=k8s"
 
-* If you modified multiple ``.json`` files - for example, ``k8s.json`` and ``slurm.json``: ::
+* If you modified multiple ``.json`` files, such as ``k8s.json`` and ``slurm.json``: ::
 
     ansible-playbook local_repo.yml -e "softwares=k8s,slurm"
 

@@ -8,7 +8,7 @@ Via CLI
 
     ssh omnia_core
 
-2. After you're in the ``omnia_core`` container, use the following command: ::
+2. Establish a SSH connection to the ``omnia_provision`` container using the following command from inside ``omnia_core`` container. Use the following command: ::
 
     ssh localhost -p 2223
 
@@ -24,6 +24,7 @@ Possible values of node status are ``powering-off``, ``powering-on``, ``bmcready
 .. caution:: Once xCAT is installed, restart your SSH session to the OIM to ensure that the newly set up environment variables come into effect. This will also allow the above command to work correctly. If the new environment variables still do not come into effect, enable manually using:
     
     ::
+        
         source /etc/profile.d/xcat.sh
 
 Via Omnia database [omniadb]
