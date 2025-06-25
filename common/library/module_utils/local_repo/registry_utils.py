@@ -17,19 +17,11 @@ from ansible.module_utils.local_repo.common_functions import is_file_exists
 
 def validate_user_registry(user_registry):
     """
-    Validates a list of user registry entries.
-
-    Rules:
-    - Each entry must be a dictionary with a non-empty 'host'.
-    - If 'requires_auth' is true:
-        - 'username' and 'password' must be non-empty.
-        - Either both 'cert_path' and 'key_path' must exist, or neither.
-
+    Validates a list of user registry entries with connectivity and credential check.
     Args:
         user_registry (list): List of user registry dictionaries.
-
     Returns:
-        tuple: (bool, str) indicating validity and error message if invalid.
+        tuple: (bool, str) indicating overall validity and error message if invalid.
     """
     if not isinstance(user_registry, list):
         return False, "user_registry must be a list."
@@ -38,28 +30,43 @@ def validate_user_registry(user_registry):
         if not isinstance(item, dict):
             return False, f"Entry at index {idx} must be a dictionary."
 
-        if not item.get('host'):
+        host = item.get('host')
+        if not host:
             return False, f"Missing or empty 'host' in entry at index {idx}: {item}"
 
         requires_auth = item.get('requires_auth', False)
+
+        # Check basic username/password presence
         if requires_auth:
             if not item.get('username') or not item.get('password'):
                 return False, (
                     f"'requires_auth' is true but 'username' or 'password' is missing or empty "
-                    f"in entry for (host: {item.get('host', 'N/A')})"
+                    f"in entry for (host: {host})"
                 )
 
             cert_path = item.get('cert_path')
             key_path = item.get('key_path')
 
-            has_cert = bool(cert_path)
-            has_key = bool(key_path)
-
-            if has_cert != has_key:  # XOR condition
+            if bool(cert_path) != bool(key_path):
                 return False, (
                     f"If authentication is enabled, both 'cert_path' and 'key_path' must be present "
-                    f"or both omitted in entry for (host: {item.get('host', 'N/A')})"
+                    f"or both omitted in entry for (host: {host})"
                 )
+            try:
+                url = f"https://{host}/api/v2.0/users/current"
+                response = requests.get(
+                    url,
+                    auth=HTTPBasicAuth(item['username'], item['password']),
+                    verify=False  # Set to True if using valid SSL certs
+                )
+
+                if response.status_code == 401:
+                    return False, f"Invalid credentials for host: {host}"
+                elif response.status_code != 200:
+                    return False, f"Unexpected status {response.status_code} while validating host: {host}"
+
+            except requests.exceptions.RequestException as e:
+                return False, f"Failed to connect to {host}: {str(e)}"
 
     return True, ""
 
