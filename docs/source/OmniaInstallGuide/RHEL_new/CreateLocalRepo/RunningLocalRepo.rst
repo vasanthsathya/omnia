@@ -1,17 +1,18 @@
+=============================
 Execute local repo playbook
 =============================
 
 The local repository playbook (``local_repo.yml``) downloads and saves the software packages/images to the **Pulp container**, which all the cluster nodes can access.
 
 Configurations made by the playbook
---------------------------------------
+=======================================
 
     * With ``repo_config`` set to ``always`` in ``/opt/omnia/input/project_default/config/software_config.json``, all images and artifacts will be downloaded to the Pulp container present on the NFS share.
 
     * If  ``repo_config`` in is set to ``always``, the OIM serves as the default Pulp registry.
 
 Playbook execution
-----------------------
+=====================
 
 To create local repositories on the Pulp container, execute the ``local_repo.yml`` playbook using the following command: ::
 
@@ -20,7 +21,7 @@ To create local repositories on the Pulp container, execute the ``local_repo.yml
     ansible-playbook local_repo.yml
 
 Metadata report
------------------
+===================
 
 After a successful execution of the ``local_repo.yml`` playbook, a metadata file called ``localrepo_metadata.yml`` is created under the ``/opt/omnia/offline_repo/.data/`` directory. 
 This file captures the ``repo_config`` (``always``, ``partial``, or ``never``) details provided during the playbook execution. 
@@ -34,7 +35,7 @@ If the ``local_repo.yml`` playbook is re-run, it compares the current repository
     * If there is no change in policy, the playbook execution proceeds without prompting. The metadata file remains unchanged.
          
 Check status of the packages
-------------------------------
+===============================
 
 After ``local_repo.yml`` has been executed, a status report is displayed containing the status for each downloaded package along with the complete playbook execution time. Here's an example of what that might look like:
 
@@ -53,7 +54,7 @@ After ``local_repo.yml`` has been executed, a status report is displayed contain
     * To download additional software packages after the playbook has been executed, simply update the ``/opt/omnia/input/project_default/software_config.json`` with the new software information and re-run the ``local_repo.yml`` playbook.
 
 Log files
-----------
+===========
 
 The ``local_repo.yml`` playbook generates and provides two types of log files as part of its execution:
 
@@ -67,4 +68,36 @@ Here's an example of how the log files are organized in the ``/opt/omnia/log/loc
 
 .. image:: ../../../images/local_repo_log.png
 
+Updating local repositories after modifying JSON files
+==========================================================
+
+After the execution of the ``local_repo.yml`` playbook is complete, any modifications made to a ``<software_name>.json`` file (for example, ``k8s.json``, ``slurm.json``, ``additional_software.json``) will **not** be reflected in the local repositories automatically.
+To apply the changes, you must **re-run the** ``local_repo.yml`` **playbook** while explicitly specifying the updated software names using the ``softwares`` argument.
+
+Command Format
+--------------
+
+::
+
+   ansible-playbook local_repo.yml -e "softwares=<comma-separated list of software names>"
+
+Examples
+---------
+
+* If you modified ``k8s.json``: ::
+
+    ansible-playbook local_repo.yml -e "softwares=k8s"
+
+* If you modified multiple ``.json`` files - for example, ``k8s.json`` and ``slurm.json``: ::
+
+    ansible-playbook local_repo.yml -e "softwares=k8s,slurm"
+
+* If you updated ``additional_software.json`` with few additional packages of your choice: ::
+
+    ansible-playbook local_repo.yml -e "softwares=additional_software"
+
+.. note:: When specifying software names, omit the ``.json`` extension.
+
+
 **[Optional]** `Update all local repositories <update_local_repo.html>`_
+===========================================================================
