@@ -13,6 +13,7 @@
 # limitations under the License.
 # pylint: disable=line-too-long,import-error,no-name-in-module
 import requests
+from requests.auth import HTTPBasicAuth
 from ansible.module_utils.local_repo.common_functions import is_file_exists
 
 def validate_user_registry(user_registry):
