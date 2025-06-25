@@ -39,6 +39,17 @@
   ansible.builtin.set_fact:
     nfs_support: "{{ software_config.softwares | selectattr('name', 'equalto', 'nfs') | list | length > 0 }}"
 
+- name: Fetch beegfs version
+  when: beegfs_support
+  block:
+    - name: Extract beegfs version
+      ansible.builtin.set_fact:
+        beegfs_client_version: "{{ software_config.softwares | selectattr('name', 'equalto', 'beegfs') | map(attribute='version') | first }}"
+  rescue:
+    - name: Unable to fetch beegfs version
+      ansible.builtin.fail:
+        msg: "{{ beegfs_version_fail_msg }}"
+
 - name: Validate beegfs repo incase of always
   when: beegfs_support and repo_config == "always" and cluster_os_type in ["rhel","rocky"]
   block:
