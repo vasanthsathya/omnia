@@ -18,6 +18,7 @@
     url: "{{ xilinx_device_plugin_yaml_url }}"
     dest: "{{ xilinx_device_plugin_yaml_dest }}"
     mode: "{{ file_mode }}"
+  environment: "{{ compute_env }}"
 
 - name: Deploy Xilinx Device Plugin
   kubernetes.core.k8s:

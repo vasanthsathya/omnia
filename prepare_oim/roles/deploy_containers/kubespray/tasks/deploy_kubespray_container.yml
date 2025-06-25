@@ -27,10 +27,10 @@
   register: kubespray_container_info
   failed_when: false
 
-- name: Check if {{ kubespray_ssh_port }} is occupied # noqa: name[template]
+- name: Check if {{ kubespray_ssh_port[kubespray_image_tag] }} is occupied # noqa: name[template]
   ansible.builtin.wait_for:
     host: localhost
-    port: "{{ kubespray_ssh_port }}"
+    port: "{{ kubespray_ssh_port[kubespray_image_tag] }}"
     state: stopped
     timeout: "{{ wait_time }}"
     msg: "{{ kubespray_port_occupied_msg }}"

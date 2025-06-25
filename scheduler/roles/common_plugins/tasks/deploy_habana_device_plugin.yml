@@ -38,6 +38,7 @@
         url: "{{ habana_device_plugin_yaml_url }}"
         return_content: true
       register: habana_device_plugin_yaml_content
+      environment: "{{ compute_env }}"
 
     - name: Modify habana-device-plugin yaml file
       ansible.builtin.set_fact:
