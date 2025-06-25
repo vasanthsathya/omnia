@@ -10,6 +10,9 @@
 # - 'oim_nic_name': The name of the interface on the OIM server associated with the admin network.
 # - 'netmask_bits': The number of bits in the subnet mask.
 # - 'primary_oim_admin_ip': The admin IP address of the OIM server which is configured.
+# - 'primary_oim_bmc_ip': The iDRAC  IP address of the OIM server,
+#     Mandatory only if idrac_telemetry is set to true and telemetry data needs to be collected from the OIM server.
+#     Optional — can be omitted if iDRAC telemetry for the OIM server is not required.
 # - 'static_range': The range of static IP addresses available on the admin network.
 # - 'dynamic_range': The range of dynamic IP addresses available on the admin network.
 # - 'correlation_to_admin': Whether the OIM server's BMC IP is correlated with the admin IP.
@@ -19,9 +22,9 @@
 # - 'MTU': Maximum Transmission Unit for the admin network.
 #
 # The 'bmc_network' section contains the following variables:
-# - 'oim_nic_name': The name of the interface on the OIM server associated with the BMC network.
+# - 'oim_nic_name': The name of the interface on the OIM server associated with the BMC network. If set, all BMC fields must be filled.
 # - 'netmask_bits': The number of bits in the subnet mask.
-# - 'dynamic_range': The range of dynamic IP addresses available on the BMC network.
+# - 'dynamic_range': The range of dynamic IP addresses available on the BMC network. If set, all BMC fields must be filled.
 # - 'dynamic_conversion_static_range': The range of static IP addresses that can be converted from dynamic IP addresses on the BMC network.
 # - 'reassignment_to_static': Whether the BMC IP addresses are reassigned to static IP addresses.
 # - 'network_gateway': The gateway IP address of the BMC network.
@@ -32,6 +35,7 @@
         oim_nic_name: "eno1"
         netmask_bits: "16"
         primary_oim_admin_ip: "10.5.255.254"
+        primary_oim_bmc_ip: "" 
         static_range: "10.5.0.1-10.5.0.200"
         dynamic_range: "10.5.1.1-10.5.1.200"
         correlation_to_admin: true

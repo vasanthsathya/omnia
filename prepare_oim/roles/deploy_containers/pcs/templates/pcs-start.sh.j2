@@ -32,24 +32,22 @@ echo "Corosync and Pacemaker have started. Continuing with the script."
 pcs property set stonith-enabled=false
 pcs property set no-quorum-policy=ignore
 
-pcs resource group add {{ pcs_group }}
-pcs resource group add {{ vip_group }}
-pcs constraint colocation add {{ vip_group }} with {{ pcs_group }} INFINITY
-
 pcs resource defaults update migration-threshold={{ migration_threshold }}
 pcs resource defaults update failure-timeout={{ failure_timeout }}
 
 {% if hostvars['localhost']['enable_oim_ha'] %}
 pcs resource create admin_VIP ocf:heartbeat:IPaddr2 \
         ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.admin_virtual_ip_address }} nic={{ admin_nic }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
-        op monitor interval={{ monitor_interval }} --group {{ vip_group }}
+        op monitor interval={{ monitor_interval }}
+
+pcs resource group add {{ vip_group }} admin_VIP
 
 {% if hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address is defined %}
 pcs resource create bmc_VIP ocf:heartbeat:IPaddr2 \
         ip={{ hostvars['localhost']['oim_ha_data'].ansible_facts.oim_ha.bmc_virtual_ip_address }} nic={{ admin_nic }} cidr_netmask={{ hostvars['localhost']['network_data'].admin_network.netmask_bits }} \
-        op monitor interval={{ monitor_interval }} --group {{ vip_group }}
+        op monitor interval={{ monitor_interval }}
+pcs resource group add {{ vip_group }} bmc_VIP
 {% endif %}
-
 pcs resource defaults update migration-threshold={{ ha_migration_threshold }}
 {% endif %}
 
@@ -71,6 +69,6 @@ for ((i=0; i<max_iterations; i++)); do
 done
 
 # Create a file which signifies the pcs resources were created.
-# This file also contains the resources and its state which ansible can check against. 
+# This file also contains the resources and its state which ansible can check against.
 echo "$(date): PCS Cluser Has Been Created"
 pcs resource | awk -F' ' '{print $2 " " $4}' | sed 's/^\s*//;s/\s*$//' > {{ pcs_start_container_finished }}

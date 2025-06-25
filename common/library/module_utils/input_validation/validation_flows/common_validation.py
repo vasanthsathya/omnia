@@ -405,50 +405,61 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
 
     return errors
 
-def validate_telemetry_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_telemetry_config(
+    _input_file_path,
+    data,
+    _logger,
+    _module,
+    _omnia_base_dir,
+    _module_utils_base,
+    _project_name
+):
+
+    """
+    Validates the telemetry configuration data.
+
+    This function checks the telemetry configuration data for validity and consistency.
+    It verifies that the iDRAC telemetry support and federated iDRAC telemetry collection
+    settings are correctly configured.
+
+    Args:
+        input_file_path (str): The path to the input file.
+        data (dict): The telemetry configuration data.
+        logger (object): The logger object.
+        module (object): The module object.
+        omnia_base_dir (str): The base directory of the Omnia project.
+        _module_utils_base (str): The base directory of the module utilities.
+        project_name (str): The name of the project.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    """
     errors = []
 
     idrac_telemetry_support = data.get("idrac_telemetry_support")
+    federated_idrac_telemetry_collection = data.get("federated_idrac_telemetry_collection")
 
     if idrac_telemetry_support:
         collection_type = data.get("idrac_telemetry_collection_type")
         if collection_type and collection_type not in config.supported_telemetry_collection_type:
-            errors.append(create_error_msg("idrac_telemetry_collection_type", collection_type, en_us_validation_msg.unsupported_idrac_telemetry_collection_type))
+            errors.append(create_error_msg(
+                "idrac_telemetry_collection_type",
+                collection_type,
+                en_us_validation_msg.UNSUPPORTED_IDRAC_TELEMETRY_COLLECTION_TYPE
+                )
+            )
 
-    # preserved below code for future use
-    '''
-    # Added code for Omnia 1.7 k8 prometheus support parameters
-    # Validate prometheus_gaudi_support, k8s_prometheus_support, and prometheus_scrape_interval
-    prometheus_gaudi_support = data["prometheus_gaudi_support"]
-    k8s_prometheus_support = data["k8s_prometheus_support"]
-    prometheus_scrape_interval = data["prometheus_scrape_interval"]
-
-    if prometheus_gaudi_support:
-        mandatory_fields = ["k8s_prometheus_support", "prometheus_scrape_interval"]
-        check_mandatory_fields(mandatory_fields, data, errors)
-
-    # Check k8s_prometheus_support is True and prometheus_scrape_interval is >= 15 when prometheus_gaudi_support is True
-    if prometheus_gaudi_support and isinstance(prometheus_gaudi_support, str):
-        if not k8s_prometheus_support:
-            errors.append(create_error_msg("k8s_prometheus_support", k8s_prometheus_support, en_us_validation_msg.k8s_prometheus_support_fail_msg))
-
-        if prometheus_scrape_interval < 15:
-            errors.append(create_error_msg("prometheus_scrape_interval", prometheus_scrape_interval, en_us_validation_msg.prometheus_scrape_interval_fail_msg))
-
-    # Check that IP addresses do not overlap with admin network
-    admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
-    admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
-    admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
-    pod_external_ip_range = data["pod_external_ip_range"]
-    k8s_service_addresses = data["k8s_service_addresses"]
-    k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
-
-    ip_ranges = [admin_static_range, admin_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr]
-
-    does_overlap, overlap_ips = validation_utils.check_overlap(ip_ranges)
-    if does_overlap:
-        errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.telemetry_ip_overlap_fail_msg))
-    '''
+    if federated_idrac_telemetry_collection and not idrac_telemetry_support:
+        errors.append(create_error_msg(
+                "federated_idrac_telemetry_collection",
+                federated_idrac_telemetry_collection,
+                en_us_validation_msg.FEDERATED_IDRAC_TELEMETRY_COLLECTION_FAIL
+                )
+            )
     return errors
 
 def validate_additional_software(
