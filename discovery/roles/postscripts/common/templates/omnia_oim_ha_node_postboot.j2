@@ -62,7 +62,39 @@ echo -e "INFO: Copying omnia_core ssh configs from NFS." >> "$LOGFILE"
 cp {{ oim_shared_path }}/omnia/ssh_config/.ssh/oim_rsa /root/.ssh/oim_rsa
 cp {{ oim_shared_path }}/omnia/ssh_config/.ssh/config /root/.ssh/config
 
+{% if idrac_telemetry_support or visualization_support %}
+echo -e "INFO: Copying secrets from NFS." >> "$LOGFILE"
+export SECRET_PATH=/var/lib/containers/storage/secrets
+mkdir -p $SECRET_PATH/filedriver
+chmod 700 $SECRET_PATH/filedriver
+cp -f {{ oim_shared_path }}/omnia/.secrets/secrets.json $SECRET_PATH/secrets.json
+cp -f {{ oim_shared_path }}/omnia/.secrets/secretsdata.json $SECRET_PATH/filedriver/secretsdata.json
+chmod 600 $SECRET_PATH/secrets.json
+chmod 600 $SECRET_PATH/filedriver/secretsdata.json
+{% endif %}
+
+{% if idrac_telemetry_support %}
+podman volume create --driver local --opt o=bind --opt device={{ mysql_data_dir }} mysqldb_data
+podman volume create --driver local --opt o=bind --opt device={{ mysql_log_dir }} mysqldb_log
+podman volume create --driver local --opt o=bind --opt device={{ activemq_log_dir }} activemq_log
+podman volume create --driver local --opt o=bind --opt device={{ idrac_telemetry_receiver_log_dir }} idrac_telemetry_receiver_log
+{% endif %}
+
+{% if idrac_telemetry_support and idrac_telemetry_collection_type == "prometheus" %}
+podman volume create --driver local --opt o=bind --opt device={{ prometheus_data_dir }} prometheus_data
+podman volume create --driver local --opt o=bind --opt device={{ prometheus_log_dir }} prometheus_log
+podman volume create --driver local --opt o=bind --opt device={{ prometheus_config_dir }} prometheus_config
+{% endif %}
+
+{% if visualization_support %}
+podman volume create --driver local --opt o=bind --opt device={{ grafana_data_dir }} grafana_data
+podman volume create --driver local --opt o=bind --opt device={{ grafana_log_dir }} grafana_log
+podman volume create --driver local --opt o=bind --opt device={{ loki_promtail_config_dir }} loki_promtail_config
+{% endif %}
+
 systemctl daemon-reload
+systemctl enable podman | { echo "ERROR: Enabling podman." >> "$LOGFILE"; exit 1; }
+
 # Enable and start podman.socket
 echo -e "INFO: Enabling and starting the podman socket." >> "$LOGFILE"
 sudo systemctl enable podman.socket || { echo "ERROR: Enabling podman.socket." >> "$LOGFILE"; exit 1; }

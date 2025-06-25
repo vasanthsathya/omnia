@@ -91,6 +91,7 @@
 - name: Set admin_nic_ip and admin_nic
   ansible.builtin.set_fact:
     admin_nic_ip: "{{ network_data.admin_network.primary_oim_admin_ip }}"
+    admin_bmc_ip: "{{ network_data.admin_network.primary_oim_bmc_ip }}"
     admin_nic: "{{ network_data.admin_network.oim_nic_name }}"
 
 - name: Overwrite admin nic IP with virtual IP if OIM high availability is enabled

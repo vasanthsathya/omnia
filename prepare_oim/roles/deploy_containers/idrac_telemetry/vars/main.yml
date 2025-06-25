@@ -23,7 +23,8 @@ root_read_write: "0644"
 # Usage: deploy_mysql_container.yml
 mysql_docker_image: "docker.io/library/mysql"
 mysql_container_name: "mysqldb"
-mysql_image_tag: "8.0"
+# Tag is fixed for mysql image as of 12-06-2025
+mysql_image_tag: "9.3.0"
 mysql_image_pull_fail_msg: |
   The pull of the MySQL image {{ mysql_container_name }}:{{ mysql_image_tag }} has failed.
   To resolve this issue, please address the following error message: {{ image_pull_result.msg }}.
@@ -63,7 +64,7 @@ mysqldb_init_script:
   - {template: "mysqldb_init.sh.j2", dest: "{{ idrac_telemetry_dir }}/mysqldb_init.sh", mode: "{{ dir_permissions_755 }}" }
 mysqldb_volumes:
   - "mysqldb_data:/var/lib/mysql{{ selinux_option }}"
-  - "mysqldb_log:/var/log/mysql{{ selinux_option }}"
+  - "mysqldb_log:/var/log{{ selinux_option }}"
   - "{{ idrac_telemetry_dir }}/mysqldb_init.sh:{{ mysql_entry_script }}{{ selinux_option }}"
 mysql_db_create_query:
   - "CREATE DATABASE IF NOT EXISTS {{ mysql_database }}"
@@ -86,7 +87,8 @@ activemq_directories:
   - { path: "{{ activemq_log_dir }}", mode: "{{ dir_permissions_755 }}" }
   - { path: "{{ activemq_dir }}", mode: "{{ dir_permissions_755 }}" }
 activemq_container_name: "activemq"
-activemq_image: "docker.io/rmohr/activemq:5.14.3"
+# Tag is fixed for activemq image as of 12-06-2025
+activemq_image: "docker.io/rmohr/activemq:5.15.9"
 wait_time: 10
 activemq_podman_volumes:
   - { name: "activemq_log", path: "{{ activemq_log_dir }}" }
@@ -110,19 +112,27 @@ idrac_telemetry_receiver_dir_path: "{{ idrac_telemetry_dir }}/idrac_telemetry_re
 idrac_telemetry_github: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git
 idrac_telemetry_reference_git_clone_path: "/opt/omnia/telemetry/idrac_telemetry/idrac_telemetry_receiver/iDRAC-Telemetry-Reference-Tools"
 idrac_telemetry_reference_path: "{{ idrac_telemetry_receiver_dir_path }}/iDRAC-Telemetry-Reference-Tools"
-reference_tools_stable_commit: "3e78774"
+reference_tools_stable_commit: "94e7621"
 max_retries: 10
 delay_count: 5
 idrac_git_clone_error_msg: |
   Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_github }}
   to {{ idrac_telemetry_reference_path }}.
   Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
+idrac_telemetry_scripting_git_clone_path: "/opt/omnia/telemetry/idrac_telemetry/iDRAC-Telemetry-Scripting"
+idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
+idrac_telemetry_scripting_stable_commit: "1f4bb26"
+idrac_script_git_clone_error_msg: |
+  Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_scripting_repo }}
+  to {{ idrac_telemetry_scripting_git_clone_path }}.
+  Failure: {{ clone_idrac_script.stderr | default(clone_idrac_script.msg, true) | default('Unknown error', true) }}
 idrac_telemetry_receiver_directories:
   - { path: "{{ idrac_telemetry_receiver_log_dir }}", mode: "{{ dir_permissions_755 }}" }
   - { path: "{{ idrac_telemetry_receiver_dir_path }}", mode: "{{ dir_permissions_755 }}" }
   - { path: "{{ idrac_telemetry_reference_path }}", mode: "{{ dir_permissions_755 }}" }
 idrac_telemetry_receiver_container_name: "idrac_telemetry_receiver"
-idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.17"
+# Tag is fixed for golang image as of 12-06-2025
+idrac_telemetry_receiver_go_image: "docker.io/library/golang:1.24"
 idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
 idrac_telemetry_receiver_init_script:
   - template: "idrac_telemetry_receiver_init.sh.j2"

@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,38 +16,72 @@
 # Usage: initiate_telemetry.yml
 python_version: "{{ ansible_python_interpreter }}"
 mysqldb_name: "idrac_telemetrydb"
-timescaledb_name: "telemetry_metrics"
-telemetry_report_path: "/opt/omnia/telemetry/idrac_telemetry_report.yml"
-idrac_telemetry_container: "idrac_telemetry_receiver"
-# report_template_path: "/opt/omnia/telemetry/templates/telemetry_report.j2"
-mysqldb_insert_fail_msg: "Failed to add/get iDRAC credential details in the mysql database.
- This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time."
+omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
+idrac_telemetry_scripting_folder: "idrac_telemetry/iDRAC-Telemetry-Scripting"
+telemetry_dir_path: >-
+  {{ (omnia_nfs_share ~ '/telemetry') if inventory_hostname != 'localhost' else '/opt/omnia/telemetry/' }}
+mysqldb_insert_fail_msg: |
+  Failed to add/get iDRAC credential details in the mysql database.
+  This could be due to the tables in the mysqldb not being accessible at the moment. Please try running the playbook again after some time.
 db_retries: 10
 db_delay: 10
 mysqldb_container_port: 3306
 filemode: "0644"
 mysqldb_host: "127.0.0.1"
-telemetry_report: |
-  ===== Telemetry playbook execution Summary =====
+min_firmware_version_reqd: 4
+waiting_time_30: 30
+idrac_telemetry_enable_fail_msg: |
+  Failed. Error enabling telemetry on iDRAC. Possible causes include timeout or Redfish connectivity issues.
+  Please retry the playbook after some time.
+filter_idrac_fail_msg: |
+  Failed. Error filtering iDRACs. Possible causes include timeout or Redfish connectivity issues.
+  Please retry the playbook after some time.
+bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
+redfish_disabled_msg: |
+  Redfish is disabled on the following BMC IPs: {{ bmc_result.redfish_disabled | join(', ') }}.
+  Please enable Redfish on above BMC IPs and execute telemetry.yml.
+invalid_creds_msg: |
+  The following BMC IPs have invalid credentials: {{ bmc_result.invalid_creds | join(', ') }}.
+  Kinldy make sure corect `bmc_username` and `bmc_password` is present in omnia_config_credential.yml file.
+  And all nodes BMC credentials should be same.
+  Rectify the issue and re-execute telemetry.yml.
+unreachable_oim_bmc_msg: >
+  The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
+  Please provide BMC IPs which are reachable from OIM,
+  else remove unreachable BMC entries from the {{ bmc_group_data_filename }} file.
+unreachable_service_node_bmc_msg: >
+  The following BMC IPs are unreachable: {{ bmc_result.unreachable_bmc | join(', ') }}.
+  Please provide BMC IPs which are reachable from service node: {{ node_host }},
+  else remove unreachable BMC entries from the {{ bmc_group_data_filename }} file.
+invalid_bmc_warning_msg: |
+  [WARNING] Some BMC IPs are not valid. Kindly address the issues mentioned above and execute telemetry.yml.
+  Telemetry feature wont be enabled for these BMC IPs from {{ bmc_group_data_filename }} file.
 
-  Total IPs Found: {{ idrac_ip_count }}
-  IPs List:
-    {% for item in idrac_ip %}
+# Usage: trigger_telemetry_collection.yml
+idrac_telemetry_container: "idrac_telemetry_receiver"
+idrac_telemetry_receiver_entry_script: "/usr/local/bin/idrac_telemetry_receiver_init.sh"
+
+# Usage: prometheus_config_reload.yml
+prometheus_reload:
+  url: "http://localhost:9090/-/reload"
+  retries: 3
+  delay: 5
+
+# Usage: create_telemetry_report.yml
+telemetry_report_path_oim: "/opt/omnia/telemetry/idrac_telemetry_report.yml"
+telemetry_report_path_sn: "{{ omnia_nfs_share }}/telemetry/idrac_telemetry_report.yml"
+telemetry_report_template: "telemetry_report.j2"
+telemetry_report_sn: |
+  ----- Telemetry Summary Report for {{ node_host }} -----
+
+  Total IP count with Telemetry activated: {{ (db_idrac_ip_list | length) + (telemetry_idrac | length) }}
+  Telemetry activated IPs List:
+  {% for item in db_idrac_ip_list + telemetry_idrac %}
     - {{ item }}
-    {% endfor %}
+  {% endfor %}
 
-  IP with Telemetry not supported: {{ failed_idrac_count }}
-  IPs List (Telemetry not supported):
-    {% for item in failed_idrac %}
+  Total IP count with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
+  Telemetry not supported IPs List:
+  {% for item in failed_idrac + invalid_idrac_list %}
     - {{ item }}
-    {% endfor %}
-
-  IPs with Telemetry Initiated: {{ filtered_idrac_count }}
-  IPs List (Telemetry Activated):
-    {% for item in telemetry_idrac %}
-    - {{ item }}
-    {% endfor %}
-
-  Check the report file at {{ telemetry_report_path }} for all Telemetry Activated IPs.
-
-  =====================================
+  {% endfor %}

@@ -39,7 +39,7 @@
     - name: Create prometheus.yml at Prometheus NFS share
       ansible.builtin.template:
         src: "{{ proemetheus_yml_temp_src }}"
-        dest: "{{ prometheus_dir }}/prometheus.yml"
+        dest: "{{ prometheus_config_dir }}/prometheus.yml"
         mode: "{{ file_mode }}"
 
     - name: Create Podman bind-mounted volumes for Prometheus
@@ -65,6 +65,7 @@
         volumes: "{{ prometheus_volumes }}"
         command:
           - "--config.file=/config/prometheus.yml"
+          - "--web.enable-lifecycle"
           - "--storage.tsdb.path=/prometheus"
         log_driver: "json-file"
         log_opt:
