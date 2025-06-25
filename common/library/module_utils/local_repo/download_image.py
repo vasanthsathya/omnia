@@ -18,6 +18,7 @@
 import re
 import json
 import subprocess # pylint: disable=unused-import
+from multiprocessing import Lock
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger # pylint: disable=unused-import
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
@@ -37,6 +38,7 @@ from ansible.module_utils.local_repo.container_repo_utils import ( # pylint: dis
 )
 import yaml # pylint: disable=unused-import
 
+file_lock = Lock()
 
 def create_container_remote_with_auth(remote_name, remote_url, package, policy_type, tag, logger, docker_username, docker_password):
     """
@@ -293,6 +295,6 @@ def process_image(package, status_file_path, version_variables, user_registries,
             status = "Failed"
             logger.error(f"Failed to process image: {package_identifier}. Error: {e}")
 
-    write_status_to_file(status_file_path, package_identifier, package['type'], status, logger)
+    write_status_to_file(status_file_path, package_identifier, package['type'], status, logger, file_lock)
     logger.info("#" * 30 + f" {process_image.__name__} end " + "#" * 30)
     return status
