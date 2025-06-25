@@ -125,20 +125,7 @@ Omnia installs the following packages on top of the Kubernetes stack:
 
     Click `here <https://github.com/NVIDIA/k8s-device-plugin>`_ for more information.
 
-7.  *gaudi-device-plugin*
-
-    The Gaudi device plugin is a Kubernetes device plugin implementation that enables the registration of Intel Gaudi AI accelerators in a container cluster. This plugin enables the efficient utilization of Gaudi accelerators for compute workloads within the cluster.
-    For the gaudi-device-plugin to function seamlessly, Omnia installs the “habanalabs-container-runtime” as part of the ``omnia.yml`` or ``scheduler.yml`` playbook execution.
-
-    The Gaudi device plugin for Kubernetes is a “DaemonSet” that allows you to automatically:
-
-        i. Enable the registration of Intel Gaudi accelerators in your Kubernetes cluster.
-        ii. Keep track of device health.
-        iii. Run jobs on the Intel Gaudi accelerators.
-
-    Click `here <https://docs.habana.ai/en/latest/Orchestration/Gaudi_Kubernetes/Device_Plugin_for_Kubernetes.html>`_ for more information.
-
-8. *whereabouts-cni-plugin*
+6. *whereabouts-cni-plugin*
 
     Whereabouts is an IP address management (IPAM) CNI plugin that assigns dynamic IP addresses cluster-wide in Kubernetes, ensuring no IP address collisions across nodes.
     It uses a range of IPs and tracks assignments with backends like etcd or Kubernetes Custom Resources.
@@ -146,7 +133,7 @@ Omnia installs the following packages on top of the Kubernetes stack:
 
     Click `here <https://github.com/k8snetworkplumbingwg/whereabouts>`_ for more information.
 
-9. *multus-cni-plugin*
+7. *multus-cni-plugin*
 
     Multus is a Kubernetes CNI (Container Network Interface) plugin that enables pods to have multiple network interfaces. It acts as a meta-plugin, allowing the use of multiple CNI plugins (for example, Flannel, Calico, Macvlan) within the same cluster.
     Omnia installs the multus plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
