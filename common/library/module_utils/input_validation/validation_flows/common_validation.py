@@ -139,7 +139,7 @@ def validate_software_config(
         json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
         # Check if json_path is None or if the JSON syntax is invalid
         if json_path is None:
-            errors.append(create_error_msg("Validation Error: ", None ,en_us_validation_msg.json_file_mandatory(json_path)))
+            errors.append(create_error_msg("Validation Error: ", software ,en_us_validation_msg.json_file_mandatory(json_path)))
         else:
             try:
                 subgroup_softwares = subgroup_dict.get(software, None)
