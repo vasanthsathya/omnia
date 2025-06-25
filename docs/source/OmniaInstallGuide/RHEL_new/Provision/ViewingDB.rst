@@ -8,9 +8,9 @@ Via CLI
 
     ssh omnia_core
 
-2. Establish a SSH connection to the ``omnia_provision`` container using the following command from inside ``omnia_core`` container. Use the following command: ::
+2. Establish a SSH connection to the ``omnia_provision`` container using the following command from inside ``omnia_core`` container using the following command: ::
 
-    ssh localhost -p 2223
+    ssh omnia_provision
 
 3. Run ``nodels all nodelist.status`` for a list of nodes and their statuses. Here's an example of this command output: ::
 
