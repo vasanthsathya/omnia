@@ -51,12 +51,20 @@
         (ansible_facts[admin_nic].ipv4_secondaries | default([]) | map(attribute='address') | list)
       }}
 
+- name: Fetch OIM hostname
+  ansible.builtin.command: hostname
+  changed_when: false
+  register: fetch_oim_hostname
+  delegate_to: oim
+  connection: ssh
+
 - name: Validate admin_nic_ip is assigned to the NIC
   ansible.builtin.assert:
     that:
       - admin_nic_ip in admin_nic_ips
     fail_msg: "{{ admin_nic_ip_fail_msg }}"
     success_msg: "{{ admin_nic_ip_success_msg }}"
+  when: fetch_oim_hostname.stdout in oim_hostname
 
 - name: Compute network address using ipcalc
   ansible.builtin.command: "/usr/bin/ipcalc -n {{ admin_nic_ip }}/{{ admin_netmask_bits }}"

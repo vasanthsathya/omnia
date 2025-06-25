@@ -23,3 +23,4 @@ sasl_nacanon_replace2: "SASL_NOCANON\ton\nURI\tldap://{{ hostvars[groups['auth_s
 # sasl_nacanon_replace3: Defined in each compute os vars file
 sasl_nacanon_replace4: "SASL_NOCANON\ton\nURI\tldap://{{ hostvars[groups['auth_server'][0]]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}:636"
 file_mode: "0644"
+oim_certs_dir: "/opt/omnia/security/certs/"

@@ -37,4 +37,4 @@
 
 - name: Configure service from configure_xcat role
   ansible.builtin.include_tasks: "configure_service_role_xcat_details.yml"
-  when: service_role_required | default(false)
+  when: discovered_service_nodes | default([]) | length > 0

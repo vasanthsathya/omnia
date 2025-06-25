@@ -19,6 +19,8 @@ ldaptoolbox_olcPasswordHash: "{SHA}" # noqa var-naming
 openldap_configuration_mode: "0600"
 openldap_config_permissions: "0600"
 openldap_cert_permissions: "0644"
+oim_certs_dir: "/opt/omnia/security/certs/"
+dir_mode: "0755"
 
 # Usage: set_domain.yml
 openldap_config_dest_dir: "/opt/ldap"

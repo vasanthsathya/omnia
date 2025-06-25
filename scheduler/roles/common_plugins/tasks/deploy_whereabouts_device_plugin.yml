@@ -18,6 +18,7 @@
     url: "{{ whereabouts_git_url }}"
     dest: "{{ whereabouts_dest_folder }}"
     mode: "{{ git_permissions }}"
+  when: hostvars['localhost']['k8s_offline_install']
 
 - name: Unarchive whereabouts git folder
   ansible.builtin.unarchive:
@@ -25,6 +26,21 @@
     dest: "{{ tmp_folder }}"
     mode: "{{ git_permissions }}"
     remote_src: true
+  when: hostvars['localhost']['k8s_offline_install']
+
+- name: Install git package
+  ansible.builtin.package:
+    name: git
+    state: present
+  when: not hostvars['localhost']['k8s_offline_install']
+
+- name: Git clone whereabouts (online)
+  ansible.builtin.git:
+    repo: "{{ whereabouts_git_url }}"
+    dest: "{{ whereabouts_folder }}"
+    version: "{{ whereabouts_git_version }}"
+  environment: "{{ compute_env }}"
+  when: not hostvars['localhost']['k8s_offline_install']
 
 - name: Apply whereabouts crds
   ansible.builtin.command: "kubectl apply -f {{ wherabout_crds_folder }}"

@@ -30,6 +30,12 @@
 - name: Validate k8s inputs
   ansible.builtin.include_tasks: validate_k8s_input.yml
 
+- name: Validate k8s metadata file
+  ansible.builtin.include_tasks: validate_k8s_metadata.yml
+
+- name: Validate k8s local repo metadata file
+  ansible.builtin.include_tasks: validate_k8s_local_repo_metadata.yml
+
 - name: Initialize flag for csi powerscale driver installation
   ansible.builtin.set_fact:
     csi_driver_powerscale_precheck_pass: false
