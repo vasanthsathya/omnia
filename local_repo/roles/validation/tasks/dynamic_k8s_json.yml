@@ -18,6 +18,22 @@
     path: "{{ dynamic_k8s_json_file }}"
   register: file_stat
 
+- name: Update k8s.json with current k8s version
+  when: file_stat.stat.exists
+  block:
+    - name: Take backup of existing json
+      ansible.builtin.copy:
+        src: "{{ base_k8s_json_file }}"
+        dest: "{{ base_k8s_json_bkp_file }}"
+        mode: "{{ dnf_max_mode }}"
+
+    - name: Copy the generated json to input folder
+      ansible.builtin.copy:
+        src: "{{ dynamic_k8s_json_file }}"
+        dest: "{{ base_k8s_json_file }}"
+        mode: "{{ dnf_max_mode }}"
+        force: true
+
 - name: Run dynamic k8s json module
   when: not file_stat.stat.exists
   block:
@@ -38,7 +54,7 @@
         package_types: "{{ package_type_list }}"
         k8s_json_path: "{{ base_k8s_json_file }}"
         log_dir: "{{ dynamic_k8s_json_log_dir }}"
-        n_latest: 1
+        n_latest: 3
         arch: "amd64"
         mode: "clone"
 
@@ -46,15 +62,11 @@
       ansible.builtin.copy:
         src: "{{ base_k8s_json_file }}"
         dest: "{{ base_k8s_json_bkp_file }}"
-        owner: root
-        group: root
         mode: "{{ dnf_max_mode }}"
 
     - name: Copy the generated json to input folder
       ansible.builtin.copy:
         src: "{{ dynamic_k8s_json_file }}"
         dest: "{{ base_k8s_json_file }}"
-        owner: root
-        group: root
         mode: "{{ dnf_max_mode }}"
         force: true

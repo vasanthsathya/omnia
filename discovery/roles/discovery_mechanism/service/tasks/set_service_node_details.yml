@@ -56,7 +56,7 @@
 - name: Make hosts on service nodes
   block:
     - name: Run makehosts on all service nodes
-      ansible.builtin.command: "{{ xcat_sbin_path }}/makehosts -n"
+      ansible.builtin.command: "{{ xcat_sbin_path }}/makehosts -nl"
       changed_when: true
       register: makehosts_result
   rescue:

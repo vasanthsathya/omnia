@@ -18,6 +18,7 @@
     url: "{{ nfs_subdir_external_provisioner_repo }}"
     dest: "{{ nfs_subdir_external_provisioner_dest_repo }}"
     mode: "{{ file_mode }}"
+  environment: "{{ compute_env }}"
 
 - name: Deploy NFS Client Provisioner using Helm
   community.kubernetes.helm:

@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,8 @@
 # limitations under the License.
 ---
 
-- name: Install software from package_list
-  block:
-    - name: Install software from package_list # noqa: package-latest
-      ansible.builtin.package:
-        name: "{{ hostvars['localhost']['package_list'] }}"
-        state: latest
-  rescue:
-    - name: Failed to install package from package_list
-      ansible.builtin.fail:
-        msg: "{{ package_list_install_fail_msg }}"
+- name: Run custom module to check and remove k8s line
+  remove_k8s_line:
+    software_csv: "{{ software_csv_file_path }}"
+    metadata_file: "{{ k8s_local_repo_metadata_file_path }}"
+    current_version: "{{ k8s_version }}"
