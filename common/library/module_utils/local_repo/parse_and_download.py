@@ -88,13 +88,13 @@ def write_status_to_file(status_file_path, package_name, package_type, status, l
     Writes or updates the status of a package in the status file, using a lock to ensure safe access across processes.
     """
     logger.info("#" * 30 + f" {write_status_to_file.__name__} start " + "#" * 30)
- 
+
     try:
         with file_lock:  # Ensure only one process can write at a time
             if os.path.exists(status_file_path):
                 with open(status_file_path, "r") as f:
                     lines = f.readlines()
- 
+
                 updated = False
                 with open(status_file_path, "w") as f:
                     for line in lines:
@@ -103,14 +103,14 @@ def write_status_to_file(status_file_path, package_name, package_type, status, l
                             updated = True
                         else:
                             f.write(line)
- 
+
                     if not updated:
                         f.write(f"{package_name},{package_type},{status}\n")
             else:
                 with open(status_file_path, "w") as f:
                     f.write("name,type,status\n")
                     f.write(f"{package_name},{package_type},{status}\n")
- 
+
             logger.info(f"Status written to {status_file_path} for {package_name}.")
     except Exception as e:
         logger.error(f"Failed to write to status file: {status_file_path}. Error: {str(e)}")
