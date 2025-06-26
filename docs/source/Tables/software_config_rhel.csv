@@ -4,11 +4,11 @@
 * **Accepted value**: ``rhel``"
 **cluster_os_version**,Mandatory,"* **Type**: string
 * The OS Version that will be provisoned on compute nodes.
-* **Accepted value**: ``9.4``."
+* **Accepted value**: ``9.6``."
 **iso_file_path**,Mandatory,"* **Type**: string
 * Path where the user has placed the ``<OS>.iso`` image that needs to be provisioned on target nodes. 
 * ``iso_file_path`` should contain the ``provision_os`` and ``provision_os_version`` values mentioned in the filename.
-* **Example**: ``/opt/omnia/input/project_default/RHEL-9.4.0-20240419.25-x86_64-dvd1.iso``"
+* **Example**: ``/opt/omnia/input/project_default/RHEL-9.6.0-20240419.25-x86_64-dvd1.iso``"
 **repo_config**,Mandatory,"* **Type**: string
 * Omnia sets up a local Pulp repository on the OIM and downloads all the necessary packages or images for the cluster into this repository. The behavior of the Pulp container varies depending on the value of the ``repo_config`` parameter.
 * In case of ``always``, packages are downloaded and cached on OIM during ``local_repo.yml`` execution; compute nodes get the packages from OIM. Caching these packages allow them to be reused in future operations without needing to download them again.

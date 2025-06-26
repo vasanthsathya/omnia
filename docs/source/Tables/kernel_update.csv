@@ -12,7 +12,7 @@
      - custom 
 
 
-* In the above case, user is required to create custom.json under ``input/config/<cluster_os_type>/<cluster_os_version>/custom.json``. For example: ``input/config/rhel/9.4/custom.json``
+* In the above case, user is required to create custom.json under ``input/config/<cluster_os_type>/<cluster_os_version>/custom.json``. For example: ``input/config/rhel/9.6/custom.json``
 * This json should list the kernel packages to be downloaded during ``local_repo.yml`` execution, and for installation as part of ``software_update.yml`` execution. Kernel package name of RHEL is ``kernel``. * For example: ::
 
     {

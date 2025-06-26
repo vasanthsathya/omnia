@@ -3,7 +3,7 @@
 
 ``string``
 
-Required","* Path where user has placed the OS iso image that needs to be provisioned on target nodes. Accepted files are RHEL-9.4-DVD and RHEL-9.6-DVD (full OS).
+Required","* Path where user has placed the OS iso image that needs to be provisioned on target nodes. Accepted file is RHEL-9.6-DVD (full OS).
 * ``iso_file_path``  should contain the  ``provision_os``  and  ``provision_os_version``  values in the  filename."
 "**node_name**
 

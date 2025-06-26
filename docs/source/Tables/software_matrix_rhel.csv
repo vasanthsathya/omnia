@@ -81,7 +81,7 @@ FreeIPA,GNU-General Public License v3.0," FreeIPA, an integrated security infor
 NVIDIA device plugin,Apache License 2.0,NVIDIA device plugin for Kubernetes,0.14.4
 rocm device plugin,Apache License 2.0,Kubernetes (k8s) device plugin to enable registration of AMD GPU to a container cluster,0.19.0
 xilinx-device-plugin,Apache License 2.0,The AMD-Xilinx device plugin for Kubernetes is a Daemonset deployed on the Kubernetes(k8s) cluster,1.2.0
-OFED (RHEL 9.4),NVIDIA Software License,OFED driver,24.10-1.1.4.0
+OFED,NVIDIA Software License,OFED driver,24.10-1.1.4.0
 OpenLDAP,The OpenLDAP Public License version 2.8,"OpenLDAP is a free, open-source implementation of the Lightweight Directory Access Protocol (LDAP) developed by the OpenLDAP Project",2.6.0
 LDAP ToolBox,GNU General Public License v3.0 ,OpenLDAP server installation,commit :a8e5b8fdbf3e5885f4c412945c8fe51d03dd01c9
 libsodium,ISC License,"A modern, portable, easy to use crypto library.",1.0.18
