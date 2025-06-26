@@ -64,28 +64,15 @@
       | selectattr('value.parent', 'truthy')
       | list | length == 0
 
-# - name: Check if image tarball is present
-#   when: (enable_oim_ha or enable_service_ha or 'service_node' in roles_data)
-#   block:
-#     - name: Check if omnia_images.tar exists
-#       ansible.builtin.stat:
-#         path: "{{ omnia_images_path }}"
-#       register: omnia_images_check
-#       changed_when: not omnia_images_check.stat.exists
-
-#     - name: Fail if omnia_images.tar doesn't exist
-#       ansible.builtin.fail:
-#         msg: "{{ omnia_images_path_fail_msg }}"
-#       when: not omnia_images_check.stat.exists
 - name: Verify if tarballs for container images exist
   when: (enable_oim_ha or enable_service_ha or 'service_node' in roles_data)
   block:
 
-    - name: Include task to get container_images list
-      ansible.builtin.include_vars: "{{ playbook_dir }}/../prepare_oim/roles/save_container_images/vars/main.yml"
+    - name: Include container images vars
+      ansible.builtin.include_vars: "{{ playbook_dir }}/../prepare_oim/roles/deploy_containers/common/vars/image_var.yml"
 
     - name: Include task to get container_images list
-      ansible.builtin.include_tasks: "{{ playbook_dir }}/../prepare_oim/roles/save_container_images/tasks/get_container_image_list.yml"
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/../prepare_oim/roles/deploy_containers/common/tasks/get_container_image_list.yml"
 
     - name: Check if all image tarballs exist
       vars:
