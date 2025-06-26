@@ -15,6 +15,7 @@
 
 - name: Include image variables
   ansible.builtin.include_vars: "{{ role_path }}/vars/image_var.yml"
+  when: load_image_var | default(true)
 
 - name: Add kubespray to container image list if k8s_support is true
   when: hostvars['localhost']['k8s_support'] | default(false)

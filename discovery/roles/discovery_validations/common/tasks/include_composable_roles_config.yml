@@ -73,6 +73,8 @@
 
     - name: Include task to get container_images list
       ansible.builtin.include_tasks: "{{ playbook_dir }}/../prepare_oim/roles/deploy_containers/common/tasks/get_container_image_list.yml"
+      vars:
+        load_image_var: false
 
     - name: Check if all image tarballs exist
       vars:
