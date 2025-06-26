@@ -184,6 +184,7 @@ def main():
                 license_status = get_bmc_license_info(
                     bmc_ip, bmc_username, bmc_password, module
                 )
+
                 firmware_status = get_bmc_firmware_info(
                     bmc_ip, bmc_username, bmc_password, module, min_firmware_version_reqd
                 )
