@@ -65,9 +65,9 @@ metadata_perm: "0644"
 # Usage: validate_image_tars.yml
 omnia_images_dir_path: "/opt/omnia/images"
 omnia_images_tar_missing_msg: |
-  "Following Images tarball does not exist - {{ missing_tars }}.
+  Following Images tarball does not exist - {{ missing_tars }}.
   To support either OIM HA or heirarchical provisioning, these images tar file is required.
-  To ensure all omnia base image tar files are present execute `utils/save_container_images.yml` utility playbook."
+  To ensure all omnia base image tar files are present execute `utils/save_container_images.yml` utility playbook.
 
 # invalid_share_option_msg: |
 #   [ERROR] Invalid value \"{{ omnia_share_option }}\" provided for omnia share path type.
