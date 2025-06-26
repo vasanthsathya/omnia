@@ -6,6 +6,7 @@
 #################################################################################################################
 # Define log file
 LOGFILE="/var/log/xcat/xcat.log"
+SERVICE_TAG_MAP="{{ oim_shared_path }}/omnia/service_nodes/service_tag_map.json"
 
 log() {
   echo "$1" >> "$LOGFILE"
@@ -46,12 +47,13 @@ mount -t nfs -o nosuid,rw,sync,hard,intr,timeo=30 {{ nfs_server_ip }}:{{ nfs_ser
 
 # Task 1: Rsync <oim_shared_path>/omnia/provision/install to /, excluding 'autoinst'
 echo "Syncing /install" >> "$LOGFILE"
-rsync -au --exclude='autoinst' {{ oim_shared_path }}/omnia/provision/install/ /
+rsync -au --exclude='autoinst' {{ oim_shared_path }}/omnia/provision/install /
 
 # Task 2: Rsync <oim_shared_path>/omnia/provision/tftpboot to /
 echo "Syncing /tftpboot" >> "$LOGFILE"
-rsync -au {{ oim_shared_path }}/omnia/provision/tftpboot/ /
+rsync -au {{ oim_shared_path }}/omnia/provision/tftpboot /
 
+# Task 3: symlink of <oim_shared_path>/omnia/hosts to /etc/hosts
 sudo rm -rf /etc/hosts
 ln -s {{ oim_shared_path }}/omnia/hosts /etc/hosts
 # sudo rm -rf /etc/dhcp
@@ -94,16 +96,36 @@ for tar in {{ container_images_dir }}*.tar; do
 # Get node serial
 log "INFO:--- Getting node serial ---"
 nodeid=$(dmidecode -s system-serial-number 2>>"$LOGFILE")
+nodeid=$(echo "$nodeid" | xargs)  # trim spaces
 log "[DEBUG] Current node serial: $nodeid"
+
+# Default to nodeid
+active_node_id="$nodeid"
+
+# Check if file exists
+if [[ -f "$SERVICE_TAG_MAP" ]]; then
+    log "[DEBUG] Fetch active node service tag"
+    mapped_value=$(jq -r --arg nodeid "$nodeid" '.[$nodeid] // empty' "$SERVICE_TAG_MAP")
+
+    # Use mapped value if found
+    if [[ -n "$mapped_value" ]]; then
+        log "[INFO]: Active node service tag found using - $mapped_value"
+        active_node_id="$mapped_value"
+    else
+        log "[INFO]: No mapping found for $nodeid in $SERVICE_TAG_MAP. Using $active_node_id"
+    fi
+else
+    echo "[INFO]: $SERVICE_TAG_MAP not found. Using nodeid directly." >> "$LOGFILE"
+fi
 
 log "INFO:--- Restarting xcatd ---"
 run_or_fail sudo /opt/xcat/sbin/restartxcatd -v
 
 
 # Check if the container file exists
-if [ -f "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/pcs/{{ pcs_container_name }}.container" ]; then
+if [ -f "{{ oim_shared_path }}/omnia/service_nodes/$active_node_id/pcs/{{ pcs_container_name }}.container" ]; then
     log "INFO:--- Copying omnia_pcs container file to /etc/containers/systemd/ ---"
-    cp "{{ oim_shared_path }}/omnia/service_nodes/$nodeid/pcs/{{ pcs_container_name }}.container" \
+    cp "{{ oim_shared_path }}/omnia/service_nodes/$active_node_id/pcs/{{ pcs_container_name }}.container" \
            "{{ container_systemd_dir }}/{{ pcs_container_name }}.container"
 
     log "INFO:--- Reloading systemd ---"

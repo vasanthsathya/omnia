@@ -18,6 +18,7 @@
     url: "{{ mpi_operator_yaml_url }}"
     dest: "{{ mpi_operator_dest_url }}"
     mode: "{{ file_mode }}"
+  environment: "{{ compute_env }}"
 
 - name: Install MPI Operator from URL
   kubernetes.core.k8s:

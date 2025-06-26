@@ -55,7 +55,7 @@ pcs resource create {{ idrac_telemetry_receiver_container_name }} ocf:heartbeat:
 
 echo "Adding mysql, activemq, and idrac_telemetry_receiver to omnia_telemetry group"
 pcs resource group add {{ telemetry_pcs_group }} {{ mysql_container_name }} {{ activemq_container_name }} {{ idrac_telemetry_receiver_container_name }}
-pcs constraint colocation add {{ telemetry_pcs_group }} with{{ pcs_group }} INFINITY
+pcs constraint colocation add {{ telemetry_pcs_group }} with {{ pcs_group }} INFINITY
 {% endif %}
 
 # Resource for prometheus and prometheus_pump
@@ -78,7 +78,7 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   image={{ prometheus_image }} \
   reuse=true \
   run_opts="{{ prometheus_run_opts }}" \
-  run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
+  run_cmd="--config.file=/config/prometheus.yml --web.enable-lifecycle --storage.tsdb.path=/prometheus" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
@@ -86,6 +86,23 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
 echo "Adding prometheus and prometheus_pump to telemetry group"
 pcs resource group add {{ telemetry_pcs_group }} {{ prometheus_pump_container_name }} {{ prometheus_container_name }}
 {% endif %}
+
+# Initialize the total sleep time
+total_sleep_time=0
+# Loop for a maximum of three minutes
+max_iterations=18
+for ((i=0; i<max_iterations; i++)); do
+    # Check if any pcs resources are stopped
+    if pcs resource | grep "Stopped\|FAILED"; then
+        # If any resources are stopped, sleep for 10 seconds
+        echo "Sleeping for 10 seconds. Total sleep time: $total_sleep_time seconds."
+        sleep 10
+        total_sleep_time=$((total_sleep_time + 10))
+    else
+        # If all resources are running, exit the loop
+        break
+    fi
+done
 
 # Create a file which signifies the pcs resources were created.
 # This file also contains the resources and its state which ansible can check against.

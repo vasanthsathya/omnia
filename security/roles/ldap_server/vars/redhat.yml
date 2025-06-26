@@ -13,6 +13,7 @@
 # limitations under the License.
 ---
 
+# Usage: ldap_prereq_redHat.yml
 tls_cert_path: "/etc/openldap/certs/"
 tls_cert_source: "/etc/pki/tls/certs"
 rhel_cert_file: "ldapserver.crt"

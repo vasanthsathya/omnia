@@ -36,8 +36,9 @@ mysql_secrets:
 dir_permissions_755: "0755"
 oim_shared_path: "{{ hostvars['localhost']['oim_shared_path'] }}"
 omnia_nfs_share: "{{ oim_shared_path }}/omnia"
-telemetry_data_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['service_tag'] }}/telemetry"
-telemetry_log_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['service_tag'] }}/log/telemetry"
+sn_base_dir: "{{ omnia_nfs_share }}/service_nodes/{{ hostvars[inventory_hostname]['active_service_tag'] }}"
+telemetry_data_dir: "{{ sn_base_dir }}/telemetry"
+telemetry_log_dir: "{{ sn_base_dir }}/log/telemetry"
 idrac_telemetry_dir: "{{ telemetry_data_dir }}/idrac_telemetry"
 
 # mysql
@@ -80,7 +81,7 @@ file_permissions: '0755'
 # Usage: pcs_container_deployment.yml
 wait_time_pcs_start: 120
 pcs_telemetry_resource_script_path: "/opt/omnia/pcs/pcs_telemetry.sh"
-pcs_sn_container_resources_shared_finished: "/opt/omnia/service_nodes/{{ service_tag }}/pcs/config/pcs_sn_container_resources_finished"
+pcs_sn_container_resources_shared_finished: "/opt/omnia/service_nodes/{{ active_service_tag }}/pcs/config/pcs_sn_container_resources_finished"
 pcs_telemetry_failed_msg: "pcs_telemetry.sh execution failed."
 pcs_container_name: "omnia_pcs"
 xcat_resource_name: "XCATD-CHECK"
@@ -98,7 +99,7 @@ pcs_failed_resource_msg: |
   playbook to deploy the container and its resources on service_nodes.
 
 # Usage: prometheus_config_update.yml
-oim_prometheus_config_path: "{{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus.yml"
+oim_prometheus_config_path: "{{ oim_shared_path }}/omnia/telemetry/prometheus/prometheus_config/prometheus.yml"
 prometheus_yml_oim_temp_src: "{{ role_path }}/templates/prometheus_yml_oim.j2"
 
 # Usage: mysqldb_creation.yml
@@ -111,10 +112,6 @@ mysql_container_failure_msg: |
   If the container was created but is not in a running state, check the logs using:
     podman logs {{ mysql_container_name }}
 
-pip_packages:
-  - "PyMySQL==1.1.1"
-  - "cryptography==44.0.1"
-  - "omsdk==1.2.518"
 mysql_port: 3306
 max_retries: 10
 delay_count: 5

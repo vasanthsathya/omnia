@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-
 - name: Define project input path
   ansible.builtin.set_fact:
     project_input_path: "{{ hostvars['localhost']['input_project_dir'] }}"
@@ -26,15 +25,28 @@
 - name: Validate local_repo_config.yml
   ansible.builtin.include_tasks: validate_local_repo_config.yml
 
+- name: Manage software csv file
+  ansible.builtin.include_tasks: update_software_csv.yml
+
 - name: Validate software json files present in config directory
   ansible.builtin.include_tasks: validate_json_path.yml
 
 - name: Validate metadata
   ansible.builtin.include_tasks: validate_metadata.yml
 
+- name: Validate k8s json
+  ansible.builtin.include_tasks: validate_k8s_json.yml
+
 - name: Run Kubernetes JSON Generator
   ansible.builtin.include_tasks: dynamic_k8s_json.yml
-  when: dynamic_k8s_generation
+  when:
+    - k8s_support
+    - dynamic_k8s_generation
+
+- name: Remove k8s line from software.csv when new k8s version is provided
+  ansible.builtin.include_tasks: remove_k8s_line.yml
+  when:
+    - k8s_support
 
 - name: Validate user_repo certificates
   validate_user_repo:
@@ -44,8 +56,16 @@
   register: cert_check_result
   failed_when: cert_check_result.failed | default(false)
 
-- name: Run custom module to check user registry reachability
+- name: Check user registry reachability
   check_user_registry:
     config_file: "{{ local_repo_config_file }}"
     timeout: "{{ time_out }}"
   register: registry_check_result
+
+- name: Warning - Display unreachable registries
+  ansible.builtin.pause:
+    prompt: "{{ registry_check_result.unreachable_registries | join(', ') }}\n{{ user_registry_msg }}"
+    seconds: "{{ warning_wait_time_warning }}"
+  when:
+    - registry_check_result.unreachable_registries is defined
+    - registry_check_result.unreachable_registries | length > 0

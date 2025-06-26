@@ -39,12 +39,12 @@
 - name: Ensure correct Kubernetes in HA setup
   when: enable_k8s_ha
   block:
-    - name: Kube control plane group to contain at least 1 kube control plane
+    - name: Kube control plane group to contain more than 1 kube control plane
       ansible.builtin.assert:
         that:
           - "((groups['kube_control_plane'] | length | int) > 1)"
         success_msg: "{{ kube_one_node_validation_success_msg }}"
-        fail_msg: "{{ kube_control_plane_validation_fail_msg }}"
+        fail_msg: "{{ kube_control_plane_ha_validation_fail_msg }}"
 
     - name: Warning Kube control plane group contain even number of nodes in the inventory
       ansible.builtin.pause:
@@ -100,19 +100,3 @@
       when:
         - user_inventory_path is defined
         - (user_inventory_path | length > 0)
-
-# Need to discuss for this flow, will update later
-# - name: Initialize variables
-#   ansible.builtin.set_fact:
-#     unreachable_kube_control_plane: []
-
-# - name: Set unreachable_kube_control_plane
-#   ansible.builtin.set_fact:
-#     unreachable_kube_control_plane: "{{ unreachable_kube_control_plane + [item] }}"
-#   when: item not in ansible_play_hosts
-#   with_items: "{{ groups['kube_control_plane'] }}"
-
-# - name: Unreachable kube_control_plane in inventory
-#   ansible.builtin.fail:
-#     msg: "{{ unreachable_kube_control_plane_fail_msg }}"
-#   when: unreachable_kube_control_plane | length >= 1

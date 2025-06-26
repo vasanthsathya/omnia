@@ -15,13 +15,13 @@
 
 - name: Create and update telemetry report from template
   block:
-    - name: Create telemetry report
+    - name: Create telemetry report for OIM
       ansible.builtin.template:
         src: "{{ telemetry_report_template }}"
         dest: "{{ telemetry_report_path_oim }}"
         mode: "{{ filemode }}"
         force: true
-      when: service_node_hostname == 'oim'
+      when: node_host == 'oim'
 
     - name: Update telemetry report for service node
       ansible.builtin.blockinfile:
@@ -29,4 +29,4 @@
         block: "{{ telemetry_report_sn }}"
         insertafter: "===== Telemetry Report End ====="
         marker: ""
-      when: service_node_hostname != 'oim'
+      when: node_host != 'oim'

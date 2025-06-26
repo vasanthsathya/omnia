@@ -37,6 +37,7 @@ prometheus_pump_volumes:
  - "{{ idrac_telemetry_reference_path }}:/go/src/github.com/telemetry-reference-tools{{ selinux_option }}"
  - "{{ prometheus_pump_dir }}:/opt/omnia/telemetry/prometheus_pump{{ selinux_option }}"
 prometheus_pump_container_name: "prometheus_pump"
+# Tag is fixed for golang image as of 12-06-2025
 prometheus_pump_image: "docker.io/library/golang:1.24"
 prometheus_pump_receiver_env:
  MESSAGEBUS_HOST: "localhost"
@@ -58,14 +59,17 @@ prometheus_pump_container_failure_msg: |
 prometheus_log_dir: "{{ telemetry_log_dir }}/prometheus"
 prometheus_dir: "{{ telemetry_data_dir }}/prometheus"
 prometheus_data_dir: "{{ prometheus_dir }}/prometheus_data"
+prometheus_config_dir: "{{ prometheus_dir }}/prometheus_config"
 proemetheus_yml_temp_src: "{{ role_path }}/templates/prometheus_yml.j2"
 prometheus_podman_volumes:
  - { name: "prometheus_data", path: "{{ prometheus_data_dir }}" }
  - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
+ - { name: "prometheus_config", path: "{{ prometheus_config_dir }}" }
 prometheus_container_name: "prometheus"
+# Tag is fixed for prometheus image as of 12-06-2025
 prometheus_image: "docker.io/prom/prometheus:v3.4.1"
 prometheus_volumes:
- - "{{ prometheus_dir }}/prometheus.yml:/config/prometheus.yml{{ selinux_option }}"
+ - "prometheus_config:/config"
  - "prometheus_data:/prometheus"
  - "prometheus_log:/prometheus/log"
 prometheus_env:

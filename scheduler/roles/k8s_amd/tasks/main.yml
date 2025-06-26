@@ -14,7 +14,9 @@
 ---
 
 - name: Install amd device plugin if cluster has atleast one amd node
-  when: hostvars['127.0.0.1']['k8s_support']
+  when:
+    - hostvars['127.0.0.1']['k8s_support']
+    - hostvars['127.0.0.1']['plugins_deployment']
   block:
     - name: Check pre-requisite for amd
       ansible.builtin.include_tasks: check_pre_requisite.yml

@@ -100,7 +100,7 @@ def check_and_get_service_nodes_status(
         cursor = conn.cursor()
         try:
             cursor.execute(
-                "SELECT bmc_ip, status FROM cluster.nodeinfo WHERE role = %s",
+                "SELECT service_tag, status FROM cluster.nodeinfo WHERE role = %s",
                 (role,)
             )
             records = cursor.fetchall()
@@ -117,13 +117,13 @@ def check_and_get_service_nodes_status(
                 with open(bmc_group_data_path, newline='', encoding='utf-8') as csvfile:
                     reader = csv.DictReader(csvfile)
                     for row in reader:
-                        bmc_ip = row.get('BMC_IP', '').strip()
-                        node_status = records_dict.get(bmc_ip)
-
-                        if node_status is not None and node_status != "booted":
-                            service_nodes_not_booted.append(bmc_ip)
-                        elif node_status is not None and node_status == "booted":
-                            service_nodes_booted.append(bmc_ip)
+                        parent = row.get('PARENT', '').strip()
+                        if parent and parent not in (service_nodes_not_booted + service_nodes_booted):
+                            node_status = records_dict.get(parent)
+                            if node_status is not None and node_status != "booted":
+                                service_nodes_not_booted.append(parent)
+                            elif node_status is not None and node_status == "booted":
+                                service_nodes_booted.append(parent)
             except FileNotFoundError:
                 module.fail_json(msg="File {%s} not found" % (bmc_group_data_path))
             except csv.Error as e:

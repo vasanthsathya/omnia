@@ -24,6 +24,7 @@
     - name: Configure postscripts for NTP
       ansible.builtin.command: "{{ xcat_path }}/chdef all -p postscripts=setupntp"
       changed_when: true
+
   rescue:
     - name: Warning - Failed to configure NTP
       ansible.builtin.pause:

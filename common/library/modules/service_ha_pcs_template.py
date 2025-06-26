@@ -25,13 +25,15 @@ It provides the necessary configuration and settings for the nodes.
 
 import os
 import shutil
+import json
 
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.discovery.standard_functions import (
     create_directory,
     render_template,
-    load_vars_file
+    load_vars_file,
+    update_json
 )
 
 
@@ -84,10 +86,12 @@ def main():
     extra_vars = load_vars_file(vars_file)
 
     results = []
-
-    for _, nodes in ha_data.items():
+    sn_to_active_sn = {}
+    for active_svc_tag, nodes in ha_data.items():
         active_node = next((n for n in nodes if n.get('active')), None)
         passive_nodes = [n for n in nodes if not n.get('active')]
+        sn_to_active_sn.update({active_node['service_tag']: active_svc_tag})
+        sn_to_active_sn.update({n['service_tag']: active_svc_tag for n in passive_nodes})
 
         if not active_node:
             continue
@@ -130,17 +134,14 @@ def main():
 
         results.append(f"Configured HA group: {service_tag}")
 
-        # Copy rendered active node directory to passive node directories
-        for p_node in passive_nodes:
-            passive_service_tag = p_node['service_tag']
-            passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
+        # # Copy rendered active node directory to passive node directories
+        # for p_node in passive_nodes:
+        #     passive_service_tag = p_node['service_tag']
+        #     passive_service_tag_dir = os.path.join(base_dir, passive_service_tag)
 
-            if os.path.exists(passive_service_tag_dir):
-                shutil.rmtree(passive_service_tag_dir)
-
-            shutil.copytree(service_tag_dir, passive_service_tag_dir, symlinks=True)
-            results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
-
+        #     shutil.copytree(service_tag_dir, passive_service_tag_dir, dirs_exist_ok=True, symlinks=True)
+        #     results.append(f"Copied config from active node: {service_tag} to passive node: {passive_service_tag}")
+    update_json(sn_to_active_sn, "/opt/omnia/service_nodes/service_tag_map.json")
     module.exit_json(changed=True, msg="Service node configurations rendered.", results=results)
 
 

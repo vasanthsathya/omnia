@@ -40,7 +40,10 @@ kube_one_node_validation_fail_msg: |
   There should be one entry for kube_control_plane in the inventory"
 kube_control_plane_validation_fail_msg: |
   "Failed. k8s software is present in software_config.json.
-  kube_control_plane group in inventory must have atleast one node and total node count must be odd"
+  kube_control_plane group in inventory must have atleast one node."
+kube_control_plane_ha_validation_fail_msg: |
+  "Failed. k8s software is present in software_config.json.
+  kube_control_plane group in inventory must have more than one node and total node count must be odd"
 kube_ha_setup_warning_msg: |
   "[WARNING] To ensure a clear leader election in a Kubernetes High Availability (HA) setup,
   configure the cluster with an odd number of kube_control_plane and etcd nodes (e.g., 3, 5, or 7). Proceeding execution with provided nodes."
@@ -92,3 +95,5 @@ invalid_auth_server_inventory_fail_msg: |
   Invalid inventory format, specify auth_sever group in inventory and re-run playbook."
 auth_server_group_fail_msg: "Failed, auth_server group should contain exactly 1 node"
 auth_server_group_success_msg: "Success, inventory file is valid"
+auth_etcd_fail_msg: "Failed, etcd and auth_server nodes cannot be the same. Please fix
+  the inventory file and re-run the playbook."

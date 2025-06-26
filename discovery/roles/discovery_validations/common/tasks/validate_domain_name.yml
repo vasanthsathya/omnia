@@ -13,14 +13,6 @@
 #  limitations under the License.
 ---
 
-- name: Validate the domain_name
-  ansible.builtin.assert:
-    that:
-      - domain_name | length > 1
-      - domain_name is regex("^(?!-)[A-Za-z0-9-]+([\\-\\.]{1}[a-z0-9]+)*\\.[A-Za-z]{2,}$")
-    success_msg: "{{ domain_name_success_msg }}"
-    fail_msg: "{{ domain_name_fail_msg }}"
-
 - name: Length of domain name and node name
   ansible.builtin.set_fact:
     domain_name_len: "{{ domain_name | length }}"
@@ -45,37 +37,9 @@
     success_msg: "{{ server_hostname_success_msg }}"
     fail_msg: "{{ server_hostname_fail_msg }}"
 
-- name: Fetch the domain name
-  ansible.builtin.command: hostname -d
-  register: domain_name_check
-  changed_when: false
-  failed_when: false
-
-- name: Verify the domain name is not blank in hostname
-  ansible.builtin.fail:
-    msg: " {{ server_domain_name_blank_msg }}"
-  when: domain_name_check.stdout | length < 1
-
-- name: Set fact for the domain name in hostname
-  ansible.builtin.set_fact:
-    ms_domain_name: "{{ domain_name_check.stdout }}"
-
-- name: Validate the domain name set on the host
-  ansible.builtin.assert:
-    that:
-      - domain_name == ms_domain_name
-    success_msg: "{{ server_domain_name_success_msg }}"
-    fail_msg: "{{ server_domain_name_fail_msg }}"
-
-- name: Read hostname of Omnia Infrastructure Manager
-  ansible.builtin.command: hostname
-  changed_when: false
-  register: hostname_result
-
 - name: Set fact for the OIM node hostname and domain name
   ansible.builtin.set_fact:
     oim_domain_name: "{{ domain_name }}"
-    oim_hostname: "{{ hostname_result.stdout }}"
 
 - name: Add hosts file entry for Omnia Infrastructure Manager
   ansible.builtin.shell: |
@@ -83,8 +47,15 @@
     grep -qxF '{{ pxe_nic_ip }} {{ oim_hostname }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} {{ oim_hostname }}' >> {{ hosts_file_path }}
   changed_when: true
 
+- name: Add hosts file entry for the provisioning container
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -qxF '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}' {{ hosts_file_path }} || echo '{{ pxe_nic_ip }} omniaprovision.{{ domain_name }}'
+    >> {{ hosts_file_path }}
+  changed_when: true
+
 - name: Ensure 127.0.0.1 localhost entry exists uniquely using echo
   ansible.builtin.shell: |
     set -o pipefail
-    grep -qxF '127.0.0.1 localhost' {{ hosts_file_path }} || echo '127.0.0.1 localhost' >> {{ hosts_file_path }}
+    grep -qxF '127.0.0.1 localhost.domain localhost' {{ hosts_file_path }} || echo '127.0.0.1 localhost.localdomain localhost' >> {{ hosts_file_path }}
   changed_when: true

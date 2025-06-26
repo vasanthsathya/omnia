@@ -13,13 +13,19 @@
 # limitations under the License.
 ---
 
+- name: Check service node metadata file exists
+  ansible.builtin.stat:
+    path: "{{ service_node_metadata_path }}"
+  register: service_node_metadata_exists
+
 - name: Include service node metadata vars
   ansible.builtin.include_vars: "{{ service_node_metadata_path }}"
+  when: service_node_metadata_exists.stat.exists
 
 - name: Get updated host inventory
   get_telemetry_host_inventory:
     bmc_group_data_path: "{{ bmc_group_data_filename }}"
-    service_node_metadata: "{{ service_nodes_metadata }}"
+    service_node_metadata: "{{ service_nodes_metadata | default({}) }}"
     inventory_file_path: "{{ cluster_layout_path if enable_oim_ha else '' }}"
   register: host_inventory
 
@@ -30,21 +36,26 @@
     - host_inventory.invalid_parent_tags is defined
     - host_inventory.invalid_parent_tags | length > 0
 
-- name: Add service node admin details to inventory
-  ansible.builtin.add_host:
-    name: "{{ item.value }}"
-    groups: sn_admin
-    service_tag: "{{ item.key }}"
-  loop: "{{ host_inventory.sn_admin_ip | dict2items }}"
+- name: Add service node hosts to inventory
   when: federated_idrac_telemetry_collection
+  block:
+    - name: Add service node admin details to inventory
+      ansible.builtin.add_host:
+        name: "{{ item.value.admin_ip }}"
+        groups: sn_admin
+        service_tag: "{{ item.key }}"
+        active_service_tag: "{{ item.value.active_service_tag }}"
+      loop: "{{ host_inventory.sn_node_info | dict2items }}"
+      when: item.value.admin_ip is defined
 
-- name: Add active service nodes to inventory
-  ansible.builtin.add_host:
-    name: "{{ item.value }}"
-    groups: sn_active
-    service_tag: "{{ item.key }}"
-  loop: "{{ host_inventory.sn_active_ip | dict2items }}"
-  when: federated_idrac_telemetry_collection
+    - name: Add active service nodes to inventory
+      ansible.builtin.add_host:
+        name: "{{ item.value.active_ip }}"
+        groups: sn_active
+        service_tag: "{{ item.key }}"
+        active_service_tag: "{{ item.value.active_service_tag }}"
+      loop: "{{ host_inventory.sn_node_info | dict2items }}"
+      when: item.key == item.value.active_service_tag
 
 - name: Add passive oim hosts to inventory
   ansible.builtin.add_host:

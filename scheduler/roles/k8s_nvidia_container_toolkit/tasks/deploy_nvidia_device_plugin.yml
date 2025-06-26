@@ -31,6 +31,7 @@
         url: "{{ nvidia_device_plugin_repo }}"
         dest: "{{ nvidia_device_plugin_dest_repo }}"
         mode: "{{ file_mode }}"
+      environment: "{{ compute_env }}"
 
     - name: Install NVIDIA device plugin using Helm
       community.kubernetes.helm:

@@ -166,12 +166,12 @@ pcs resource create {{ prometheus_container_name }} ocf:heartbeat:podman \
   image={{ prometheus_image }} \
   reuse=true \
   run_opts="{{ prometheus_run_opts }}" \
-  run_cmd="--config.file=/config/prometheus.yml --storage.tsdb.path=/prometheus" \
+  run_cmd="--config.file=/config/prometheus.yml --web.enable-lifecycle --storage.tsdb.path=/prometheus" \
   op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
   op start interval={{ start_interval }} timeout={{ start_timeout }} \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
-pcs resource group add {{ telemetry_pcs_group }} {{ prometheus_container_name }} {{ prometheus_pump_container_name }}
+pcs resource group add {{ telemetry_pcs_group }} {{ prometheus_pump_container_name }} {{ prometheus_container_name }}
 {% endif %}
 
 # Resource for omnia visualization containers
@@ -212,7 +212,7 @@ pcs resource create {{ promtail_container_name }} ocf:heartbeat:podman \
   op stop interval={{ stop_interval }} timeout={{ stop_timeout }}
 
 
-pcs resource group add {{ visualization_pcs_group }} {{ grafana_container_name }} {{ loki_container_name }} {{ promtail_container_name }}
+pcs resource group add {{ visualization_pcs_group }} {{ loki_container_name }} {{ promtail_container_name }} {{ grafana_container_name }}
 pcs constraint colocation add {{ visualization_pcs_group }} with {{ pcs_group }} INFINITY
 {% endif %}
 
