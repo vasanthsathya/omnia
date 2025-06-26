@@ -5,7 +5,12 @@ Dynamic Kubernetes installation
 Apart from the default Kubernetes version present in the ``input/software_config.json`` (1.31.4) Omnia also lets you choose your own Kubernetes version.
 Based on the version that you choose, Omnia will download and configure all Kubernetes related packages required for the cluster.
 
-.. note:: Currently Omnia can only the Kubernetes versions compatible with the last 3 releases of Kubespray. Check the table below to know the minimum and maximum Kubernetes version for the last 3 Kubespray release:
+.. note:: Currently Omnia can only the Kubernetes versions compatible with the last 3 releases of Kubespray.
+    
+Compatibility Matrix
+==========================
+
+Check the table below for the minimum and maximum Kubernetes version supported for the last 3 Kubespray release:
 
     +-------------------+----------------------------+----------------------------+
     | Kubespray Version | Minimum Kubernetes version | Maximum Kubernetes version |
