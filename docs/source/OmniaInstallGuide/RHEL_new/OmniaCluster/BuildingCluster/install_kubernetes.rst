@@ -6,6 +6,7 @@ Prerequisites
 ===============
 
 * Ensure that ``k8s`` entry is present in the ``softwares`` list in ``software_config.json``, as mentioned below:
+    
     ::
 
         "softwares": [
