@@ -11,14 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-<<<<<<< pub/local_repo
 # pylint: disable=import-error,no-name-in-module
-=======
-
-# pylint: disable=line-too-long,import-error,no-name-in-module
 
 from collections import defaultdict
->>>>>>> staging
 import os
 import json
 import csv
