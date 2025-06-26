@@ -32,7 +32,7 @@ from ansible.module_utils.local_repo.download_common import (
 from ansible.module_utils.local_repo.download_image import process_image
 from ansible.module_utils.local_repo.download_rpm import process_rpm
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
-
+from ansible.module_utils.local_repo.common_functions import generate_vault_key, process_file, is_encrypted
 from ansible.module_utils.local_repo.software_utils import (
     load_json,
     set_version_variables,
@@ -51,7 +51,9 @@ from ansible.module_utils.local_repo.config import (
     SOFTWARE_CSV_FILENAME,
     SOFTWARE_CSV_HEADER,
     STATUS_CSV_HEADER,
-    LOCAL_REPO_CONFIG_PATH_DEFAULT
+    LOCAL_REPO_CONFIG_PATH_DEFAULT,
+    USER_REG_CRED_INPUT,
+    USER_REG_KEY_PATH
 )
 
 def update_status_csv(csv_dir, software, overall_status):
@@ -276,11 +278,19 @@ def main():
         version_variables = set_version_variables(user_data, software_names, cluster_os_version)
         slogger.info(f"Cluster OS: {cluster_os_type}")
         slogger.info(f"Version Variables: {version_variables}")
+        gen_result = {}
+        if not os.path.isfile(USER_REG_KEY_PATH):
+            gen_result = generate_vault_key(USER_REG_KEY_PATH)
+        if gen_result is None:
+            module.fail_json(msg=f"Unable to generate local_repo key at path: {USER_REG_KEY_PATH}")
 
         overall_status, task_results = execute_parallel(
             tasks, determine_function, nthreads, repo_store_path, csv_file_path,
             log_dir, user_data, version_variables, slogger, local_repo_config_path, timeout
         )
+
+        if not is_encrypted(USER_REG_CRED_INPUT):
+            process_file(USER_REG_CRED_INPUT,USER_REG_KEY_PATH,'encrypt')
 
         end_time = datetime.now()
         formatted_end_time = end_time.strftime("%I:%M:%S %p")
@@ -321,6 +331,6 @@ def main():
         result["table_output"] = table_output if "table_output" in locals() else "No table generated."
         slogger.error(f"Execution failed: {str(e)}")
         module.fail_json(msg=f"Error during execution: {str(e)}", **result)
-        
+
 if __name__ == "__main__":
     main()

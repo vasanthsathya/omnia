@@ -34,11 +34,11 @@ def check_image_in_registry(
     host,
     image,
     tag,
-    cacert,
-    key,
-    username,
-    password,
-    logger,
+    cacert=None,
+    key=None,
+    username=None,
+    password=None,
+    logger=None,
 ):
     """
     Check if a container image exists in a user registry using Docker Registry HTTP API v2.
@@ -47,10 +47,10 @@ def check_image_in_registry(
         host (str): Registry hostname.
         image (str): Image name (e.g., library/nginx).
         tag (str): Image tag (e.g., 1.25.2-alpine).
-        cacert (str): Path to the CA certificate file.
-        key (str): Path to the client key file.
-        username (str): Registry username.
-        password (str): Registry password.
+        cacert (str, optional): Path to the CA certificate file.
+        key (str, optional): Path to the client key file.
+        username (str, optional): Registry username.
+        password (str, optional): Registry password.
         logger (logging.Logger): Logger instance.
 
     Returns:
@@ -60,21 +60,26 @@ def check_image_in_registry(
     logger.info(f"Checking image existence at: {image_url}")
 
     try:
-        response = requests.get(
-            image_url,
-            auth=HTTPBasicAuth(username, password),
-            cert=(cacert, key),
-            verify=False,
-            timeout=10,
-        )
+        request_args = {
+            "verify": False,  # Consider using 'verify=cacert' if using trusted certs
+            "timeout": 10,
+        }
+
+        if username and password:
+            request_args["auth"] = HTTPBasicAuth(username, password)
+
+        if cacert and key:
+            request_args["cert"] = (cacert, key)
+
+        response = requests.get(image_url, **request_args)
 
         if response.status_code == 200:
             logger.info(f"Image '{image}:{tag}' exists in registry '{host}'")
             return True
+
         logger.warning(
             f"Image not found (HTTP {response.status_code}) in registry '{host}'"
         )
-        return False
 
     except requests.RequestException as e:
         logger.exception(f"Network error while checking image: {e}")
@@ -311,10 +316,6 @@ def handle_user_image_registry(package, package_content, version_variables, user
             key = registry.get("key_path")
             username = registry.get("username")
             password = registry.get("password")
-
-            if not all([host, cacert, key, username, password]):
-                logger.warning(f"Skipping registry with missing fields: {registry}")
-                continue
 
             logger.info(f"Checking image {image_name}:{tag_val} in registry {host}")
             image_found = check_image_in_registry(
