@@ -65,51 +65,8 @@
       | list | length == 0
 
 - name: Verify if tarballs for container images exist
+  ansible.builtin.include_tasks: validate_image_tars.yml
   when: (enable_oim_ha or enable_service_ha or 'service_node' in roles_data)
-  block:
-
-    - name: Include container images vars
-      ansible.builtin.include_vars: "{{ playbook_dir }}/../prepare_oim/roles/deploy_containers/common/vars/image_var.yml"
-
-    - name: Include task to get container_images list
-      ansible.builtin.include_tasks: "{{ playbook_dir }}/../prepare_oim/roles/deploy_containers/common/tasks/get_container_image_list.yml"
-      vars:
-        load_image_var: false
-
-    - name: Check if all image tarballs exist
-      vars:
-        expected_tarballs: >-
-          {{
-            container_images
-            | map('regex_replace', '[:/]', '_')
-            | list
-          }}
-      block:
-
-        - name: Stat all expected tarballs
-          ansible.builtin.stat:
-            path: "{{ omnia_images_dir_path }}/{{ item }}.tar"
-          loop: "{{ expected_tarballs }}"
-          register: tarball_check
-
-        - name: Set fact missing tar files
-          ansible.builtin.set_fact:
-            missing_tars: >-
-              {{ tarball_check.results
-                | selectattr('stat.exists', 'equalto', false)
-                | map(attribute='invocation.module_args.path')
-                | list }}
-
-        - name: Show which tarballs are missing (if any)
-          ansible.builtin.debug:
-            msg: "Missing tarballs: {{ missing_tars }}"
-          when: missing_tars | length > 0
-
-        - name: Fail if any required image tarballs are missing
-          ansible.builtin.fail:
-            msg: >-
-              {{ omnia_images_path_fail_msg }}
-          when: missing_tars | length > 0
 
 - name: Fetch hierarchical data
   check_hierarchical_provision:
