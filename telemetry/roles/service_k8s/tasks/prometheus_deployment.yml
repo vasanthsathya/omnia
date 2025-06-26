@@ -13,7 +13,7 @@
 #  limitations under the License.
 ---
 
-- name: Ensure namespace exists
+- name: Ensure namespace exists - {{ telemetry_namespace }}
   kubernetes.core.k8s:
     state: present
     definition:
@@ -22,7 +22,7 @@
       metadata:
         name: "{{ telemetry_namespace }}"
 
-- name: Persistent volume claim for prometheusdb
+- name: Persistent volume claim for prometheus
   kubernetes.core.k8s:
     state: present
     definition:
@@ -39,23 +39,23 @@
             storage: "{{ prometheus_storage }}"
         storageClassName: "{{ storage_class_name }}"
 
-- name: Persistent volume claim for prometheusdb
+- name: Configmap for prometheus
   kubernetes.core.k8s:
     state: present
     definition:
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: "{{ prometheus_configmap_name }}"
-      namespace: "{{ telemetry_namespace }}"
-    data:
-      prometheus.yml: |
-        global:
-          scrape_interval: 15s
-        scrape_configs:
-          - job_name: 'prometheus'
-            static_configs:
-              - targets: ['localhost:9090']
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: "{{ prometheus_configmap_name }}"
+        namespace: "{{ telemetry_namespace }}"
+      data:
+        prometheus.yml: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: 'prometheus'
+              static_configs:
+                - targets: ['localhost:9090']
 
 - name: Prometheus pod definition
   kubernetes.core.k8s:
