@@ -22,6 +22,11 @@
   ansible.builtin.include_vars: "{{ pcs_vars }}"
   when: enable_oim_ha or service_role_required
 
+- name: Include telemetry role vars
+  ansible.builtin.include_vars: "{{ item }}"
+  with_items: "{{ telemetry_vars }}"
+  when: enable_oim_ha
+
 - name: Configure postscripts
   environment:
     XCATROOT: "{{ xcat_root_env }}"
@@ -59,3 +64,7 @@
     - name: Configuration of service_node role postscripts
       ansible.builtin.include_tasks: configure_postscripts_service.yml
       when: service_node_status
+
+    - name: Configuration of additional sowftware packages postscripts
+      ansible.builtin.include_tasks: configure_postscripts_additional_softwares.yml
+      when: all_node_status and additional_software_packages

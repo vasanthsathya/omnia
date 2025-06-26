@@ -38,8 +38,15 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent
+        force: true
       with_items:
         - "{{ pulp_cleanup_directory }}"
+
+    - name: Remove track file when pulp is in https
+      ansible.builtin.file:
+        path: "{{ track_file_path }}"
+        state: absent
+      when: hostvars['localhost']['pulp_protocol_https']
 
   rescue:
     - name: Pulp container removal failed

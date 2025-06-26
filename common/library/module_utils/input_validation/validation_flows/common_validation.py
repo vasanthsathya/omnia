@@ -13,9 +13,15 @@
 # limitations under the License.
 
 import json
+import os
+import ansible.module_utils.input_validation.common_utils.data_fetch as get
+import ansible.module_utils.input_validation.common_utils.data_validation as validate
+from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import validation_utils
+from ansible.module_utils.input_validation.common_utils import data_verification
 from ansible.module_utils.input_validation.common_utils import config
 from ansible.module_utils.input_validation.common_utils import en_us_validation_msg
+from ansible.modules.validate_input import generate_log_failure_message
 from ansible.module_utils.input_validation.validation_flows import scheduler_validation
 
 from ansible.module_utils.local_repo.software_utils import (
@@ -32,6 +38,7 @@ create_file_path = validation_utils.create_file_path
 contains_software = validation_utils.contains_software
 check_mandatory_fields = validation_utils.check_mandatory_fields
 flatten_sub_groups = validation_utils.flatten_sub_groups
+file_exists = data_verification.file_exists
 
 def validate_software_config(
     input_file_path, data,
@@ -66,7 +73,57 @@ def validate_software_config(
         errors.append(
             create_error_msg(
                 "iso_file_path", iso_file_path, not_valid_iso_msg))
+
     #software groups and subgroups l2 validation
+    # Check for the additional software field
+    if "additional_software" in data:
+        # Run schema validation and call validate_additional_software()
+        schema_base_file_path = os.path.join(module_utils_base,'input_validation','schema')
+        passwords_set = config.passwords_set
+        extensions = config.extensions
+        fname = "additional_software"
+        schema_file_path = schema_base_file_path + "/" + fname + extensions['json']
+        json_files = get.files_recursively(omnia_base_dir + "/" + project_name, extensions['json'])
+        json_files_dic = {}
+
+        for file_path in json_files:
+            json_files_dic.update({get.file_name_from_path(file_path): file_path})
+        new_file_path = json_files_dic.get("additional_software.json", None)
+
+        # Validate the schema of the input file (L1)
+        validation_status = {}
+        vstatus = []
+        project_data = {project_name: {"status": [], "tag": "additional_software"}}
+        validation_status.update(project_data)
+        schema_status = validate.schema(
+            new_file_path, schema_file_path, passwords_set,
+            omnia_base_dir, project_name, logger, module)
+        vstatus.append(schema_status)
+
+        # Append the validation status for the input file
+        validation_status[project_name]["status"].append(
+            {new_file_path: "Passed" if schema_status else "Failed"})
+
+        if False in vstatus:
+            log_file_name = os.path.join(
+                config.input_validator_log_path, f"validation_omnia_{project_name}.log")
+            generate_log_failure_message(log_file_name, project_name, validation_status, module)
+
+        # Check for the addtional_software.json file exist
+        if new_file_path is None or not file_exists(new_file_path, module, logger):
+            logger.info("The additional_software.json does not exist...")
+            errors.append(
+                create_error_msg(
+                    "additional_software.json",
+                    new_file_path,
+                    en_us_validation_msg.MISSING_ADDITIONAL_SOFTWARE_JSON_FILE))
+            return errors
+        additional_software_data = json.load(open(json_files_dic["additional_software.json"], "r"))
+
+        additional_software_errors = validate_additional_software(
+            new_file_path, additional_software_data,
+            logger, module, omnia_base_dir, module_utils_base, project_name)
+        errors.extend(additional_software_errors)
 
     #create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
@@ -82,7 +139,7 @@ def validate_software_config(
         json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
         # Check if json_path is None or if the JSON syntax is invalid
         if json_path is None:
-            errors.append(create_error_msg("Validation Error: ", None ,en_us_validation_msg.json_file_mandatory(json_path)))
+            errors.append(create_error_msg("Validation Error: ", software ,en_us_validation_msg.json_file_mandatory(json_path)))
         else:
             try:
                 subgroup_softwares = subgroup_dict.get(software, None)
@@ -139,20 +196,52 @@ def validate_network_config(input_file_path, data, logger, module, omnia_base_di
 
 def validate_storage_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
-    nfs_client_params = data["nfs_client_params"][0]
-    client_mount_options = nfs_client_params["client_mount_options"]
+    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+    software_config_json = json.load(open(software_config_file_path, "r"))
+    softwares = software_config_json["softwares"]
+    for software in softwares:
+        if software.get('name') == 'beegfs' and 'version' not in software:
+            errors.append(create_error_msg("beegfs", "", en_us_validation_msg.BEEGFS_VERSION_FAIL_MSG))
 
     allowed_options = {"nosuid", "rw", "sync", "hard", "intr"}
-    client_mount_options_set = set(client_mount_options.split(","))
+    slurm_share_val = False
+    k8s_share_val = False
+    multiple_slurm_share_val = False
+    multiple_k8s_share_val = False
+    for nfs_client_params in data["nfs_client_params"]:
+        client_mount_options = nfs_client_params["client_mount_options"]
+        client_mount_options_set = set(client_mount_options.split(","))
+        if not (client_mount_options_set.issubset(allowed_options)):
+            errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.CLIENT_MOUNT_OPTIONS_FAIL_MSG))
+        if nfs_client_params["slurm_share"]:
+            if not slurm_share_val:
+                slurm_share_val = True
+            else:
+                multiple_slurm_share_val = True
 
-    if not (client_mount_options_set.issubset(allowed_options)):
-        errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.client_mount_options_fail_msg))
+        if nfs_client_params["k8s_share"]:
+            if not k8s_share_val:
+                k8s_share_val = True
+            else:
+                multiple_k8s_share_val = True
+
+    if (contains_software(softwares, "slurm") and not slurm_share_val) or multiple_slurm_share_val:
+        errors.append(create_error_msg("slurm_share", slurm_share_val, en_us_validation_msg.SLURM_SHARE_FAIL_MSG))
+
+    if (contains_software(softwares, "k8s") and not k8s_share_val) or multiple_k8s_share_val:
+        errors.append(create_error_msg("k8s_share", k8s_share_val, en_us_validation_msg.K8S_SHARE_FAIL_MSG))
+
+    if contains_software(softwares, "ucx") or contains_software(softwares, "openmpi"):
+        if not k8s_share_val or not slurm_share_val:
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.BENCHMARK_TOOLS_FAIL_MSG))
+        elif multiple_slurm_share_val or multiple_k8s_share_val:
+            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.MULT_SHARE_FAIL_MSG))
 
     beegfs_mounts = data["beegfs_mounts"]
     if beegfs_mounts != "/mnt/beegfs":
         beegfs_unmount_client = data["beegfs_unmount_client"]
         if not beegfs_unmount_client:
-            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.beegfs_unmount_client_fail_msg))
+            errors.append(create_error_msg("beegfs_unmount_client", beegfs_unmount_client, en_us_validation_msg.BEEGFS_UMOUNT_CLIENT_FAIL_MSG))
 
     return errors
 
@@ -161,9 +250,9 @@ def validate_usernames(input_file_path, data, logger, module, omnia_base_dir, mo
     errors = []
 
     k8s_access_config_file_path = create_file_path(input_file_path, file_names["k8s_access_config"])
-    k8s_access_config_json = validation_utils.load_yaml_as_json(k8s_access_config_file_path, omnia_base_dir, module_utils_base, project_name, logger, module)
+    k8s_access_config_json = validation_utils.load_yaml_as_json(k8s_access_config_file_path, omnia_base_dir, project_name, logger, module)
     passwordless_ssh_config_file_path = create_file_path(input_file_path, file_names["passwordless_ssh_config"])
-    passwordless_ssh_config_json = validation_utils.load_yaml_as_json(passwordless_ssh_config_file_path, omnia_base_dir, module_utils_base, project_name, logger, module)
+    passwordless_ssh_config_json = validation_utils.load_yaml_as_json(passwordless_ssh_config_file_path, omnia_base_dir, project_name, logger, module)
 
     k8s_user_name = k8s_access_config_json["user_name"]
     pw_ssh_user_name = passwordless_ssh_config_json["user_name"]
@@ -316,90 +405,61 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
 
     return errors
 
-def validate_telemetry_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+def validate_telemetry_config(
+    _input_file_path,
+    data,
+    _logger,
+    _module,
+    _omnia_base_dir,
+    _module_utils_base,
+    _project_name
+):
+
+    """
+    Validates the telemetry configuration data.
+
+    This function checks the telemetry configuration data for validity and consistency.
+    It verifies that the iDRAC telemetry support and federated iDRAC telemetry collection
+    settings are correctly configured.
+
+    Args:
+        input_file_path (str): The path to the input file.
+        data (dict): The telemetry configuration data.
+        logger (object): The logger object.
+        module (object): The module object.
+        omnia_base_dir (str): The base directory of the Omnia project.
+        _module_utils_base (str): The base directory of the module utilities.
+        project_name (str): The name of the project.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    """
     errors = []
-    idrac_telemetry_support = data["idrac_telemetry_support"]
-    omnia_telemetry_support = data["omnia_telemetry_support"]
-    visualization_support = data["visualization_support"]
 
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    # Check that telemetry is present in software_config.json and if at least one of the telemetry_supoort var is true, check that these fields are not empty
-    softwares = software_config_json["softwares"]
-
-    if contains_software(softwares, "telemetry"):
-        if idrac_telemetry_support or omnia_telemetry_support or visualization_support:
-            mandatory_fields = ["pod_external_ip_range", "k8s_cni", "k8s_service_addresses", "k8s_pod_network_cidr", "timescaledb_user", "timescaledb_password"]
-            check_mandatory_fields(mandatory_fields, data, errors)
+    idrac_telemetry_support = data.get("idrac_telemetry_support")
+    federated_idrac_telemetry_collection = data.get("federated_idrac_telemetry_collection")
 
     if idrac_telemetry_support:
-        mandatory_fields = ["idrac_username", "idrac_password", "mysqldb_user", "mysqldb_password", "mysqldb_root_password"]
-        check_mandatory_fields(mandatory_fields, data, errors)
+        collection_type = data.get("idrac_telemetry_collection_type")
+        if collection_type and collection_type not in config.supported_telemetry_collection_type:
+            errors.append(create_error_msg(
+                "idrac_telemetry_collection_type",
+                collection_type,
+                en_us_validation_msg.UNSUPPORTED_IDRAC_TELEMETRY_COLLECTION_TYPE
+                )
+            )
 
-    if omnia_telemetry_support:
-        mandatory_fields = ["omnia_telemetry_collection_interval", "collect_regular_metrics", "collect_health_check_metrics", "collect_gpu_metrics", "fuzzy_offset", "metric_collection_timeout"]
-        check_mandatory_fields(mandatory_fields, data, errors)
-
-        # fuzzy_offset should be between 60 and omnia_telemetry_collection_interval value
-        fuzzy_offset = data["fuzzy_offset"]
-        if fuzzy_offset < 60 or fuzzy_offset > data["omnia_telemetry_collection_interval"]:
-            errors.append(create_error_msg("fuzzy_offset", fuzzy_offset, en_us_validation_msg.fuzzy_offset_fail_msg))
-
-        # metric_collection_timeout should be greater than 0 and less than omnia_telemetry_collection_interval value
-        metric_collection_timeout = data["metric_collection_timeout"]
-        if (metric_collection_timeout < 0 or metric_collection_timeout > data["omnia_telemetry_collection_interval"]):
-            errors.append(create_error_msg("metric_collection_timeout", metric_collection_timeout, en_us_validation_msg.metric_collection_timeout_fail_msg))
-
-    if visualization_support:
-        mandatory_fields = ["grafana_username", "grafana_password", "mount_location"]
-        check_mandatory_fields(mandatory_fields, data, errors)
-
-        # '/' is mandatory at the end of the mount_location path.
-        mount_location = data["mount_location"]
-        if mount_location[-1] != "/":
-            errors.append(create_error_msg("mount_location", mount_location, en_us_validation_msg.mount_location_fail_msg))
-
-        # grafana_password should not be kept 'admin'
-        grafana_password = data["grafana_password"]
-        if grafana_password == "admin":
-            errors.append(create_error_msg("grafana_password", grafana_password, en_us_validation_msg.grafana_password_fail_msg))
-
-
-    # Check that mysqldb_user is not root
-    if data["mysqldb_user"] == "root":
-        errors.append(create_error_msg("mysqldb_user", data["mysqldb_user"], en_us_validation_msg.mysqldb_user_fail_msg))
-
-    # Added code for Omnia 1.7 k8 prometheus support parameters
-    # Validate prometheus_gaudi_support, k8s_prometheus_support, and prometheus_scrape_interval
-    prometheus_gaudi_support = data["prometheus_gaudi_support"]
-    k8s_prometheus_support = data["k8s_prometheus_support"]
-    prometheus_scrape_interval = data["prometheus_scrape_interval"]
-
-    if prometheus_gaudi_support:
-        mandatory_fields = ["k8s_prometheus_support", "prometheus_scrape_interval"]
-        check_mandatory_fields(mandatory_fields, data, errors)
-
-    # Check k8s_prometheus_support is True and prometheus_scrape_interval is >= 15 when prometheus_gaudi_support is True
-    if prometheus_gaudi_support and isinstance(prometheus_gaudi_support, str):
-        if not k8s_prometheus_support:
-            errors.append(create_error_msg("k8s_prometheus_support", k8s_prometheus_support, en_us_validation_msg.k8s_prometheus_support_fail_msg))
-
-        if prometheus_scrape_interval < 15:
-            errors.append(create_error_msg("prometheus_scrape_interval", prometheus_scrape_interval, en_us_validation_msg.prometheus_scrape_interval_fail_msg))
-
-    # Check that IP addresses do not overlap with admin network
-    admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
-    admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
-    admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
-    pod_external_ip_range = data["pod_external_ip_range"]
-    k8s_service_addresses = data["k8s_service_addresses"]
-    k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
-
-    ip_ranges = [admin_static_range, admin_dynamic_range, pod_external_ip_range, k8s_service_addresses, k8s_pod_network_cidr]
-
-    does_overlap, overlap_ips = validation_utils.check_overlap(ip_ranges)
-    if does_overlap:
-        errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.telemetry_ip_overlap_fail_msg))
+    if federated_idrac_telemetry_collection and not idrac_telemetry_support:
+        errors.append(create_error_msg(
+                "federated_idrac_telemetry_collection",
+                federated_idrac_telemetry_collection,
+                en_us_validation_msg.FEDERATED_IDRAC_TELEMETRY_COLLECTION_FAIL
+                )
+            )
     return errors
 
 def validate_additional_software(
@@ -423,10 +483,11 @@ def validate_additional_software(
     """
     errors = []
     # Get all keys in the data
-    sub_groups = flatten_sub_groups(list(data.keys()))
+    raw_subgroups = list(data.keys())
+    flattened_sub_groups = set(flatten_sub_groups(list(data.keys())))
 
     # Check if additional_software is not given in the config
-    if "additional_software" not in sub_groups:
+    if "additional_software" not in flattened_sub_groups:
         errors.append(
             create_error_msg(
                 "additional_software.json",
@@ -451,7 +512,7 @@ def validate_additional_software(
     available_roles_and_groups.update(group for role in valid_roles for group in role['groups'])
 
     # Check if a role or group name is present in the roles config file
-    for sub_group in sub_groups:
+    for sub_group in flattened_sub_groups:
         if sub_group not in available_roles_and_groups:
             errors.append(
                 create_error_msg(
@@ -464,12 +525,17 @@ def validate_additional_software(
     software_config_file_path = create_file_path(config_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
 
+    # check if additional_software is present in software_config.json
+    if "additional_software" not in software_config_json:
+        logger.info("The additional_software field is not present in software_config.json")
+        software_config_json["additional_software"] = []
+
     sub_groups_in_software_config = list(sub_group['name'] for sub_group in
                                             software_config_json["additional_software"])
 
     # Check for the additional_software key in software_config.json
     for sub_group in sub_groups_in_software_config:
-        if sub_group not in sub_groups:
+        if sub_group not in raw_subgroups:
             errors.append(
                 create_error_msg(
                     "software_config.json",

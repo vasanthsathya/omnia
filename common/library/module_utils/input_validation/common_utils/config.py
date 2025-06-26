@@ -61,7 +61,7 @@ input_file_inventory = {
         files["passwordless_ssh_config"],
         files["software_config"]
     ],
-    "monitoring": [files["telemetry_config"]],
+    "telemetry": [files["telemetry_config"]],
     "local_repo": [files["local_repo_config"], files["software_config"]],
     "k8s": [
         files["omnia_config"],
@@ -73,7 +73,8 @@ input_file_inventory = {
     "prepare_oim": [
         files["high_availability_config"],
         files["roles_config"],
-        files["network_spec"]
+        files["network_spec"],
+        files["telemetry_config"]
     ],
     "high_availability": [files["high_availability_config"]],
     "additional_software": [files["additional_software"]],
@@ -143,6 +144,7 @@ os_version_ranges = {
 #dictionary used for local repo package type mapping
 TYPE_REQUIREMENTS = {
     "rpm": ["package", "repo_name"],
+    "rpm_list": ["package_list", "repo_name"],
     "ansible_galaxy_collection": ["package", "version"],
     "git": ["package", "version", "url"],
     "image": ["package", ["tag", "digest"]],  # Special: one of tag or digest
@@ -152,6 +154,8 @@ TYPE_REQUIREMENTS = {
     "manifest": ["package", "url"],
     "pip_module":["package"]
 }
+
+supported_telemetry_collection_type = ["prometheus"]
 
 # Dict of the file that can be encrypted and it's ansible vault key
 def get_vault_password(yaml_file):

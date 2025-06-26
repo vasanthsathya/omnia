@@ -10,6 +10,10 @@ on:
       - pub/telemetry
       - pub/composable_software_roles
       - pub/local_repo
+      - pub/telemetry_restructure
+      - pub/telemetry_service_oim_ha
+      - pub/new_arch_pylint
+      - pub/k8s
 
 jobs:
   build:

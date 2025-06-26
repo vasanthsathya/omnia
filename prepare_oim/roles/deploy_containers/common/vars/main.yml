@@ -60,6 +60,22 @@ pcs_firewall_ports:
   - "2224/tcp"
   - "2222/tcp"
 
+idrac_firewall_ports:
+  - "61613/tcp"
+  - "8161/tcp"
+  - "3306/tcp"
+  - "3000/tcp"
+
+prometheus_firewall_ports:
+  - "2112/tcp"
+  - "9090/tcp"
+
+visualization_firewall_ports:
+  - "3000/tcp"
+  - "3001/tcp"
+  - "5000/tcp"
+  - "3100/tcp"
+
 pcs_firewall_services:
   - "http"
   - "https"
@@ -68,20 +84,25 @@ internal_nfs_services:
   - nfs
   - rpc-bind
 
+ntp_firewall_service: ntp
+
 squid_firewall_ports:
   - "{{ squid_proxy_port }}/tcp"
 
-# Usage:
+# Usage: prepare_oim_completion.yml
+bmc_group_data_filename: "/opt/omnia/telemetry/bmc_group_data.csv"
+bmc_group_data_template: "bmc_group_data.j2"
+file_permissions: "0644"
 prepare_oim_completion_msg: |
   The playbook prepare_oim.yml has completed successfully. To create the offline repositories and
   registry for the cluster nodes, please execute the playbook local_repo/local_repo.yml as the next step.
 
 # podman_login.yml
-login_cmd: "podman login -u {{ docker_username }} -p {{ docker_password }}"
+login_cmd: "podman login docker.io -u {{ docker_username }} -p {{ docker_password }}"
 retry_count: "5"
 delay_time: "10"
 podman_login_fail_msg: "Podman login failed. Please ensure the podman login credentials in the input/omnia_config_credentials.yml are valid.
-If they are, this error can occur due to a pull limit issue or multiple requests. Please try running the playbook again after waiting for a while."
+ If they are, this error can occur due to a pull limit issue or multiple requests. Please try running the playbook again after waiting for a while."
 
 # Usage: add_known_hosts.yml
 ssh_config: "/root/.ssh/config"

@@ -25,6 +25,8 @@ playbook or role.
 """
 
 import os
+import re
+import ipaddress
 from ansible.module_utils.basic import AnsibleModule
 import  ansible.module_utils.discovery.omniadb_connection as omniadb # pylint: disable=all
 
@@ -35,6 +37,16 @@ module = AnsibleModule(argument_spec={
 INVENTORY_SOURCES_STR = module.params['inventory_sources']
 CONNECTION = None
 CURSOR = None
+
+def is_ip(value):
+    """
+    Checks if the given value is a valid IP address.
+    """
+    try:
+        ipaddress.ip_address(value)
+        return True  # It's a valid IP address
+    except ValueError:
+        return False  # Not an IP address
 
 def service_tag_host_mapping():
     """
@@ -92,6 +104,7 @@ def service_tag_host_mapping():
                 result_lines, is_content_modified = update_inventory_file_entries(
                     inventory_file_path, lines, result_lines, is_content_modified)
 
+
             if is_content_modified:
                 any_changes = True
                 # Write the modified lines back to the file
@@ -148,13 +161,14 @@ def update_inventory_file_entries(
                     )
                 # Check if the line have a service tag, node name or hostname
                 # but doesn't have ansible_host
-                if host and host.isalnum() and "ansible_host=" not in next_line:
+                if host and not is_ip(host) and re.fullmatch(r"[A-Za-z0-9.]+", host) and "ansible_host=" not in next_line:
 
                     next_line, is_content_modified = get_host_admin_ip(
                         host, group_status, token)
 
-        # Append service tag string to result lines.
-        result_lines.append(next_line.strip())
+        if next_line:
+            # Append service tag string to result lines.
+            result_lines.append(next_line.strip())
     return result_lines, is_content_modified
 
 def host_ip_update(row, host, group_status, token):
@@ -167,7 +181,7 @@ def host_ip_update(row, host, group_status, token):
         token (list): A list containing a hostname and a group name.
 
     Returns:
-        tuple: A tuple containing the updated host IP and a 
+        tuple: A tuple containing the updated host IP and a
                boolean indicating whether the content has been modified.
     """
     # Collect host ip if result is valid
@@ -182,7 +196,7 @@ def host_ip_update(row, host, group_status, token):
 
 def get_host_admin_ip(host, group_status, token):
     """
-    Retrieves the admin IP address of a host from the 
+    Retrieves the admin IP address of a host from the
     database using service tag, node name, or hostname.
 
     Parameters:

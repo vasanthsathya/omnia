@@ -50,8 +50,3 @@ python_version: "{{ ansible_python_interpreter }}"
 network_spec_path: "{{ hostvars['localhost']['input_project_dir'] }}/network_spec.yml"
 path_db: "{{ provision_shared_library_path }}/db_operations"
 delete_misc_networks: "{{ provision_shared_library_path }}/common/delete_networks.py"
-
-# Usage: configure_service_role_xcat_details.yml
-xcat_start_fail_msg: "Failed to start xcatd services"
-service_retries: 3
-xcatd_service: "xcatd.service"

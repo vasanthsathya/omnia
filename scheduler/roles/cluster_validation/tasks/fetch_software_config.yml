@@ -21,6 +21,7 @@
     set_intel_input_status: false
     set_intelgaudi_input_status: false
     nvidia_gpu_operator_support: false
+    plugins_deployment: true
 
 - name: Load software_config.json
   ansible.builtin.include_vars:

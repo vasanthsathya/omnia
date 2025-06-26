@@ -105,7 +105,7 @@ def schema(
         logger.error(message)
         return False
     except ValueError as valueerror:
-        message = f"Value error: {valueerror}"
+        message = f"Value error at {input_file_path}: {valueerror}"
         logger.error(message)
         return False
     except Exception as exception:
@@ -183,7 +183,7 @@ def logic(input_file_path, logger, module, omnia_base_dir, module_utils_base, pr
             logger.info(en_us_validation_msg.get_logic_success(input_file_path))
             return True
     except ValueError as valueerror:
-        message = f"Value error: {valueerror}"
+        message = f"Value error at {input_file_path}: {valueerror}"
         logger.error(message, exc_info=True)
         return False
     except Exception as exception:
