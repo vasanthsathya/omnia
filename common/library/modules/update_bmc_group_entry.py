@@ -39,7 +39,7 @@ def is_bmc_reachable_or_auth(ip, username, password, module):
         response = requests.get(
             url,
             auth=HTTPBasicAuth(username, password),
-            timeout=5,
+            timeout=30,
             verify=False
         )
 
@@ -77,8 +77,11 @@ def read_entries_csv(csv_path, module):
         try:
             with open(csv_path, mode='r', encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
+
                 actual_columns = set(reader.fieldnames or [])
-                if not expected_columns.issubset(actual_columns):
+                if not actual_columns:
+                    return entries
+                if expected_columns != actual_columns:
                     module.fail_json(
                         msg=f"CSV file at {csv_path} is missing required columns. \
                             Expected: {expected_columns}, \
@@ -86,6 +89,10 @@ def read_entries_csv(csv_path, module):
                     )
 
                 for row in reader:
+                    if not row['BMC_IP']:
+                        module.fail_json(
+                            msg=f"CSV file at {csv_path} contains an entry with an empty 'BMC_IP'."
+                        )
                     entries[row['BMC_IP']] = row
         except csv.Error as e:
             module.fail_json(msg=f"Failed to parse CSV file at {csv_path}: {str(e)}")
@@ -142,12 +149,13 @@ def add_bmc_entries(nodes, existing_entries, bmc_creds, module, result):
                     result['unreachable_bmc'].append(bmc_ip)
             result['changed'] = True
 
-def verify_bmc_entries(existing_entries, bmc_creds, module, result):
+def verify_bmc_entries(nodes, bmc_creds, module, result):
     """
     Verify reachability and authentication of BMC entries in the existing entries.
     """
 
-    for bmc_ip, _ in existing_entries.items():
+    for node in nodes:
+        bmc_ip = node.get('bmc_ip')
         is_valid, code = is_bmc_reachable_or_auth(bmc_ip, bmc_creds.get('username'),
                                                   bmc_creds.get('password'), module)
         if is_valid:
@@ -165,7 +173,7 @@ def verify_bmc_entries(existing_entries, bmc_creds, module, result):
 def main():
     "Main function for the custom ansible module - update_bmc_group_entry"
     module_args = {
-        'csv_path': {'type': 'str', 'required': True},
+        'csv_path': {'type': 'str', 'required': False, 'default': '/opt/omnia/telemetry/bmc_group_entries.csv' },
         'nodes': {'type': 'list', 'elements': 'dict', 'required': False, 'default': []},
         'bmc_username': {'type': 'str', 'required': False, 'no_log': True},
         'bmc_password': {'type': 'str', 'required': False, 'no_log': True},
@@ -194,12 +202,12 @@ def main():
 
     if delete:
         delete_bmc_entries(nodes, existing_entries, result)
+        write_entries_csv(csv_path, existing_entries)
     elif verify_bmc:
-        verify_bmc_entries(existing_entries, bmc_creds, module, result)
+        verify_bmc_entries(nodes, bmc_creds, module, result)
     else:
         add_bmc_entries(nodes, existing_entries, bmc_creds, module, result)
-
-    write_entries_csv(csv_path, existing_entries)
+        write_entries_csv(csv_path, existing_entries)
     module.exit_json(**result)
 
 if __name__ == '__main__':

@@ -41,6 +41,24 @@
     pulp_protocol: "{{ pulp_content_origin | urlsplit('scheme') | lower }}"
     pulp_server_port: "{{ pulp_content_origin | urlsplit('port') }}"
 
+- name: Create the podman secrets directory when telemetry or visualization support is true
+  when:
+    - hostvars['localhost']['idrac_telemetry_support'] or hostvars['localhost']['visualization_support']
+  block:
+    - name: Create the podman secrets directory
+      ansible.builtin.file:
+        path: "{{ podman_secrets_dir }}"
+        state: directory
+        mode: "{{ secret_dir_permission }}"
+
+    - name: Copy the secrets file from OIM
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        remote_src: true
+      loop: "{{ podman_secrets_file }}"
+
 - name: Re-create pcs-start.sh with all container resources
   ansible.builtin.template:
     src: "{{ item.template }}"
@@ -77,6 +95,23 @@
       ansible.builtin.set_fact:
         pcs_resources: "{{ pcs_resources + [squid_name] }}"
       when: hostvars['localhost']['enable_routed_internet']
+
+    - name: Add idract_telemetry to pcs-resources if idrac_telemetry_support is true
+      ansible.builtin.set_fact:
+        pcs_resources: "{{ pcs_resources + telemetry_group_resources }}"
+      when: hostvars['localhost']['idrac_telemetry_support']
+
+    - name: Add visualization to pcs-resources if visualization_support is true
+      ansible.builtin.set_fact:
+        pcs_resources: "{{ pcs_resources + visualization_group_resources }}"
+      when: hostvars['localhost']['visualization_support']
+
+    - name: Add prometheus to pcs-resources if idrac_telemetry_support and idrac_telemetry_collection_type is prometheus
+      ansible.builtin.set_fact:
+        pcs_resources: "{{ pcs_resources + prometheus_group_resources }}"
+      when:
+        - hostvars['localhost']['idrac_telemetry_support']
+        - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
 
     - name: Parse PCS resources for any that are not started
       ansible.builtin.shell: |

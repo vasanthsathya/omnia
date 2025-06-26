@@ -13,29 +13,53 @@
 #  limitations under the License.
 ---
 
-- name: Read software_config.json
-  ansible.builtin.include_vars:
-    file: "{{ software_config_file }}"
-    name: software_config
+- name: Load software_config.json as user_config
+  block:
+    - name: Load software_config.json as user_config
+      ansible.builtin.include_vars:
+        file: "{{ software_config_file }}"
+        name: software_config
+      register: include_software_config
+      no_log: true
+  rescue:
+    - name: Failed to load software_config.json as user_config
+      ansible.builtin.fail:
+        msg: "{{ software_config_syntax_fail_msg }} Error: {{ include_software_config.message }}"
 
-- name: Check if telemetry entry is present in software_config.json
-  ansible.builtin.set_fact:
-    telemetry_entry_present: "{{ software_config['softwares'] | selectattr('name', 'equalto', 'telemetry') | list | count > 0 }}"
+- name: Check downloaded software log - software.csv file exists
+  ansible.builtin.stat:
+    path: "{{ downloaded_sw_log_csv }}"
+  register: sw_log_file
 
-- name: Check if slurm entry is present in software_config.json
-  ansible.builtin.set_fact:
-    slurm_entry_present: "{{ software_config['softwares'] | selectattr('name', 'equalto', 'slurm') | list | count > 0 }}"
+- name: Fail if software download log file not found
+  ansible.builtin.fail:
+    msg: "{{ local_repo_sn_missing_msg }}"
+  when: not sw_log_file.stat.exists
 
-- name: Check if k8s entry is present in software_config.json
+- name: Read software.csv content
+  ansible.builtin.slurp:
+    path: "{{ downloaded_sw_log_csv }}"
+  register: sw_log_content
+  when: sw_log_file.stat.exists
+
+- name: Decode content and check if it contains service_node,success
   ansible.builtin.set_fact:
-    k8s_entry_present: "{{ software_config['softwares'] | selectattr('name', 'equalto', 'k8s') | list | count > 0 }}"
+    sw_log_lines: "{{ sw_log_content.content | b64decode | split('\n') }}"
+
+- name: Set service_node_downloaded true if line is present
+  ansible.builtin.set_fact:
+    service_node_downloaded: true
+  when:
+    - "'service_node,success' in sw_log_lines"
+
+- name: Fail if service_node,success not found
+  ansible.builtin.fail:
+    msg: "{{ local_repo_sn_missing_msg }}"
+  when: service_node_downloaded is not defined
 
 - name: Proceed with telemetry validation if telemetry entry present in software_config.json
-  when: telemetry_entry_present
+  when: service_node_downloaded
   block:
-    - name: Include local_repo_access.yml
-      ansible.builtin.include_vars: "{{ local_repo_access_path }}"
-
     - name: Get cluster_os_type from software_config.json
       ansible.builtin.set_fact:
         cluster_os_type: "{{ software_config['cluster_os_type'] }}"
@@ -46,4 +70,28 @@
 
     - name: Load telemetry.json
       ansible.builtin.set_fact:
-        telemetry_packages: "{{ lookup('file', telemetry_packages_file) | from_json }}"
+        service_node_packages: "{{ lookup('file', sn_packages_file) | from_json }}"
+
+    - name: Extract service_node.json and set facts for pip_modules and python_version
+      ansible.builtin.set_fact:
+        python_package_name: >-
+          {{ service_node_packages['service_node']['cluster']
+          | selectattr('type', 'equalto', 'rpm')
+          | selectattr('package', 'search', 'python3')
+          | map(attribute='package') | join }}
+        sn_pip_packages: >-
+          {{ service_node_packages['service_node']['cluster']
+            | selectattr('type', 'equalto', 'pip_module')
+            | map(attribute='package')
+            | list }}
+
+- name: Extract python version from python package name
+  ansible.builtin.set_fact:
+    python_version: "{{ python_package_name }}"
+
+- name: Include local_repo_access.yml
+  ansible.builtin.include_vars: "{{ local_repo_access_path }}"
+
+- name: Set pulp content origin value
+  ansible.builtin.set_fact:
+    offline_pip_module_path: "{{ offline_pip_module_path }}"

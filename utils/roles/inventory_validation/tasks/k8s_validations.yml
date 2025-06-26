@@ -39,12 +39,12 @@
 - name: Ensure correct Kubernetes in HA setup
   when: enable_k8s_ha
   block:
-    - name: Kube control plane group to contain at least 1 kube control plane
+    - name: Kube control plane group to contain more than 1 kube control plane
       ansible.builtin.assert:
         that:
           - "((groups['kube_control_plane'] | length | int) > 1)"
         success_msg: "{{ kube_one_node_validation_success_msg }}"
-        fail_msg: "{{ kube_control_plane_validation_fail_msg }}"
+        fail_msg: "{{ kube_control_plane_ha_validation_fail_msg }}"
 
     - name: Warning Kube control plane group contain even number of nodes in the inventory
       ansible.builtin.pause:

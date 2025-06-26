@@ -46,26 +46,6 @@
     - amd
   tags: amd
 
-# - name: Validate input parameters for CUDA Accelerator and setup nfs server if needed
-#   hosts: localhost
-#   connection: local
-#   gather_facts: true
-#   tasks:
-#     - name: Validate variables from network_config.yml
-#       ansible.builtin.include_role:
-#         name: nvidia
-#         tasks_from: validations.yml
-#   tags: nvidia
-
-# - name: Setup NFS client and install cuda drivers on nodes
-#   hosts: all
-#   roles:
-#     - nvidia
-#   handlers:
-#     - name: Reboot node
-#       ansible.builtin.reboot:
-#   tags: nvidia
-
 - name: Install Intel Gaudi drivers on nodes
   hosts: slurm_control_node, slurm_node, kube_control_plane, kube_node, auth_server, login, etcd
   gather_facts: true

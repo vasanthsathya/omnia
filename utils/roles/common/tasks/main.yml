@@ -24,6 +24,9 @@
   ansible.builtin.include_tasks: include_omnia_config_credentials.yml
   tags: 'credentials_config'
 
+- name: Validate k8s metadata file
+  ansible.builtin.include_tasks: validate_k8s_metadata.yml
+
 - name: Include storage_config.yml
   tags: 'storage_config'
   block:

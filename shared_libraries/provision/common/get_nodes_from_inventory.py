@@ -61,6 +61,11 @@ def fetch_node_name(cursor, identifier):
     Returns:
         str or None: The node name if found, None otherwise.
     """
+    sql_query = """
+        SELECT node, status
+        FROM cluster.nodeinfo
+        WHERE admin_ip = %s
+    """
     if is_ip(identifier):
         cursor.execute(sql_query, (identifier,))
     else:
