@@ -22,17 +22,17 @@
     image_tar_path: "{{ images_directory_path }}/{{ safe_image_name }}.tar"
     image_digest_path: "{{ images_directory_path }}/.{{ safe_image_name }}.digest"
 
-- name: Check if {{ image_name }} image tar exists
+- name: Check if {{ image_name }} image tar exists # noqa: name[template]
   ansible.builtin.stat:
     path: "{{ image_tar_path }}"
   register: tar_file_check
 
-- name: Check if {{ image_name }} digest file exists
+- name: Check if {{ image_name }} digest file exists # noqa: name[template]
   ansible.builtin.stat:
     path: "{{ image_digest_path }}"
   register: digest_file_check
 
-- name: Get {{ image_name }} image info
+- name: Get {{ image_name }} image info # noqa: name[template]
   containers.podman.podman_image_info:
     name: "{{ image_name }}"
   register: image_info
@@ -50,7 +50,7 @@
   register: previous_digest
   when: digest_file_check.stat.exists
 
-- name: Determine if {{ image_name }} image changed
+- name: Determine if {{ image_name }} image changed # noqa: name[template]
   ansible.builtin.set_fact:
     image_changed: "{{ (previous_digest.content | b64decode).strip() != current_digest }}"
   when:
@@ -76,7 +76,7 @@
 - name: Save image as tar
   block:
 
-    - name: Save {{ image_name }} image as tar at {{ image_tar_path }} (this may take a few minutes)
+    - name: Save {{ image_name }} image as tar at {{ image_tar_path }} (this may take a few minutes) # noqa: name[template]
       containers.podman.podman_save:
         image: "{{ image_name }}"
         dest: "{{ image_tar_path }}"
@@ -93,6 +93,7 @@
       ansible.builtin.copy:
         content: "{{ current_digest }}"
         dest: "{{ image_digest_path }}"
+        mode: "{{ read_write_mode }}"
       when:
         - image_changed | default(true) or not tar_file_check.stat.exists
         - saved_result is defined and saved_result is changed
