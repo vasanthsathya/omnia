@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=import-error,no-name-in-module,too-many-positional-arguments,too-many-arguments,too-many-locals
+# pylint: disable=import-error,no-name-in-module,too-many-branches,too-many-positional-arguments,too-many-arguments,too-many-locals
 """This module handles mirroring of container images in the local repository."""
 
 import re
 import json
-import subprocess
 from multiprocessing import Lock
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
