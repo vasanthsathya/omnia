@@ -18,7 +18,7 @@
   block:
     - name: Find all tar files in the image directory
       ansible.builtin.find:
-        paths: "{{ tar_directory }}"
+        paths: "{{ omnia_image_tar_directory }}"
         patterns: "*.tar"
         recurse: false
       register: found_tarballs

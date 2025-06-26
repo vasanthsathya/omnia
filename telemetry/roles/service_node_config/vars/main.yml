@@ -67,7 +67,6 @@ prometheus_podman_volumes:
 
 # Usage: pull_podman_images.yml
 omnia_image_tar_directory: "{{ omnia_nfs_share }}/images"
-omnia_images_tar: "{{ omnia_nfs_share }}/images/omnia_images.tar"
 load_images_fail_msg: |
   "Failed to load the telemetry images from the tar file {{ item.path }}.
   Ensure the tar file is present and not corrupt in the shared folder else execute
