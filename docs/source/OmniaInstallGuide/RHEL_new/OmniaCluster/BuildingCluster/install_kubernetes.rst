@@ -139,3 +139,10 @@ Omnia installs the following packages on top of the Kubernetes stack:
     Omnia installs the multus plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
 
     Click `here <https://github.com/k8snetworkplumbingwg/multus-cni>`_ for more information.
+
+[Optional] Dynamic Kubernetes installation
+=============================================
+
+To set up any other Kubernetes version apart from what is present as default in the ``input/software_config.json`` file, `click here <dynamic_k8s.html>`_.
+
+.. note:: Currently Omnia only supports Kubernetes versions compatible with the last 3 releases of Kubespray. 
