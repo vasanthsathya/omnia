@@ -12,3 +12,92 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
+
+- name: Ensure namespace exists
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ telemetry_namespace }}"
+
+- name: Persistent volume claim for prometheusdb
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: "{{ prometheus_pvc_name }}"
+        namespace: "{{ telemetry_namespace }}"
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: "{{ prometheus_storage }}"
+        storageClassName: "{{ storage_class_name }}"
+
+- name: Prometheus pod definition
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: StatefulSet
+      metadata:
+        name: "{{ prometheus_k8s_name }}"
+        namespace: "{{ telemetry_namespace }}"
+      spec:
+        selector:
+          matchLabels:
+            app: "{{ prometheus_k8s_name }}"
+        serviceName: "{{ prometheus_k8s_name }}"
+        replicas: "{{ statefulset_replicas }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ prometheus_k8s_name }}"
+          spec:
+            volumes:
+              - name: prometheus-pvc
+                persistentVolumeClaim:
+                  claimName: "{{ prometheus_pvc_name }}"
+
+            containers:
+              - name: prometheus
+                image: "{{ prometheus_image }}"
+                imagePullPolicy: "IfNotPresent"
+                volumeMounts:
+                  - mountPath: /prometheus
+                    name: prometheus-pvc
+                env:
+                  - name: node.name
+                    value: prometheus
+                  - name: PROMETHEUS_DB
+                    value: poweredge_telemetry_metrics
+                ports:
+                  - containerPort: "{{ prometheus_container_port }}"
+                command:
+                  - /bin/prometheus
+                  - "--storage.tsdb.path=/prometheus"
+                  - "--web.enable-lifecycle"
+
+- name: Service for prometheus
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ prometheus_k8s_name }}"
+        namespace: "{{ telemetry_namespace }}"
+        labels:
+          app: "{{ prometheus_k8s_name }}"
+      spec:
+        type: LoadBalancer
+        ports:
+          - name: prometheus
+            port: "{{ prometheus_container_port }}"
+        selector:
+          app: "{{ prometheus_k8s_name }}"

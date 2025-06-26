@@ -12,3 +12,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
+
+# Usage: idrac_telemetry_deployment.yml
+telemetry_namespace: "telemetry"
+idrac_telemetry_k8s_name: idrac-telemetry
+go_image: "docker.io/library/golang:1.24"
+activemq_image: "docker.io/rmohr/activemq:5.15.9"
+activemq_http_port_1: 8161
+activemq_http_port_2: 61616
+messagebus_http_port: 61613
+configui_http_port: 8082
+
+# Usage: prometheus_deployment.yml
+prometheus_pvc_name: "prometheus_pvc"
+prometheus_k8s_name: "prometheus"
+prometheus_image: "docker.io/prom/prometheus:v3.4.1"
+prometheus_container_port: 9090
+statefulset_replicas: 1
+prometheus_storage: 1Gi
+storage_class_name: "nfs-client"
+prometheus_service_port: 30090
