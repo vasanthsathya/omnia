@@ -60,6 +60,8 @@ for tar in {{ container_images_path }}*.tar; do
     echo "INFO: Successfully loaded $tar" >> "$LOGFILE"
   else
     echo "ERROR: Failed to load $tar" >> "$LOGFILE"
+  fi
+done
 
 
 echo -e "INFO: Copying omnia_pcs quadlet file from NFS." >> "$LOGFILE"
