@@ -73,6 +73,7 @@
   roles:
     - oim_ha_node_config
 
+# Commenting service node tasks. This will be enabled in future
 # - name: Render template for telemetry
 #   hosts: localhost
 #   connection: local
