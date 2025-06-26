@@ -14,15 +14,12 @@
 
 ---
 
-- name: Validate omniaimage tars
-  ansible.builtin.include_tasks: "validate_image_tars.yml"
-
 - name: Pull podman images from tar file
   block:
     - name: Load required image tarballs using podman
       containers.podman.podman_load:
         input: "{{ omnia_images_dir_path }}/{{ item }}"
-      loop: "{{ expected_tarballs }}"
+      loop: "{{ hostvars['localhost']['expected_tarballs'] }}"
       loop_control:
         label: "{{ item }}"
       when: (missing_tars | length == 0)

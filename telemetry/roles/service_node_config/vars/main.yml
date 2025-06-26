@@ -66,18 +66,6 @@ prometheus_podman_volumes:
   - { name: "prometheus_log", path: "{{ prometheus_log_dir }}" }
 
 # Usage: pull_podman_images.yml
-
-# Usage: validate_image_tars.yml
-omnia_images_dir_path: "/opt/omnia/images"
-# noqa: yaml[line-length]
-omnia_images_tar_missing_msg: |
-  Following images tarball(s) are missing: {{ missing_tars }}.
-  To ensure these tar files are present at {{ omnia_images_dir_path }}, execute the utility below:
-
-    `ansible-playbook utils/save_container_images.yml -e 'visualization_support=true idrac_telemetry_support=true k8s_support=true'`
-
-  After saving the images, re-run the telemetry playbook.
-
 load_images_fail_msg: |
   Failed to load images from the tar file {{ item }}. Ensure the tar file is present and not corrupt.
   Execute utility `utils/save_container_images.yml -e 'container_images=[{{ item }}]'`
