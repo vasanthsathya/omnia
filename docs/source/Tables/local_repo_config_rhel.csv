@@ -15,11 +15,29 @@
 * This variable accepts the URL and port of the user's own software image registry. 
 * If you have your own registry and want Omnia to use it, you can specify its URL and port using this variable. If the package is available there, Omnia will pull the image from the ``user_registry`` instead of the Internet.
 * Compute nodes can directly mirror images from the URLs listed in the ``user_registry``, using ``http_proxy``.
-* **Format**: ``- { host: <URL>:<port>, cert_path: ""<certificate path>"" }``
-* ``host`` captures the URL and port of the ``user_registry``.
-* ``cert_path`` captures the absolute path of the security certificates for each registry. If this path is not provided, insecure registries are configured.
+* **Format**: ``- { host: <registry URL or hostname>, cert_path: ""<certificate path>"" , key_path: """", name: """", requires_auth: <true or false>}``
 
-.. note:: If similar repository URLs are present in both ``user_repo_url`` and ``user_registry``, Omnia downloads the image from the ``user_registry``."
+    * ``host``: The registry URL/hostname (for example, ``10.11.0.100`` or ``abcd.dev.test``).
+    * ``cert_path``: Absolute path to the CA certificate file for the registry. If kept blank, the registry is treated as insecure.
+    * ``key_path``: Path to the client key file, if required by the registry.
+    * ``name``: A unique identifier for the registry.
+    * ``requires_auth``: Set to ``true`` if the registry requires authentication with username or password, otherwise set to ``false``.
+
+* **Example**: ::
+
+              user_registry:
+                       - { host: 10.11.0.100, cert_path: ""/home/ca.crt"", key_path: """", name: ""local"", requires_auth: true }
+                       - { host: hostname.registry.test, cert_path: """", key_path: """", name: ""external"", requires_auth: false }
+
+* If the ``user_registry`` requires authentication, then set ``requires_auth`` to true and update the ``/opt/omnia/input/project_default/user_registry_credential.yml`` file with the necessary details and credentials.
+
+    * ``name``: User registry name, name should match exact name provided in ``local_repo_config.yml``.
+    * ``username``: Provide if user registry requires username to authenticate.
+    * ``password``: Provide if user registry requires password to authenticate.
+    * **Format**: ::
+
+                      user_registry_credential:
+                             - {name: """", username: """", password: """"}"
 **rhel_os_url**,Mandatory,"* **Type**: string
 * Mandatory when ``cluster_os_type`` is ``rhel`` in ``/opt/omnia/input/project_default/software_config.json``.
 * Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
