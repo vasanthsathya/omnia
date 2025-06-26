@@ -79,7 +79,7 @@ echo "{{ nfs_server_ip }}:{{ nfs_server_share_path }} {{ oim_shared_path }} nfs 
 {% endif %}
 
 
-echo "INFO: Loading container images from {{ container_images_dir }} dir " >> "$LOGFILE"
+echo "INFO: Loading container images from {{ container_images_path }} dir " >> "$LOGFILE"
 for tar in {{ container_images_path }}*.tar; do
   echo "INFO: Loading container image from $tar" >> "$LOGFILE"
   if podman load -i "$tar" >> "$LOGFILE" 2>&1; then
