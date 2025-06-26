@@ -24,8 +24,9 @@ messagebus_http_port: 61613
 configui_http_port: 8082
 
 # Usage: prometheus_deployment.yml
-prometheus_pvc_name: "prometheus_pvc"
+prometheus_pvc_name: "prometheus-pvc"
 prometheus_k8s_name: "prometheus"
+prometheus_configmap_name: "prometheus-config"
 prometheus_image: "docker.io/prom/prometheus:v3.4.1"
 prometheus_container_port: 9090
 statefulset_replicas: 1

@@ -39,6 +39,24 @@
             storage: "{{ prometheus_storage }}"
         storageClassName: "{{ storage_class_name }}"
 
+- name: Persistent volume claim for prometheusdb
+  kubernetes.core.k8s:
+    state: present
+    definition:
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: "{{ prometheus_configmap_name }}"
+      namespace: "{{ telemetry_namespace }}"
+    data:
+      prometheus.yml: |
+        global:
+          scrape_interval: 15s
+        scrape_configs:
+          - job_name: 'prometheus'
+            static_configs:
+              - targets: ['localhost:9090']
+
 - name: Prometheus pod definition
   kubernetes.core.k8s:
     state: present
@@ -60,17 +78,23 @@
               app: "{{ prometheus_k8s_name }}"
           spec:
             volumes:
-              - name: prometheus-pvc
+              - name: prometheus-pvc-volume
                 persistentVolumeClaim:
                   claimName: "{{ prometheus_pvc_name }}"
+              - name: prometheus-config-volume
+                configMap:
+                  name: "{{ prometheus_configmap_name }}"
 
             containers:
               - name: prometheus
                 image: "{{ prometheus_image }}"
                 imagePullPolicy: "IfNotPresent"
                 volumeMounts:
-                  - mountPath: /prometheus
-                    name: prometheus-pvc
+                  - name: prometheus-pvc-volume
+                    mountPath: /prometheus
+                  - name: prometheus-config-volume
+                    mountPath: /config
+                    readOnly: true
                 env:
                   - name: node.name
                     value: prometheus
@@ -79,9 +103,13 @@
                 ports:
                   - containerPort: "{{ prometheus_container_port }}"
                 command:
-                  - /bin/prometheus
-                  - "--storage.tsdb.path=/prometheus"
-                  - "--web.enable-lifecycle"
+                  - "/bin/sh"
+                  - "-c"
+                  - >
+                    /bin/prometheus
+                    --config.file=/config/prometheus.yml
+                    --storage.tsdb.path=/prometheus
+                    --web.enable-lifecycle
 
 - name: Service for prometheus
   kubernetes.core.k8s:
