@@ -55,8 +55,13 @@
           'docker.io/grafana/promtail:' + promtail_image_tag
         ] }}
 
-- name: Save container images (This task may take 10 mins)
-  containers.podman.podman_save:
-    image: "{{ container_images }}"
-    dest: "{{ images_directory_path }}/{{ container_tar_file }}"
-    multi_image_archive: true
+# - name: Save container images (This task may take 10 mins)
+#   containers.podman.podman_save:
+#     image: "{{ container_images }}"
+#     dest: "{{ images_directory_path }}/{{ container_tar_file }}"
+#     multi_image_archive: true
+
+- name: Save container images
+  ansible.builtin.import_playbook: "{{ role_path }}/../../utils/save_container_images.yml"
+  vars:
+    container_images: "{{ container_images }}"

@@ -16,7 +16,7 @@
 # Usage: save_container_images.yml  playbook to call from other playbook
 
 # ---- When we want to use the image already mentioned in save_container_images roles var ---
-# - name: Create oim group and provision group
+# - name: Save Container Images
 #   ansible.builtin.import_playbook: <path_to_utils>/save_container_images.yml
 #   vars:
 #     # visualization_support: true
@@ -25,7 +25,7 @@
 
 
 # ---- When we want to save specifice images list ---
-# - name: Create oim group and provision group
+# - name: Save Container Images
 #   ansible.builtin.import_playbook: <path_to_utils>/save_container_images.yml
 #   vars:
 #     container_images:
