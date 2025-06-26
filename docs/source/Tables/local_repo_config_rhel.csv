@@ -39,9 +39,11 @@
                       user_registry_credential:
                              - {name: """", username: """", password: """"}
 
-.. note:: The ``user_registry_credential.yml``file  will get encrypted once ``local_repo.yml`` playbook has been executed. To edit or modify any fields, use the following command: ::
-
-                          ansible-vault edit user_registry_credential.yml --vault-password-file .local_repo_credentials_key"
+.. note:: The ``user_registry_credential.yml``file  will get encrypted once ``local_repo.yml`` playbook has been executed. To edit or modify any fields, use the following command: 
+     
+      ::
+              
+                     ansible-vault edit user_registry_credential.yml --vault-password-file .local_repo_credentials_key"
 **rhel_os_url**,Mandatory,"* **Type**: string
 * Mandatory when ``cluster_os_type`` is ``rhel`` in ``/opt/omnia/input/project_default/software_config.json``.
 * Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
