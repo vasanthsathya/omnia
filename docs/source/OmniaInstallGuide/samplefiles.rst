@@ -93,45 +93,34 @@ software_config.json for RHEL
 
 
 
-inventory file for IP rule assignment
----------------------------------------
+inventory file for additional NIC and Kernel parameter configuration
+-------------------------------------------------------------------------
+
+.. note:: You can use either node IPs, service tags, or hostnames, or any combination of them in the inventory file below.
+
+Choose fom any of the templates provided below:
 
 ::
 
-     all:
-       hosts:
-         node1:
-           nic_info:
-             - { nic_name: eno20195np0, gateway: 10.10.1.254, metric: 101 }
-             - { nic_name: eno20295np0, gateway: 10.10.2.254, metric: 102 }
-             - { nic_name: eno20095np0, gateway: 10.10.3.254, metric: 103 }
-             - { nic_name: eno19995np0, gateway: 10.10.4.254, metric: 104 }
-             - { nic_name: eno19595np0, gateway: 10.10.5.254, metric: 105 }
-             - { nic_name: eno19695np0, gateway: 10.10.6.254, metric: 106 }
-             - { nic_name: eno19795np0, gateway: 10.10.7.254, metric: 107 }
-             - { nic_name: eno19895np0, gateway: 10.10.8.254, metric: 108 }
-         node02:
-           nic_info:
-             - { nic_name: enp129s0f0np0, gateway: 10.11.1.254, metric: 101 }
-             - { nic_name: enp33s0f0np0, gateway: 10.11.2.254, metric: 102 }
+    #---------Template1---------
 
-inventory file for additional NIC configuration
-------------------------------------------------
+    [cluster1]
+    10.5.0.1
+    10.5.0.2
 
-::
+    [cluster1:vars]
+    Categories=category-1
 
-    [node-group1]
-    10.5.0.3
+    #---------Template2---------
 
-    [node-group1:vars]
-    Categories=group-1
+    [cluster2]
+    10.5.0.5 Categories=category-4
+    10.5.0.6 Categories=category-5
 
-    [node-group2]
-    10.5.0.4
-    10.5.0.5
+    #---------Template3---------
 
-    [node-group2:vars]
-    Categories=group-2
+    10.5.0.3 Categories=category-2
+    10.5.0.4 Categories=category-3
 
 inventory file to delete node from the cluster
 -------------------------------------------------
@@ -166,11 +155,8 @@ powervault_inventory
     10.3.0.105
 
 
-
-
 NFS Server inventory file
 -------------------------
-
 
 ::
 
@@ -179,4 +165,14 @@ NFS Server inventory file
     [nfs]
     #node10
 
+
+Inventory for iDRAC telemetry
+------------------------------
+
+::
+
+    [idrac]
+    10.10.0.1
+
+.. note:: Only iDRAC/BMC IPs should be provided.
 
