@@ -46,3 +46,12 @@ Please check packages {{ hostvars['localhost']['package_list'] }} are available 
 # Usage: package_installation_softwares_list.yml
 softwares_list_install_fail_msg: "Failed. Package installation failed for packages mentioned in softwares_list: {{ software }}.
 Please check packages mentioned for software {{ software }} in software_update_config.yml are available to install with repos configured in the nodes."
+
+# Usage: pull_images_to_node.yml
+nerdctl_not_found_warning: |
+  [WARNING] nerdctl not found on {{ target_node }}.
+  To enable container image pulling, run the 'scheduler.yml' playbook to install 'nerdctl'.
+  The playbook execution will proceed but image pulling will be skipped on this node.
+
+failed_image_pull_msg: "[FAILED IMAGE PULLS] The following images failed to pull on {{ target_node }}:\n  {{ failed_images | join(', ') }}"
+
