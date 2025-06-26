@@ -54,4 +54,3 @@ nerdctl_not_found_warning: |
   The playbook execution will proceed but image pulling will be skipped on this node.
 
 failed_image_pull_msg: "[FAILED IMAGE PULLS] The following images failed to pull on {{ target_node }}:\n  {{ failed_images | join(', ') }}"
-
