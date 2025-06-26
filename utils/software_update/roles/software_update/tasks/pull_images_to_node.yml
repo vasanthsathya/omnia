@@ -46,7 +46,7 @@
       loop: "{{ images_to_pull }}"
       loop_control:
         label: "{{ item }}"
-      changed_when: "'downloaded' in pull_result.stdout | lower or pull_result.rc == 0"
+      changed_when: "pull_result.rc == 0"
       failed_when: false
       when: nerdctl_installed and images_to_pull | length > 0
 
