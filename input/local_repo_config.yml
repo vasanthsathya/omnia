@@ -49,17 +49,20 @@ enable_routed_internet: false
 user_repo_url:
 
 # Optional
-# This variable accepts the registry url along with port of the user which contains the images required for cluster.
-# User should make sure required disk space is available.
-# This variable accepts host and cert_path
-# host: defines the url and port for registry
-# cert_path: defines the absolute path of the certificates for each registry.
-# key_path: defines the key certificate path for user registry
-# If cert_path is empty, insecure registry will be configured.
+# This variable defines a list of user-provided container registries containing images required for the cluster.
+# Users must ensure sufficient disk space is available for image storage.
+#
+# Each registry entry accepts the following fields:
+# - host: The registry URL/hostname (e.g., 10.11.0.100/abcd.dev.test).
+# - cert_path: Absolute path to the CA certificate file for the registry. If empty, the registry is treated as insecure.
+# - key_path: Path to the client key file, if required by the registry.
+# - name: A unique identifier for the registry.
+# - requires_auth: Set to true if the registry requires authentication with username/password, otherwise false.
+#
 # Example:
 # user_registry:
-#   - { host: 10.11.0.100, cert_path: "/home/ca.crt", key_path: "" }
-#   - { host: registryhostname.registry.test, cert_path: "", key_path: "" }
+#   - { host: 10.11.0.100, cert_path: "/home/ca.crt", key_path: "", name: "local", requires_auth: true }
+#   - { host: hostname.registry.test, cert_path: "", key_path: "", name: "external", requires_auth: false }
 user_registry:
 
 # Mandatory when cluster_os_type is rhel in softwares_config.json

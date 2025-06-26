@@ -139,7 +139,7 @@ def validate_software_config(
         json_path = get_json_file_path(software, cluster_os_type, cluster_os_version, input_file_path)
         # Check if json_path is None or if the JSON syntax is invalid
         if json_path is None:
-            errors.append(create_error_msg("Validation Error: ", None ,en_us_validation_msg.json_file_mandatory(json_path)))
+            errors.append(create_error_msg("Validation Error: ", software ,en_us_validation_msg.json_file_mandatory(json_path)))
         else:
             try:
                 subgroup_softwares = subgroup_dict.get(software, None)
@@ -213,13 +213,13 @@ def validate_storage_config(input_file_path, data, logger, module, omnia_base_di
         client_mount_options_set = set(client_mount_options.split(","))
         if not (client_mount_options_set.issubset(allowed_options)):
             errors.append(create_error_msg("client_mount_options", client_mount_options, en_us_validation_msg.CLIENT_MOUNT_OPTIONS_FAIL_MSG))
-        if nfs_client_params["slurm_share"] == "true":
+        if nfs_client_params["slurm_share"]:
             if not slurm_share_val:
                 slurm_share_val = True
             else:
                 multiple_slurm_share_val = True
 
-        if nfs_client_params["k8s_share"] == "true":
+        if nfs_client_params["k8s_share"]:
             if not k8s_share_val:
                 k8s_share_val = True
             else:

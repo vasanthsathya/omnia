@@ -15,13 +15,10 @@
 # pylint: disable=import-error,no-name-in-module
 #!/usr/bin/python
 import os
-import stat
-import secrets
-import string
 from datetime import datetime
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
-from ansible.module_utils.local_repo.common_functions import process_file, load_yaml_file
+from ansible.module_utils.local_repo.common_functions import process_file, load_yaml_file, generate_vault_key
 from ansible.module_utils.local_repo.config import (
     USER_REPO_URL,
     LOCAL_REPO_CONFIG_PATH_DEFAULT,
@@ -52,38 +49,6 @@ def extract_repos_with_certs(repo_entries, log):
             })
     log.info(f"Appended result with number of entries: {len(results)}")
     return results
-
-def generate_vault_key(module, key_path, log):
-    """
-    Generate a secure Ansible Vault key
-    only if the file does not already exist.
-
-    Args:
-        module (AnsibleModule): The active Ansible module object.
-        key_path (str): The directory where the Vault key file should be saved.
-        log (Logger): Logger for logging messages.
-
-    Returns:
-        str: The full path to the key file, or None if failed.
-    """
-    if os.path.isfile(key_path):
-        log.info(f"Ansible Vault key already exists: {key_path}")
-        return key_path
-
-    try:
-        alphabet = string.ascii_letters + string.digits
-        key = ''.join(secrets.choice(alphabet) for _ in range(32))
-
-        with open(key_path, "w", encoding="utf-8") as f:
-            f.write(key + "\n")
-
-        os.chmod(key_path, stat.S_IRUSR | stat.S_IWUSR)
-        log.info(f"Ansible Vault key created at: {key_path}")
-        return key_path
-
-    except (OSError, IOError) as e:
-        module.fail_json(msg=f"Failed to write vault key to '{key_path}': {e}")
-        return None
 
 def main():
     """
@@ -135,7 +100,10 @@ def main():
 
     if cert_entries:
         vault_key_path = os.path.join(vault_key_path, ".local_repo_credentials_key")
-        generate_vault_key(module, vault_key_path, log)
+        gen_result = {}
+        gen_result = generate_vault_key(vault_key_path)
+        if gen_result is None:
+            module.fail_json(msg=f"Unable to create key: {vault_key_path}")
         log.info("User repo found, proceeding to encrypt")
         for entry in cert_entries:
             for key in CERT_KEYS:

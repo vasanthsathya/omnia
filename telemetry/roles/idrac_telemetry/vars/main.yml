@@ -28,7 +28,7 @@ db_delay: 10
 mysqldb_container_port: 3306
 filemode: "0644"
 mysqldb_host: "127.0.0.1"
-min_firmware_version_reqd: 4
+min_firmware_version_reqd: 1
 waiting_time_30: 30
 idrac_telemetry_enable_fail_msg: |
   Failed. Error enabling telemetry on iDRAC. Possible causes include timeout or Redfish connectivity issues.

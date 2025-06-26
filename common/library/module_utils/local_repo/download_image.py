@@ -12,23 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=import-error,no-name-in-module,line-too-long
+# pylint: disable=import-error,no-name-in-module,too-many-positional-arguments,too-many-arguments,too-many-locals
 """This module handles mirroring of container images in the local repository."""
 
 import re
 import json
-import subprocess # pylint: disable=unused-import
+import subprocess
 from multiprocessing import Lock
 from jinja2 import Template
-from ansible.module_utils.local_repo.standard_logger import setup_standard_logger # pylint: disable=unused-import
+from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
 from ansible.module_utils.local_repo.user_image_utility import handle_user_image_registry
-from ansible.module_utils.local_repo.config import ( # pylint: disable=unused-import
+from ansible.module_utils.local_repo.config import (
     pulp_container_commands,
     OMNIA_CREDENTIALS_YAML_PATH,
     OMNIA_CREDENTIALS_VAULT_PATH
 )
-from ansible.module_utils.local_repo.container_repo_utils import ( # pylint: disable=unused-import
+from ansible.module_utils.local_repo.container_repo_utils import (
     create_container_repository,
     extract_existing_tags,
     sync_container_repository,
@@ -36,15 +36,17 @@ from ansible.module_utils.local_repo.container_repo_utils import ( # pylint: dis
     repository_creation_lock,
     remote_creation_lock
 )
-import yaml # pylint: disable=unused-import
+import yaml
 
 file_lock = Lock()
 
-def create_container_remote_with_auth(remote_name, remote_url, package, policy_type, tag, logger, docker_username, docker_password):
+def create_container_remote_with_auth(remote_name, remote_url, package, policy_type,
+                                     tag, logger, docker_username, docker_password):
     """
     Create a container remote with authentication.
 
-    Creates a new container remote or updates an existing one with the provided tag and authentication credentials.
+    Creates a new container remote or updates an existing one with the provided tag
+    and authentication credentials.
 
     Parameters:
         remote_name (str): Name of the container remote.
@@ -83,11 +85,14 @@ def create_container_remote_with_auth(remote_name, remote_url, package, policy_t
             new_tags = existing_tags + [tag]
             tags_str = ",".join(new_tags)
             update_command = pulp_container_commands["update_container_remote_auth"] % (
-                remote_name, remote_url, package, policy_type, tags_str, docker_username, docker_password
+                remote_name, remote_url, package, policy_type, tags_str,
+                docker_username, docker_password
             )
             result = execute_command(update_command, logger)
             if result:
-                logger.info(f"Remote '{remote_name}' updated successfully with auth and tags: {new_tags}")
+                logger.info(
+                    f"Remote '{remote_name}' updated successfully with auth and tags: {new_tags}"
+                )
                 return True
             else:
                 logger.error(f"Failed to update remote '{remote_name}' with auth.")
@@ -139,7 +144,9 @@ def create_container_remote(remote_name, remote_url, package, policy_type, tag, 
             existing_tags = extract_existing_tags(remote_name, logger)
             # If the tag already exists, no update is needed
             if tag in existing_tags:
-                logger.info(f"Tag '{tag}' already exists for remote '{remote_name}'. No update needed.")
+                logger.info(
+                    f"Tag '{tag}' already exists for remote '{remote_name}'. No update needed."
+                )
                 return True
             # Append new tag and update
             new_tags = existing_tags + [tag]
@@ -216,7 +223,8 @@ def get_repo_url_and_content(package):
 
     raise ValueError(f"Unsupported package prefix for package: {package}")
 
-def process_image(package, status_file_path, version_variables, user_registries,docker_username, docker_password, logger):
+def process_image(package, status_file_path, version_variables,
+                 user_registries,docker_username, docker_password, logger):
     """
     Process an image.
     Args:
@@ -239,7 +247,8 @@ def process_image(package, status_file_path, version_variables, user_registries,
 
 
     if user_registries:
-        result, package_identifier = handle_user_image_registry(package, package_content, version_variables, user_registries, logger)
+        result, package_identifier = handle_user_image_registry(package, package_content,
+                                     version_variables, user_registries, logger)
     # If user registry not found or no user registry given, proceed with public registry
     if not result:
         try:
@@ -255,7 +264,8 @@ def process_image(package, status_file_path, version_variables, user_registries,
             # Process digest or tag
             if "digest" in package:
                 package_identifier += f":{package['digest']}"
-                result = create_container_remote_digest(remote_name, base_url, package_content, policy_type, logger)
+                result = create_container_remote_digest(remote_name, base_url,
+                         package_content, policy_type, logger)
                 if result is False or (isinstance(result, dict) and result.get("returncode", 1) != 0):
                     raise Exception(f"Failed to create remote digest: {remote_name}")
 
