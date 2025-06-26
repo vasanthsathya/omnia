@@ -224,6 +224,11 @@
           (hostvars['localhost']['has_service_role'] | default(false))
         )
 
+- name: Save Container Images
+  ansible.builtin.import_playbook: "{{ playbook_dir }}/../utils/save_container_images.yml"
+  vars:
+    container_images: "{{ hostvars['oim']['container_images'] | default([]) }}"
+
 - name: Prepare oim completion
   hosts: localhost
   connection: local
