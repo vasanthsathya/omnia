@@ -20,6 +20,7 @@
         url: "{{ rocm_device_plugin_yaml_url }}"
         dest: "{{ rocm_device_plugin_dest_url }}"
         mode: "{{ file_mode }}"
+      environment: "{{ compute_env }}"
 
     - name: Apply ROCm Device Plugin from URL
       kubernetes.core.k8s:

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 #!/usr/bin/python
 
 import json
@@ -226,7 +225,6 @@ def update_yaml_variables(clone_path, updates):
         raise FileOperationError(f"Error updating YAML file: {str(e)}") from e
 
 
-
 def update_arch_variables(clone_path, update_arch):
     """
     Updates architecture-specific variables in a YAML file.
@@ -268,10 +266,6 @@ def update_arch_variables(clone_path, update_arch):
         logger.warning("No keys were updated.")
 
     return updated
-
-
-
-
 
 
 def verify_directory_exists(directory_path):
@@ -407,9 +401,6 @@ def write_json(file_path, json_data):
 # ============================================================================================
 #                              Git related functions
 # ============================================================================================
-
-
-
 def is_version_within_range(clone_to_path, input_version, arch):
     """
     Check if the given input_version is within the kubelet_checksums range for a specific architecture.
@@ -420,11 +411,8 @@ def is_version_within_range(clone_to_path, input_version, arch):
         arch (str): Architecture name (e.g., 'amd64').
 
     Returns:
-        bool: True if input_version is within the available range, False otherwise.
-
-    Raises:
-        FileOperationError: If YAML read or parsing fails.
-        InvalidVersionError: If version is present with invalid checksum or format.
+        tuple: (bool: True if input_version is within range, 
+                list: Available compatible versions)
     """
     try:
         possible_paths = [
@@ -432,68 +420,66 @@ def is_version_within_range(clone_to_path, input_version, arch):
             os.path.join(clone_to_path, 'roles/kubespray_defaults/vars/main/checksums.yml')
         ]
 
-        actual_path = next((p for p in possible_paths if verify_file_exists(p)), None)
+        actual_path = None
+        for path in possible_paths:
+            if verify_file_exists(path):
+                actual_path = path
+                break
+
         if not actual_path:
             logger.error("No YAML file found in possible paths.")
-            return False
+            return False, []
 
         logger.info("Using checksums file at: %s", actual_path)
 
         with open(actual_path, 'r', encoding="utf-8") as f:
             data = yaml.safe_load(f)
 
-        if 'kubelet_checksums' not in data:
-            logger.warning("Missing 'kubelet_checksums' in YAML.")
-            return False
+        if not data or 'kubelet_checksums' not in data:
+            logger.warning("Missing or invalid 'kubelet_checksums' in YAML.")
+            return False, []
 
         if arch not in data['kubelet_checksums']:
             logger.warning("Architecture '%s' not found in 'kubelet_checksums'", arch)
-            return False
+            return False, []
 
-        # Extract versions
         raw_versions = data['kubelet_checksums'][arch]
-        version_keys = raw_versions.keys()
-        version_list = sorted([Version(v.lstrip('v')) for v in version_keys])
+        version_list = []
+        compatible_versions = []
+
+        try:
+            version_list = sorted([Version(v.lstrip('v')) for v in raw_versions.keys()])
+            compatible_versions = [str(v) for v in version_list]
+        except (InvalidVersion, AttributeError) as e:
+            logger.error("Error parsing versions: %s", str(e))
+            return False, []
 
         if not version_list:
-            logger.warning("No versions found under architecture '%s'", arch)
-            return False
+            logger.warning("No valid versions found under architecture '%s'", arch)
+            return False, []
 
         version_min = version_list[0]
         version_max = version_list[-1]
-        input_ver = Version(input_version.lstrip('v'))
 
-        if input_ver not in version_list:
-            logger.warning(
-                "%s is not an exact match in available versions: %s in architecture '%s'",
-                input_ver, [str(v) for v in version_list], arch
-            )
+        try:
+            input_ver = Version(input_version.lstrip('v'))
+        except InvalidVersion as e:
+            logger.error("Invalid input version format: %s", str(e))
+            # Return all available versions when input version is invalid
+            return False, compatible_versions
 
-        cleaned_versions = {k.lstrip('v'): v for k, v in raw_versions.items()}
-        logger.info("Cleaned version list: %s", cleaned_versions)
-
-        if input_ver in version_list and cleaned_versions.get(input_version.lstrip('v')) == 0:
-            raise InvalidVersionError(
-                f"{input_version.lstrip('v')} version found under architecture '{arch}' "
-                f"is having checksum value '0'"
-            )
+        if input_ver in version_list and raw_versions.get(f"v{input_ver}") == 0:
+            logger.error("Version %s has invalid checksum value (0)", input_version)
+            return False, compatible_versions
 
         result = version_min <= input_ver <= version_max
         logger.info("Version %s within range %s to %s: %s",
-                    input_version, version_min, version_max, result)
-        return result
+                   input_version, version_min, version_max, result)
+        return result, compatible_versions
 
-    except yaml.YAMLError as e:
-        logger.error("YAML parsing error: %s", str(e))
-        raise FileOperationError(f"YAML parsing error: {str(e)}") from e
-    except InvalidVersion as e:
-        logger.error("Invalid version format: %s", str(e))
-        raise InvalidVersionError(f"Invalid version format: {str(e)}") from e
-    except (OSError, IOError) as e:
-        logger.error("Unexpected file access error: %s", str(e))
-        raise FileOperationError(f"Unexpected file access error: {str(e)}") from e
-
-
+    except Exception as e:
+        logger.error("Error checking version range: %s", str(e))
+        return False, []
 
 
 def get_latest_tag(repo_url):
@@ -619,13 +605,16 @@ def clone_latest_tag(kube_version, base_path, arch, n_latest=3):
         n_latest (int): Number of latest tags to try.
 
     Returns:
-        str|None: Compatible tag name if found, else None.
-
-    Raises:
-        GitOperationError: If clone fails or no matching tag is found.
+        tuple: (str: Compatible tag name if found, else None,
+                list: Available compatible versions)
     """
     temp_dir = tempfile.mkdtemp()
+    compatible_versions = {}
     try:
+        if not repo_url:
+            raise GitOperationError("Repository URL not specified")
+
+        logger.info("Cloning repository to check tags: %s", repo_url)
         repo = Repo.clone_from(repo_url, temp_dir)
         repo.git.fetch('--tags')
 
@@ -635,7 +624,12 @@ def clone_latest_tag(kube_version, base_path, arch, n_latest=3):
                 version = Version(tag.name.lstrip('v'))
                 valid_tags.append((version, tag))
             except InvalidVersion:
+                logger.debug("Skipping invalid version tag: %s", tag.name)
                 continue
+
+        if not valid_tags:
+            logger.error("No valid tags found in repository")
+            return None, []
 
         valid_tags.sort(key=lambda t: t[0], reverse=True)
 
@@ -647,21 +641,35 @@ def clone_latest_tag(kube_version, base_path, arch, n_latest=3):
             clone_to_path = os.path.join(base_path, dir_name)
 
             if not os.path.exists(clone_to_path):
-                clone_kubespray_tag(repo_url, tag_name, base_path)
+                try:
+                    clone_kubespray_tag(repo_url, tag_name, base_path)
+                except GitOperationError as e:
+                    logger.error("Failed to clone tag %s: %s", tag_name, str(e))
+                    continue
 
-            if is_version_within_range(clone_to_path, kube_version, arch):
+            version_result, versions = is_version_within_range(clone_to_path, kube_version, arch)
+            compatible_versions[tag_name] = versions
+            if version_result:
                 logger.info("Found compatible tag %s for %s", tag_name, kube_version)
-                return tag_name
-            logger.info("Tag %s doesn't support %s", tag_name, kube_version)
+                return tag_name, compatible_versions
+            
+            
+            logger.info("Tag %s doesn't support %s. Available versions: %s", 
+                       tag_name, kube_version, ", ".join(versions) if versions else "none")
 
-        logger.error("No compatible tag found for %s in %d latest tags", kube_version, n_latest)
-        return None
+
+        logger.error("No compatible tag found for %s in %d latest tags. Available versions: %s", 
+                    kube_version, n_latest, ", ".join(compatible_versions[tag_name]) if compatible_versions[tag_name] else "none")
+        return None, compatible_versions
 
     except Exception as e:
         logger.error("Error in clone_latest_tag: %s", str(e))
-        raise GitOperationError(f"Error cloning latest tag: {str(e)}") from e
+        return None, []
     finally:
-        shutil.rmtree(temp_dir, ignore_errors=True)
+        try:
+            shutil.rmtree(temp_dir, ignore_errors=True)
+        except Exception as e:
+            logger.warning("Error cleaning up temp directory: %s", str(e))
 
 
 def clone_kubespray(repo_url, tag_name, clone_to_path):
@@ -998,75 +1006,69 @@ def process_image_list(images_list_path, filetype_inv, final_k8s_data):
         raise FileOperationError(f"Error processing image list: {str(e)}") from e
 
 
-def generate_k8_jsons_for_version(kube_version, base_path, repo_url, package_types, k8s_json_path, arch, n_latest, mode="clone"):
+def generate_k8_jsons_for_version(kube_version, base_path, repo_url, package_types, k8s_json_path, arch, n_latest, mode="clone", check_version=False):
     """
-    Generates a JSON file for a specific Kubernetes version by cloning a kubespray tag, updating YAML variables, and processing package lists.
+    Generates a JSON file for a specific Kubernetes version.
 
     Parameters:
-        kube_version (str): The Kubernetes version to generate the JSON file for.
-        base_path (str): The base path for cloning and processing.
-        repo_url (str): The URL of the kubespray repository.
-        package_types (list): A list of package types to process.
-        k8s_json_path (str): The path to the k8s JSON file.
-        arch (str): The architecture to use for processing.
-        n_latest (int): The number of latest branches to process.
-        mode (str): The mode of operation (clone, delete, both). Defaults to "clone".
+        kube_version (str): Kubernetes version to process
+        base_path (str): Base directory path for operations
+        repo_url (str): Kubespray repository URL
+        package_types (list): List of package types to process
+        k8s_json_path (str): Path to output JSON file
+        arch (str): Target architecture
+        n_latest (int): Number of latest tags to check
+        mode (str): Operation mode ('clone', 'delete', 'both')
+        check_version (bool): If True, only check version compatibility
 
     Returns:
-        bool: True if the JSON file was successfully generated, False otherwise.
+        tuple: (bool: success status, 
+               str: compatible tag name if check_version=True, 
+               list: compatible versions)
     """
     try:
+        if not all([kube_version, base_path, repo_url, arch]):
+            raise InvalidInputError("Missing required parameters")
+
         updates = {"kube_version": kube_version}
         update_arch = {"image_arch": arch}
 
-        final_k8s_data = {"k8s": {"cluster": []}}
-        output_k8s_path = "base_path + /{kube_version}"
         logger.info("============================ start ============================")
-        tag_name = clone_latest_tag(kube_version,  base_path, arch, n_latest)
+        tag_name, compatible_versions = clone_latest_tag(kube_version, base_path, arch, n_latest)
+        
         if tag_name is None:
-            error_msg = f"Did not get the required tag for version {kube_version}"
+            error_msg = f"No compatible tag found for version {kube_version}"
+            # if compatible_versions:
+            #     error_msg += f". Available tags: {', '.join(compatible_versions)}"
             logger.error(error_msg)
             raise GitOperationError(error_msg)
 
-        logger.info(f"Cloning the tag: {tag_name}")
-        logger.info("============================= end =============================")
+        if check_version:
+            logger.info("Version check mode enabled, returning compatible tag and versions")
+            return True, tag_name, compatible_versions
 
-        # Construct necessary paths
         clone_path = os.path.join(base_path, f'kubespray-{tag_name}')
         temp_output_path = os.path.join(base_path, kube_version)
         k8inventory_script = os.path.join(clone_path, "contrib/offline/generate_list.sh")
 
-        # Commands to execute
         command = {
             "generate_templates": f"bash {k8inventory_script} ",
             "copy_files": f"cp -r {clone_path}/contrib/offline/temp {temp_output_path}"
         }
-
-
         if not verify_file_exists(k8inventory_script):
-            error_msg = f"Required script missing: {k8inventory_script}"
-            logger.error(error_msg)
-            raise FileOperationError(error_msg)
+            raise FileOperationError(f"Required script missing: {k8inventory_script}")
 
-        # update_yaml_path = os.path.join(clone_path, defaults_dir)
-
-        updated , old_value = update_yaml_variables(clone_path, updates)
-
+        # Update YAML variables
+        update_success, old_value = update_yaml_variables(clone_path, updates)
         revert_update = {"kube_version": old_value}
+        if not update_success:
+            raise FileOperationError("Failed to update YAML variables")
 
-        if not updated:
-            error_msg = f"Failed to update YAML variables in {clone_path}"
-            logger.error(error_msg)
-            raise FileOperationError(error_msg)
+        # Update architecture variables
+        if not update_arch_variables(clone_path, update_arch):
+            raise FileOperationError("Failed to update architecture variables")
 
-        updated_arch = update_arch_variables(clone_path, update_arch)
-
-        if not updated_arch:
-            error_msg = f"Failed to update arch YAML variables in {clone_path}"
-            logger.error(error_msg)
-            raise FileOperationError(error_msg)
-
-
+        # Execute the generate_list.sh script
         if not execute_command(command["generate_templates"]):
             error_msg = "Failed to execute generate_list.sh"
             logger.error(error_msg)
@@ -1076,8 +1078,10 @@ def generate_k8_jsons_for_version(kube_version, base_path, repo_url, package_typ
             error_msg = "Failed to copy generated inventory files"
             logger.error(error_msg)
             raise CommandExecutionError(error_msg)
+        # cmd = f"cd {clone_path} && ./contrib/offline/generate_list.sh"
+        # execute_command(cmd)
 
-        # Load generated package lists
+        # Process the generated files
         files_list_path = os.path.join(temp_output_path, "files.list")
         images_list_path = os.path.join(temp_output_path, "images.list")
 
@@ -1088,6 +1092,8 @@ def generate_k8_jsons_for_version(kube_version, base_path, repo_url, package_typ
             logger.error(error_msg)
             raise FileOperationError(error_msg)
 
+        final_k8s_data = {"k8s": {"cluster": []}}
+
         # Process different package types
         for type_ in SKIP_TYPES:
             try:
@@ -1097,56 +1103,36 @@ def generate_k8_jsons_for_version(kube_version, base_path, repo_url, package_typ
                 logger.warning(f"Error processing {type_} packages: {str(e)}")
                 continue
 
-        # Process tarballs and images
-        try:
-            tarballs = get_k8s_data("tarball", k8s_json_path, package_types)
-            process_file_list(files_list_path, tarballs, final_k8s_data)
-        except Exception as e:
-            logger.error(f"Error processing tarballs: {str(e)}")
-            raise
+        # Process tarballs if in package types
+        if "tarball" in package_types:
+            filetype_inv = get_k8s_data("tarball", k8s_json_path, package_types)
+            if not process_file_list(files_list_path, filetype_inv, final_k8s_data):
+                raise FileOperationError("Failed to process file list")
 
-        try:
-            images = get_k8s_data("image", k8s_json_path, package_types)
-            process_image_list(images_list_path, images, final_k8s_data)
-        except Exception as e:
-            logger.error(f"Error processing images: {str(e)}")
-            raise
+        # Process images if in package types
+        if "image" in package_types:
+            filetype_inv = get_k8s_data("image", k8s_json_path, package_types)
+            if not process_image_list(images_list_path, filetype_inv, final_k8s_data):
+                raise FileOperationError("Failed to process image list")
 
-        if not os.path.isdir(temp_output_path):
-            error_msg = f"Output directory does not exist: {kube_version}"
-            logger.error(error_msg)
-            raise DirectoryOperationError(error_msg)
-
-        output_json_path = os.path.join(temp_output_path, f"k8s_{kube_version}.json")
+        # Write final JSON output
+        output_json_path = os.path.join(temp_output_path, f"k8s_v{kube_version.lstrip('v')}.json")
         write_json(output_json_path, final_k8s_data)
 
-        logger.info(f"Successfully generated JSON for version {kube_version}")
-        return True
+        logger.info(f"Successfully generated JSON for version {kube_version} at {output_json_path}")
+        return True, None, compatible_versions
+
     except Exception as e:
-        logger.error(f"Failed to generate JSON for version {kube_version}: {str(e)}")
+        logger.error(f"Failed to process version {kube_version}: {str(e)}")
+        if check_version:
+            return False, None, compatible_versions if 'compatible_versions' in locals() else []
         raise
 
 # ============================================================================================
 # Ansible Entry Point
 # ============================================================================================
 def run_module():
-    """
-    Runs an Ansible module to process Kubernetes versions.
-
-    Parameters:
-        kube_versions (list): List of Kubernetes versions to process.
-        base_path (str): Base path for processing.
-        repo_url (str): Repository URL for cloning.
-        package_types (list): List of package types to process.
-        k8s_json_path (str): Path to the k8s JSON file.
-        log_dir (str): Directory for logging.
-        arch (str): Architecture for processing.
-        n_latest (int): The number of latest branches to process.
-        mode (str): Mode of operation (clone, delete, both).
-
-    Returns:
-        dict: Dictionary containing the results of processing each version.
-    """
+    """Run the Ansible module."""
     module_args = {
         "kube_versions": {"type": "list", "required": True},
         "base_path": {"type": "str", "required": True},
@@ -1160,6 +1146,10 @@ def run_module():
             "type": "str", 
             "choices": ["clone", "delete", "both"], 
             "default": "clone"
+        },
+        "check_version": {
+            "type": "bool",
+            "default": False
         }
     }
 
@@ -1169,52 +1159,76 @@ def run_module():
     )
 
     try:
-        global kube_versions, base_path, repo_url, package_types, k8s_json_path, log_dir, arch, n_latest, mode
-        global logger
+        global logger, repo_url
         logger = setup_logging(module.params['log_dir'])
-        kube_versions = module.params['kube_versions']
-        base_path = module.params['base_path']
         repo_url = module.params['repo_url']
-        package_types = set(module.params['package_types'])
-        k8s_json_path = module.params['k8s_json_path']
-        log_dir = module.params['log_dir']
-        arch = module.params['arch']
-        n_latest = module.params['n_latest']
-        mode = module.params['mode']
-
-        logger.info("Starting kubespray processor with parameters:")
-        logger.info("Kubernetes versions: %s", kube_versions)
-        logger.info("Base path: %s", base_path)
-        logger.info("Repository URL: %s", repo_url)
-        logger.info("Package types: %s", package_types)
-        logger.info("K8s JSON path: %s", k8s_json_path)
-        logger.info("K8s log directory: %s", log_dir)
-        logger.info("Number of latest branches: %s", n_latest)
-        logger.info("Architecture: %s", arch)
-        logger.info("Mode: %s", mode)
+        
+        # Validate required parameters
+        if not repo_url:
+            module.fail_json(msg="Repository URL is required")
 
         version_results = {}
-        for version in kube_versions:
+        compatible_tags = {}
+        compatible_versions_map = {}
+        
+        for version in module.params['kube_versions']:
             try:
                 logger.info(f"Processing Kubernetes version: {version}")
-                result = generate_k8_jsons_for_version(
-                    version, base_path, repo_url, package_types, k8s_json_path, arch, n_latest, mode
+                result, tag_name, compatible_versions = generate_k8_jsons_for_version(
+                    version,
+                    module.params['base_path'],
+                    repo_url,
+                    module.params['package_types'],
+                    module.params['k8s_json_path'],
+                    module.params['arch'],
+                    module.params['n_latest'],
+                    module.params['mode'],
+                    module.params['check_version']
                 )
-                version_results[version] = "Success" if result else "Failed"
+                
+                if module.params['check_version']:
+                    compatible_tags[version] = tag_name
+                    compatible_versions_map[version] = compatible_versions
+                    version_results[version] = {
+                        'status': 'success' if result else 'failed',
+                        'compatible_tag': tag_name,
+                        'compatible_versions': compatible_versions
+                    }
+                else:
+                    version_results[version] = {
+                        'status': 'success' if result else 'failed',
+                        'message': 'Processed successfully' if result else 'Processing failed'
+                    }
 
-                if not result:
-                    module.fail_json(msg=f"Failed to generate JSON for version {version}", version_results=version_results)
-                    
             except Exception as e:
-                logger.error(f"Error processing version {version}: {str(e)}")
-                version_results[version] = f"Error: {str(e)}"
-                module.fail_json(msg=f"Error processing version {version}: {str(e)}", version_results=version_results)
+                error_msg = f"Error processing version {version}: {str(e)}"
+                logger.error(error_msg)
+                version_results[version] = {
+                    'status': 'error',
+                    'error': error_msg
+                }
+                if not module.params['check_version']:
+                    module.fail_json(msg=error_msg, version_results=version_results)
 
-        module.exit_json(changed=True, msg="All versions processed successfully.", version_results=version_results)
+        if module.params['check_version']:
+            module.exit_json(
+                changed=False,
+                msg="Version compatibility check completed",
+                compatible_tags=compatible_tags,
+                compatible_versions=compatible_versions_map,
+                version_results=version_results
+            )
+        else:
+            module.exit_json(
+                changed=True,
+                msg="All versions processed successfully",
+                version_results=version_results
+            )
 
     except Exception as e:
-        logger.error(f"Unexpected error in run_module: {str(e)}")
-        module.fail_json(msg=f"Unexpected error: {str(e)}")
+        error_msg = f"Unexpected error in run_module: {str(e)}"
+        logger.error(error_msg)
+        module.fail_json(msg=error_msg)
 
 if __name__ == '__main__':
     run_module()

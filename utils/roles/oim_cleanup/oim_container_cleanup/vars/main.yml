@@ -15,7 +15,9 @@
 
 container_removal_failure_msg: " container could not be removed. Please check container logs."
 omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
-telemetry_dir_path: "{{ omnia_nfs_share }}/telemetry"
+telemetry_cleanup_directory:
+  - "{{ omnia_nfs_share }}/telemetry"
+  - "{{ omnia_nfs_share }}/.secrets"
 
 # Usage: cleanup_pcs.yml
 pcs_container_name: "omnia_pcs"
@@ -99,7 +101,6 @@ visualization_firewall_ports:
 
 loki_firewall_ports:
   - "3100/tcp"
-
 ntp_firewall_service: ntp
 
 # Usage: cleanup_kubespray.yml

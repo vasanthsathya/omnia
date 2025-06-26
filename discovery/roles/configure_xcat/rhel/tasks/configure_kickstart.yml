@@ -22,8 +22,8 @@
 - name: Update localhost entry in /etc/hosts
   ansible.builtin.lineinfile:
     path: "{{ xcat_rhel8_post_script }}"
-    regexp: 'echo\s+"127\.0\.0\.1\s+localhost"\s+>>\s+/etc/hosts'
-    line: 'echo "127.0.0.1 localhost" >> /etc/hosts'
+    regexp: 'echo\s+"127\.0\.0\.1\s+localhost\.localdomain\s+localhost"\s+>>\s+/etc/hosts'
+    line: 'echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts'
     insertafter: EOF
     state: present
 

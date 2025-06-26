@@ -62,8 +62,11 @@
 - name: Remove telemetry Directory
   when: hostvars['localhost']['visualization_support'] or hostvars['localhost']['idrac_telemetry_support']
   ansible.builtin.file:
-    path: "{{ telemetry_dir_path }}"
+    path: "{{ item }}"
     state: absent
+    force: true
+  with_items:
+    - "{{ telemetry_cleanup_directory }}"
 
 - name: Reload firewalld to apply changes
   ansible.builtin.command: firewall-cmd --reload

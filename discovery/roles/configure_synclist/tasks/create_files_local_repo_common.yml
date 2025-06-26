@@ -65,6 +65,23 @@
     state: directory
     mode: "{{ dir_permission }}"
 
+- name: Copy Pulp crt to syncfiles
+  when: pulp_protocol == 'https'
+  block:
+    - name: Create certs directory under syncfiles directory
+      ansible.builtin.file:
+        path: "{{ syncfiles_share_path }}/certs"
+        state: directory
+        mode: "{{ dir_permission }}"
+      when: pulp_protocol == 'https'
+
+    - name: Copy pulp cert to syncfiles certs directory
+      ansible.builtin.copy:
+        src: "{{ pulp_crt_path }}"
+        dest: "{{ syncfiles_share_path }}/certs"
+        mode: "{{ file_permission }}"
+        remote_src: true
+
 - name: Render pip.conf template
   ansible.builtin.template:
     src: "{{ pip_conf_src }}"
