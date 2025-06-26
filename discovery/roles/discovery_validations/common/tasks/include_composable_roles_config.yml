@@ -93,6 +93,13 @@
     hierarchical_provision_status: "{{ hierarchical_output.hierarchical_provision_status | default(false) }}"
     groups_roles_info: "{{ hierarchical_output.groups_roles_info | default(groups_roles_info) }}"
 
+- name: Create and update service node metadata file
+  ansible.builtin.copy:
+    dest: "{{ service_node_metadata_path }}"
+    content: "{{ {'service_nodes_metadata': booted_service_nodes_data} | to_yaml }}"
+    mode: "{{ metadata_perm }}"
+    force: true
+
 - name: Get the group(s) for OIM HA
   when:
     - oim_ha_role_required

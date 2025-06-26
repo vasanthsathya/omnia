@@ -1,7 +1,17 @@
 ===== Telemetry Summary Report =====
 
-Total IPs with Telemetry activated: {{ (db_idrac_ips | length) + (telemetry_idrac | length) }}
-Telemetry enabled IPs List:
-{% for item in db_idrac_ips + telemetry_idrac %}
+----- Telemetry Report for OIM -----
+
+Total IP count with Telemetry activated: {{ (db_idrac_ip_list | length) + (telemetry_idrac | length) }}
+Telemetry activated IPs List:
+{% for item in db_idrac_ip_list + telemetry_idrac %}
   - {{ item }}
 {% endfor %}
+
+Total IP count with Telemetry not supported: {{ failed_idrac_count | int + invalid_idrac_count | int }}
+Telemetry not supported IPs List:
+{% for item in failed_idrac + invalid_idrac_list %}
+  - {{ item }}
+{% endfor %}
+
+===== Telemetry Report End =====

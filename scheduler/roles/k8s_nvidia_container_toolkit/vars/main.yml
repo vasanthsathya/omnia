@@ -17,7 +17,6 @@
 k8s_tmp_dir: "/root/k8s"
 nvidia_runtime_source: "nvidia_runtime_class.yml"
 nvidia_runtime_dest: "{{ k8s_tmp_dir }}/nvidia-runtime_class.yml"
-nvidia_device_plugin_repo: "{{ hostvars['localhost']['offline_tarball_path'] }}/nvidia-device-plugin/nvidia-device-plugin.tar.gz"
 nvidia_device_plugin_dest_repo: "{{ k8s_tmp_dir }}/nvidia-device-plugin.tar.gz"
 mig_strategy: none
 gpu_discovery_feature: true

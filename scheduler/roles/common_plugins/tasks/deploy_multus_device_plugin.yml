@@ -54,6 +54,7 @@
         url: "{{ multus_deployment_manifest_path }}"
         dest: "{{ multus_deployment_manifest }}"
         mode: "{{ file_mode }}"
+      environment: "{{ compute_env }}"
 
     - name: Deploy multus device plugin
       kubernetes.core.k8s:
