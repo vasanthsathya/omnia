@@ -32,10 +32,7 @@
 
     - name: Show warning if nerdctl is not installed on {{ target_node }}
       ansible.builtin.debug:
-        msg:
-          - "[WARNING] nerdctl not found on {{ target_node }}."
-          - "To enable container image pulling, run the 'scheduler.yml' playbook to install 'nerdctl'."
-          - "The playbook execution will proceed but image pulling will be skipped on this node."
+        msg: "{{ nerdctl_not_found_warning }}"
       when: not nerdctl_installed
 
     - name: Set images to pull for group {{ current_group_name }}
@@ -49,7 +46,7 @@
       loop: "{{ images_to_pull }}"
       loop_control:
         label: "{{ item }}"
-      changed_when: "'Downloaded' in pull_result.stdout or pull_result.rc == 0"
+      changed_when: "'downloaded' in pull_result.stdout | lower or pull_result.rc == 0"
       failed_when: false
       when: nerdctl_installed and images_to_pull | length > 0
 
@@ -64,5 +61,5 @@
 
     - name: Fail if any image pulls failed on {{ target_node }}
       ansible.builtin.fail:
-        msg: "[FAILED IMAGE PULLS] The following images failed to pull on {{ target_node }}:\n  {{ failed_images | join(', ') }}"
+        msg: "{{ failed_image_pull_msg }}"
       when: failed_images | length > 0
