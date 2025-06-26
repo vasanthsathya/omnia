@@ -103,7 +103,7 @@
           loop: "{{ expected_tarballs }}"
           register: tarball_check
 
-        - name: Extract missing files
+        - name: Set fact missing tar files
           ansible.builtin.set_fact:
             missing_tars: >-
               {{ tarball_check.results
