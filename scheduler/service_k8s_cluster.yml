@@ -47,9 +47,9 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Set fact for compute k8s playbook
+    - name: Set fact for service k8s playbook
       ansible.builtin.set_fact:
-        compute_k8s_playbook: true
+        service_k8s_playbook: true
 
     - name: Validate scheduler input parameters
       ansible.builtin.include_role:
@@ -131,33 +131,3 @@
   gather_facts: false
   roles:
     - common_plugins
-
-- name: Install nvidia-container-toolkit on nodes with Nvidia GPU
-  hosts: kube_control_plane, kube_node, etcd
-  gather_facts: false
-  roles:
-    - k8s_nvidia_container_toolkit
-
-- name: Install Plugin only when one of nodes with AMD GPU
-  hosts: kube_control_plane, kube_node, etcd
-  gather_facts: false
-  roles:
-    - k8s_amd
-
-- name: Install Slurm
-  hosts: slurm_control_node, slurm_node, login
-  any_errors_fatal: true
-  roles:
-    - slurm
-
-- name: Install Slurm_pam
-  hosts: slurm_node,login
-  any_errors_fatal: true
-  roles:
-    - slurm_pam
-
-- name: Compile and install the ucx and openmpi on the nfs share of compute nodes
-  hosts: slurm_control_node, kube_control_plane
-  gather_facts: true
-  roles:
-    - install_benchmarks_tools

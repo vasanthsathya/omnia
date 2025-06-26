@@ -29,13 +29,33 @@
     oim_ha_data: "{{ include_ha_config | default({}) | combine({item.key: item.value}) }}"
   with_dict: "{{ oim_ha }}"
 
-- name: Set high_availability_status
-  ansible.builtin.set_fact:
+- name: Lookup HA config for selected cluster
+  set_fact:
+    selected_cluster_ha: >-
+      {{ vars[cluster_ha_var_name]
+          | selectattr('cluster_name', 'equalto', cluster_name)
+          | list
+          | first }}
+
+- name: Set HA-related facts
+  when: selected_cluster_ha is defined
+  set_fact:
     enable_oim_ha: "{{ include_ha_config.ansible_facts.oim_ha.enable_oim_ha | default(false) }}"
-    enable_k8s_ha: "{{ include_ha_config.ansible_facts.k8s_head_node_ha.enable_k8s_ha | default(false) }}"
-    k8s_vip: "{{ include_ha_config.ansible_facts.k8s_head_node_ha.virtual_ip_address }}"
-    external_lb_ip: "{{ include_ha_config.ansible_facts.k8s_head_node_ha.external_loadbalancer_ip }}"
-    lb_port: "{{ include_ha_config.ansible_facts.k8s_head_node_ha.loadbalancer_port }}"
+    enable_k8s_ha: "{{ selected_cluster_ha.enable_k8s_ha | default(false) }}"
+    k8s_vip: "{{ selected_cluster_ha.virtual_ip_address | default('') }}"
+    external_lb_ip: "{{ selected_cluster_ha.external_loadbalancer_ip | default('') }}"
+    lb_port: "{{ selected_cluster_ha.loadbalancer_port | default('') }}"
+    active_node_service_tags: "{{ selected_cluster_ha.active_node_service_tags | default([]) }}"
+
+- name: Debug summary
+  debug:
+    msg:
+      cluster_type: "{{ cluster_type }}"
+      enable_k8s_ha: "{{ enable_k8s_ha }}"
+      k8s_vip: "{{ k8s_vip }}"
+      external_lb_ip: "{{ external_lb_ip }}"
+      lb_port: "{{ lb_port }}"
+      active_node_service_tags: "{{ active_node_service_tags }}"
 
 - name: Validate virtual_ip_address details when enable_k8s_ha is provided
   ansible.builtin.assert:
