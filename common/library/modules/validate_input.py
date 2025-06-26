@@ -171,8 +171,15 @@ def main():
                 raise FileNotFoundError(error_message)
 
             # Validate the schema of the input file (L1)
-            schema_status = validate.schema(input_file_path, schema_file_path, passwords_set, \
-                                            omnia_base_dir, project_name, logger, module)
+            schema_status = validate.schema({
+                "input_file_path": input_file_path,
+                "schema_file_path": schema_file_path,
+                "passwords_set": passwords_set,
+                "omnia_base_dir": omnia_base_dir,
+                "project_name": project_name,
+                "logger": logger,
+                "module": module,
+            })
             # Append the validation status for the input file
             validation_status[project_name]["status"].append(
                 {input_file_path: "Passed" if schema_status else "Failed"})
@@ -222,15 +229,26 @@ def main():
                         raise FileNotFoundError(error_message)
 
                     # Validate the schema of the input file (L1)
-                    schema_status = validate.schema(
-                        input_file_path, schema_file_path, passwords_set,
-                        omnia_base_dir, project_name, logger, module
-                    )
+                    schema_status = validate.schema({
+                                        "input_file_path": input_file_path,
+                                        "schema_file_path": schema_file_path,
+                                        "passwords_set": passwords_set,
+                                        "omnia_base_dir": omnia_base_dir,
+                                        "project_name": project_name,
+                                        "logger": logger,
+                                        "module": module,
+                                    })
 
                     # Validate the logic of the input file (L2) if L1 is success
                     logic_status = (
-                        validate.logic(input_file_path, logger, module, omnia_base_dir, \
-                                                    module_utils_base, project_name)
+                        validate.logic({
+                                    "input_file_path": input_file_path,
+                                    "module_utils_base": module_utils_base,
+                                    "omnia_base_dir": omnia_base_dir,
+                                    "project_name": project_name,
+                                    "logger": logger,
+                                    "module": module,
+                                })
                     ) if schema_status else False
 
                     # Append the validation status for the input file

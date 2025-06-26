@@ -125,9 +125,15 @@ def validate_software_config(
         vstatus = []
         project_data = {project_name: {"status": [], "tag": "additional_software"}}
         validation_status.update(project_data)
-        schema_status = validate.schema(
-            new_file_path, schema_file_path, passwords_set,
-            omnia_base_dir, project_name, logger, module)
+        schema_status = validate.schema({
+                            "input_file_path": new_file_path,
+                            "schema_file_path": schema_file_path,
+                            "passwords_set": passwords_set,
+                            "omnia_base_dir": omnia_base_dir,
+                            "project_name": project_name,
+                            "logger": logger,
+                            "module": module,
+                        })
         vstatus.append(schema_status)
 
         # Append the validation status for the input file
@@ -148,7 +154,9 @@ def validate_software_config(
                     new_file_path,
                     en_us_validation_msg.MISSING_ADDITIONAL_SOFTWARE_JSON_FILE))
             return errors
-        additional_software_data = json.load(open(json_files_dic["additional_software.json"], "r"))
+        additional_software_data = None
+        with open(json_files_dic["additional_software.json"], "r", encoding="utf-8") as schema_file:
+            additional_software_data = json.load(schema_file)
 
         additional_software_errors = validate_additional_software(
             new_file_path, additional_software_data,
@@ -395,7 +403,9 @@ def validate_storage_config(
     """
     errors = []
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
+    software_config_json = None
+    with open(software_config_file_path, "r", encoding="utf-8") as schema_file:
+        software_config_json = json.load(schema_file)
     softwares = software_config_json["softwares"]
     for software in softwares:
         if software.get('name') == 'beegfs' and 'version' not in software:
@@ -433,16 +443,40 @@ def validate_storage_config(
                 multiple_k8s_share_val = True
 
     if (contains_software(softwares, "slurm") and not slurm_share_val) or multiple_slurm_share_val:
-        errors.append(create_error_msg("slurm_share", slurm_share_val, en_us_validation_msg.SLURM_SHARE_FAIL_MSG))
+        errors.append(
+            create_error_msg(
+                "slurm_share",
+                slurm_share_val,
+                en_us_validation_msg.SLURM_SHARE_FAIL_MSG
+            )
+        )
 
     if (contains_software(softwares, "k8s") and not k8s_share_val) or multiple_k8s_share_val:
-        errors.append(create_error_msg("k8s_share", k8s_share_val, en_us_validation_msg.K8S_SHARE_FAIL_MSG))
+        errors.append(
+            create_error_msg(
+                "k8s_share",
+                k8s_share_val,
+                en_us_validation_msg.K8S_SHARE_FAIL_MSG
+            )
+        )
 
     if contains_software(softwares, "ucx") or contains_software(softwares, "openmpi"):
         if not k8s_share_val or not slurm_share_val:
-            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.BENCHMARK_TOOLS_FAIL_MSG))
+            errors.append(
+                create_error_msg(
+                    "nfs_client_params",
+                    "",
+                    en_us_validation_msg.BENCHMARK_TOOLS_FAIL_MSG
+                )
+            )
         elif multiple_slurm_share_val or multiple_k8s_share_val:
-            errors.append(create_error_msg("nfs_client_params", "", en_us_validation_msg.MULT_SHARE_FAIL_MSG))
+            errors.append(
+                create_error_msg(
+                    "nfs_client_params",
+                    "",
+                    en_us_validation_msg.MULT_SHARE_FAIL_MSG
+                )
+            )
 
     beegfs_mounts = data["beegfs_mounts"]
     if beegfs_mounts != "/mnt/beegfs":
@@ -977,7 +1011,13 @@ def validate_telemetry_config(
     if idrac_telemetry_support:
         collection_type = data.get("idrac_telemetry_collection_type")
         if collection_type and collection_type not in config.supported_telemetry_collection_type:
-            errors.append(create_error_msg("idrac_telemetry_collection_type", collection_type, en_us_validation_msg.unsupported_idrac_telemetry_collection_type))
+            errors.append(
+                create_error_msg(
+                    "idrac_telemetry_collection_type",
+                    collection_type,
+                    en_us_validation_msg.unsupported_idrac_telemetry_collection_type
+                )
+            )
 
     # preserved below code for future use
     '''
