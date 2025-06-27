@@ -8,5 +8,4 @@ Common FAQs
     Provision
     Network
     Security
-    Storage
     Telemetry

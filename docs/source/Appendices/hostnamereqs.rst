@@ -2,7 +2,6 @@ Hostname requirements
 ----------------------
 
 * Hostname should not contain the following characters: ``, (comma)``, ``. (period)``, or ``_ (underscore)``.
-* The period (.) should be used only to delimit fields in a hostname (For example, ``dvader.empire.gov``).
 * Hostname cannot start or end with a hyphen ``(-)``.
 * No upper case characters are allowed in the hostname.
 * Hostname cannot start with a number.
@@ -12,3 +11,4 @@ Hostname requirements
 
     * The **domain name** is allowed with commas and periods.
     * Omnia appends 6 digits to the hostname to individually name each cluster node.
+    * The period (.) should be used only to delimit fields in a hostname (For example, ``dvader.empire.gov``).

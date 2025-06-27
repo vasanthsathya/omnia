@@ -12,6 +12,5 @@ This topic highlights the common known issues related to:
     Kubernetes
     Security
     Storage
-    Telemetry
     HA
     Hierarchical

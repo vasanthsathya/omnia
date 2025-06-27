@@ -13,4 +13,4 @@ Telemetry
 
 **Potential Cause**: Docker pull limit exceeded.
 
-**Resolution**: Manually input the username and password to your docker account on the OIM.
+**Resolution**: Provide docker credentials in ``input/project_default/provision_config_credentials.yml``.

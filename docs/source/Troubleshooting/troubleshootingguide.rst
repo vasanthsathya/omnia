@@ -1,28 +1,35 @@
+============================
 Troubleshooting guide
 ============================
 
 Troubleshooting Kubeadm
-------------------------
+=========================
 
 For a complete guide to troubleshooting kubeadm, `click here. <https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/troubleshooting-kubeadm/>`_
 
 Connecting to internal databases
-------------------------------------
-* TimescaleDB
+===================================
+
+TimescaleDB
+--------------
+
     * Start a bash session within the timescaledb pod: ``kubectl exec -it pod/timescaledb-0 -n telemetry-and-visualizations -- /bin/bash``
     * Connect to psql using the ``psql -u <postgres_username>`` command.
     * Connect to database using the ``\c telemetry_metrics`` command.
-* MySQL DB
+
+MySQL DB
+-----------
+
     * Start a bash session within the mysqldb pod using the ``kubectl exec -it pod/mysqldb-0 -n telemetry-and-visualizations -- /bin/bash`` command.
     * Connect to mysql using the ``mysql -u <mysqldb_username>`` command and provide password when prompted.
     * Connect to database using the ``USE idrac_telemetrysource_services_db`` command.
 
 Checking and updating encrypted parameters
------------------------------------------------
+=============================================
 
 1. Move to the filepath where the parameters are saved (as an example, we will be using ``provision_config_credentials.yml``): ::
 
-        cd input/
+        cd /input
 
 2. To view the encrypted parameters: ::
 
@@ -35,39 +42,14 @@ Checking and updating encrypted parameters
 
 
 Checking pod status from the OIM
---------------------------------------------
+=====================================
+   
    * Use this command to get a list of all available pods: ``kubectl get pods -A``
    * Check the status of any specific pod by running: ``kubectl describe pod <pod name> -n <namespace name>``
 
-Using telemetry information to diagnose node issues
-----------------------------------------------------
 
-.. csv-table:: Regular telemetry metrics
-   :file: ../Tables/Metrics_Regular.csv
-   :header-rows: 1
-   :keepspace:
-
-.. [1] This metric is collected from the kube_control_plane if a login node is absent.
-
-.. csv-table:: Health telemetry metrics
-   :file: ../Tables/Metrics_Health.csv
-   :header-rows: 1
-   :keepspace:
-
-
-.. csv-table:: GPU telemetry metrics
-   :file: ../Tables/Metrics_GPU.csv
-   :header-rows: 1
-   :keepspace:
-
-
-
-.. |Dashboard| image:: ../images/Visualization/DashBoardIcon.png
-    :height: 25px
-
-
-Troubleshooting image download failures while executing local_repo.yml playbook
---------------------------------------------------------------------------------
+Troubleshooting image download failures during ``local_repo.yml`` playbook execution
+========================================================================================
 
 If you encounter image download failures while executing ``local_repo.yml``, do the following to resolve the issue:
 
@@ -84,7 +66,7 @@ If you encounter image download failures while executing ``local_repo.yml``, do 
             .. image:: ../images/image_failure_output_s2.png
 
 
-       Else run:
+       If you don't get the expected output as shown above, run:
 
             ::
 
@@ -101,7 +83,7 @@ If you encounter image download failures while executing ``local_repo.yml``, do 
             .. image:: ../images/image_failure_output_s3.png
 
 
-        Else run:
+        If you don't get the expected output as shown above, run:
 
             ::
 
@@ -118,7 +100,7 @@ If you encounter image download failures while executing ``local_repo.yml``, do 
         a. .. image:: ../images/image_failure_output_s4.png
         b. Empty list
 
-        Else, do the following:
+        If you don't get the expected output as shown above, do the following:
 
             a. Restart the OIM and check curl command output again.
             b. Re-run ``local_repo.yml``.
@@ -143,9 +125,9 @@ If you encounter image download failures while executing ``local_repo.yml``, do 
                     systemctl restart nerdctl-registry
 
 
-Troubleshooting task failures during omnia.yml playbook execution
-------------------------------------------------------------------
+Troubleshooting task failures during ``omnia.yml`` playbook execution
+========================================================================
 
-During the execution of the omnia.yml playbook, if a task fails for any host listed in the inventory, it has the potential to trigger a cascading effect, leading to subsequent tasks in the playbook also failing.
+If any task fails for a host listed in the inventory during the execution of the ``omnia.yml`` playbook, it can cause a cascading effect, resulting in the failure of subsequent tasks in the playbook.
 
-In this scenario, the user needs to troubleshoot the initial point of failure, that is, the first task that failed.
+**Resolution**: In such cases, you should begin troubleshooting from the initial point of failure — the first task that encountered an error.

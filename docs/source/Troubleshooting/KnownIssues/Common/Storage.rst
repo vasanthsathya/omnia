@@ -1,7 +1,7 @@
 Storage
 ========
 
-⦾ **Why does the task 'nfs_client: Mount NFS client' fail with ``Failed to mount NFS client. Make sure NFS Server is running on IP xx.xx.xx.xx``?**
+⦾ **Why does the** ``TASK: nfs_client: Mount NFS client`` **fail with the** ``Failed to mount NFS client. Make sure NFS Server is running on IP xx.xx.xx.xx`` **error?**
 
 **Potential Cause**: The required services for NFS may not have been running:
 
@@ -12,18 +12,22 @@ Storage
 **Resolution**: Enable the required services using ``firewall-cmd  --permanent  --add-service=<service name>`` and then reload the firewall using ``firewall-cmd  --reload``.
 
 
-⦾ **What to do when omnia.yml execution fails with nfs-server.service might not be running on NFS Server. Please check or start services?**
+⦾ **What to do when** ``omnia.yml`` **execution fails with the** ``nfs-server.service might not be running on NFS Server. Please check or start services`` **error?**
 
 **Potential Cause**: nfs-server.service is not running on the target node.
 
-**Resolution**: Use the following commands to bring up the service: ::
+**Resolution**: Use the following commands to bring up the service: 
 
-    systemctl start nfs-server.service
+    * To enable the service: ::
+        
+        systemctl enable nfs-server.service
+        
+    * To start the service: ::
+        
+        systemctl start nfs-server.service
 
-    systemctl enable nfs-server.service
 
-
-⦾ **Why does the task 'Install Packages' fail on the NFS node with the message: Failure in talking to yum: Cannot find a valid baseurl for repo: base/7/x86_64.**
+⦾ **Why does the** ``TASK: 'Install Packages'`` **fail on the NFS node with the message:** ``Failure in talking to yum: Cannot find a valid baseurl for repo: base/9/x86_64.``
 
 **Potential Cause**: There are connections missing on the NFS node.
 
@@ -34,7 +38,7 @@ Storage
 3. For connecting to PowerVault (Data Connection)
 
 
-⦾ **What to do if PowerVault throws the error: The specified disk is not available. - Unavailable disk (0.x) in disk range '0.x-x':**
+⦾ **What to do if PowerVault throws the error:** ``The specified disk is not available. - Unavailable disk (0.x) in disk range '0.x-x'`` **?**
 
 **Resolution**:
 
@@ -43,16 +47,16 @@ Storage
 2. If the disk is part of a pool, remove it and try again.
 
 
-⦾ **Why does PowerVault throw the error: You cannot create a linear disk group when a virtual disk group exists on the system.?**
+⦾ **Why does PowerVault throw the error:** ``You cannot create a linear disk group when a virtual disk group exists on the system.`` **?**
 
 **Potential Cause**: At any given time only one type of disk group can be created on the system. That is, all disk groups on the system have to exclusively be linear or virtual.
 
 **Resolution**: To fix the issue, either delete the existing disk group or change the type of pool you are creating.
 
 
-⦾ **Why does the task 'nfs_client: Mount NFS client' fail with the message "No route to host"?**
+⦾ **Why does the** ``TASK: nfs_client: Mount NFS client`` **fail with the message:** ``No route to host`` **?**
 
-**Potential Cause**: There's a mismatch in the share path listed in ``/etc/exports`` and in ``omnia_config.yml`` under ``nfs_client_params``.
+**Potential Cause**: There's a mismatch in the NFS share path mentioned in ``/etc/exports`` and ``storage_config.yml`` under ``nfs_client_params``.
 
 **Resolution**: Ensure that the input paths are a perfect match to avoid any errors.
 
@@ -66,15 +70,15 @@ Storage
 .. image:: ../../../images/omnia_NFS_mount_fcfs.png
 
 
-⦾ **Why does the "BeeGFS-client" service fails?**
+⦾ **Why does the** ``BeeGFS-client`` **service fail?**
 
 **Potential Causes**:
 
-1. SELINUX may be enabled. (use ``sestatus`` to diagnose the issue)
+1. SELINUX may be enabled. (Use ``sestatus`` to check)
 
-2. Ports 8008, 8003, 8004, 8005 and 8006 may be closed. (use ``systemctl status beegfs-mgmtd, systemctl status beegfs-meta, systemctl status beegfs-storage`` to diagnose the issue)
+2. Ports 8008, 8003, 8004, 8005, and 8006 may be closed. (Use ``systemctl status beegfs-mgmtd, systemctl status beegfs-meta, systemctl status beegfs-storage`` to check)
 
-3. The BeeGFS set up may be incompatible with RHEL.
+3. The BeeGFS set up may be incompatible with the RHEL version running on the cluster.
 
 **Resolutions**:
 

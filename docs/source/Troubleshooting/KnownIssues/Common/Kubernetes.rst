@@ -59,13 +59,9 @@ Kubernetes
 
 **Potential Cause**: The OIM does not support hostnames with an underscore in it, such as 'mgmt_station'.
 
-**Resolution**: As defined in RFC 822, the only legal characters are the following:
+**Resolution**: Ensure that the OIM hostname meets the below mentioned requirements:
 
-1. Alphanumeric (a-z and 0-9): Both uppercase and lowercase letters are acceptable, and the hostname is not case-sensitive. In other words, omnia.test is identical to OMNIA.TEST and Omnia.test.
-
-2. Hyphen (-): Neither the first nor the last character in a hostname field should be a hyphen.
-
-3. Period (.): The period should be used only to delimit fields in a hostname (For example, dvader.empire.gov)
+    .. include:: ../../../Appendices/hostnamereqs.rst
 
 
 ⦾ **What to do if** ``omnia.yml`` **playbook execution fails with MetalLB, a load-balancer for bare metal Kubernetes cluster?**
@@ -84,7 +80,7 @@ Kubernetes
 **Resolution**: Re-run ``prepare_oim.yml``.
 
 
-⦾ **Why does the NFS-client provisioner go to a "ContainerCreating" or "CrashLoopBackOff" state?**
+⦾ **Why does the NFS-client provisioner go to a** ``ContainerCreating`` **or** ``CrashLoopBackOff`` **state?**
 
 .. image:: ../../../images/NFS_container_creating_error.png
 
@@ -97,7 +93,7 @@ Kubernetes
     * Ensure that ``storage.yml`` is executed on the same inventory which is being used for ``scheduler.yml``.
     * Ensure that ``server_share_path`` mentioned in ``storage_config.yml`` for ``k8s_share: true`` has an active nfs_server running on it.
 
-⦾ **If the Nfs-client provisioner is in "ContainerCreating" or "CrashLoopBackOff" state, why does the** ``kubectl describe <pod_name>`` **command show the following output?**
+⦾ **If the Nfs-client provisioner is in** ``ContainerCreating`` **or** ``CrashLoopBackOff`` **state, why does the** ``kubectl describe <pod_name>`` **command show the following output?**
 
 .. image:: ../../../images/NFS_helm_23743.png
 
@@ -115,7 +111,7 @@ Kubernetes
         * Post deletion, the pod will be restarted and it will come to running state.
 
 
-⦾ **Why does the nvidia-device-plugin pods in ContainerCreating status fail with a** ``no runtime for "nvidia" is configured`` **error?**
+⦾ **Why does the nvidia-device-plugin pods in** ``ContainerCreating`` **status fail with a** ``no runtime for "nvidia" is configured`` **error?**
 
 .. image:: ../../../images/nvidia_noruntime.png
 
