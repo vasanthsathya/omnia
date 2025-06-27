@@ -60,16 +60,3 @@ Run either of the following commands:
 .. caution:: The ``scheduler.yml`` playbook can be run only after executing ``omnia.yml`` at least once.
 
 .. note:: To add new nodes to an existing cluster, click `here. <../../../Maintenance/addnode.html>`_
-
-**Slurm job based user access**
-
-To ensure security while running jobs on the cluster, users can be assigned permissions to access cluster  nodes only while their jobs are running. To enable the feature: ::
-
-    cd scheduler
-    ansible-playbook job_based_user_access.yml -i <inventory filepath>
-
-.. note::
-
-    * The inventory queried in the above command is to be created by the user prior to running ``omnia.yml`` as ``scheduler.yml`` is invoked by ``omnia.yml``
-
-    * Only users added to the 'slurm' group can execute slurm jobs. To add users to the group, use the command: ``usermod -a -G slurm <username>``.

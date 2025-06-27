@@ -1,7 +1,7 @@
 Kubernetes
 ===========
 
-⦾ **Why do Kubernetes Pods show "ImagePullBack" or "ErrPullImage" errors in their status?**
+⦾ **Why do Kubernetes Pods show** ``ImagePullBackOff`` **or** ``ErrImagePull`` **errors in their status?**
 
 **Potential Cause**: The errors occur when the Docker pull limit is exceeded.
 
@@ -9,36 +9,42 @@ Kubernetes
 
     * Ensure that the ``docker_username`` and ``docker_password`` are provided in ``input/provision_config_credentials.yml``.
 
-    * For a HPC cluster, during ``omnia.yml`` execution, a kubernetes secret 'dockerregcred' will be created in default namespace and patched to service account. User needs to patch this secret in their respective namespace while deploying custom applications and use the secret as imagePullSecrets in yaml file to avoid ErrImagePull. `Click here for more info. <https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry>`_
+    * During ``omnia.yml`` execution, a kubernetes secret Docker ``regcred`` will be created in default namespace and patched to the Docker service account. To avoid ``ErrImagePull`` issue, you need to patch this secret to your namespace while deploying custom applications and use this secret as ``ImagePullSecrets`` in the yaml file . `Click here for more info. <https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry>`_
 
-.. note:: If the playbook is already executed and the pods are in **ImagePullBack** state, then run ``kubeadm reset -f`` in all the nodes before re-executing the playbook with the docker credentials.
+.. note:: If the playbook is already executed and the pods are in **ImagePullBackOff** state, run ``kubeadm reset -f`` on all the nodes before re-executing the playbook with the Docker credentials.
 
 
 ⦾ **What to do if the nodes in a Kubernetes cluster reboot?**
 
-**Resolution**: Wait for 15 minutes after the Kubernetes cluster reboots. Next, verify the status of the cluster using the following commands:
+**Resolution**: Wait for 15 minutes after the Kubernetes cluster reboots. To verify the status of the cluster nodes, run the following commands from the ``kube_control_plane``:
 
-* ``kubectl get nodes`` on the kube_control_plane to get the real-time kubernetes cluster status.
+1. To get real-time kubernetes cluster status, run: ::
+    
+    kubectl get nodes
 
-* ``kubectl get pods  all-namespaces`` on the kube_control_plane to check which the pods are in the **Running** state.
+2. To check which the pods are in the **Running** state, run: ::
+    
+    kubectl get pods  all-namespaces 
 
-* ``kubectl cluster-info`` on the kube_control_plane to verify that both the kubernetes master and kubeDNS are in the **Running** state.
+3. To verify that both the kubernetes master and kubeDNS are in **Running** state, run: ::
+    
+    kubectl cluster-info 
 
 
-⦾ **What to do when the Kubernetes services are not in "Running" state:**
+⦾ **What to do when the Kubernetes services are not in** ``Running`` **state?**
 
 **Resolution**:
 
-1. Run ``kubectl get pods  all-namespaces`` to verify that all pods are in the **Running** state.
+1. Run ``kubectl get pods  all-namespaces`` to get the status of all the pods.
 
-2. If the pods are not in the **Running** state, delete the pods using the command:``kubectl delete pods <name of pod>``
+2. If the pod(s) are not in ``Running`` state, delete it using the command: ``kubectl delete pods <name of pod>``
 
-3. Run the corresponding playbook that was used to install Kubernetes: ``omnia.yml``, ``jupyterhub.yml``, or ``kubeflow.yml``.
+3. Re-run the ``omnia.yml``or ``scheduler.yml`` playbook to bring up Kubernetes on the previously failed pods.
 
 
-⦾ **Why do Kubernetes Pods stop communicating with the servers when the DNS servers are not responding?**
+⦾ **If the DNS servers are unresponsive, the Kubernetes pods stop communicating with the servers.**
 
-**Potential Cause**: The host network is faulty causing DNS to be unresponsive
+**Potential Cause**: The host network is faulty causing DNS to be unresponsive.
 
 **Resolution**:
 
@@ -49,7 +55,7 @@ Kubernetes
 3. List ``k8s`` in ``input/software_config.json`` and re-run ``omnia.yml``.
 
 
-⦾ **Why does the 'Initialize Kubeadm' task fail with 'nnode.Registration.name: Invalid value: \"<Host name>\"'?**
+⦾ **Why does the** ``TASK: Initialize Kubeadm`` fail with ``nnode.Registration.name: Invalid value: "<Host name>"`` **error?**
 
 **Potential Cause**: The OIM does not support hostnames with an underscore in it, such as 'mgmt_station'.
 

@@ -1,7 +1,7 @@
 Provision
 ==========
 
-⦾ **Why doesn't my newly discovered server list a MAC ID in the cluster.nodeinfo table?**
+⦾ **Why doesn't my newly discovered server list a MAC ID in the** ``cluster.nodeinfo`` **table?**
 
 Due to internal MAC ID conflicts on the target nodes, the MAC address will be listed against the target node using this format ``MAC ADDRESS 1 | MAC ADDRESS 2! *NOIP*`` in the xCAT node object.
 
@@ -68,10 +68,10 @@ Due to internal MAC ID conflicts on the target nodes, the MAC address will be li
 
         rinstall <node>
 
-    Where <node> refers to the node column in the OmniaDB, which has a “standingby” status.
+    Where <node> refers to the node column in the OmniaDB, which has a ``standingby`` status.
 
 
-⦾ **Why does the** ``discovery_provision.yml`` **playbook execution fail at task: "prepare_oim needs to be executed"?**
+⦾ **Why does the** ``discovery_provision.yml`` **playbook execution fail at task:** ``prepare_oim needs to be executed`` **?**
 
 **Potential Cause**: Invalid input provided in ``network_spec.yml`` for ``admin_network`` or ``bmc_network`` fields.
 
@@ -91,5 +91,5 @@ Due to internal MAC ID conflicts on the target nodes, the MAC address will be li
 
 **Resolution**: Perform the following steps:
 
-    1. Delete the failed node from the db using ``delete_node.yml`` playbook utility. For more information, `click here <../../../OmniaInstallGuide/Maintenance/deletenode.html>`_.
+    1. Delete the failed node from using ``delete_node.yml`` playbook utility. For more information, `click here <../../../OmniaInstallGuide/Maintenance/deletenode.html>`_.
     2. Re-provision the node by re-running the ``discovery_provision.yml`` playbook.
