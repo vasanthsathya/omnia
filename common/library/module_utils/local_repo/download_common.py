@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=import-error,no-name-in-module,too-many-arguments,too-many-positional-arguments,too-many-branches,too-many-locals
+# pylint: disable=import-error,no-name-in-module,too-many-return-statements,too-many-statements,too-many-arguments,too-many-positional-arguments,too-many-branches,too-many-locals
 
 """
 Handle pulp file downloads for local repository
@@ -23,6 +23,7 @@ import tarfile
 import shutil
 import time
 import json
+from multiprocessing import Lock
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import write_status_to_file,execute_command
@@ -37,6 +38,8 @@ from ansible.module_utils.local_repo.config import (
     FILE_POLL_VAL,
     FILE_URI
 )
+
+file_lock = Lock()
 
 def download_file_distribution(distribution_name, dl_directory, relative_path, logger):
     """
@@ -417,8 +420,10 @@ def process_manifest(file,repo_store_path, status_file_path,logger):
         # Write the status to the file
         if status == "Success":
             os.makedirs(manifest_directory, exist_ok =True)
-            status = download_file_distribution(repository_name, manifest_directory, relative_path, logger)
-        write_status_to_file(status_file_path, package_name, package_type, status, logger)
+            status = download_file_distribution(repository_name, manifest_directory,
+                                                relative_path, logger)
+        write_status_to_file(status_file_path, package_name, package_type,
+                             status, logger, file_lock)
         logger.info("#" * 30 + f" {process_manifest.__name__} end " + "#" * 30)  # End of function
         return status
 
@@ -490,7 +495,8 @@ def process_git(file,repo_store_path, status_file_path,logger):
 
     finally:
         # Write the status to the file
-        write_status_to_file(status_file_path, package_name, package_type, status, logger)
+        write_status_to_file(status_file_path, package_name, package_type,
+                             status, logger, file_lock)
 
         logger.info("#" * 30 + f" {process_git.__name__} end " + "#" * 30)  # End of function
         return status
@@ -538,7 +544,7 @@ def process_shell(file,repo_store_path, status_file_path,logger):
 
     finally:
         # Write the status to the file
-        write_status_to_file(status_file_path, package_name, package_type, status, logger)
+        write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
         logger.info("#" * 30 + f" {process_shell.__name__} end " + "#" * 30)  # End of function
         return status
 
@@ -630,7 +636,7 @@ def process_ansible_galaxy_collection(file, repo_store_path, status_file_path, l
 
     finally:
         # Write the status to the file
-        write_status_to_file(status_file_path, package_name, package_type, status, logger)
+        write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
 
         logger.info("#" * 30 + f" {process_ansible_galaxy_collection.__name__} end " + "#" * 30)
         return status
@@ -706,11 +712,10 @@ def process_tarball(package, repo_store_path, status_file_path, version_variable
                     # Write the status to the file
                     if status == "Success":
                         os.makedirs(tarball_directory, exist_ok =True)
-                        status = download_file_distribution(distribution_name, tarball_directory,
-                                 relative_path, logger)
-                    write_status_to_file(status_file_path, package_name,
-                                        package_type, status, logger)
-                    logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)
+                        status = download_file_distribution(distribution_name, tarball_directory, relative_path, logger)
+                    write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
+                    logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)  # End of function
+
                     return status
             else:
                 status = "No URL provided"
@@ -731,8 +736,9 @@ def process_tarball(package, repo_store_path, status_file_path, version_variable
             status = "Failed"
         finally:
             # Write the status to the file
-            write_status_to_file(status_file_path, package_name, package_type, status, logger)
-            logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)
+            write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
+            logger.info("#" * 30 + f" {process_tarball.__name__} end " + "#" * 30)  # End of function
+
             return status
 
 def process_iso(package, repo_store_path, status_file_path,
@@ -813,7 +819,7 @@ def process_iso(package, repo_store_path, status_file_path,
                 status = download_file_distribution(distribution_name, iso_directory,
                          relative_path, logger)
             # Write the status to the file
-            write_status_to_file(status_file_path, package_name, package_type, status, logger)
+            write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
             logger.info("#" * 30 + f" {process_iso.__name__} end " + "#" * 30)  # End of function
             return status
 
@@ -837,7 +843,7 @@ def process_iso(package, repo_store_path, status_file_path,
             status = "Failed"
         finally:
             # Write the status to the file
-            write_status_to_file(status_file_path, package_name, package_type, status, logger)
+            write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
             logger.info("#" * 30 + f" {process_iso.__name__} end " + "#" * 30)  # End of function
             return status
 
@@ -938,7 +944,7 @@ def process_pip(package, repo_store_path, status_file_path, logger):
 
     finally:
         # Write status to file
-        write_status_to_file(status_file_path, package_name, package_type, status, logger)
+        write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock)
 
         logger.info("#" * 30 + f" {process_pip.__name__} end " + "#" * 30)
         return status

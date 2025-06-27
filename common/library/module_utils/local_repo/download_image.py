@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=import-error,no-name-in-module,too-many-positional-arguments,too-many-arguments,too-many-locals
+# pylint: disable=import-error,no-name-in-module,too-many-branches,too-many-positional-arguments,too-many-arguments,too-many-locals
 """This module handles mirroring of container images in the local repository."""
 
 import re
 import json
+from multiprocessing import Lock
 from jinja2 import Template
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 from ansible.module_utils.local_repo.parse_and_download import execute_command,write_status_to_file
@@ -36,6 +37,7 @@ from ansible.module_utils.local_repo.container_repo_utils import (
 )
 import yaml
 
+file_lock = Lock()
 
 def create_container_remote_with_auth(remote_name, remote_url, package, policy_type,
                                      tag, logger, docker_username, docker_password):
@@ -302,6 +304,6 @@ def process_image(package, status_file_path, version_variables,
             status = "Failed"
             logger.error(f"Failed to process image: {package_identifier}. Error: {e}")
 
-    write_status_to_file(status_file_path, package_identifier, package['type'], status, logger)
+    write_status_to_file(status_file_path, package_identifier, package['type'], status, logger, file_lock)
     logger.info("#" * 30 + f" {process_image.__name__} end " + "#" * 30)
     return status

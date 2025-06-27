@@ -17,10 +17,14 @@
 
 import subprocess
 import os
+from multiprocessing import Lock
 from ansible.module_utils.local_repo.parse_and_download import write_status_to_file
+
+file_lock = Lock()
 
 def process_rpm(package, repo_store_path, status_file_path, cluster_os_type,
                cluster_os_version, repo_config_value, logger):
+
     """
     Downloads a list of RPM packages and writes the status of the download to a file.
 
@@ -71,6 +75,6 @@ def process_rpm(package, repo_store_path, status_file_path, cluster_os_type,
         logger.error(f"Exception occurred: {e}")
         status = "Failed"
     finally:
-        write_status_to_file(status_file_path, package["package"], "rpm", status, logger)
+        write_status_to_file(status_file_path, package["package"], "rpm", status, logger, file_lock)
         logger.info("#" * 30 + f" {process_rpm.__name__} end " + "#" * 30)
         return status

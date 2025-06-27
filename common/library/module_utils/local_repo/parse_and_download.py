@@ -16,6 +16,7 @@ import os
 import subprocess
 import json
 import re
+from multiprocessing import Lock
 from ansible.module_utils.local_repo.standard_logger import setup_standard_logger
 
 
@@ -82,53 +83,37 @@ def execute_command(cmd_string, logger, type_json=False):
     finally:
         logger.info("#" * 30 + f" {execute_command.__name__} end " + "#" * 30)
 
-
-def write_status_to_file(status_file_path, package_name, package_type, status, logger):
+def write_status_to_file(status_file_path, package_name, package_type, status, logger, file_lock: Lock):
     """
-    Writes the status of a package to the specified status file. If the package already exists,
-    its status is updated. Otherwise, the package is appended.
-
-    Args:
-        status_file_path (str): Path to the status file.
-        package_name (str): Name of the package.
-        package_type (str): Type of the package.
-        status (str): Status of the package (e.g., "Success", "Failed").
-        logger (Logger): Logger instance for logging.
-
-    Returns:
-        None
+    Writes or updates the status of a package in the status file, using a lock to ensure safe access across processes.
     """
-    logger.info("#" * 30 + f" {write_status_to_file.__name__} start " + "#" * 30)  # Start of function
+    logger.info("#" * 30 + f" {write_status_to_file.__name__} start " + "#" * 30)
 
     try:
-        # Check if the file exists and read its contents
-        if os.path.exists(status_file_path):
-            with open(status_file_path, "r") as f:
-                lines = f.readlines()
+        with file_lock:  # Ensure only one process can write at a time
+            if os.path.exists(status_file_path):
+                with open(status_file_path, "r") as f:
+                    lines = f.readlines()
 
-            # Check if the package name already exists and replace the corresponding line
-            updated = False
-            with open(status_file_path, "w") as f:
-                for line in lines:
-                    if line.startswith(f"{package_name},"):
-                        # Replace the existing line with the new status
+                updated = False
+                with open(status_file_path, "w") as f:
+                    for line in lines:
+                        if line.startswith(f"{package_name},"):
+                            f.write(f"{package_name},{package_type},{status}\n")
+                            updated = True
+                        else:
+                            f.write(line)
+
+                    if not updated:
                         f.write(f"{package_name},{package_type},{status}\n")
-                        updated = True
-                    else:
-                        f.write(line)
-
-                # If the package was not found, append the new line
-                if not updated:
+            else:
+                with open(status_file_path, "w") as f:
+                    f.write("name,type,status\n")
                     f.write(f"{package_name},{package_type},{status}\n")
-        else:
-            # If the file doesn't exist, create it and write the header and the new line
-            with open(status_file_path, "w") as f:
-                f.write("name,type,status\n")
-                f.write(f"{package_name},{package_type},{status}\n")
 
-        logger.info(f"Status written to {status_file_path} for {package_name}.")
-    except Exception as error:
-        logger.error(f"Failed to write to status file: {status_file_path}. Error: {str(error)}")
-        raise RuntimeError(f"Failed to write to status file: {status_file_path}. Error: {str(error)}") from error
+            logger.info(f"Status written to {status_file_path} for {package_name}.")
+    except Exception as e:
+        logger.error(f"Failed to write to status file: {status_file_path}. Error: {str(e)}")
+        raise RuntimeError(f"Failed to write to status file: {status_file_path}. Error: {str(e)}")
     finally:
-        logger.info("#" * 30 + f" {write_status_to_file.__name__} end " + "#" * 30)  # End of function
+        logger.info("#" * 30 + f" {write_status_to_file.__name__} end " + "#" * 30)

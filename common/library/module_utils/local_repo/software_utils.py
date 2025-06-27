@@ -395,7 +395,6 @@ def get_csv_software(file_name):
         reader = csv.DictReader(csv_file)
         csv_software = [row.get(CSV_COLUMNS["column1"], "").strip()
                         for row in reader]
-
     return csv_software
 
 
@@ -416,9 +415,11 @@ def get_failed_software(file_name):
 
     with open(file_name, mode='r') as csv_file:
         reader = csv.DictReader(csv_file)
-        failed_software = [row.get(CSV_COLUMNS["column1"], "").strip()
-                           for row in reader
-                           if row.get(CSV_COLUMNS["column2"], "").strip().lower() == "failed"]
+        failed_software = [
+            str(row.get(CSV_COLUMNS["column1"]) or "").strip()
+            for row in reader
+            if str(row.get(CSV_COLUMNS["column2"]) or "").strip().lower() in ["", "failed"]
+        ]
 
     return failed_software
 
