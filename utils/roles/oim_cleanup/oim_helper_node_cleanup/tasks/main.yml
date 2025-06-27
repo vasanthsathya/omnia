@@ -93,7 +93,7 @@
 # Disable boot only when, hostname of ha_node of db is not same of active oim
 - name: Perform oim_cleanup on oim_ha_node
   ansible.builtin.include_tasks: disable_helper_node_boot.yml
-  loop: "{{ oim_ha_node_info.query_result | default([]) }}"
+  loop: "{{ oim_ha_node_info.query_result | default([]) | list }}"
   loop_control:
     loop_var: node_info
   when:
