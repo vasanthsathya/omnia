@@ -71,11 +71,32 @@
   when:
     - final_status == 'SUCCESS'
 
-- name: Update the k8s local repo metadata
+- name: Define software list for metadata update
+  ansible.builtin.set_fact:
+    software_metadata_list: >-
+      {{
+        [
+          {
+            'name': 'k8s',
+            'version': k8s_version,
+            'enabled': k8s_support | default(false)
+          },
+          {
+            'name': 'service_k8s',
+            'version': service_k8s_version,
+            'enabled': service_k8s_support | default(false)
+          }
+        ]
+      }}
+
+- name: Update metadata for each software type if final_status is SUCCESS
   ansible.builtin.include_tasks: create_k8s_local_repo_metadata.yml
+  loop: "{{ software_metadata_list }}"
+  loop_control:
+    loop_var: software_entry
   when:
     - final_status == 'SUCCESS'
-    - k8s_support
+    - software_entry.enabled
 
 - name: Show updated keys
   ansible.builtin.debug:
