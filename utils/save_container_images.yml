@@ -44,6 +44,7 @@
 # ansible-playboot utils/save_container_images.yml
 
 - name: Create oim group and provision group
+  when: not oim_group | default(false) | bool
   ansible.builtin.import_playbook: create_container_group.yml
   vars:
     oim_group: true

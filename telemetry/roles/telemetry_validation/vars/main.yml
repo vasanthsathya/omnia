@@ -46,7 +46,6 @@ warning_idrac_telemetry_support_true: |
 # prometheus_scrape_interval_fail_msg: "Failed. prometheus_scrape_interval accepts integer values greater than 0"
 
 # Usage: validate_image_tars.yml
-omnia_images_dir_path: "/opt/omnia/images/"
 # noqa: yaml[line-length]
 omnia_images_tar_missing_msg: |
   Following images tarball(s) are missing: {{ missing_tars }}.

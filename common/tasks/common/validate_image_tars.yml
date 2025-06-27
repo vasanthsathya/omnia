@@ -21,7 +21,7 @@
   register: found_tarballs
 
 - name: Include task to get container_images list
-  ansible.builtin.include_tasks: "{{ role_path }}/../../../common/tasks/common/get_container_image_list.yml"
+  ansible.builtin.include_tasks: "get_container_image_list.yml"
 
 - name: Prepare expected and existing tarball filenames
   ansible.builtin.set_fact:
@@ -44,5 +44,5 @@
 
 - name: Fail if any required image tarballs are missing
   ansible.builtin.fail:
-    msg: "{{ omnia_images_tar_missing_msg | replace('\n', ' ') }}"
+    msg: "{{ omnia_images_tar_missing_msg }}"
   when: missing_tars | length > 0

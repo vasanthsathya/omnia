@@ -40,11 +40,16 @@
 
 - name: Include image save logic
   ansible.builtin.include_tasks: save_image_as_tar.yml
-  loop: "{{ container_images }}"
+  loop: "{{ container_images | dict2items(key_name='tar', value_name='name') }}"
   loop_control:
-    loop_var: image_name
+    loop_var: image
 
 - name: Show all save images
   ansible.builtin.debug:
     msg: "{{ saved_images }}"
   when: saved_images | length > 0
+
+- name: No new images to save
+  ansible.builtin.debug:
+    msg: "No new images to save."
+  when: saved_images | length == 0

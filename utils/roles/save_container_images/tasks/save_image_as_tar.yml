@@ -15,26 +15,26 @@
 
 - name: Generate safe file name for image
   ansible.builtin.set_fact:
-    safe_image_name: "{{ image_name | regex_replace('[:/]', '_') }}"
+    safe_image_name: "{{ image.name | regex_replace('[:/]', '_') }}"
 
 - name: Generate tar and digest path
   ansible.builtin.set_fact:
     image_tar_path: "{{ images_directory_path }}/{{ safe_image_name }}.tar"
     image_digest_path: "{{ images_directory_path }}/.{{ safe_image_name }}.digest"
 
-- name: Check if {{ image_name }} image tar exists # noqa: name[template]
+- name: Check if {{ image.name }} image tar exists # noqa: name[template]
   ansible.builtin.stat:
     path: "{{ image_tar_path }}"
   register: tar_file_check
 
-- name: Check if {{ image_name }} digest file exists # noqa: name[template]
+- name: Check if {{ image.name }} digest file exists # noqa: name[template]
   ansible.builtin.stat:
     path: "{{ image_digest_path }}"
   register: digest_file_check
 
-- name: Get {{ image_name }} image info # noqa: name[template]
+- name: Get {{ image.name }} image info # noqa: name[template]
   containers.podman.podman_image_info:
-    name: "{{ image_name }}"
+    name: "{{ image.name }}"
   register: image_info
   changed_when: false
 
@@ -50,7 +50,7 @@
   register: previous_digest
   when: digest_file_check.stat.exists
 
-- name: Determine if {{ image_name }} image changed # noqa: name[template]
+- name: Determine if {{ image.name }} image changed # noqa: name[template]
   ansible.builtin.set_fact:
     image_changed: "{{ (previous_digest.content | b64decode).strip() != current_digest }}"
   when:
@@ -76,9 +76,9 @@
 - name: Save image as tar
   block:
 
-    - name: Save {{ image_name }} image as tar at {{ image_tar_path }} (this may take a few minutes) # noqa: name[template]
+    - name: Save {{ image.name }} image as tar at {{ image_tar_path }} (this may take a few minutes) # noqa: name[template]
       containers.podman.podman_save:
-        image: "{{ image_name }}"
+        image: "{{ image.name }}"
         dest: "{{ image_tar_path }}"
       register: saved_result
       when:
@@ -86,7 +86,7 @@
 
     - name: Add image to saved list if it was saved
       ansible.builtin.set_fact:
-        saved_images: "{{ saved_images + [image_name] }}"
+        saved_images: "{{ saved_images + [image.name] }}"
       when: saved_result is defined and saved_result is changed
 
     - name: Save current digest
@@ -112,4 +112,4 @@
 
     - name: Fail the task
       ansible.builtin.debug:
-        msg: "Image `{{ image_name }}` save failed and partial tar and digest was removed."
+        msg: "Image `{{ image.name }}` save failed and partial tar and digest was removed."

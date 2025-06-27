@@ -63,7 +63,6 @@ service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
 metadata_perm: "0644"
 
 # Usage: validate_image_tars.yml
-omnia_images_dir_path: "/opt/omnia/images"
 omnia_images_tar_missing_msg: |
   Following Images tarball does not exist - {{ missing_tars }}.
   To support either OIM HA or heirarchical provisioning, these images tar file is required.
