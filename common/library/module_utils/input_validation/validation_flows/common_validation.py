@@ -456,29 +456,6 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
             if not csi_values_path:
                errors.append(create_error_msg("csi_values_path", csi_values_path, en_us_validation_msg.csi_driver_values_fail_msg))
 
-        
-    
-
-    #verify csi with sofwate config json
-    #software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    #software_config_json = json.load(open(software_config_file_path, "r"))
-    #softwares = software_config_json["softwares"]
-    #if contains_software(softwares, "csi_driver_powerscale"):
-         # Validate if secret file path is empty
-     #   if not csi_powerscale_driver_secret_file_path:
-      #      errors.append(create_error_msg("csi_powerscale_driver_secret_file_path", csi_powerscale_driver_secret_file_path, en_us_validation_msg.csi_driver_secret_fail_msg))
-
-        # Validate if values file path is empty
-       # if not csi_powerscale_driver_values_file_path:
-        #    errors.append(create_error_msg("csi_powerscale_driver_values_file_path", csi_powerscale_driver_values_file_path, en_us_validation_msg.csi_driver_values_fail_msg))
-
-    # Check IP range overlap between omnia IPs, admin network, and bmc network
-    ip_ranges = [admin_static_range, bmc_static_range, admin_dynamic_range, bmc_dynamic_range, k8s_service_addresses, k8s_pod_network_cidr]
-    does_overlap, _ = validation_utils.check_overlap(ip_ranges)
-
-    if does_overlap:
-        errors.append(create_error_msg("IP overlap -", None, en_us_validation_msg.ip_overlap_fail_msg))
-
     return errors
 
 def validate_telemetry_config(
