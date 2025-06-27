@@ -213,9 +213,10 @@
 - name: Fetch container images
   hosts: localhost
   connection: local
-  tags: always
+  gather_facts: false
+  tags: oim_ha
   tasks:
-    - name: Fetch container image list  # noqa:role-name[path]
+    - name: Fetch container image list
       ansible.builtin.include_tasks: "{{ playbook_dir }}/../common/tasks/common/get_container_image_list.yml"
       when: >
         hostvars['localhost']['omnia_share_option'] == 'NFS' and
@@ -235,6 +236,7 @@
   vars:
     container_images: "{{ hostvars['localhost']['container_images'] | default([]) }}"
     oim_group: false
+  tags: oim_ha
 
 - name: Prepare oim completion
   hosts: localhost
