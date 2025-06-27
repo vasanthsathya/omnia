@@ -32,11 +32,11 @@ container_images:
   - "docker.io/pulp/pulp:{{ pulp_tag }}"
 
 # Usage: validate_image_tars.yml
-omnia_images_dir_path: "{{ omnia_images_dir_path | default('/opt/omnia/images') }}"
+omnia_images_dir_path: "/opt/omnia/images"
 omnia_images_tar_missing_msg_common: >-
   The following container image tarballs are missing from the directory {{ omnia_images_dir_path }}:
   {{ missing_tars | join(', ') }}.
   Please ensure that the tarballs are present in the specified directory.
   To support either OIM HA or heirarchical provisioning or federated telemetry, these images tar file is required.
   Can use save_container_images utility to save images to tar files.
-omnia_images_tar_missing_msg: "{{ omnia_images_tar_missing_msg | default(omnia_images_tar_missing_msg_common) | replace('\n', ' ') }}"
+omnia_images_tar_missing_final_msg: "{{ omnia_images_tar_missing_msg | default(omnia_images_tar_missing_msg_common) | replace('\n', ' ') }}"
