@@ -115,7 +115,7 @@ def schema(
 
 # Code to run the L2 validation validate_input_logic function.
 def logic(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name):
-    """
+    """ 
     Validates the logic of the input file.
 
     Args:

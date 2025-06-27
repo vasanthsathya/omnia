@@ -46,7 +46,7 @@ files = {
 
 # Tags and the files that will be run based off of it
 input_file_inventory = {
-    "scheduler": [files["omnia_config"], files["software_config"]],
+    "scheduler": [files["omnia_config"], files["software_config"], files["high_availability_config"]],
     "provision": [
         files["provision_config"],
         files["network_spec"],
@@ -96,17 +96,6 @@ input_file_inventory = {
         files["roles_config"],
         files["high_availability_config"]
     ],
-}
-
-# Define a mapping in config.py (or dynamically in the code) for future tag-to-filename replacements
-tag_file_replacements = {
-    "k8s": {
-        "omnia_config": "k8s_scheduler",  # Replace omnia_config with k8s_scheduler for k8s tag
-    },
-    "slurm": {
-        "omnia_config": "slurm_scheduler",  # Example for another tag "slurm"
-    },
-    # Add more tag-based file mappings as needed
 }
 
 # All of the passwords fields
