@@ -10,7 +10,7 @@ Manually collect PXE NIC information for target servers and manually define them
 
 .. note::
     * The header fields mentioned above are case sensitive.
-    * The service tags provided are not validated. Ensure the correct service tags are provided.
+    * The service tags provided in the mapping file are not validated by Omnia. Ensure that correct service tags are provided. Incorrect service tags can cause unexpected failures.
     * The hostnames provided should not contain the domain name of the nodes.
     * All fields mentioned in the mapping file are mandatory except ``bmc_ip``.
     * The MAC address provided in ``pxe_mapping_file.csv`` should refer to the PXE NIC on the target nodes.
