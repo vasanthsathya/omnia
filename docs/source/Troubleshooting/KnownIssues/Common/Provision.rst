@@ -83,7 +83,7 @@ Due to internal MAC ID conflicts on the target nodes, the MAC address will be li
         ansible-playbook discovery_provision.yml
 
 
-⦾ **While executing** ``discovery_provision.yml`` **playbook from the OIM, some of the cluster nodes fail to boot up and omniadb captures the node status as "failed".**
+⦾ **While executing** ``discovery_provision.yml`` **playbook from the OIM, some of the cluster nodes fail to boot up and omniadb captures the node status as** ``failed``.
 
 .. image:: ../../../images/waco_node_boot_failure.png
 

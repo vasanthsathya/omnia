@@ -83,7 +83,7 @@ Slurm
 
 **Potential Cause**: This error can happen:
 
-    * Due to intermittent connectivity issues with the EPEL8 repositories from where the Slurm packages are downloaded.
+    * Due to intermittent connectivity issues with the EPEL9 repositories from where the Slurm packages are downloaded.
     * Due to Slurm packages not downloaded successfully during ``local_repo.yml`` execution.
 
 **Resolution**:
