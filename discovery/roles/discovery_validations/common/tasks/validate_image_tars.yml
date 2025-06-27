@@ -21,17 +21,10 @@
   register: found_tarballs
 
 - name: Include task to get container_images list
-  ansible.builtin.include_tasks: "{{ role_path }}/../../../../prepare_oim/roles/deploy_containers/common/tasks/get_container_image_list.yml"
+  ansible.builtin.include_tasks: "{{ role_path }}/../../../../common/tasks/common/get_container_image_list.yml"
 
 - name: Prepare expected and existing tarball filenames
   ansible.builtin.set_fact:
-    expected_tarballs: >-
-      {{
-        container_images
-        | map('regex_replace', '[:/]', '_')
-        | map('regex_replace', '$', '.tar')
-        | list
-      }}
     actual_tarballs: >-
       {{
         found_tarballs.files
@@ -42,7 +35,7 @@
 
 - name: Compute missing tarballs
   ansible.builtin.set_fact:
-    missing_tars: "{{ expected_tarballs | difference(actual_tarballs) }}"
+    missing_tars: "{{ container_images.keys() | list | difference(actual_tarballs) }}"
 
 - name: Show missing omnia image tarballs
   ansible.builtin.debug:
