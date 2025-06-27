@@ -386,6 +386,7 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
     primary_oim_admin_ip = admin_bmc_networks["admin_network"]["primary_oim_admin_ip"]
 
     #verify intel_gaudi with sofwate config json
+    run_intel_gaudi_tests = data["run_intel_gaudi_tests"]
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
     softwares = software_config_json["softwares"]
