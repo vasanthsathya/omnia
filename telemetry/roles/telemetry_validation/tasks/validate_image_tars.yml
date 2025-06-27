@@ -21,7 +21,7 @@
   register: found_tarballs
 
 - name: Include task to get container_images list
-  ansible.builtin.include_tasks: "{{ playbook_dir }}/../prepare_oim/roles/deploy_containers/common/tasks/get_container_image_list.yml"
+  ansible.builtin.include_tasks: "{{ role_path }}/../../../prepare_oim/roles/deploy_containers/common/tasks/get_container_image_list.yml"
 
 - name: Prepare expected and existing tarball filenames
   ansible.builtin.set_fact:

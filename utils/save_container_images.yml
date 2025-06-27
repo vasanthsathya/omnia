@@ -22,6 +22,7 @@
 #     # visualization_support: true
 #     # idrac_telemetry_support: true
 #     # k8s_support: true
+#     # enable_routed_internet: true
 
 
 # ---- When we want to save specifice images list ---
