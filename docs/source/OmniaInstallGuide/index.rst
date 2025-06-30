@@ -5,8 +5,6 @@ Omnia Deployment Guide
 
 * `Advanced Configurations <AdvancedConfigurations/index.html>`_
 
-* `Deploy AI tools on the cluster <InstallAITools/index.html>`_
-
 * `Maintenance <Maintenance/index.html>`_
 
 * `Sample Files <samplefiles.html>`_
@@ -21,6 +19,5 @@ Omnia Deployment Guide
 
     RHEL_new/index
     AdvancedConfigurations/index
-    InstallAITools/index
     Maintenance/index
     samplefiles
