@@ -19,13 +19,13 @@ max_number_of_roles_msg = "A max of 100 roles can be supported."
 min_number_of_groups_msg = "At least 1 group is required."
 min_number_of_roles_msg = "At least 1 role is required."
 max_number_of_roles_per_group_msg = "Groups can support a maximum of 5 roles."
-resource_mgr_id_msg = "The resource_mgr_id is mandatory if the group is mapped to kube_node or \
-    slurm_node roles."
+resource_mgr_id_msg = "The resource_mgr_id is mandatory if the group is mapped to kube_node, \
+    slurm_node, service_kube_node roles."
 grp_exist_msg = "A valid group must be provided."
 invalid_switch_ip_msg = "Please provide a valid switch IPv4 address (example: 10.5.0.1)."
 grp_role_msg = "Please associate this group with a role."
 parent_service_node_msg = "Group is associated with login, compiler_node, service_node, \
-    kube_control_plane, slurm_control_plane role(s)."
+    kube_control_plane, slurm_control_plane, service_kube_control_plane role(s)."
 parent_service_role_dne_msg = "A service_node role must be present when the parent is provided."
 parent_service_role_msg = "A service_node role does not exist, the parent should be empty \
     for any group associated with worker or default roles."

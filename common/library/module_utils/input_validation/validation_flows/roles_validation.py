@@ -94,7 +94,8 @@ def validate_layer_group_separation(logger, roles):
     # Define layer roles
     frontend_roles = {
         "service_node", "login", "auth_server", "compiler_node",
-        "kube_control_plane", "etcd", "slurm_control_node", "slurm_dbd"
+        "kube_control_plane", "etcd", "slurm_control_node", "slurm_dbd",
+        "service_kube_control_plane", "service_etcd"
     }
     compute_roles = {"kube_node", "slurm_node", "default"}
 
@@ -130,6 +131,42 @@ def validate_layer_group_separation(logger, roles):
 
     return errors
 
+def validate_group_role_separation(logger, roles):
+    """
+    Validates that groups are not shared between specific role pairs.
+
+    Args:
+        roles (list): List of role dictionaries from the config
+
+    Returns:
+        list: List of validation errors
+    """
+    errors = []
+
+    # Define role pairs that should not share groups
+    role_pairs = {
+        ("service_kube_control_plane", "kube_control_plane"),
+        ("service_etcd", "etcd"),
+        ("service_kube_node", "kube_node"),
+    }
+
+    # Create a dictionary to store groups for each role
+    role_groups = {}
+    for role in roles:
+        role_name = role.get("name", "")
+        role_groups[role_name] = role.get("groups", [])
+
+    # Check for shared groups between role pairs
+    for pair in role_pairs:
+        role1, role2 = pair
+        if role1 in role_groups and role2 in role_groups:
+            shared_groups = set(role_groups[role1]) & set(role_groups[role2])
+            if shared_groups:
+                error_msg = f"Groups {', '.join(shared_groups)} are shared between {role1} and {role2} roles."
+                errors.append(create_error_msg("Roles", None, error_msg))
+
+    return errors
+
 def validate_service_node_in_software_config(input_file_path):
     """
     verifies service_node entry present in sofwate config.json
@@ -159,6 +196,7 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     ROLE_GROUPS = "groups"
     SLURMWORKER = "slurm_node"
     K8WORKER = "kube_node"
+    SERVICE_K8S_WORKER = "service_kube_node"
     DEFAULT = "default"
     SWITCH_DETAILS = "switch_details"
     IP = "ip"
@@ -171,7 +209,7 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     MAX_ROLES = 100
 
     roles_per_group = {}
-    empty_parent_roles = {'login', 'compiler_node', 'service_node', 'kube_control_plane', 'etcd', 'slurm_control_plane', 'slurm_dbd', 'auth_server'}
+    empty_parent_roles = {'login', 'compiler_node', 'service_node', 'service_kube_control_plane', 'service_etcd', 'kube_control_plane', 'etcd', 'slurm_control_plane', 'slurm_dbd', 'auth_server'}
 
     errors = []
     # Empty file validation
@@ -196,6 +234,7 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     # Validate same group usage among layers
     if roles is not None:
         errors.extend(validate_layer_group_separation(logger, roles))
+        errors.extend(validate_group_role_separation(logger, roles))
         if errors:
             return errors
 
@@ -236,7 +275,7 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
             # Check role-group association, all roles must have a group
             if role[ROLE_GROUPS] and (None in role[ROLE_GROUPS] or not role[ROLE_GROUPS]):
                 errors.append(role[NAME], create_error_msg(None, f'Role {role[NAME]} must be associated with a group:', en_us_validation_msg.min_number_of_groups_msg))
-            if role[NAME] == SLURMWORKER or role[NAME] == K8WORKER:
+            if role[NAME] == SLURMWORKER or role[NAME] == K8WORKER or role[NAME] == SERVICE_K8S_WORKER:
                 for group in role[ROLE_GROUPS]:
                     set_resource_mgr_id.add(group)
 
@@ -305,11 +344,11 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
                         errors.append(create_error_msg(group, f'Static range {static_range} overlaps with the following group(s): {grp_overlaps}.', en_us_validation_msg.overlapping_static_range))
                     static_range_mapping[group] = static_range
 
-            # Validate resource_mgr_id is set for groups that belong to kube_node or slurm_node roles
+            # Validate resource_mgr_id is set for groups that belong to kube_node, service_kube_node, slurm_node roles
             if group in set_resource_mgr_id and validation_utils.is_string_empty(groups[group].get(RESOURCE_MGR_ID, None)):
                 errors.append(create_error_msg(group, f'Group {group} is missing resource_mgr_id.', en_us_validation_msg.resource_mgr_id_msg))
             elif group not in set_resource_mgr_id and not validation_utils.is_string_empty(groups[group].get(RESOURCE_MGR_ID, None)):
-            # Validate resource_mgr_id is not set for groups that do not belong to kube_node or slurm_node roles
+            # Validate resource_mgr_id is not set for groups that do not belong to kube_node, service_kube_node, slurm_node roles
                 errors.append(create_error_msg(group, f'Group {group} should not have the resource_mgr_id set.', en_us_validation_msg.resource_mgr_id_msg))
 
     return errors
