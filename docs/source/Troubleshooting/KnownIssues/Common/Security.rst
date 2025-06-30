@@ -33,6 +33,5 @@ Centralized authentication
 
 ⦾ **While trying to deploy OpenLDAP, why does** ``omnia.yml`` **execution fail during the** ``TASK [/opt/omnia/ldap/ansible-role-ldaptoolbox-openldap : load config from file]`` **?**
 
-**Resolution**: This is a known issue with OpenLDAP. For more informstion, `click here <https://github.com/ltb-project/ansible-role-ldaptoolbox-openldap/issues/27>`_.
-
+**Resolution**: To resolve this issue, deploy the authentication server (``auth_server``) on a dedicated node that is not part of any other cluster, such as a Kubernetes or Slurm cluster.
 

@@ -71,15 +71,6 @@ Kubernetes
 **Resolution**: If your ``omnia.yml`` playbook execution fails while waiting for the MetalLB controller to be up and running, you need to wait for the MetalLB pods to come to running state and then re-run ``omnia.yml/scheduler.yml``.
 
 
-⦾ **Why does the** ``omnia.yml`` **or** ``scheduler.yml`` **playbook execution fails with a** ``Unable to retrieve file contents`` **error?**
-
-.. image:: ../../../images/kubespray_error.png
-
-**Potential Cause**: This error occurs when the Kubespray collection is not installed during the execution of ``prepare_oim.yml``.
-
-**Resolution**: Re-run ``prepare_oim.yml``.
-
-
 ⦾ **Why does the NFS-client provisioner go to a** ``ContainerCreating`` **or** ``CrashLoopBackOff`` **state?**
 
 .. image:: ../../../images/NFS_container_creating_error.png
