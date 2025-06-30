@@ -19,7 +19,9 @@ provision_validation_vars:
   - "{{ role_path }}/../mtms/vars/main.yml"
   - "{{ role_path }}/../switch_based/vars/main.yml"
 provision_shared_library_path: /opt/omnia/shared_libraries/provision
-ansible_tag_fail_msg: "Please run the playbook with the tag 'management_layer' only. Other tags are not allowed."
+ansible_invalid_tag_fail_msg: "Please run the playbook with the tag 'management_layer' only. Other tags are not allowed."
+ansible_tag_fail_msg: "Please run the playbook without specifying any tags, as this feature is currently disabled and will be available in a future update."
+federated_provision_unsupported: "The federated_provision feature is not currently supported but will be available soon."
 
 # Usage: validate_provision_container.yml
 xcatd_service: "xcatd.service"
