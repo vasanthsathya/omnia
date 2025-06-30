@@ -18,3 +18,6 @@
 
 - name: Deployment of mysqldb pod
   ansible.builtin.include_tasks: mysqldb_deployment.yml
+
+- name: Deployment of prometheus pod
+  ansible.builtin.include_tasks: prometheus_deployment.yml
