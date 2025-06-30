@@ -12,3 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
+
+- name: Configure k8s secrets
+  ansible.builtin.include_tasks: secrets_creation.yml
+
+- name: Deployment of mysqldb pod
+  ansible.builtin.include_tasks: mysqldb_deployment.yml

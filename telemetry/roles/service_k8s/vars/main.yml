@@ -12,3 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 ---
+
+# Usage: mysqldb_deployment.yml
+mysqldb_storage: 1Gi
+mysqldb_pvc_name: mysqldb-storage-claim
+mysqldb_k8s_name: mysqldb
+statefulset_replicas: 1
+mysqldb_container_port1: 3306
+mysqldb_port1: "3306"
+mysqldb_container_port2: 33060
+
+# Usage: k8s_secrets.yml
+mysqldb_secrets_name: mysqldb-credentials
