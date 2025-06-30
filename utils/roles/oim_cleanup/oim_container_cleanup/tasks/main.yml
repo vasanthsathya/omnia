@@ -35,7 +35,10 @@
 
 - name: Cleanup kubespray container
   ansible.builtin.import_tasks: cleanup_kubespray.yml
-  when: hostvars['localhost']['k8s_support']
+
+- name: Cleanup squid container
+  ansible.builtin.import_tasks: cleanup_squid.yml
+  when: hostvars['localhost']['enable_routed_internet']
 
 - name: Cleanup iDRAC Telemetry containers
   when: hostvars['localhost']['idrac_telemetry_support']
