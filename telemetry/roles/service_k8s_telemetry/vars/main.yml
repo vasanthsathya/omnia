@@ -17,7 +17,6 @@
 mysqldb_storage: 1Gi
 mysqldb_pvc_name: mysqldb-storage-claim
 mysqldb_k8s_name: mysqldb
-statefulset_replicas: 1
 mysqldb_container_port1: 3306
 mysqldb_container_port2: 33060
 
