@@ -4,14 +4,10 @@ on:
   pull_request:
     branches:
       - staging
-      - pub/new_architecture
-      - pub/telemetry
-      - pub/composable_software_roles
+      - release_1.7.1
+      - pub/service_k8s_telemetry
       - pub/local_repo
-      - pub/telemetry_restructure
-      - pub/telemetry_service_oim_ha
       - pub/new_arch_pylint
-      - pub/k8s
 
 jobs:
   build:
