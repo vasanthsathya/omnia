@@ -8,7 +8,7 @@ Via CLI
 
     ssh omnia_core
 
-2. Establish a SSH connection to the ``omnia_provision`` container using the following command from inside ``omnia_core`` container using the following command: ::
+2. Establish a SSH connection to the ``omnia_provision`` container from inside the ``omnia_core`` container using the following command: ::
 
     ssh omnia_provision
 
