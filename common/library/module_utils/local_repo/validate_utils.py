@@ -11,8 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-# pylint: disable=import-error,no-name-in-module,line-too-long
+# pylint: disable=import-error,no-name-in-module
 import os
 import yaml
 from ansible.module_utils.local_repo.common_functions import (
