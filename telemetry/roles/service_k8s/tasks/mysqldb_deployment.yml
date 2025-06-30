@@ -28,15 +28,6 @@
 # limitations under the License.
 ---
 
-# - name: Create namespace
-#   kubernetes.core.k8s:
-#     state: present
-#     definition:
-#       apiVersion: v1
-#       kind: Namespace
-#       metadata:
-#         name: "{{ namespace }}"
-
 - name: Persistent volume claim for mysqldb
   kubernetes.core.k8s:
     state: present
@@ -75,11 +66,6 @@
               app: "{{ mysqldb_k8s_name }}"
           spec:
             volumes:
-              - name: telemetry-reference-tools
-                hostPath:
-                  path: "{{ telemetry_mount_path + idrac_telemetry_folder_name }}"
-                  type: Directory
-
               - name: mysqldb-pvc
                 persistentVolumeClaim:
                   claimName: "{{ mysqldb_pvc_name }}"
@@ -89,11 +75,8 @@
                 image: mysql:8.0
                 imagePullPolicy: "IfNotPresent"
                 volumeMounts:
-                  - mountPath: /go/src/github.com/telemetry-reference-tools
-                    name: telemetry-reference-tools
                   - mountPath: /var/lib/mysql/
                     name: mysqldb-pvc
-                workingDir: /go/src/github.com/telemetry-reference-tools
                 env:
                   - name: MYSQL_DATABASE
                     value: "{{ mysqldb_name }}"
