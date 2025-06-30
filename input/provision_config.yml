@@ -76,5 +76,8 @@ default_lease_time: "86400"
 ntp_support: true
 
 #### Mandatory
+# If federated_provision is set to false, all the nodes will be provisioned from OIM
+# federated_provision true is currently not supported.
 # Default: false
 federated_provision: false
+
