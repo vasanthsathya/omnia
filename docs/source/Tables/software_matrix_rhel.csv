@@ -73,7 +73,6 @@ kubernetes.core,GNU-General Public License v3.0,"The collection includes a varie
 community.kubernetes,GPL-3.0-or-later,Kubernetes collection for ansible,2.0.1
 rocm,MIT license,AMD ROCm™ Software,6.3.1
 beegfs,BeeGFS (formerly known as FhGFS) END USER LICENSE,Public repository for the BeeGFS Parallel File System,7.4.5
-csi powerscale driver ,Apache-2.0 license,CSI Driver for Dell PowerScale,2.11.0
 CUDA ,NVIDIA Software License,"The NVIDIA® CUDA® Toolkit provides a development environment for creating high-performance, GPU-accelerated applications.",12.8
 dkms,GPL 2.0,Dynamic Kernel Module Support,3.2.1
 Intel Gaudi3 driver,MIT license,Intel Gaudi3 drivers,1.19.2
