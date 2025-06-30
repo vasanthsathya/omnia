@@ -136,14 +136,6 @@ Configuring specific local repositories
     For more information on configuring login node security, `click here <../OmniaCluster/BuildingCluster/Authentication.html#configuring-login-node-security>`_.
 
 
-**PowerScale CSI driver**
-
-    To install PowerScale CSI driver, include the following line under ``softwares`` in ``software_config.json``: ::
-
-            {"name": "csi_driver_powerscale", "version":"v2.11.0"},
-
-    For information on PowerScale CSI driver, `click here <../../AdvancedConfigurations/PowerScale_CSI.html>`_.
-
 **Jupyterhub**
 
     To install Jupyterhub, include the following line under ``softwares`` in ``software_config.json``: ::

@@ -12,6 +12,5 @@ Advanced configurations
     ConfiguringSwitches/index
     AdditionalNIC
     ROCm_accelerator
-    PowerScale_CSI
     AutomatingOneAPI
     AutomatingOpenMPI

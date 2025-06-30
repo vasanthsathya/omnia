@@ -7,17 +7,17 @@ Use the local repository feature to create a customized set of local repositorie
 
     {
         "cluster_os_type": "rhel",
-        "cluster_os_version": "8.8",
-        "repo_config": "partial",
+        "cluster_os_version": "9.6",
+        "repo_config": "always",
         "softwares": [
-            {"name": "amdgpu", "version": "6.2.2"},
+            {"name": "amdgpu", "version": "6.3.1"},
             {"name": "cuda", "version": "12.3.2"},
             {"name": "ofed", "version": "24.01-0.3.3.1"},
             {"name": "freeipa"},
             {"name": "openldap"},
             {"name": "secure_login_node"},
             {"name": "nfs"},
-            {"name": "beegfs", "version": "7.4.2"},
+            {"name": "beegfs", "version": "7.4.5"},
             {"name": "slurm"},
             {"name": "k8s", "version":"1.31.4"},
             {"name": "jupyter"},
@@ -32,24 +32,9 @@ Use the local repository feature to create a customized set of local repositorie
             {"name": "utils"},
             {"name": "ucx", "version": "1.15.0"},
             {"name": "openmpi", "version": "4.1.6"},
-            {"name": "csi_driver_powerscale", "version":"v2.13.0"}
         ],
         "amdgpu": [
-            {"name": "rocm", "version": "6.2.2" }
-        ],
-        "vllm": [
-            {"name": "vllm_amd"},
-            {"name": "vllm_nvidia"}
-        ],
-        "pytorch": [
-            {"name": "pytorch_cpu"},
-            {"name": "pytorch_amd"},
-            {"name": "pytorch_nvidia"}
-        ],
-        "tensorflow": [
-            {"name": "tensorflow_cpu"},
-            {"name": "tensorflow_amd"},
-            {"name": "tensorflow_nvidia"}
+            {"name": "rocm", "version": "6.3.1" }
         ]
     }
 
