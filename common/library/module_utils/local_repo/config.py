@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=import-error,no-name-in-module,line-too-long
+#pylint: disable=line-too-long
 
 """
 Consolidated configuration file for Ansible module utilities.
@@ -32,7 +32,8 @@ USER_JSON_FILE_DEFAULT = ""
 DEFAULT_STATUS_FILENAME = "status.csv"
 STATUS_CSV_HEADER = 'name,type,status\n'
 SOFTWARE_CSV_HEADER = "name,status"
-
+USER_REG_CRED_INPUT = "/opt/omnia/input/project_default/user_registry_credential.yml"
+USER_REG_KEY_PATH = "/opt/omnia/input/project_default/.local_repo_credentials_key"
 # ----------------------------
 # Software tasklist Defaults
 # Used by prepare_tasklist.py
