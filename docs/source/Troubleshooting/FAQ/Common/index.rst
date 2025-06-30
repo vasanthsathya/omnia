@@ -8,4 +8,3 @@ Common FAQs
     Provision
     Network
     Security
-    Telemetry
