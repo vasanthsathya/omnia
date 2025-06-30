@@ -75,34 +75,21 @@
 - name: Set cluster configuration facts
   ansible.builtin.set_fact:
     cluster_name: "{{ selected_cluster.cluster_name }}"
-    k8s_cni: "{{ selected_cluster.k8s_cni }}"
-    pod_external_ip_range: "{{ selected_cluster.pod_external_ip_range }}"
-    k8s_service_addresses: "{{ selected_cluster.k8s_service_addresses }}"
-    k8s_pod_network_cidr: "{{ selected_cluster.k8s_pod_network_cidr }}"
-    topology_manager_policy: "{{ selected_cluster.topology_manager_policy }}"
-    topology_manager_scope: "{{ selected_cluster.topology_manager_scope }}"
-    k8s_offline_install: "{{ selected_cluster.k8s_offline_install }}"
-    csi_powerscale_driver_secret_file_path: "{{ selected_cluster.csi_powerscale_driver_secret_file_path }}"
-    csi_powerscale_driver_values_file_path: "{{ selected_cluster.csi_powerscale_driver_values_file_path }}"
-    nfs_storage: "{{ selected_cluster.nfs_storage }}"
 
 - name: Debug cluster configuration facts
   ansible.builtin.debug:
     msg:
       cluster_name: "{{ cluster_name }}"
-      k8s_cni: "{{ k8s_cni }}"
-      pod_external_ip_range: "{{ pod_external_ip_range }}"
-      k8s_service_addresses: "{{ k8s_service_addresses }}"
-      k8s_pod_network_cidr: "{{ k8s_pod_network_cidr }}"
-      topology_manager_policy: "{{ topology_manager_policy }}"
-      topology_manager_scope: "{{ topology_manager_scope }}"
-      k8s_offline_install: "{{ k8s_offline_install }}"
-      csi_powerscale_driver_secret_file_path: "{{ csi_powerscale_driver_secret_file_path }}"
-      csi_powerscale_driver_values_file_path: "{{ csi_powerscale_driver_values_file_path }}"
-      nfs_storage: "{{ nfs_storage }}"
 
-- name: Create a directory to store kubespray log files
-  ansible.builtin.file:
-    path: "/opt/omnia/log/kubespray/{{ hostvars['127.0.0.1']['cluster_var_name'] }}/{{ hostvars['127.0.0.1']['cluster_name'] }}"
-    state: directory
-    mode: "{{ file_perm }}"
+- name: Lookup HA config for selected cluster
+  ansible.builtin.set_fact:
+    selected_cluster_ha: >-
+      {{ vars[cluster_ha_var_name]
+          | selectattr('cluster_name', 'equalto', cluster_name)
+          | list
+          | first }}
+
+- name: Set HA-related facts
+  when: selected_cluster_ha is defined
+  ansible.builtin.set_fact:
+    enable_k8s_ha: "{{ selected_cluster_ha.enable_k8s_ha | default(false) }}"

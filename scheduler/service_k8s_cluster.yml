@@ -34,6 +34,15 @@
   ansible.builtin.import_playbook: ../utils/servicetag_host_mapping.yml
   when: not ( hostvars['127.0.0.1']['update_inventory_executed'] | default(false) | bool )
 
+- name: Set fact for service k8s playbook
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Set fact for service k8s playbook
+      ansible.builtin.set_fact:
+        service_k8s_playbook: true
+
 - name: Validate inventory
   ansible.builtin.import_playbook: ../utils/inventory_validation.yml
   when: not ( hostvars['127.0.0.1']['inventory_validation_executed'] | default(false) | bool )
@@ -47,10 +56,6 @@
   connection: local
   gather_facts: false
   tasks:
-    - name: Set fact for service k8s playbook
-      ansible.builtin.set_fact:
-        service_k8s_playbook: true
-
     - name: Validate scheduler input parameters
       ansible.builtin.include_role:
         name: cluster_validation

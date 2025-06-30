@@ -82,6 +82,12 @@
         user_inventory_path: "{{ ansible_inventory_sources[0] }}"
         omnia_inventory_path: "{{ cluster_layout_path }}"
 
+    - name: Create a directory to store inventory
+      ansible.builtin.file:
+        path: "{{ k8s_nfs_share }}"
+        state: directory
+        mode: "{{ file_mode }}"
+
     - name: Inventory not provided ,copy omnia genrated inventory to kubespray nfs share
       ansible.builtin.copy:
         src: "{{ omnia_inventory_path }}"

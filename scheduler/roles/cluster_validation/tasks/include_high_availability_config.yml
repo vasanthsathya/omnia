@@ -30,7 +30,7 @@
   with_dict: "{{ oim_ha }}"
 
 - name: Lookup HA config for selected cluster
-  set_fact:
+  ansible.builtin.set_fact:
     selected_cluster_ha: >-
       {{ vars[cluster_ha_var_name]
           | selectattr('cluster_name', 'equalto', cluster_name)
@@ -39,7 +39,7 @@
 
 - name: Set HA-related facts
   when: selected_cluster_ha is defined
-  set_fact:
+  ansible.builtin.set_fact:
     enable_oim_ha: "{{ include_ha_config.ansible_facts.oim_ha.enable_oim_ha | default(false) }}"
     enable_k8s_ha: "{{ selected_cluster_ha.enable_k8s_ha | default(false) }}"
     k8s_vip: "{{ selected_cluster_ha.virtual_ip_address | default('') }}"
@@ -48,7 +48,7 @@
     active_node_service_tags: "{{ selected_cluster_ha.active_node_service_tags | default([]) }}"
 
 - name: Debug summary
-  debug:
+  ansible.builtin.debug:
     msg:
       cluster_type: "{{ cluster_type }}"
       enable_k8s_ha: "{{ enable_k8s_ha }}"

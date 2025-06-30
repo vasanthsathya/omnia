@@ -62,7 +62,7 @@ service_k8s_cluster:
     csi_powerscale_driver_values_file_path: ""
     nfs_storage: {}
 
-scheduler_k8s_cluster:
+compute_k8s_cluster:
   - cluster_name: compute_cluster1
     deployment: "true"
     k8s_cni: "calico"

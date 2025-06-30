@@ -155,7 +155,7 @@ k8s_version_failed_msg: >-
 # Usage: validate_k8s_local_repo_metadata.yml
 k8s_local_repo_metadata_file: "/opt/omnia/log/local_repo/k8s_local_repo_metadata.yml"
 k8s_local_repo_metadata_file_not_exist_msg: "The metadata file {{ k8s_local_repo_metadata_file }} does not exist. Please run local_repo.yml and rerun playbook."
-msg_not_in_list: "{{ software_stack }} version {{ k8s_version }} is not present in {{ k8s_local_repo_metadata_file }}! Please run local_repo.yml and rerun playbook"
+msg_not_in_list: "{{ software_stack }} version {{ k8s_version }} is not present in {{ k8s_local_repo_metadata_file }}! Please run local_repo.yml and rerun playbook" # noqa: yaml[line-length]
 msg_version_mismatch: >-
   Last execution of local_repo.yml with {{ software_stack }} was
   {{ metadata_yaml['last_' + software_stack + '_local_repo_version'] }},
