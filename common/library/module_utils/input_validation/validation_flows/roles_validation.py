@@ -125,7 +125,7 @@ def validate_layer_group_separation(logger, roles):
         if layers["frontend"] and layers["compute"]:
             frontend_layer = ', '.join(sorted(layers['frontend']))
             compute_layer = ', '.join(sorted(layers['compute']))
-            errors.append(create_error_msg("Roles", None,
+            errors.append(create_error_msg("Roles", group,
                 en_us_validation_msg.duplicate_group_name_in_layers_msg.format(group,
                     frontend_layer, compute_layer)))
 
@@ -250,6 +250,12 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     # Check maximum roles limit
     if roles and len(roles) > MAX_ROLES:
         errors.append(create_error_msg(ROLES, f'Current number of roles is {len(roles)}:', en_us_validation_msg.max_number_of_roles_msg))
+
+    service_cluster_roles = ["service_kube_control_plane", "service_etcd", "service_kube_node"]
+    defined_service_roles = [role["name"] for role in roles if role["name"] in service_cluster_roles]
+
+    if len(defined_service_roles) > 0 and len(defined_service_roles) < len(service_cluster_roles):
+        errors.append(create_error_msg("Roles", None, "Either all service roles (service_kube_control_plane, service_etcd, service_kube_node) must be defined or none of them"))
 
     # Role Service_node is defined in roles_config.yml,
     # verify service_node entry present in sofwate_config.json

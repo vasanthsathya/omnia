@@ -20,7 +20,7 @@ min_number_of_groups_msg = "At least 1 group is required."
 min_number_of_roles_msg = "At least 1 role is required."
 max_number_of_roles_per_group_msg = "Groups can support a maximum of 5 roles."
 resource_mgr_id_msg = "The resource_mgr_id is mandatory if the group is mapped to kube_node, \
-    slurm_node, service_kube_node roles."
+slurm_node, service_kube_node roles."
 grp_exist_msg = "A valid group must be provided."
 invalid_switch_ip_msg = "Please provide a valid switch IPv4 address (example: 10.5.0.1)."
 grp_role_msg = "Please associate this group with a role."
