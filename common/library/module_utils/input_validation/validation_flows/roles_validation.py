@@ -162,8 +162,9 @@ def validate_group_role_separation(logger, roles):
         if role1 in role_groups and role2 in role_groups:
             shared_groups = set(role_groups[role1]) & set(role_groups[role2])
             if shared_groups:
-                error_msg = f"Groups {', '.join(shared_groups)} are shared between {role1} and {role2} roles."
-                errors.append(create_error_msg("Roles", None, error_msg))
+                group_str = ', '.join(shared_groups)
+                error_msg = f"Group is shared between {role1} and {role2} roles."
+                errors.append(create_error_msg("Roles", group_str, error_msg))
 
     return errors
 
@@ -254,8 +255,10 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
     service_cluster_roles = ["service_kube_control_plane", "service_etcd", "service_kube_node"]
     defined_service_roles = [role["name"] for role in roles if role["name"] in service_cluster_roles]
 
-    if len(defined_service_roles) > 0 and len(defined_service_roles) < len(service_cluster_roles):
-        errors.append(create_error_msg("Roles", None, "Either all service roles (service_kube_control_plane, service_etcd, service_kube_node) must be defined or none of them"))
+    if 0 < len(defined_service_roles) < len(service_cluster_roles):
+        service_cluster_str = ', '.join(defined_service_roles)
+        errors.append(create_error_msg("Roles", service_cluster_str,
+            "The service cluster roles must be either all defined together (service_kube_control_plane, service_etcd, service_kube_node) or none at all."))
 
     # Role Service_node is defined in roles_config.yml,
     # verify service_node entry present in sofwate_config.json
