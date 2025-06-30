@@ -32,6 +32,13 @@ input_project_dir: "{{ hostvars['localhost']['input_project_dir'] }}"
 software_config_json_file: "{{ input_project_dir }}/software_config.json"
 
 # Usage: validate_k8s_metadata.yml
+cluster_name_not_passed: >
+  The required variable 'cluster_name' was not provided.
+  Please rerun the playbook with: -e "cluster_name=<specify_cluster_name_of_kube_node>"
+cluster_name_not_found: >
+  Cluster name '{{ cluster_name }}' not found!
+  Available service clusters: {{ all_service_clusters }}
+  Available compute clusters: {{ all_compute_clusters }}
 metadata_file: "/opt/omnia/kubespray/k8s_metadata.yml"
 k8s_metadata_file_not_exist_msg: "The metadata file {{ metadata_file }} does not exist. Please run prepare_oim.yml and rerun playbook."
 k8s_version_failed_msg: "Kubernetes version {{ k8s_version }} not found in metadata file. \

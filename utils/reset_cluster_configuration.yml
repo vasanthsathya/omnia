@@ -69,7 +69,7 @@
   vars:
     user_inventory_path: "{{ ansible_inventory_sources[0] }}"
     kubespray_nfs_share: "/opt/omnia/kubespray/{{ hostvars['127.0.0.1']['cluster_var_name'] }}/{{ hostvars['127.0.0.1']['cluster_name'] }}"
-    kubespray_log_path: "/opt/omnia/log/kubespray/{{ hostvars['127.0.0.1']['cluster_var_name'] }}/{{ hostvars['127.0.0.1']['cluster_name'] }}/k8s_reset_cluster.log"
+    kubespray_log_path: "/opt/omnia/log/kubespray/{{ hostvars['127.0.0.1']['cluster_var_name'] }}/{{ hostvars['127.0.0.1']['cluster_name'] }}/k8s_reset_cluster.log" # noqa: yaml[line-length]
     dir_mode: '0755'
   tasks:
     - name: Execute tasks for Reset kubernetes setup
