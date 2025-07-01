@@ -1,4 +1,4 @@
 Architecture
 ===============
 
-.. image:: ../images/Omnia_2.0_Architecture.png
+.. image:: ../images/Omnia_Architecture_2.0.png
