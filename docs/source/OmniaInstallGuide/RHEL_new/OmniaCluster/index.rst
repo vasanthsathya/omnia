@@ -9,8 +9,6 @@ The ``omnia.yml`` playbook allows you to set up the following on your cluster:
 
     * **Kubernetes**: Once all the required parameters in `omnia_config.yml <schedulerinputparams.html#id12>`_ are filled in, ``omnia.yml`` can be used to set up Kubernetes.
 
-    * **Login Node (Additionally secure login node)**
-
 .. toctree::
     :maxdepth: 2
 

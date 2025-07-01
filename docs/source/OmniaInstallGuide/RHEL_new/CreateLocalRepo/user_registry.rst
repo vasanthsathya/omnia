@@ -46,8 +46,8 @@ Instructions to pull images from the user registries in the form of a digest:
 .. note::
    To enable a repository from your RHEL subscription, run the following commands: ::
 
-            subscription-manager repos --enable=rhel-8-for-x86_64-appstream-rpms
-            subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms
+            subscription-manager repos --enable=rhel-9-for-x86_64-appstream-rpms
+            subscription-manager repos --enable=rhel-9-for-x86_64-baseos-rpms
 
 Pull images from the ``user_registry`` or ``Omnia local registry``
 ----------------------------------------------------------------------

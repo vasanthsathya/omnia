@@ -5,15 +5,8 @@ Troubleshooting guide
 Connecting to internal databases
 ===================================
 
-TimescaleDB
---------------
-
-    * Start a bash session within the timescaledb pod: ``kubectl exec -it pod/timescaledb-0 -n telemetry-and-visualizations -- /bin/bash``
-    * Connect to psql using the ``psql -u <postgres_username>`` command.
-    * Connect to database using the ``\c telemetry_metrics`` command.
-
-MySQL DB
------------
+Podman container
+-------------------
 
     * Start a bash session within the mysqldb pod using the ``kubectl exec -it pod/mysqldb-0 -n telemetry-and-visualizations -- /bin/bash`` command.
     * Connect to mysql using the ``mysql -u <mysqldb_username>`` command and provide password when prompted.

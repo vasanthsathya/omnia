@@ -66,6 +66,7 @@ A sample of the ``input/network_spec.yml`` where nodes are discovered using a ma
              correlation_to_admin: true
              admin_uncorrelated_node_start_ip: "10.5.0.50"
              primary_oim_admin_ip: "10.5.255.254"
+             primary_oim_bmc_ip: "10.5.255.1"
              network_gateway: ""
              DNS: ""
              MTU: "1500"

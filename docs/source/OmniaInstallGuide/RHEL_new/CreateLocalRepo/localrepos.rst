@@ -9,14 +9,14 @@ Configuring specific local repositories
 
             ::
 
-                {"name": "amdgpu", "version": "6.2.2"},
+                {"name": "amdgpu", "version": "6.3.1"},
 
         * Add the following line below the ``softwares`` section:
 
             ::
 
                 "amdgpu": [
-                                {"name": "rocm", "version": "6.2.2" }
+                                {"name": "rocm", "version": "6.3.1" }
                           ]
 
         * A sample format is available `here. <InputParameters.html>`_
@@ -27,7 +27,7 @@ Configuring specific local repositories
 
     To install CUDA, include the following line under ``softwares`` in ``software_config.json``: ::
 
-            {"name": "cuda", "version": "12.3.2"},
+            {"name": "cuda", "version": "12.8.0"},
 
     For a list of repositories (and their types) configured for CUDA, view the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>/cuda.json`` file. To customize your CUDA installation, update the ``url`` parameter with your desired CUDA version URL. URLs for different versions can be found `here <https://developer.nvidia.com/cuda-downloads>`_. ::
 
@@ -36,7 +36,7 @@ Configuring specific local repositories
             "cluster": [
               { "package": "cuda",
                 "type": "iso",
-                "url": "https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-rhel8-12-3-local-12.3.2_545.23.08-1.x86_64.rpm",
+                "url": "https://developer.download.nvidia.com/compute/cuda/12.8.0/local_installers/cuda-repo-rhel9-12-8-local-12.8.0_570.86.10-1.x86_64.rpm",
                 "path": ""
               },
               { "package": "dkms",
@@ -64,7 +64,7 @@ Configuring specific local repositories
             "cluster": [
               { "package": "ofed",
                 "type": "iso",
-                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.01-0.3.3.1/MLNX_OFED_LINUX-24.01-0.3.3.1-rhel8.7-x86_64.iso",
+                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.01-0.3.3.1/MLNX_OFED_LINUX-24.01-0.3.3.1-rhel9.0-x86_64.iso",
                 "path": ""
               }
             ]
@@ -77,7 +77,7 @@ Configuring specific local repositories
 
     To install BeeGFS, include the following line under ``softwares`` in ``software_config.json``: ::
 
-            {"name": "beegfs", "version": "7.4.2"},
+            {"name": "beegfs", "version": "7.4.5"},
 
     For information on deploying BeeGFS after setting up the cluster, `click here <../OmniaCluster/BuildingCluster/Storage/BeeGFS.html>`_.
 
@@ -125,15 +125,6 @@ Configuring specific local repositories
             {"name": "openldap"},
 
     For more information on OpenLDAP, `click here <../OmniaCluster/BuildingCluster/Authentication.html#configuring-freeipa-openldap-security>`_.
-
-
-**Secure Login Node**
-
-    To secure the login node, include the following line under ``softwares`` in ``software_config.json``: ::
-
-            {"name": "secure_login_node"},
-
-    For more information on configuring login node security, `click here <../OmniaCluster/BuildingCluster/Authentication.html#configuring-login-node-security>`_.
 
 
 **OpenMPI**
@@ -189,67 +180,6 @@ Configuring specific local repositories
 
     Include the following line under ``softwares`` in ``software_config.json``: ::
 
-                {"name": "custom"},
+                {"name": "additional_software"},
 
-    Create a ``custom.json`` file in the following directory: ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` to define the repositories. For example, For a cluster running RHEL 9.6, go to ``/opt/omnia/input/project_default/config/rhel/9.6/`` and create the file there. The file is a JSON list consisting of the package name, repository type, URL (optional), and version (optional). Below is a sample version of the file: ::
-
-            {
-              "custom": {
-                "cluster": [
-                  {
-                    "package": "ansible==5.3.2",
-                    "type": "pip_module"
-                  },
-                  {
-                    "package": "docker-ce-24.0.4",
-                    "type": "rpm",
-                    "repo_name": "docker-ce-repo"
-                  },
-
-                  {
-                    "package": "gcc",
-                    "type": "rpm",
-                    "repo_name": "appstream"
-                  },
-                  {
-                    "package": "community.general",
-                    "type": "ansible_galaxy_collection",
-                    "version": "4.4.0"
-                  },
-
-                  {
-                    "package": "perl-Switch",
-                    "type": "rpm",
-                    "repo_name": "codeready-builder"
-                  },
-                  {
-                    "package": "prometheus-slurm-exporter",
-                    "type": "git",
-                    "url": "https://github.com/vpenso/prometheus-slurm-exporter.git",
-                    "version": "master"
-                  },
-                  {
-                    "package": "ansible.utils",
-                    "type": "ansible_galaxy_collection",
-                    "version": "2.5.2"
-                  },
-                  {
-                    "package": "prometheus-2.23.0.linux-amd64",
-                    "type": "tarball",
-                    "url": "https://github.com/prometheus/prometheus/releases/download/v2.23.0/prometheus-2.23.0.linux-amd64.tar.gz"
-                  },
-                  {
-                    "package": "metallb-native",
-                    "type": "manifest",
-                    "url": "https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/manifests/metallb-native.yaml"
-                  },
-                  {
-                    "package": "registry.k8s.io/pause",
-                    "version": "3.9",
-                    "type": "image"
-                  }
-
-                ]
-              }
-            }
-
+    Create a ``additional_software.json`` file in the following directory: ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and add your choice of additional software. For example, For a cluster running RHEL 9.6, go to ``/opt/omnia/input/project_default/config/rhel/9.6/`` and create the file there. For more information, `click here <../../../Utils/software_update.html>`_.

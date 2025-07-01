@@ -11,6 +11,14 @@ Set up Slurm
                     {"name": "slurm" },
                  ]
 
+* Ensure that the following sub-group entry is also present in the ``software_config.json`` file: ::
+
+            "slurm": [
+                    {"name": "slurm_control_node"},
+                    {"name": "slurm_node"},
+                    {"name": "login"}
+                ]
+
 * Ensure to run ``local_repo.yml`` with the ``slurm`` entry present in ``software_config.json`` to download all required slurm packages.
 
 * Once all the required parameters in `omnia_config.yml <../schedulerinputparams.html#id13>`_ are filled in, ``omnia.yml`` can be used to set up Slurm.
