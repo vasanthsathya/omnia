@@ -30,3 +30,14 @@
     - name: Failed to load software_config.json as user_config
       ansible.builtin.fail:
         msg: "{{ software_config_syntax_fail_msg }} Error: {{ include_software_config.message }}"
+
+- name: Include variable file local_repo_config.yml
+  block:
+    - name: Include variable file local_repo_config.yml
+      ansible.builtin.include_vars: "{{ local_repo_config_file }}"
+      register: include_local_repo_config
+      no_log: true
+  rescue:
+    - name: Failed to include local_repo_config.yml
+      ansible.builtin.fail:
+        msg: "{{ local_repo_config_syntax_fail_msg }} Possible Syntax Error Hints: {{ include_local_repo_config.message }}"
