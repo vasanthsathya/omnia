@@ -16,6 +16,9 @@ import os
 import subprocess
 import yaml
 import toml
+import stat
+import string
+import secrets
 
 def load_yaml_file(path):
     """
@@ -160,3 +163,30 @@ def load_pulp_config(path):
         "password": cli_config.get("password", ""),
         "base_url": cli_config.get("base_url", "")
     }
+
+def generate_vault_key(key_path):
+    """
+    Generate a secure Ansible Vault key
+    only if the file does not already exist.
+
+    Args:
+        key_path (str): The directory where the Vault key file should be saved.
+
+    Returns:
+        str: The full path to the key file, or None if failed.
+    """
+    if os.path.isfile(key_path):
+        return key_path
+
+    try:
+        alphabet = string.ascii_letters + string.digits
+        key = ''.join(secrets.choice(alphabet) for _ in range(32))
+
+        with open(key_path, "w", encoding="utf-8") as f:
+            f.write(key + "\n")
+
+        os.chmod(key_path, stat.S_IRUSR | stat.S_IWUSR)
+        return key_path
+
+    except (OSError, IOError) as e:
+        return None
