@@ -51,6 +51,9 @@
         - "mysqldb"
       loop_control:
         loop_var: telemetry_container
+      when:
+        - hostvars['localhost']['idrac_telemetry_support']
+        - not hostvars['localhost']['federated_idrac_telemetry_collection']
 
 - name: Validate telemetry input parameters
   hosts: localhost
