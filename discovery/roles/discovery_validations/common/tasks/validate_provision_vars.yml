@@ -17,6 +17,11 @@
   ansible.builtin.set_fact:
     supported_os_version_status: false
 
+- name: Validate federated_provision
+  ansible.builtin.fail:
+    msg: "{{ federated_provision_unsupported }}"
+  when: federated_provision
+
 - name: Set provision_os in lowercase
   ansible.builtin.set_fact:
     provision_os: "{{ provision_os | lower }}"
