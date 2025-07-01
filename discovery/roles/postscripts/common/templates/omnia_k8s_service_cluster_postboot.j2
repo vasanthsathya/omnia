@@ -60,8 +60,16 @@ echo "{{ nfs_server_ip }}:{{ nfs_server_share_path }} {{ oim_shared_path }} nfs 
 # Applying mount based on fstab entry
 run_or_fail mount -a
 
-# enable firewall service
-firewall_service="nfs"
+# ports for nfs
+firewall_ports=(
+  "111/udp"
+  "2049/tcp" "2049/udp"
+)
+
+# enable firewall service for nfs
+firewall_services=(
+  "nfs" "rpc-bind" "ntp"
+)
 
 # Ensure firewalld is installed
 if ! rpm -q firewalld &>/dev/null; then
@@ -73,11 +81,25 @@ fi
 echo "Enabling and starting firewalld...">> "$LOGFILE"
 systemctl enable --now firewalld && echo "SUCCESS: firewalld enabled and started." >> "$LOGFILE" || echo "ERROR: Failed to enable/start firewalld." >> "$LOGFILE"
 
-if firewall-cmd --permanent --add-service="$firewall_service"; then
-  echo "Allowed service: $firewall_service" >> "$LOGFILE"
-else
-  echo "ERROR: Failed to allow service: $firewall_service" >> "$LOGFILE"
-fi
+# Add ports
+echo "Adding required ports to firewalld..." >> "$LOGFILE"
+for port in "${firewall_ports[@]}"; do
+  if firewall-cmd --permanent --add-port="$port"; then
+    echo "SUCCESS: Allowed port: $port" >> "$LOGFILE"
+  else
+    echo "ERROR: Failed to allow port: $port" >> "$LOGFILE"
+  fi
+done
+
+# Add services
+echo "Adding required services to firewalld..." >> "$LOGFILE"
+for service in "${firewall_services[@]}"; do
+  if firewall-cmd --permanent --add-service="$service"; then
+    echo "SUCCESS: Allowed service: $service" >> "$LOGFILE"
+  else
+    echo "ERROR: Failed to allow service: $service" >> "$LOGFILE"
+  fi
+done
 
 # Reload firewall
 if firewall-cmd --reload; then

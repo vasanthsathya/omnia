@@ -39,7 +39,6 @@
 - name: Set xcat_target_groups for k8s service cluster as comma-separated string
   ansible.builtin.set_fact:
     k8s_service_groups: "{{ fetch_k8s_service_roles | join(',') }}"
-  when: fetch_k8s_service_roles
 
 - name: Configure postbootscripts
   ansible.builtin.command: "{{ xcat_path }}/chdef all postbootscripts=\"otherpkgs\""
@@ -93,12 +92,12 @@
   changed_when: true
   when: service_node_status
 
-- name: Configure k8s service cluster postboot script to postscripts
-  ansible.builtin.command: "{{ xcat_path }}/chdef {{ k8s_service_groups }} -p postbootscripts=\"omnia_k8s_service_cluster_postboot\""
-  changed_when: true
-  when: k8s_service_groups != ''
-
 - name: Configure firewalld setup postbootscripts on service or OIM Ha node
   ansible.builtin.command: "{{ xcat_path }}/chdef {{ service_oim_groups }} -p postbootscripts=\"omnia_allow_firewall_ports\""
   changed_when: true
   when: service_oim_groups != ''
+
+- name: Configure k8s service cluster postboot script to postscripts
+  ansible.builtin.command: "{{ xcat_path }}/chdef {{ k8s_service_groups }} -p postbootscripts=\"omnia_k8s_service_cluster_postboot\""
+  changed_when: true
+  when: k8s_service_groups != ''
