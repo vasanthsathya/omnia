@@ -45,6 +45,7 @@ def fetch_mapping_details(groups_roles_info, csv_data):
             "bmc_ip": node["BMC_IP"],
             "group_name": group,
             "roles": ",".join(groups_roles_info[group]["roles"]),
+            "cluster_name": groups_roles_info[group]["cluster_name"],
             "location_id": groups_roles_info[group]["location_id"],
             "resource_mgr_id": groups_roles_info[group]["resource_mgr_id"],
             "parent": groups_roles_info[group]["parent"],

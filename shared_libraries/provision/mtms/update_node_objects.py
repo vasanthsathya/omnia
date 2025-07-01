@@ -55,7 +55,7 @@ def update_node_obj_nm(chain_os=chain_os):
       from the cluster.nodeinfo table.
     - It then iterates over the service tags and converts them to lowercase.
     - After that, it iterates over the service tags again and converts them to uppercase.
-    - For each service tag, it retrieves the node, admin_ip, bmc_ip, bmc_mode, role, group_name, and
+    - For each service tag, it retrieves the node, admin_ip, bmc_ip, bmc_mode, role, cluster_name, group_name, and
       architecture from the cluster.nodeinfo table.
     - If the bmc_mode is None, it prints "No device is found!".
     - If the bmc_mode is "static", it checks if the service_os_image is not "None" and if the
@@ -92,11 +92,11 @@ def update_node_obj_nm(chain_os=chain_os):
         if serial_output[i][0] is not None:
             serial_output[i] = serial_output[i].upper()
             params = (serial_output[i],)
-            sql = """SELECT node, admin_ip, bmc_ip, bmc_mode, role, group_name, architecture
+            sql = """SELECT node, admin_ip, bmc_ip, bmc_mode, role, cluster_name, group_name, architecture
                      FROM cluster.nodeinfo
                      WHERE service_tag = %s"""
             cursor.execute(sql, params)
-            node_name, admin_ip, bmc_ip, mode, role, group_name, architecture = cursor.fetchone()
+            node_name, admin_ip, bmc_ip, mode, role, cluster_name, group_name, architecture = cursor.fetchone()
 
             if mode is None:
                 print("No device is found!")
@@ -105,7 +105,7 @@ def update_node_obj_nm(chain_os=chain_os):
                     chain_os = f"osimage={service_os_image}"
                 else:
                     chain_os = f"osimage={provision_os_image}"
-                command = ["/opt/xcat/bin/chdef", node_name, f"ip={admin_ip}", f"groups={groups_static},{role},{group_name}",
+                command = ["/opt/xcat/bin/chdef", node_name, f"ip={admin_ip}", f"groups={groups_static},{role},{cluster_name},{group_name}",
                            f"chain={chain_os}", f"xcatmaster={oim_admin_ip}"]
                 subprocess.run(command)
             if mode == "dynamic":
