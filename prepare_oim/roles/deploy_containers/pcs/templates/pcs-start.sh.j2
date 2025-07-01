@@ -16,7 +16,7 @@
 
 sleep 10
 
-pcs property set stonith-enabled=false >>
+pcs property set stonith-enabled=false
 pcs property set no-quorum-policy=ignore
 
 pcs resource defaults update migration-threshold={{ migration_threshold }}
