@@ -97,7 +97,7 @@ def validate_layer_group_separation(logger, roles):
         "kube_control_plane", "etcd", "slurm_control_node", "slurm_dbd",
         "service_kube_control_plane", "service_etcd"
     }
-    compute_roles = {"kube_node", "slurm_node", "default"}
+    compute_roles = {"service_kube_node", "kube_node", "slurm_node", "default"}
 
     # Single pass through roles to build mappings and check for same group usage
     group_layer_mapping = {}  # {group: {"frontend": [roles], "compute": [roles]}}
@@ -133,38 +133,28 @@ def validate_layer_group_separation(logger, roles):
 
 def validate_group_role_separation(logger, roles):
     """
-    Validates that groups are not shared between specific role pairs.
-
-    Args:
-        roles (list): List of role dictionaries from the config
-
-    Returns:
-        list: List of validation errors
+    Validates that groups are not shared between service cluster roles and corresponding Kubernetes roles.
     """
     errors = []
 
-    # Define role pairs that should not share groups
-    role_pairs = {
-        ("service_kube_control_plane", "kube_control_plane"),
-        ("service_etcd", "etcd"),
-        ("service_kube_node", "kube_node"),
-    }
+    service_cluster_roles = {"service_kube_control_plane", "service_etcd", "service_kube_node"}
+    k8s_roles = {"kube_control_plane", "etcd", "kube_node"}
 
-    # Create a dictionary to store groups for each role
+    # Collect groups for each role
     role_groups = {}
     for role in roles:
         role_name = role.get("name", "")
-        role_groups[role_name] = role.get("groups", [])
+        role_groups[role_name] = set(role.get("groups", []))
 
-    # Check for shared groups between role pairs
-    for pair in role_pairs:
-        role1, role2 = pair
-        if role1 in role_groups and role2 in role_groups:
-            shared_groups = set(role_groups[role1]) & set(role_groups[role2])
-            if shared_groups:
-                group_str = ', '.join(shared_groups)
-                error_msg = f"Group is shared between {role1} and {role2} roles."
-                errors.append(create_error_msg("Roles", group_str, error_msg))
+    # Cross-check all service roles against all k8s roles
+    for s_role in service_cluster_roles:
+        for k_role in k8s_roles:
+            if s_role in role_groups and k_role in role_groups:
+                shared = role_groups[s_role] & role_groups[k_role]
+                if shared:
+                    group_str = ', '.join(shared)
+                    msg = f"Group is shared between {s_role} and {k_role} roles."
+                    errors.append(create_error_msg("Roles", group_str, msg))
 
     return errors
 
@@ -172,10 +162,10 @@ def validate_service_node_in_software_config(input_file_path):
     """
     verifies service_node entry present in sofwate config.json
 
-    Returns: 
+    Returns:
         True if service_node entry is present
         False if no entry
-    """    
+    """
     #verify service_node  with sofwate config json
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
@@ -257,8 +247,7 @@ def validate_roles_config(input_file_path, data, logger, module, omnia_base_dir,
 
     if 0 < len(defined_service_roles) < len(service_cluster_roles):
         service_cluster_str = ', '.join(defined_service_roles)
-        errors.append(create_error_msg("Roles", service_cluster_str,
-            "The service cluster roles must be either all defined together (service_kube_control_plane, service_etcd, service_kube_node) or none at all."))
+        errors.append(create_error_msg("Roles", service_cluster_str, en_us_validation_msg.service_cluster_roles_msg))
 
     # Role Service_node is defined in roles_config.yml,
     # verify service_node entry present in sofwate_config.json

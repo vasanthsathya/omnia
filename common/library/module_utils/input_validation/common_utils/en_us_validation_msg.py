@@ -33,6 +33,7 @@ bmc_static_range_invalid_msg = "Static range should be in the following format: 
     IPv4Start-IPv4End (example: 10.5.0.1-10.5.0.200)."
 overlapping_static_range = "bmc_detail's static_range is overlapping with other static ranges."
 duplicate_switch_ip_port_msg = "Please remove duplicate ports."
+service_cluster_roles_msg = "The service cluster roles must be either all defined together (service_kube_control_plane, service_etcd, service_kube_node) or none at all."
 switch_details_incomplete_msg = "If providing switch details, please provide both the IP and \
     Ports fields."
 switch_details_no_bmc_details_msg = "If switch details are provided then bmc_detail's \
