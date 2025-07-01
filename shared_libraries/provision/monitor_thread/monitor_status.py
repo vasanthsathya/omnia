@@ -90,9 +90,9 @@ def get_node_details():
         )
         output = temp.stdout
         if len(output) > 0:
-            details.append(output.split("=")[1].strip("\n"))
+            node_details[node].append(output.split("=")[1].strip("\n"))
         else:
-            details.append("")
+            node_details[node].append("")
 
     for node, details in node_details.items():
         node_details_cmd = "/opt/xcat/bin/lsdef" + " " + node + " | grep serial="
@@ -101,9 +101,9 @@ def get_node_details():
         )
         output = temp.stdout
         if len(output) > 0:
-            details.append(output.split("=")[1].strip("\n"))
+            node_details[node].append(output.split("=")[1].strip("\n"))
         else:
-            details.append("")
+            node_details[node].append("")
     return node_details
 
 
