@@ -17,8 +17,10 @@
 mysqldb_storage: 1Gi
 mysqldb_pvc_name: mysqldb-storage-claim
 mysqldb_k8s_name: mysqldb
+mysqldb_name: "idrac_telemetrydb"
 mysqldb_container_port1: 3306
 mysqldb_container_port2: 33060
+mysql_version: "9.3.0"
 
 # Usage: k8s_secrets.yml
 mysqldb_secrets_name: mysqldb-credentials

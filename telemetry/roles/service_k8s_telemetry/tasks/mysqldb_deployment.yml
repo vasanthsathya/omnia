@@ -57,7 +57,7 @@
 
             containers:
               - name: mysqldb
-                image: mysql:8.0
+                image: "{{ mysql_version }}"
                 imagePullPolicy: "IfNotPresent"
                 volumeMounts:
                   - mountPath: /var/lib/mysql/
