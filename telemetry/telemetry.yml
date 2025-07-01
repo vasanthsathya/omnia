@@ -37,6 +37,16 @@
   vars:
     oim_group: true
 
+- name: Validate telemetry input parameters
+  hosts: localhost
+  connection: local
+  any_errors_fatal: true
+  tasks:
+    - name: Validate telemetry input parameters
+      ansible.builtin.include_role:
+        name: telemetry_validation
+        tasks_from: validation_status_check.yml
+
 - name: Validate containers are running
   hosts: oim
   connection: ssh
@@ -54,16 +64,6 @@
       when:
         - hostvars['localhost']['idrac_telemetry_support']
         - not hostvars['localhost']['federated_idrac_telemetry_collection']
-
-- name: Validate telemetry input parameters
-  hosts: localhost
-  connection: local
-  any_errors_fatal: true
-  tasks:
-    - name: Validate telemetry input parameters
-      ansible.builtin.include_role:
-        name: telemetry_validation
-        tasks_from: validation_status_check.yml
 
 # - name: Update Repositories/Registries on nodes
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
