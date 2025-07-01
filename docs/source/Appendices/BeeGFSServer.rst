@@ -3,7 +3,7 @@ Setting up the BeeGFS server
 
 1. Download and install the required BeeGFS version for RHEL servers using the below commands: ::
 
-    wget -O /etc/yum.repos.d/beegfs_rhel8.repo https://www.beegfs.io/release/beegfs_7.3.2/dists/beegfs-rhel8.repo
+    wget -O /etc/yum.repos.d/beegfs_rhel8.repo https://www.beegfs.io/release/beegfs_7.4.5/dists/beegfs-rhel9.repo
 
     yum install beegfs-mgmtd -y beegfs-meta libbeegfs-ib beegfs-storage -y
 
@@ -11,7 +11,7 @@ Setting up the BeeGFS server
 
     mkdir /root/test_beegfs
 
-3. Create an authentication file used by BeeGFS versions >= 7.2.7: ::
+3. Create an authentication file used by BeeGFS versions >= 7.4.5: ::
 
     dd if=/dev/random of=/etc/beegfs/connauthfile bs=128 count=1
 
