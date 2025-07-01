@@ -23,7 +23,7 @@
   containers.podman.podman_container:
     name: "{{ squid_container_name }}"
     state: stopped
-	when: squid_container_status.containers | length != 0
+  when: squid_container_status.containers | length != 0
   failed_when: false
 
 - name: Remove Squid container
