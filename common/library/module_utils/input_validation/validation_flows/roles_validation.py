@@ -138,7 +138,7 @@ def validate_group_role_separation(logger, roles):
     errors = []
 
     service_cluster_roles = {"service_kube_control_plane", "service_etcd", "service_kube_node"}
-    k8s_roles = {"kube_control_plane", "etcd", "kube_node"}
+    k8s_cluster_roles = {"kube_control_plane", "etcd", "kube_node"}
 
     # Collect groups for each role
     role_groups = {}
@@ -147,13 +147,13 @@ def validate_group_role_separation(logger, roles):
         role_groups[role_name] = set(role.get("groups", []))
 
     # Cross-check all service roles against all k8s roles
-    for s_role in service_cluster_roles:
-        for k_role in k8s_roles:
-            if s_role in role_groups and k_role in role_groups:
-                shared = role_groups[s_role] & role_groups[k_role]
+    for service_role in service_cluster_roles:
+        for k8s_role in k8s_cluster_roles:
+            if service_role in role_groups and k8s_role in role_groups:
+                shared = role_groups[service_role] & role_groups[k8s_role]
                 if shared:
                     group_str = ', '.join(shared)
-                    msg = f"Group is shared between {s_role} and {k_role} roles."
+                    msg = f"Group is shared between {service_role} and {k8s_role} roles."
                     errors.append(create_error_msg("Roles", group_str, msg))
 
     return errors
