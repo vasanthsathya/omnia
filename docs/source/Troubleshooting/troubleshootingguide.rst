@@ -2,15 +2,13 @@
 Troubleshooting guide
 ============================
 
-Connecting to internal databases
+Connecting to ``mysqldb`` container
 ===================================
-
-MySQLDB container
--------------------
 
     * Start a bash session within the mysqldb pod using the ``podman exec -it mysqldb bash`` command.
     * Connect to mysql using the ``mysql -u <mysqldb_username> -p`` command and provide password when prompted.
     * Connect to database using the ``USE idrac_telemetrydb`` command.
+
 
 Checking and updating encrypted parameters
 =============================================
