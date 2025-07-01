@@ -9,7 +9,6 @@ Advanced configurations
     install_ucx_openmpi
     KubernetesAccess
     ConfiguringStorage/index
-    ConfiguringSwitches/index
     AdditionalNIC
     ROCm_accelerator
     AutomatingOneAPI

@@ -11,7 +11,7 @@ Setting up the BeeGFS server
 
     mkdir /root/test_beegfs
 
-3. Create an authentication file used by BeeGFS versions >= 7.4.5: ::
+3. Create an authentication file used by BeeGFS versions 7.4.5: ::
 
     dd if=/dev/random of=/etc/beegfs/connauthfile bs=128 count=1
 

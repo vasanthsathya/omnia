@@ -29,6 +29,11 @@ Use the local repository feature to create a customized set of local repositorie
         ],
         "amdgpu": [
             {"name": "rocm", "version": "6.3.1" }
+        ],
+        "slurm": [
+            {"name": "slurm_control_node"},
+            {"name": "slurm_node"},
+            {"name": "login"}
         ]
     }
 

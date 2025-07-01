@@ -140,14 +140,6 @@ pxe_mapping_file.csv
     XXXXXXX,n2,aa:bb:cc:dd:ee:ff,10.5.0.102,10.3.0.102
 
 
-switch_inventory
-------------------
-::
-
-    10.3.0.101
-    10.3.0.102
-
-
 powervault_inventory
 ------------------
 ::

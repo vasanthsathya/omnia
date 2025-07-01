@@ -6,5 +6,4 @@ Common FAQs
     General_Query
     LocalRepo
     Provision
-    Network
     Security

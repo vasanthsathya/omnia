@@ -7,6 +7,5 @@ Limitations
 - Containerized benchmark job execution is not supported on Slurm clusters.
 - Only one storage instance (PowerVault) is currently supported in the HPC cluster.
 - All iDRACs must have the same username and password.
-- Currently, Omnia only supports the splitting of switch ports. Switch ports cannot be un-split using the switch configuration script.
 - The IP subnet 10.4.0.0 cannot be used for any networks on the Omnia cluster as it is reserved for Nerdctl.
 - Omnia playbooks will fail if the OIM is unable to reach the online resource or Internet.
