@@ -11,8 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#pylint: disable=import-error,no-name-in-module
 
-# pylint: disable=import-error,no-name-in-module,line-too-long
 import multiprocessing
 from ansible.module_utils.local_repo.parse_and_download import execute_command
 from ansible.module_utils.local_repo.config import (
@@ -28,10 +28,12 @@ def create_container_repository(repo_name,logger):
     Args:
         repo_name (str): The name of the repository.
     Returns:
-        bool: True if the repository was created successfully or already exists, False if there was an error.
+        bool: True if the repository was created successfully or already exists,
+              False if there was an error.
     """
     try:
-        if not execute_command(pulp_container_commands["show_container_repo"] % (repo_name), logger):
+        if not execute_command(pulp_container_commands["show_container_repo"] % (repo_name),
+                              logger):
             command = pulp_container_commands["create_container_repo"] % (repo_name)
             result = execute_command(command,logger)
             logger.info(f"Repository created successfully: {repo_name}")
@@ -83,11 +85,14 @@ def create_container_distribution(repo_name,package_content,logger):
         Exception: If there is an error creating or updating the distribution.
     """
     try:
-        if not execute_command(pulp_container_commands["show_container_distribution"] % (repo_name), logger):
-            command = pulp_container_commands["distribute_container_repository"] % (repo_name, repo_name, package_content)
+        if not execute_command(pulp_container_commands["show_container_distribution"] % (repo_name),
+            logger):
+            command = pulp_container_commands["distribute_container_repository"] % (repo_name,
+                      repo_name, package_content)
             return execute_command(command,logger)
         else:
-            command = pulp_container_commands["update_container_distribution"] % (repo_name, repo_name, package_content)
+            command = pulp_container_commands["update_container_distribution"] % (repo_name,
+                      repo_name, package_content)
             return execute_command(command,logger)
     except Exception as e:
         logger.error(f"Error creating distribution {repo_name}: {e}")

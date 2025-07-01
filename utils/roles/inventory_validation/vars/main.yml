@@ -21,6 +21,13 @@ software_config_syntax_fail_msg: "Failed. Syntax errors present in software_conf
 ha_config_file: "{{ input_project_dir }}/high_availability_config.yml"
 ha_config_syntax_fail_msg: "Failed. Syntax errors present in high_availability_config.yml. Fix errors and re-run playbook again."
 
+# Usage: fetch_omnia_config.yml
+deployment_false_msg: >
+  None of the entries under '{{ cluster_type }}_k8s_cluster' have 'deployment' set to 'true'.
+  Please update exactly one cluster under '{{ cluster_type }}_k8s_cluster' in omnia_config.yml with 'deployment: true'.
+compute_service_k8s_true_fail_msg: "Both scheduler.yml and service_k8s_cluster.yml cannot be run together. Run only any one of playbook."
+cluster_type_unknown_msg: "Neither compute_k8s_playbook nor service_k8s_playbook is set."
+
 # Usage: validate_inventory.yml
 empty_inventory_fail_msg: |
   "Failed. inventory not provided. Re-run playbook with inventory by providing -i inventory.

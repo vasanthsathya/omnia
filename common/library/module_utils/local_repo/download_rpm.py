@@ -12,14 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=import-error,no-name-in-module,line-too-long,too-many-positional-arguments,too-many-arguments
+# pylint: disable=import-error,no-name-in-module,too-many-positional-arguments,too-many-arguments
 """This module handles downloading RPM files for local repository"""
 
 import subprocess
 import os
+from multiprocessing import Lock
 from ansible.module_utils.local_repo.parse_and_download import write_status_to_file
 
-def process_rpm(package, repo_store_path, status_file_path, cluster_os_type, cluster_os_version, repo_config_value, logger):
+file_lock = Lock()
+
+def process_rpm(package, repo_store_path, status_file_path, cluster_os_type,
+               cluster_os_version, repo_config_value, logger):
+
     """
     Downloads a list of RPM packages and writes the status of the download to a file.
 
@@ -42,28 +47,34 @@ def process_rpm(package, repo_store_path, status_file_path, cluster_os_type, clu
     try:
         if repo_config_value == "always":
             rpm_list = list(set(package["rpm_list"]))
-            logger.info(f"{package['package']} - List of rpms is {rpm_list}")
-            rpm_directory = os.path.join(repo_store_path, 'offline_repo', 'cluster', cluster_os_type, cluster_os_version, 'rpm')
+            logger.info(
+                f"{package['package']} - List of rpms is {rpm_list}"
+            )
+            rpm_directory = os.path.join(repo_store_path, 'offline_repo',
+                            'cluster', cluster_os_type, cluster_os_version, 'rpm')
             logger.info(f"rpm_dir {rpm_directory}")
             os.makedirs(rpm_directory, exist_ok=True)
             dnf_download_command = ['dnf', 'download', '--resolve', '--alldeps', '--arch=x86_64,noarch',
                 f'--destdir={rpm_directory}'] + rpm_list
-            rpm_result = subprocess.run(dnf_download_command, check=False, capture_output=True, text=True)
+            rpm_result = subprocess.run(dnf_download_command, check=False,
+                                       capture_output=True, text=True)
             logger.info(f"RPM Download success stdout {rpm_result.stdout}")
             logger.info(f"Return code {rpm_result.returncode}")
             if rpm_result.returncode == 0:
                 logger.info(f"RPM download Successful {rpm_result.stdout}")
                 status = "Success"
             else:
-                logger.error(f"RPM error Return code - {rpm_result.returncode} \nstderr - {rpm_result.stderr}")
+                logger.error(
+                   f"RPM error Return code - {rpm_result.returncode} \nstderr - {rpm_result.stderr}"
+                )
                 status = "Failed"
         else:
             status = "Success"
-            logger.info(f"RPM wont be downloaded when repo_config is partial or never")
+            logger.info("RPM wont be downloaded when repo_config is partial or never")
     except Exception as e:
-        logger.error(f"Error processing rpm packages: {str(e)}")
+        logger.error(f"Exception occurred: {e}")
         status = "Failed"
     finally:
-        write_status_to_file(status_file_path, package["package"], "rpm", status, logger)
+        write_status_to_file(status_file_path, package["package"], "rpm", status, logger, file_lock)
         logger.info("#" * 30 + f" {process_rpm.__name__} end " + "#" * 30)
         return status

@@ -13,34 +13,33 @@
 # limitations under the License.
 
 #!/usr/bin/python
-
+# pylint: disable=import-error,no-name-in-module,line-too-long
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.local_repo.validate_utils import validate_certificates
 
 def main():
     """
-    Ansible module to validate certificates for a repository.
+    Main function for the Ansible module.
 
-    This module takes in the path to a local repository configuration file,
-    the path to a directory containing certificates, and an optional key to
-    specify which repository to validate. It then checks if the expected
-    certificate files exist for the specified repository.
+    Initializes the module, parses input arguments, and invokes the
+    certificate validation logic. Based on the validation result,
+    it either fails with a detailed error message or exits successfully
+    with a success message.
 
-    :return: A dictionary with the result of the validation, including a
-             boolean indicating whether the validation failed, and a message
-             describing the result.
+    This function also handles exceptions gracefully and returns a
+    well-structured response in compliance with Ansible's module API.
     """
-    module_args = dict(
-        local_repo_config_path=dict(type='str', required=True),
-        certs_path=dict(type='str', required=True),
-        repo_key=dict(type='str', required=False, default="user_repo_url")
-    )
+    module_args = {
+        "local_repo_config_path": {"type": "str", "required": True},
+        "certs_path": {"type": "str", "required": True},
+        "repo_key": {"type": "str", "required": False, "default": "user_repo_url"},
+    }
 
-    result = dict(
-        changed=False,
-        failed=False,
-        msg=""
-    )
+    result = {
+        "changed": False,
+        "failed": False,
+        "msg": "",
+    }
 
     module = AnsibleModule(
         argument_spec=module_args,
@@ -68,9 +67,13 @@ def main():
             result["msg"] = f"All certificate checks passed for '{module.params['repo_key']}'."
 
     except Exception as e:
-        module.fail_json(msg=f"Validation failed: {str(e)}", **result)
+        # Catching general exception at top level to return a clean failure via Ansible
+        result["failed"] = True
+        result["msg"] = f"Validation failed: {str(e)}"
+        module.fail_json(**result)
 
     module.exit_json(**result)
+
 
 if __name__ == '__main__':
     main()

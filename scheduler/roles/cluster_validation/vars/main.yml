@@ -94,6 +94,13 @@ slurm_installation_type_wrong_failure_msg: "Slurm Installation Type should be ei
 restart_services_success_msg: "restart_slurm_services successfully validated"
 restart_services_failure_msg: "Failed. restart_slurm_services accepts true or false in omnia_config.yml"
 
+# Usage: set_facts.yml
+deployment_false_msg: >
+  None of the entries under '{{ cluster_type }}_k8s_cluster' have 'deployment' set to 'true'.
+  Please update exactly one cluster under '{{ cluster_type }}_k8s_cluster' in omnia_config.yml with 'deployment: true'.
+compute_service_k8s_true_fail_msg: "Both scheduler.yml and service_k8s_cluster.yml cannot be run together. Run only any one of playbook."
+cluster_type_unknown_msg: "Neither compute_k8s_playbook nor service_k8s_playbook is set."
+
 # Usage: fetch_storage_config.yml
 storage_config_filename: "storage_config.yml"
 storage_config_syntax_fail_msg: "Failed. Syntax errors present in storage_config.yml. Fix errors and re-run playbook again."
