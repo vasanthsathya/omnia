@@ -421,7 +421,7 @@ def validate_storage_config(
         client_mount_options = nfs_client_params["client_mount_options"]
         client_mount_options_set = set(client_mount_options.split(","))
 
-        if not client_mount_options_set.issubset(allowed_options):
+        if not (client_mount_options_set.issubset(allowed_options)):
             errors.append(
                 create_error_msg(
                     "client_mount_options",
@@ -430,13 +430,15 @@ def validate_storage_config(
                 )
             )
 
-        if nfs_client_params["slurm_share"] == "true":
+        slurm_share_raw = str(nfs_client_params.get("slurm_share", "false")).strip().lower()
+        if slurm_share_raw == "true":
             if not slurm_share_val:
                 slurm_share_val = True
             else:
                 multiple_slurm_share_val = True
 
-        if nfs_client_params["k8s_share"]:
+        k8s_share_raw = str(nfs_client_params.get("k8s_share", "false")).strip().lower()
+        if k8s_share_raw == "true":
             if not k8s_share_val:
                 k8s_share_val = True
             else:
