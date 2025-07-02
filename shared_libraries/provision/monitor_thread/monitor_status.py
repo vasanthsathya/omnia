@@ -219,7 +219,7 @@ def main():
     """
     try:
         monitoring_thread_object = MonitoringThread()
-        monitoring_thread_object.daemon = True
+        monitoring_thread_object.Daemon = True
         monitoring_thread_object.start()
     except (RuntimeError, SyntaxError, TypeError) as e:
         print("Exception thrown by the monitoring thread:", e)
