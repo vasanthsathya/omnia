@@ -26,3 +26,6 @@
 
     - name: Deployment of prometheus pod
       ansible.builtin.include_tasks: prometheus_deployment.yml
+
+    - name: Deployment of idrac-telemetry pod
+      ansible.builtin.include_tasks: idrac_telemetry_deployment.yml
