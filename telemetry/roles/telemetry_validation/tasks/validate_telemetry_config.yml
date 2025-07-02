@@ -66,7 +66,7 @@
     prompt: "{{ warning_idrac_telemetry_support_true }}"
   when: idrac_telemetry_support
 
-- name: Failed, Federated telmetry not supported
+- name: Failed, Federated iDRAC Telemetry Collection not supported
   ansible.builtin.fail:
     msg: "{{ warning_federated_telemetry_support }}"
   when: federated_idrac_telemetry_collection
