@@ -13,11 +13,11 @@
 # limitations under the License.
 ---
 
-- name: Set_fact for fetch omnia config credentials
+- name: Set variables for omnia run tags
   hosts: localhost
   connection: local
   tasks:
-    - name: Set dynamic run tags including 'local_repo'
+    - name: Set dynamic run tags for security flow
       ansible.builtin.set_fact:
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['freeipa'] + ['openldap'] + ['security']) | unique }}"
         cacheable: true
