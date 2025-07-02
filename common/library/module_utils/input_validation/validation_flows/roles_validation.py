@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=unused-argument,too-many-locals,too-many-branches
+
+# pylint: disable=import-error,no-name-in-module,unused-argument,too-many-locals,too-many-branches
 """
 This module contains functions for validating roles configuration.
 """
@@ -216,23 +217,23 @@ def validate_roles_config(
         list: A list of errors.
     """
 
-    NAME = "name"
-    ROLES = "Roles"
-    GROUPS = "Groups"
-    ROLE_GROUPS = "groups"
-    SLURMWORKER = "slurm_node"
-    K8WORKER = "kube_node"
-    SERVICE_K8S_WORKER = "service_kube_node"
-    DEFAULT = "default"
-    SWITCH_DETAILS = "switch_details"
-    IP = "ip"
-    PORTS = "ports"
-    PARENT = "parent"
-    BMC_DETAILS = "bmc_details"
-    STATIC_RANGE = "static_range"
-    RESOURCE_MGR_ID = "resource_mgr_id"
-    ROLES_PER_GROUP = 5
-    MAX_ROLES = 100
+    name = "name"
+    roles = "Roles"
+    groups = "Groups"
+    role_groups = "groups"
+    slurmworker = "slurm_node"
+    service_k8s_worker = "service_kube_node"
+    k8worker = "kube_node"
+    default = "default"
+    switch_details = "switch_details"
+    ip = "ip"
+    ports = "ports"
+    parent = "parent"
+    bmc_details = "bmc_details"
+    static_range = "static_range"
+    resource_mgr_id = "resource_mgr_id"
+    max_roles_per_group = 5
+    max_roles = 100
 
     roles_per_group = {}
     empty_parent_roles = {
@@ -338,7 +339,7 @@ def validate_roles_config(
                 )
         except Exception as e:
             errors.append(
-                create_error_msg("software_config.json", 
+                create_error_msg("software_config.json",
                                  None,
                                 f"An error occurred while validating software_config.json: {str(e)}"))
 
@@ -356,17 +357,17 @@ def validate_roles_config(
 
         for role in roles:
             # Check role-group association, all roles must have a group
-            if role[ROLE_GROUPS] and (None in role[ROLE_GROUPS] or not role[ROLE_GROUPS]):
+            if role[role_groups] and (None in role[role_groups] or not role[role_groups]):
                 errors.append(
-                    role[NAME],
+                    role[name],
                     create_error_msg(
-                        None, 
-                        f'Role {role[NAME]} must be associated with a group:', 
-                        en_us_validation_msg.min_number_of_groups_msg
+                        None,
+                        f"Role {role[name]} must be associated with a group:",
+                        en_us_validation_msg.MIN_NUMBER_OF_GROUPS_MSG
                     ),
                 )
-            if role[NAME] == SLURMWORKER or role[NAME] == K8WORKER or role[NAME] == SERVICE_K8S_WORKER:
-                for group in role[ROLE_GROUPS]:
+            if role[name] == slurmworker or role[name] == k8worker or role[name] == service_k8s_worker:
+                for group in role[role_groups]:
                     set_resource_mgr_id.add(group)
 
             if not role[role_groups]:
@@ -445,7 +446,7 @@ def validate_roles_config(
                 groups[group].get(switch_details, {}).get(ports, None)
             )
             bmc_static_range_provided = not validation_utils.is_string_empty(
-                groups[group].get(mbc_details, {}).get(static_range, None)
+                groups[group].get(bmc_details, {}).get(static_range, None)
             )
             if group in groups_used:
                 errors.append(
@@ -520,7 +521,7 @@ def validate_roles_config(
 
             # Validate bmc details for each group
             if not validation_utils.is_string_empty(
-                groups[group].get(mbc_details, {}).get(static_range, None)
+                groups[group].get(bmc_details, {}).get(static_range, None)
             ):
                 # # Check if bmc details are defined, but enable_switch_based
                 # is true or the bmc_network is not defined
@@ -530,7 +531,7 @@ def validate_roles_config(
                 #                    en_us_validation_msg.bmc_static_range_msg))
                 # Validate the static range is properly defined
                 if not validation_utils.validate_ipv4_range(
-                    groups[group].get(mbc_details, {}).get(static_range, "")
+                    groups[group].get(bmc_details, {}).get(static_range, "")
                 ):
                     errors.append(
                         create_error_msg(
@@ -542,7 +543,7 @@ def validate_roles_config(
                 elif group not in static_range_mapping:
                     # A valid static range was provided,
                     # now a check is performed to ensure static ranges do not overlap
-                    static_range = groups[group][mbc_details][static_range]
+                    static_range = groups[group][bmc_details][static_range]
                     grp_overlaps = validation_utils.check_bmc_static_range_overlap(
                         static_range, static_range_mapping
                     )
@@ -560,7 +561,7 @@ def validate_roles_config(
             # Validate resource_mgr_id is set for groups that belong
             #  to kube_node, service_kube_node, slurm_node roles
             if group in set_resource_mgr_id and validation_utils.is_string_empty(
-                groups[group].get(RESOURCE_MGR_ID, None)
+                groups[group].get(resource_mgr_id, None)
             ):
                 errors.append(
                     create_error_msg(
@@ -570,9 +571,9 @@ def validate_roles_config(
                     )
                 )
             elif group not in set_resource_mgr_id and not validation_utils.is_string_empty(
-                groups[group].get(RESOURCE_MGR_ID, None)
+                groups[group].get(resource_mgr_id, None)
             ):
-                # Validate RESOURCE_MGR_ID is not set for groups
+                # Validate resource_mgr_id is not set for groups
                 # that do not belong to kube_node, service_kube_node, slurm_node roles
                 errors.append(
                     create_error_msg(
