@@ -22,6 +22,10 @@
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['freeipa'] + ['openldap'] + ['slurm']) | unique }}"
         cacheable: true
       when: not (config_file_status | default(false) | bool)
+    
+    - name: Set fact for compute k8s playbook
+      ansible.builtin.set_fact:
+        compute_k8s_playbook: true
 
 - name: Invoke get_config_credentials.yml
   ansible.builtin.import_playbook: utils/credential_utility/get_config_credentials.yml

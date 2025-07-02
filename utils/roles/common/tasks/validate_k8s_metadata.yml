@@ -43,6 +43,24 @@
         msg: "{{ cluster_name_not_found }}"
       when: cluster_found is not defined
 
+    - name: Warning message for removing {{ cluster_name }}
+      ansible.builtin.pause:
+        prompt: "{{ warning_msg }}"
+        seconds: "{{ warning_wait_time }}"
+      run_once: true
+
+    - name: Confirmation required to proceed
+      ansible.builtin.pause:
+        prompt: "{{ confirmation_msg }}"
+      register: pause_result
+      when:
+        - not (skip_confirmation | default(false) | bool)
+
+    - name: Fail if user does not confirm deletion
+      ansible.builtin.fail:
+        msg: "{{ confirmation_fail_msg }}"
+      when: pause_result.user_input | default('yes') != 'yes'
+
     - name: Set facts when service_k8s_cluster
       ansible.builtin.set_fact:
         k8s_version: "{{ service_k8s_version }}"

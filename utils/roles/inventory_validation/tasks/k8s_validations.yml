@@ -92,7 +92,7 @@
       ansible.builtin.copy:
         src: "{{ omnia_inventory_path }}"
         dest: "{{ k8s_nfs_share }}/inv_k8s"
-        mode: "{{ file_mode }}"
+        mode: "{{ file_perm }}"
       when:
         - user_inventory_path is defined
         - (user_inventory_path | length == 0)
@@ -102,7 +102,7 @@
       ansible.builtin.copy:
         src: "{{ user_inventory_path }}"
         dest: "{{ k8s_nfs_share }}/inv_k8s"
-        mode: "{{ file_mode }}"
+        mode: "{{ file_perm }}"
       when:
         - user_inventory_path is defined
         - (user_inventory_path | length > 0)

@@ -45,9 +45,6 @@ service_k8s_cluster:
     topology_manager_policy: "none"
     topology_manager_scope: "container"
     k8s_offline_install: true
-    csi_powerscale_driver_secret_file_path: ""
-    csi_powerscale_driver_values_file_path: ""
-    nfs_storage: {}
 
   - cluster_name: service_cluster2
     deployment: "false"
@@ -58,9 +55,6 @@ service_k8s_cluster:
     topology_manager_policy: "none"
     topology_manager_scope: "container"
     k8s_offline_install: true
-    csi_powerscale_driver_secret_file_path: ""
-    csi_powerscale_driver_values_file_path: ""
-    nfs_storage: {}
 
 compute_k8s_cluster:
   - cluster_name: compute_cluster1
@@ -72,9 +66,6 @@ compute_k8s_cluster:
     topology_manager_policy: "none"
     topology_manager_scope: "container"
     k8s_offline_install: true
-    csi_powerscale_driver_secret_file_path: ""
-    csi_powerscale_driver_values_file_path: ""
-    nfs_storage: {}
 
   - cluster_name: compute_cluster2
     k8s_cni: "calico"
@@ -85,6 +76,10 @@ compute_k8s_cluster:
     topology_manager_policy: "none"
     topology_manager_scope: "container"
     k8s_offline_install: true
-    csi_powerscale_driver_secret_file_path: ""
-    csi_powerscale_driver_values_file_path: ""
-    nfs_storage: {}
+
+# ----------------------------VERIFY INTEL GAUDI INSTALLATION------------------------------------------------------
+
+# It's recommended to do extensive tests hl_qual and hccl when installing a new Gaudi node. This takes around 20mins.
+# To do that during provisioning this variable has to be set to true.
+# By default  no tests are run
+run_intel_gaudi_tests: false
