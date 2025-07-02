@@ -173,7 +173,7 @@
 #         tasks_from: prometheus_config_reload.yml
 
 - name: Telemetry report overview
-  hosts: localhost, sn_active
+  hosts: localhost
   connection: ssh
   gather_facts: false
   vars:
