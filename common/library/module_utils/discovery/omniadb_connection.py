@@ -104,7 +104,7 @@ def insert_node_info(
     switch_port,
 ):
 
-  """
+    """
     Inserts node information into the cluster.nodeinfo table.
 
     Parameters:
