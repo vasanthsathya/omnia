@@ -18,7 +18,6 @@ This module contains validation messages in English (US) for input validation.
 These messages are used to provide user-friendly error messages during configuration validation.
 """
 
-# roles_config.yml
 MAX_NUMBER_OF_ROLES_MSG = "A max of 100 roles can be supported."
 MIN_NUMBER_OF_GROUPS_MSG = "At least 1 group is required."
 MIN_NUMBER_OF_ROLES_MSG = "At least 1 role is required."
