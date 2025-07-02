@@ -93,7 +93,7 @@ def insert_node_info(
     bmc_ip,
     group_name,
     role,
-    cluster_nmae,
+    cluster_name,
     parent,
     location_id,
     architecture,
