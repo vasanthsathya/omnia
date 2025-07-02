@@ -229,7 +229,7 @@ def validate_roles_config(
     ip = "ip"
     ports = "ports"
     parent = "parent"
-    mbc_details = "bmc_details"
+    bmc_details = "bmc_details"
     static_range = "static_range"
     resource_mgr_id = "resource_mgr_id"
     max_roles_per_group = 5
@@ -446,7 +446,7 @@ def validate_roles_config(
                 groups[group].get(switch_details, {}).get(ports, None)
             )
             bmc_static_range_provided = not validation_utils.is_string_empty(
-                groups[group].get(mbc_details, {}).get(static_range, None)
+                groups[group].get(bmc_details, {}).get(static_range, None)
             )
             if group in groups_used:
                 errors.append(
@@ -521,7 +521,7 @@ def validate_roles_config(
 
             # Validate bmc details for each group
             if not validation_utils.is_string_empty(
-                groups[group].get(mbc_details, {}).get(static_range, None)
+                groups[group].get(bmc_details, {}).get(static_range, None)
             ):
                 # # Check if bmc details are defined, but enable_switch_based
                 # is true or the bmc_network is not defined
@@ -531,7 +531,7 @@ def validate_roles_config(
                 #                    en_us_validation_msg.bmc_static_range_msg))
                 # Validate the static range is properly defined
                 if not validation_utils.validate_ipv4_range(
-                    groups[group].get(mbc_details, {}).get(static_range, "")
+                    groups[group].get(bmc_details, {}).get(static_range, "")
                 ):
                     errors.append(
                         create_error_msg(
@@ -543,7 +543,7 @@ def validate_roles_config(
                 elif group not in static_range_mapping:
                     # A valid static range was provided,
                     # now a check is performed to ensure static ranges do not overlap
-                    static_range = groups[group][mbc_details][static_range]
+                    static_range = groups[group][bmc_details][static_range]
                     grp_overlaps = validation_utils.check_bmc_static_range_overlap(
                         static_range, static_range_mapping
                     )
