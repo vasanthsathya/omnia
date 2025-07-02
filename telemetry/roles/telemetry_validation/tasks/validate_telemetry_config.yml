@@ -66,10 +66,9 @@
     prompt: "{{ warning_idrac_telemetry_support_true }}"
   when: idrac_telemetry_support
 
-- name: Fail playbook with warning
-  ansible.builtin.pause:
-    prompt: "{{ warning_federated_telemetry_support }}"
-    seconds: 10
+- name: Failed, Federated telmetry not supported
+  ansible.builtin.fail:
+    msg: "{{ warning_federated_telemetry_support }}"
   when: federated_idrac_telemetry_collection
 
 # - name: Validate k8s prometheus, scrape interval and prometheus gaudi
