@@ -24,7 +24,6 @@ from typing import List, Tuple
 import argparse
 import commentedconfigparser
 
-# Set up logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -82,7 +81,7 @@ class InventoryManager:
                     file.write(group_name)
                 file.flush()
 
-    def get_cluster_details_db(self) -> List[Tuple[str, str, str, str, str, str, str, str]]:
+    def get_cluster_details_db(self) -> List[Tuple[str, str, str, str, str, str, str]]:
         """
         Retrieves the details of the cluster from the database.
 
@@ -102,9 +101,9 @@ class InventoryManager:
             self (InventoryManager): The InventoryManager object.
 
         Returns:
-            List[Tuple[str, str, str, str, str, str, str, str]]: A list of tuples containing
+            List[Tuple[str, str, str, str, str, str, str]]: A list of tuples containing
             the details of the nodes with the status 'booted'. Each tuple
-            contains the node, service tag, hostname, admin IP, CPU, GPU, role, and cluster name.
+            contains the node, service tag, hostname, admin IP, CPU, and GPU.
         """
         if self.db_path:
             sys.path.insert(0, self.db_path)
@@ -112,7 +111,8 @@ class InventoryManager:
                 # pylint: disable=C0415
                 from omniadb_connection import create_connection
             except ImportError:
-                logger.error("Failed to import omniadb_connection module from db_path: %s", self.db_path)
+                logger.error("Failed to import omniadb_connection module from db_path: %s",
+                             self.db_path)
                 return []
             with create_connection() as conn:
                 cursor = conn.cursor()
@@ -124,8 +124,7 @@ class InventoryManager:
                         admin_ip,
                         cpu,
                         gpu,
-                        role,
-                        cluster_name
+                        role
                     FROM
                         cluster.nodeinfo
                     WHERE
@@ -189,10 +188,17 @@ class InventoryManager:
                 config.write(configfile, space_around_delimiters=False)
                 configfile.flush()
         except KeyError as e:
-            logger.error("inventory_tagging:add_hostname_inventory: Error adding hostname %s to inventory file %s. Error type: %s. Error message: %s", hostname, inventory_file, type(e), e)
+            logger.error("inventory_tagging:add_hostname_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. Error message: %s",
+                         hostname, inventory_file, type(e), e)
         except (OSError, Exception) as err:  # pylint: disable=W0718
-            logger.error("inventory_tagging:add_hostname_inventory: Error adding hostname %s to inventory file %s. Error type: %s. Error message: %s", hostname, inventory_file, type(err), err)
-
+            logger.error("inventory_tagging:add_hostname_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. "
+                         "Error message: %s",
+                         hostname, inventory_file, type(err), err
+                         )
 
     def add_hostname_cluster_layout_inventory(
         self, inventory_file: str,
@@ -200,6 +206,7 @@ class InventoryManager:
         roles_name: any
     ) -> None:
         try:
+
             # Read the config file
             config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
             config.read(inventory_file, encoding='utf-8')
@@ -223,9 +230,19 @@ class InventoryManager:
                 config.write(configfile, space_around_delimiters=False)
                 configfile.flush()
         except KeyError as e:
-            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: Error adding hostname %s to inventory file %s. Error type: %s. Error message: %s", hostname, inventory_file, type(e), e)
+            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. Error message: %s",
+                         hostname, inventory_file, type(e), e)
         except (OSError, Exception) as err:  # pylint: disable=W0718
-            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: Error adding hostname %s to inventory file %s. Error type: %s. Error message: %s", hostname, inventory_file, type(err), err)
+            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. "
+                         "Error message: %s",
+                         hostname, inventory_file, type(err), err
+                         )
+
+
 
     def update_inventory(self, node_detail: Tuple[str, str, str, str, str, str, str]) -> None:
         """
@@ -293,7 +310,8 @@ class InventoryManager:
             try:
                 os.chmod(inventory_file, 0o444)
             except OSError as err:
-                logger.error("Error changing file permission to read-only for %s: %s", inventory_file, err)
+                logger.error("Error changing file permission to read-only for %s: %s",
+                             inventory_file, err)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Inventory Manager Configuration")
