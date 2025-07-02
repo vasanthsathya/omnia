@@ -11,6 +11,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+"""
+This module provides functions for managing inventory files
+    based on node information from a database.
+"""
 
 import os
 import json
@@ -50,7 +54,8 @@ class InventoryManager:
         """
         Create inventory files based on the configured filenames.
 
-        This method iterates over the filenames in `self.inventory_filenames` and creates a file in the `self.inventory_dir_path` directory.
+        This method iterates over the filenames in `self.inventory_filenames`
+            and creates a file in the `self.inventory_dir_path` directory.
         The file is opened in write mode and the inventory header is written to it.
         The group name is also written to the file.
 
@@ -148,7 +153,8 @@ class InventoryManager:
             KeyError: If the hostname is already in the file.
             OSError, Exception: If there is an error adding the hostname to the file.
 
-        This function reads the contents of the inventory file and checks if the hostname is already present.
+        This function reads the contents of the inventory file and
+            checks if the hostname is already present.
         If the hostname is not present, it reads the config file and checks if the section exists.
         If the section does not exist, it creates it.
         Then it sets the hostname under the correct section and writes the inventory file.
@@ -163,7 +169,8 @@ class InventoryManager:
             if lines:
                 # Check if the hostname is already in the file
                 if any(hostname in line for line in lines):
-                    logger.info("Hostname '%s' already exists in %s. Skipping addition.", hostname, inventory_file)
+                    logger.info("Hostname '%s' already exists in %s. Skipping addition.",
+                        hostname, inventory_file)
                     return
             # Read the config file
             config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
@@ -174,7 +181,8 @@ class InventoryManager:
                 config.add_section(inventory_file)
 
             # Set the hostname under the correct section
-            config.set(inventory_file, hostname, None)  # Use None as value since no value is required
+            # Use None as value since no value is required
+            config.set(inventory_file, hostname, None)
 
             # Write the inventory file
             with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
@@ -185,21 +193,12 @@ class InventoryManager:
         except (OSError, Exception) as err:  # pylint: disable=W0718
             logger.error("inventory_tagging:add_hostname_inventory: Error adding hostname %s to inventory file %s. Error type: %s. Error message: %s", hostname, inventory_file, type(err), err)
 
-    def add_hostname_cluster_layout_inventory(self, inventory_file: str, hostname: str, roles_name: any) -> None:
-        """
-        Adds a hostname to the appropriate group(s) in the cluster layout inventory file.
 
-        Parameters:
-            inventory_file (str): Path to the cluster layout inventory file.
-            hostname (str): The hostname to add.
-            roles_name (any): Comma-separated role string.
-
-        Returns:
-            None
-
-        This function creates a new group section if needed, then adds the hostname to it.
-        It skips roles containing 'default'.
-        """
+    def add_hostname_cluster_layout_inventory(
+        self, inventory_file: str,
+        hostname: str,
+        roles_name: any
+    ) -> None:
         try:
             # Read the config file
             config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
@@ -210,14 +209,14 @@ class InventoryManager:
                 group = group.strip()
                 if 'default' in group:
                     continue
-                # Strip 'service_' prefix if present
-                if group.startswith('service_'):
-                    group = group[len('service_'):]
-                # Check if the section exists, otherwise create it
-                if not config.has_section(group):
-                    config.add_section(group)
-                # Set the hostname under the correct section
-                config.set(group, hostname, None)  # Use None as value since no value is required
+                else:
+                    # Check if the section exists, otherwise create it
+                    if not config.has_section(group):
+                        config.add_section(group)
+
+                    # Set the hostname under the correct section
+                    # Use None as value since no value is required
+                    config.set(group, hostname, None)
 
             # Write the inventory file
             with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
@@ -230,14 +229,15 @@ class InventoryManager:
 
     def update_inventory(self, node_detail: Tuple[str, str, str, str, str, str, str]) -> None:
         """
-    	Update the inventory based on the given node detail.
+        Update the inventory based on the given node detail.
 
-    	Parameters:
-    	- node_detail (Tuple[str, str, str, str, str, str, str]): A tuple containing the node detail.
+        Parameters:
+        - node_detail (Tuple[str, str, str, str, str, str, str]):
+            A tuple containing the node detail.
 
-    	Returns:
-    	- None
-    	"""
+        Returns:
+        - None
+        """
 
         # Unpack the node_detail tuple
         node, service_tag, hostname, admin_ip, cpu, gpu, roles_name = node_detail
@@ -267,20 +267,22 @@ class InventoryManager:
         if roles_name:
             inventory_file_name = "/opt/omnia/omnia_inventory/cluster_layout"
             if inventory_file_name:
-                self.add_hostname_cluster_layout_inventory(inventory_file_name, hostname, roles_name)
+                self.add_hostname_cluster_layout_inventory(
+                    inventory_file_name, hostname, roles_name)
 
     def change_inventory_file_permission(self, inventory_files: List[str]) -> None:
         """
-    	Change the file permissions of the inventory files.
+        Change the file permissions of the inventory files.
 
-    	This function takes a list of inventory file names and changes their permissions to read-only.
+        This function takes a list of inventory file names and
+            changes their permissions to read-only.
 
-    	Parameters:
-    	- inventory_files (List[str]): A list of inventory file names.
+        Parameters:
+        - inventory_files (List[str]): A list of inventory file names.
 
-    	Returns:
-    	- None
-    	"""
+        Returns:
+        - None
+        """
 
         try:
             if os.getcwd() != self.inventory_dir_path:
