@@ -99,7 +99,9 @@
     - name: Add idract_telemetry to pcs-resources if idrac_telemetry_support is true
       ansible.builtin.set_fact:
         pcs_resources: "{{ pcs_resources + telemetry_group_resources }}"
-      when: hostvars['localhost']['idrac_telemetry_support']
+      when:
+        - hostvars['localhost']['idrac_telemetry_support']
+        - not hostvars['localhost']['federated_idrac_telemetry_collection']
 
     - name: Add visualization to pcs-resources if visualization_support is true
       ansible.builtin.set_fact:
@@ -111,6 +113,7 @@
         pcs_resources: "{{ pcs_resources + prometheus_group_resources }}"
       when:
         - hostvars['localhost']['idrac_telemetry_support']
+        - not hostvars['localhost']['federated_idrac_telemetry_collection']
         - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
 
     - name: Parse PCS resources for any that are not started
