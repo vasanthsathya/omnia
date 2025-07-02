@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=unused-argument,too-many-locals,too-many-branches
+
+# pylint: disable=import-error,no-name-in-module,unused-argument,too-many-locals,too-many-branches
 """
 This module contains functions for validating roles configuration.
 """
@@ -338,7 +339,7 @@ def validate_roles_config(
                 )
         except Exception as e:
             errors.append(
-                create_error_msg("software_config.json", 
+                create_error_msg("software_config.json",
                                  None,
                                 f"An error occurred while validating software_config.json: {str(e)}"))
 
