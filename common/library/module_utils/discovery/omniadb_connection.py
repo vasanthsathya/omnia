@@ -83,6 +83,7 @@ def create_connection_xcatdb():
     conn.autocommit = True
     return conn
 
+
 def insert_node_info(
     service_tag,
     node,
@@ -115,6 +116,7 @@ def insert_node_info(
         bmc_ip (Union[str, None]): The IP address of the BMC.
         group_name (str): The group the node belongs to.
         role (str): The role of the node.
+        cluster_name (str): The name of the cluster.
         parent (str): The parent node service tag.
         location_id (str): The location ID of the node.
         architecture (str): The architecture of the node.
