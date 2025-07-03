@@ -163,6 +163,7 @@ def validate_layer_group_separation(logger, roles):
 
     return errors
 
+# Validate service cluster role's groups does not overlap with k8s role's group
 def validate_group_role_separation(logger, roles):
     """
     Validates that groups are not shared between service cluster roles and corresponding Kubernetes roles.
@@ -316,6 +317,7 @@ def validate_roles_config(
             )
         )
 
+    # Validate all service cluster roles should be deined in roles_config.yml
     service_cluster_roles = ["service_kube_control_plane", "service_etcd", "service_kube_node"]
     defined_service_roles = [role["name"] for role in roles if role["name"] in service_cluster_roles]
 
