@@ -301,11 +301,6 @@ class InventoryManager:
             inventory_file_name = self.vendors.get("gpu", {}).get(gpu)
             if inventory_file_name:
                 self.add_hostname_inventory(inventory_file_name, hostname)
-        # if roles_name:
-        #     inventory_file_name = "/opt/omnia/omnia_inventory/cluster_layout"
-        #     if inventory_file_name:
-        #         self.add_hostname_cluster_layout_inventory(
-        #             inventory_file_name, hostname, roles_name, cluster_name)
         if roles_name:
             if cluster_name == "":  # Add a check for empty cluster name
                 inventory_file_name = "/opt/omnia/omnia_inventory/cluster_layout"
