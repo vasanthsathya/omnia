@@ -189,6 +189,7 @@ def validate_group_role_separation(logger, roles):
 
     return errors
 
+# Below function will be used to validate service_node entry in roles_config ()
 def validate_service_node_in_software_config(input_file_path):
     """
     verifies service_node entry present in sofwate config.json
@@ -321,27 +322,28 @@ def validate_roles_config(
         service_cluster_str = ', '.join(defined_service_roles)
         errors.append(create_error_msg("Roles", service_cluster_str, en_us_validation_msg.service_cluster_roles_msg))
 
-    # Role Service_node is defined in roles_config.yml,
-    # verify service_node entry present in sofwate_config.json
-    # If no entry is present, then fail the input validator
+    # Fail if Role Service_node is defined in roles_config.yml,
+    # it is not supported now, for future use
     service_role_defined = False
     if validation_utils.key_value_exists(roles, name, "service_node"):
-        service_role_defined = True
-
-        try:
-            if not validate_service_node_in_software_config(input_file_path):
-                errors.append(
-                    create_error_msg(
-                        "software_config.json",
-                        None,
-                        en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG
+        # service_role_defined = True
+        errors.append(create_error_msg("roles_config.yml", None, \
+                                        en_us_validation_msg.SERVICE_NODE_ENTRY_INVALID_ROLES_CONFIG_MSG))
+        if service_role_defined:
+            try:
+                if not validate_service_node_in_software_config(input_file_path):
+                    errors.append(
+                        create_error_msg(
+                            "software_config.json",
+                            None,
+                            en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG
+                        )
                     )
-                )
-        except Exception as e:
-            errors.append(
-                create_error_msg("software_config.json",
-                                 None,
-                                f"An error occurred while validating software_config.json: {str(e)}"))
+            except Exception as e:
+                errors.append(
+                    create_error_msg("software_config.json",
+                                    None,
+                                    f"An error occurred while validating software_config.json: {str(e)}"))
 
 
     if len(errors) <= 0:
@@ -405,6 +407,7 @@ def validate_roles_config(
                         role[name] == k8worker
                         or role[name] == slurmworker
                         or role[name] == default
+                        or role[name] == service_k8s_worker
                     ):
                         # If a service_node role is not present,
                         # the parent is not empty and the group is
