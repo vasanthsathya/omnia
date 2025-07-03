@@ -14,13 +14,13 @@
 ---
 
 - name: Check if k8s is running
-  ansible.builtin.shell: kubectl get nodes -o='Name'
+  ansible.builtin.command: kubectl get nodes -o='Name'
   register: kubectl_status
   changed_when: false
   failed_when: false
 
 - name: Check if {{ storage_class_name }} provisioner is present
-  ansible.builtin.shell: kubectl get storageclass {{ storage_class_name }} -o jsonpath='{.status}'
+  ansible.builtin.command: kubectl get storageclass {{ storage_class_name }} -o jsonpath='{.status}'
   register: nfs_client_status
   changed_when: false
   failed_when: false
