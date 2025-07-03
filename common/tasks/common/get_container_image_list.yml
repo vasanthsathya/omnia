@@ -49,8 +49,7 @@
 
 - name: Set base_container_images fact
   ansible.builtin.set_fact:
-    container_images: "{{ dict(
-        container_images
+    container_images: "{{ dict(container_images
         | map('regex_replace', '[:/]', '_')
         | map('regex_replace', '$', '.tar')
         | zip(container_images))
