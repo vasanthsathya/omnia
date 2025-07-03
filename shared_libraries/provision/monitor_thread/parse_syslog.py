@@ -190,6 +190,33 @@ def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
     # Execute the SQL query with the updated parameters
     params = (cpu, gpu, cpu_count, gpu_count, node)
     cursor.execute(sql_update_db, params)
+def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
+    """
+        Update the database with the provided updated node information.
+        Parameters:
+                cursor (cursor): The cursor object used to execute the SQL query.
+                node (str): The name of the node.
+                updated_node_info (tuple): A tuple containing the updated CPU, GPU, CPU count, and GPU count.
+        Returns:
+                None
+        """
+    # Unpack the updated node information tuple
+    cpu, gpu, cpu_count, gpu_count = updated_node_info
+    # Prepare the SQL query for updating the database
+    sql_update_db = """
+        UPDATE
+            cluster.nodeinfo
+        SET
+            cpu = %s,
+            gpu = %s,
+            cpu_count = %s,
+            gpu_count = %s
+        WHERE
+            node = %s
+    """
+    # Execute the SQL query with the updated parameters
+    params = (cpu, gpu, cpu_count, gpu_count, node)
+    cursor.execute(sql_update_db, params)
 def remove_hostname_inventory(inventory_file: str, hostname: str) -> None:
     """
         Remove a hostname from the inventory file.
