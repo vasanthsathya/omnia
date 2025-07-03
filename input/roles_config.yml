@@ -83,6 +83,7 @@ Groups:
 # | oim_ha_node                | management      |     | default           | compute        |
 # | service_kube_control_plane | management      |     | kube_node         | compute        | 
 # | service_etcd               | management      |     | slurm_node        | compute        |
+# | service_kube_node          | management      |     |                   |                |
 # | service_node (future use)  | management      |     |                   |                |
 # | login                      | management      |     |                   |                |
 # | auth_server                | management      |     |                   |                |
