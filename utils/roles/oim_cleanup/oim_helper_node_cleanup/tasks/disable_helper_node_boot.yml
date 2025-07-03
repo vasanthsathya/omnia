@@ -97,4 +97,3 @@
     - name: Fail if boot mode setting or boot source disable failed
       ansible.builtin.fail:
         msg: "{{ bootmode_failure_msg_template }}"
-        
