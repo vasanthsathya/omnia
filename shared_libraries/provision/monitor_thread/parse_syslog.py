@@ -1,4 +1,3 @@
-# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -262,25 +261,30 @@ def generate_inventory_for_node(node_info_db: tuple) -> None:
             # Change the permission of the file
             os.chmod(inventory_file, 0o644)
         # unpacking
-        hostname, roles_name = node_info_db[8], node_info_db[9]
-        roles_list = roles_name.strip().split(",")
-        # Read the config file
-        config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
-        config.read(inventory_file, encoding='utf-8')
-        for group in roles_list:
-            group = group.strip()
-            if 'default' in group:
-                continue
-            else:
-                # Check if the section exists, otherwise create it
-                if not config.has_section(group):
-                    config.add_section(group)
-                # Set the hostname under the correct section
-                config.set(group, hostname, None)  # Use None as value since no value is required
-        # Write the inventory file
-        with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
-            config.write(configfile, space_around_delimiters=False)
-            configfile.flush()
+        hostname, roles_name, cluster_name = node_info_db[8], node_info_db[9], node_info_db[10]
+
+
+        if cluster_name != "":  # Check if cluster_name is not empty
+            logger.info("Cluster name is not empty, skipping adding node %s", hostname)
+        else:
+            roles_list = roles_name.strip().split(",")
+            # Read the config file
+            config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
+            config.read(inventory_file, encoding='utf-8')
+            for group in roles_list:
+                group = group.strip()
+                if 'default' in group:
+                    continue
+                else:
+                    # Check if the section exists, otherwise create it
+                    if not config.has_section(group):
+                        config.add_section(group)
+                    # Set the hostname under the correct section
+                    config.set(group, hostname, None)  # Use None as value since no value is required
+            # Write the inventory file
+            with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
+                config.write(configfile, space_around_delimiters=False)
+                configfile.flush()
     except (OSError,
             Exception) as err:
         syslog.syslog(syslog.LOG_ERR, f"parse_syslog:generate_inventory_for_node: {str(type(err))} {str(err)}")
