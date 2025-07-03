@@ -70,7 +70,7 @@ pcs resource group add {{ pcs_group }} {{ omnia_core_name }} {{ pulp_container_n
 {% if hostvars['localhost']['k8s_support'] %}
 pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
  name={{ kubespray_name }} \
- image={{ kubespray_image }} \
+ image={{ kubespray_container_image }} \
  reuse=true \
  run_opts="{{ kubespray_run_opts }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
