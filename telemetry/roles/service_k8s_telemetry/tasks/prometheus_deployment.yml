@@ -13,15 +13,6 @@
 #  limitations under the License.
 ---
 
-- name: Ensure namespace exists - {{ telemetry_namespace }}
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: "{{ telemetry_namespace }}"
-
 - name: Persistent volume claim for prometheus
   kubernetes.core.k8s:
     state: present

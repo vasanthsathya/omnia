@@ -18,6 +18,9 @@
     - hostvars['localhost']['idrac_telemetry_support']
     - hostvars['localhost']['federated_idrac_telemetry_collection']
   block:
+    - name: Prerequisite checks for k8s telemetry service
+      ansible.builtin.include_tasks: prereq_checks.yml
+
     - name: Configure k8s secrets
       ansible.builtin.include_tasks: secrets_creation.yml
 
