@@ -20,6 +20,36 @@
         "package": "docker.io/library/mysql",
         "type": "image",
         "tag": "9.3.0"
+      },
+      {
+        "package": "python3.11",
+        "type": "rpm",
+        "repo_name": "appstream"
+      },
+      {
+        "package": "python3.11-pip",
+        "type": "rpm",
+        "repo_name": "appstream"       
+      },
+      {
+        "package": "kubernetes==32.0.1",
+        "type": "pip_module"
+      },
+      {
+        "package": "PyMySQL==1.1.1",
+        "type": "pip_module"
+      },
+      {
+        "package": "cryptography==44.0.1",
+        "type": "pip_module"
+      },
+      {
+        "package": "omsdk==1.2.518",
+        "type": "pip_module"
+      },
+      {
+        "package": "cffi==1.17.1",
+        "type": "pip_module"
       }
       ]
    }
