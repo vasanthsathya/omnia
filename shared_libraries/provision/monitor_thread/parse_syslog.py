@@ -1,3 +1,4 @@
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -10,18 +11,21 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import commentedconfigparser
+"""This module contains functions for parsing syslog messages."""
 import os
 import syslog
 from psycopg2.extensions import cursor
+import commentedconfigparser
 def get_count(line: str) -> int:
     """
-        Splits a line of text by the '=' character and returns the second element of the resulting list as an integer.
-        Parameters:
-                line (str): The line of text to be split.
-        Returns:
-                int: The second element of the split line as an integer. If the split line has only one element, returns 0.
-        """
+    Splits a line of text by the '=' character and returns the second element of the resulting 
+    list as an integer.
+    Parameters:
+            line (str): The line of text to be split.
+    Returns:
+            int: The second element of the split line as an integer. If the split line has only 
+            one element, returns 0.
+    """
     # Split the input string by '=' character
     split_line = line.split('=')
     # If the split string has more than one element, return the second element as an integer
@@ -31,13 +35,15 @@ def get_count(line: str) -> int:
     return 0
 def get_node_info_db(cursor: cursor, node: str) -> tuple:
     """
-        Retrieves the node information from the database.
-        Parameters:
-                cursor (cursor): The cursor object used to execute the SQL query.
-                node (str): The node name.
-        Returns:
-                tuple: A tuple containing the service tag, admin IP, CPU, GPU, CPU count, GPU count, status, admin MAC, and hostname of the node.
-        """
+    Retrieves the node information from the database.
+    Parameters:
+            cursor (cursor): The cursor object used to execute the SQL query.
+            node (str): The node name.
+    Returns:
+            tuple: A tuple containing the service tag, admin IP, CPU, GPU, CPU count, 
+            GPU count, status, admin MAC, and hostname of the node.
+    """
+
     # Define the SQL query to retrieve node information
     query = """
         SELECT
