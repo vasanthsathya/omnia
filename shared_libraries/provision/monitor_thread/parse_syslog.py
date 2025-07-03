@@ -16,29 +16,39 @@ import os
 import syslog
 from psycopg2.extensions import cursor
 import commentedconfigparser
+
 def get_count(line: str) -> int:
     """
     Splits a line of text by the '=' character and returns the second element of the resulting 
     list as an integer.
+
     Parameters:
             line (str): The line of text to be split.
+
     Returns:
             int: The second element of the split line as an integer. If the split line has only 
             one element, returns 0.
     """
+
     # Split the input string by '=' character
-    split_line = line.split('=')
+    split_line = line.split("=")
+
     # If the split string has more than one element, return the second element as an integer
     if len(split_line) > 1:
         return int(split_line[1])
+
     # If the split string has only one element, return 0
     return 0
+
+
 def get_node_info_db(cursor: cursor, node: str) -> tuple:
     """
     Retrieves the node information from the database.
+
     Parameters:
             cursor (cursor): The cursor object used to execute the SQL query.
             node (str): The node name.
+
     Returns:
             tuple: A tuple containing the service tag, admin IP, CPU, GPU, CPU count, 
             GPU count, status, admin MAC, and hostname of the node.
@@ -63,12 +73,17 @@ def get_node_info_db(cursor: cursor, node: str) -> tuple:
         WHERE
             node = %s
     """
+
     # Execute the SQL query with the given node
     cursor.execute(query, (node,))
+
     # Fetch the node info
     node_info = cursor.fetchone()
+
     # Return the node information
     return node_info
+
+
 def get_updated_cpu_gpu_info(node: str) -> tuple:
     """
     Retrieves the updated CPU and GPU information for a given node.
@@ -187,18 +202,24 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
         pass
     return (cpu, gpu, cpu_count, gpu_count)
 
+
 def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
     """
-        Update the database with the provided updated node information.
-        Parameters:
-                cursor (cursor): The cursor object used to execute the SQL query.
-                node (str): The name of the node.
-                updated_node_info (tuple): A tuple containing the updated CPU, GPU, CPU count, and GPU count.
-        Returns:
-                None
-        """
+    Update the database with the provided updated node information.
+
+    Parameters:
+            cursor (cursor): The cursor object used to execute the SQL query.
+            node (str): The name of the node.
+            updated_node_info (tuple): A tuple containing the updated CPU, GPU, CPU count, 
+            and GPU count.
+
+    Returns:
+            None
+    """
+
     # Unpack the updated node information tuple
     cpu, gpu, cpu_count, gpu_count = updated_node_info
+
     # Prepare the SQL query for updating the database
     sql_update_db = """
         UPDATE
@@ -214,113 +235,121 @@ def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
     # Execute the SQL query with the updated parameters
     params = (cpu, gpu, cpu_count, gpu_count, node)
     cursor.execute(sql_update_db, params)
-def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
-    """
-        Update the database with the provided updated node information.
-        Parameters:
-                cursor (cursor): The cursor object used to execute the SQL query.
-                node (str): The name of the node.
-                updated_node_info (tuple): A tuple containing the updated CPU, GPU, CPU count, and GPU count.
-        Returns:
-                None
-        """
-    # Unpack the updated node information tuple
-    cpu, gpu, cpu_count, gpu_count = updated_node_info
-    # Prepare the SQL query for updating the database
-    sql_update_db = """
-        UPDATE
-            cluster.nodeinfo
-        SET
-            cpu = %s,
-            gpu = %s,
-            cpu_count = %s,
-            gpu_count = %s
-        WHERE
-            node = %s
-    """
-    # Execute the SQL query with the updated parameters
-    params = (cpu, gpu, cpu_count, gpu_count, node)
-    cursor.execute(sql_update_db, params)
+
+
 def remove_hostname_inventory(inventory_file: str, hostname: str) -> None:
     """
-        Remove a hostname from the inventory file.
-        Parameters:
-                inventory_file (str): The path to the inventory file.
-                hostname (str): The hostname to remove.
-        Returns:
-                None
-        """
+    Remove a hostname from the inventory file.
+
+    Parameters:
+            inventory_file (str): The path to the inventory file.
+            hostname (str): The hostname to remove.
+
+    Returns:
+            None
+    """
+
     try:
         # Read the inventory file
         config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
-        config.read(inventory_file, encoding='utf-8')
+        config.read(inventory_file, encoding="utf-8")
+
         # Change the permission of the file
         os.chmod(inventory_file, 0o644)
+
         # Remove hostname if exists in the inventory file
         if not config.remove_option(inventory_file, hostname):
             # Log a message if the hostname is not found
-            syslog.syslog(syslog.LOG_INFO, f"parse_syslog:remove_hostname_inventory: '{hostname}' is not found in '{inventory_file}'")
+            syslog.syslog(
+                syslog.LOG_INFO,
+                f"""parse_syslog:remove_hostname_inventory: '{hostname}' is 
+                not found in '{inventory_file}'""",
+            )
             return
+
         # Write the updated inventory file
-        with open(inventory_file, 'w', encoding='utf-8') as configfile:
+        with open(inventory_file, "w", encoding="utf-8") as configfile:
             config.write(configfile, space_around_delimiters=False)
-    except (OSError,
-            Exception) as err:
-        syslog.syslog(syslog.LOG_ERR, f"parse_syslog:remove_hostname_inventory: {str(type(err))} {str(err)}")
-    finally:
-        # Change the permission of the file to readonly
-        os.chmod(inventory_file, 0o444)
-def add_hostname_inventory(inventory_file: str, hostname: str) -> None:
-    """
-        Adds a hostname to the inventory file.
-        Parameters:
-                inventory_file (str): The path to the inventory file.
-                hostname (str): The hostname to add.
-        Returns:
-                None
-        """
-    try:
-        # Read the config file
-        config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
-        config.read(inventory_file, encoding='utf-8')
-        # Change the permission of the file
-        os.chmod(inventory_file, 0o644)
-        # Set the hostname
-        config.set(inventory_file, hostname)
-        # Write the inventory file
-        with open(inventory_file, 'w', encoding='utf-8') as configfile:
-            config.write(configfile, space_around_delimiters=False)
-    except (OSError,
-            Exception) as err:
-        syslog.syslog(syslog.LOG_ERR, f"parse_syslog:add_hostname_inventory: {str(type(err))} {str(err)}")
+
+    except (OSError, Exception) as err:
+        syslog.syslog(
+            syslog.LOG_ERR,
+            f"parse_syslog:remove_hostname_inventory: {str(type(err))} {str(err)}",
+        )
     finally:
         # Change the permission of the file to readonly
         os.chmod(inventory_file, 0o444)
 
+
+def add_hostname_inventory(inventory_file: str, hostname: str) -> None:
+    """
+    Adds a hostname to the inventory file.
+
+    Parameters:
+            inventory_file (str): The path to the inventory file.
+            hostname (str): The hostname to add.
+
+    Returns:
+            None
+    """
+
+    try:
+        # Read the config file
+        config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
+        config.read(inventory_file, encoding="utf-8")
+
+        # Change the permission of the file
+        os.chmod(inventory_file, 0o644)
+
+        # Set the hostname
+        config.set(inventory_file, hostname)
+
+        # Write the inventory file
+        with open(inventory_file, "w", encoding="utf-8") as configfile:
+            config.write(configfile, space_around_delimiters=False)
+
+    except (OSError, Exception) as err:
+        syslog.syslog(
+            syslog.LOG_ERR,
+            f"parse_syslog:add_hostname_inventory: {str(type(err))} {str(err)}",
+        )
+    finally:
+        # Change the permission of the file to readonly
+        os.chmod(inventory_file, 0o444)
+
+
 def generate_inventory_for_node(node_info_db: tuple) -> None:
     """
-    generate_inventory_for_node: Generates the inventory file for the node based on the information in the database.
+    generate_inventory_for_node: Generates the inventory file for the node based on 
+    the information in the database.
+
     Parameters:
-        node_info_db (tuple): A tuple containing the service tag, admin IP, CPU, GPU, hostname and role from the database.
+        node_info_db (tuple): A tuple containing the service tag, admin IP, CPU, GPU, 
+        hostname and role from the database.
 
     Returns:
         None
     """
     try:
         inventory_file = "/opt/omnia/omnia_inventory/cluster_layout"
-        inventory_header = "# This file is generated by omnia, and should not be edited\n"
+        inventory_header = (
+            "# This file is generated by omnia, and should not be edited\n"
+        )
+
         if not os.path.exists(inventory_file):
-          # Create a new file if it doesn't exist
-          with open(inventory_file, 'w', encoding='utf-8') as file:
-             file.write(inventory_header)
-             file.flush()
+            # Create a new file if it doesn't exist
+            with open(inventory_file, "w", encoding="utf-8") as file:
+                file.write(inventory_header)
+                file.flush()
         else:
             # Change the permission of the file
             os.chmod(inventory_file, 0o644)
+
         # unpacking
         hostname, roles_name, cluster_name = node_info_db[8], node_info_db[9], node_info_db[10]
+        roles_list = roles_name.strip().split(",")
 
-
+        # Read the config file
         if cluster_name != "":  # Check if cluster_name is not empty
             logger.info("Cluster name is not empty, skipping adding node %s", hostname)
         else:
@@ -348,7 +377,6 @@ def generate_inventory_for_node(node_info_db: tuple) -> None:
     finally:
         # Change the permission of the file to readonly
         os.chmod(inventory_file, 0o444)
-
 
 def generate_inventory_per_cluster(cursor) -> None:
     """
@@ -409,43 +437,61 @@ def generate_inventory_per_cluster(cursor) -> None:
     except (OSError, Exception) as err:
         syslog.syslog(syslog.LOG_ERR, f"parse_syslog:generate_inventory_per_cluster: {str(type(err))} {str(err)}")
 
-
 def update_inventory(node_info_db: tuple, updated_node_info: tuple) -> None:
     """
-        Update the inventory files based on the changes in the node information.
-        Parameters:
-                node_info_db (tuple): A tuple containing the service tag, admin IP, CPU, GPU, and hostname from the database.
-                updated_node_info (tuple): A tuple containing the updated CPU and GPU information.
-        Returns:
-                None
-        Raises:
-                Exception: If an error occurs during the update process.
+    Update the inventory files based on the changes in the node information.
+
+    Parameters:
+            node_info_db (tuple): A tuple containing the service tag, admin IP, CPU, GPU, 
+            and hostname from the database. updated_node_info (tuple): A tuple containing 
+            the updated CPU and GPU information.
+
+    Returns:
+            None
+
+    Raises:
+            Exception: If an error occurs during the update process.
     """
+
     try:
         # Unpack the node information from the tuples
-        service_tag, admin_ip, db_cpu, db_gpu, hostname = node_info_db[0], node_info_db[1], node_info_db[2], node_info_db[3], node_info_db[8]
+        _, admin_ip, db_cpu, db_gpu, hostname = (
+            node_info_db[0],
+            node_info_db[1],
+            node_info_db[2],
+            node_info_db[3],
+            node_info_db[8],
+        )
         updated_cpu, updated_gpu = updated_node_info[0], updated_node_info[1]
+
         # No modification in inventory if no hostname
         if not hostname:
             return
+
         # Change the current working directory to the inventory directory
         curr_dir = os.getcwd()
         omnia_inventory_dir = "/opt/omnia/omnia_inventory/"
         if curr_dir != omnia_inventory_dir:
             os.chdir(omnia_inventory_dir)
+
         # Update inventory files if the CPU has been modified
         if updated_cpu != db_cpu:
             if db_cpu:
                 # Remove existing hostname from corresponding inventory file
-                inventory_file_str = "compute_cpu_intel" if db_cpu == "intel" else "compute_cpu_amd"
+                inventory_file_str = (
+                    "compute_cpu_intel" if db_cpu == "intel" else "compute_cpu_amd"
+                )
                 remove_hostname_inventory(inventory_file_str, hostname)
             if updated_cpu:
                 # Add hostname to corresponding inventory file
-                inventory_file_str = "compute_cpu_intel" if updated_cpu == "intel" else "compute_cpu_amd"
+                inventory_file_str = (
+                    "compute_cpu_intel" if updated_cpu == "intel" else "compute_cpu_amd"
+                )
                 add_hostname_inventory(inventory_file_str, hostname)
                 # Add hostname and admin ip to compute_hostname_ip inventory file
                 hostname_ip_str = f"{hostname} ansible_host={admin_ip}"
                 add_hostname_inventory("compute_hostname_ip", hostname_ip_str)
+
         # Update inventory files if the GPU has been modified
         if updated_gpu != db_gpu:
             if db_gpu:
@@ -467,4 +513,7 @@ def update_inventory(node_info_db: tuple, updated_node_info: tuple) -> None:
                     inventory_file_str = "compute_gpu_intel"
                 add_hostname_inventory(inventory_file_str, hostname)
     except Exception as e:
-        syslog.syslog(syslog.LOG_ERR, f"parse_syslog:update_inventory: Exception occurred: {str(type(e))} {str(e)}")
+        syslog.syslog(
+            syslog.LOG_ERR,
+            f"parse_syslog:update_inventory: Exception occurred: {str(type(e))} {str(e)}",
+        )
