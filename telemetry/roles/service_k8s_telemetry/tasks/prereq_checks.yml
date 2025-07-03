@@ -19,7 +19,7 @@
   changed_when: false
   failed_when: false
 
-- name: Check if {{ storage_class_name }} provisioner is present
+- name: Check storageclass is present - {{ storage_class_name }}
   ansible.builtin.command: kubectl get storageclass {{ storage_class_name }} -o jsonpath='{.status}'
   register: nfs_client_status
   changed_when: false
