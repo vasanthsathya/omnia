@@ -76,6 +76,11 @@ else
   echo "ERROR: Failed to reload firewalld." >> "$LOGFILE"
 fi
 
+# Install python3-pip and git
+echo "Installing python3-pip and git..." >> "$LOGFILE"
+dnf install -y python3-pip git && echo "SUCCESS: python3-pip and git installed successfully."  >> "$LOGFILE" || echo "ERROR: Failed to install python3-pip and git."  >> "$LOGFILE"
+
+
 # Create omnia_path directory if it does not exist
 echo "Creating omnia shared path directory if it does not exist" >> "$LOGFILE"
 mkdir -p {{ oim_shared_path }}
