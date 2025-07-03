@@ -103,6 +103,7 @@
         package_types: "{{ package_type_list }}"
         k8s_json_path: "{{ base_k8s_json_file }}"
         log_dir: "{{ dynamic_k8s_json_log_dir }}"
+        software_name: "k8s"
         n_latest: 3
         arch: "amd64"
         mode: "clone"

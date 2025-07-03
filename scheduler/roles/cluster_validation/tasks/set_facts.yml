@@ -32,14 +32,14 @@
             unknown
           {% endif %}
 
+    - name: Sanitize cluster_type
+      ansible.builtin.set_fact:
+        cluster_type: "{{ cluster_type | trim }}"
+
     - name: Fail if cluster_type is unknown
       ansible.builtin.fail:
         msg: "{{ cluster_type_unknown_msg }}"
       when: cluster_type == "unknown"
-
-    - name: Sanitize cluster_type
-      ansible.builtin.set_fact:
-        cluster_type: "{{ cluster_type | trim }}"
 
     - name: Set dynamic cluster var names
       ansible.builtin.set_fact:

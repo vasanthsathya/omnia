@@ -66,6 +66,9 @@
   when:
     - hostvars['127.0.0.1']['k8s_support']
 
+- name: Update Repositories/Registries on nodes
+  ansible.builtin.import_playbook: ../utils/update_user_repo.yml
+
 - name: Create kubespray container group
   ansible.builtin.import_playbook: ../utils/create_container_group.yml
   vars:
@@ -123,16 +126,3 @@
   gather_facts: false
   roles:
     - update_containerd_config
-
-- name: Pull k8s images
-  hosts: kube_control_plane, kube_node, etcd
-  gather_facts: false
-  any_errors_fatal: true
-  roles:
-    - k8s_prepare_images
-
-- name: Deploy plugins on kube control nodes
-  hosts: kube_control_plane[0]
-  gather_facts: false
-  roles:
-    - common_plugins

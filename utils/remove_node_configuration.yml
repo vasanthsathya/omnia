@@ -17,18 +17,12 @@
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
   tags: always
 
-- name: Set_fact for remove node playbook
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Set fact for remove_node
-      ansible.builtin.set_fact:
-        remove_node: true
-
 - name: Warning and User confirmation for removing slurm and kube node
   hosts: localhost
   connection: local
   gather_facts: false
+  vars:
+    remove_node: true
   roles:
     - { role: remove_node/user_confirmation } # noqa: role-name[path]
     - { role: common }

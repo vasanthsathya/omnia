@@ -29,54 +29,57 @@
         unknown
       {% endif %}
 
-- name: Fail if cluster_type is unknown
-  ansible.builtin.fail:
-    msg: "{{ cluster_type_unknown_msg }}"
-  when: cluster_type == "unknown"
-
 - name: Sanitize cluster_type
   ansible.builtin.set_fact:
     cluster_type: "{{ cluster_type | trim }}"
 
-- name: Set dynamic cluster var names
-  ansible.builtin.set_fact:
-    cluster_var_name: "{{ (cluster_type + '_k8s_cluster') | trim }}"
-    cluster_ha_var_name: "{{ (cluster_type + '_k8s_cluster_ha') | trim }}"
+- name: Fail if cluster_type is unknown
+  ansible.builtin.debug:
+    msg: "{{ cluster_type_unknown_msg }}"
+  when: cluster_type == "unknown"
 
-- name: Extract deployed cluster names
-  ansible.builtin.set_fact:
-    deployed_cluster_names: >-
-      {{ vars[cluster_var_name]
-          | selectattr('deployment', 'equalto', 'true')
-          | map(attribute='cluster_name')
-          | list }}
+- name: Set facts
+  when: cluster_type != "unknown"
+  block:
+    - name: Set dynamic cluster var names
+      ansible.builtin.set_fact:
+        cluster_var_name: "{{ (cluster_type + '_k8s_cluster') | trim }}"
+        cluster_ha_var_name: "{{ (cluster_type + '_k8s_cluster_ha') | trim }}"
 
-- name: Fail if no deployed cluster is found
-  ansible.builtin.fail:
-    msg: "{{ deployment_false_msg }}"
-  when: deployed_cluster_names | length == 0
+    - name: Extract deployed cluster names
+      ansible.builtin.set_fact:
+        deployed_cluster_names: >-
+          {{ vars[cluster_var_name]
+              | selectattr('deployment', 'equalto', 'true')
+              | map(attribute='cluster_name')
+              | list }}
 
-- name: Select first deployed cluster
-  ansible.builtin.set_fact:
-    selected_cluster: >-
-      {{ vars[cluster_var_name]
-          | selectattr('deployment', 'equalto', 'true')
-          | list
-          | first }}
+    - name: Fail if no deployed cluster is found
+      ansible.builtin.fail:
+        msg: "{{ deployment_false_msg }}"
+      when: deployed_cluster_names | length == 0
 
-- name: Set cluster configuration facts
-  ansible.builtin.set_fact:
-    cluster_name: "{{ selected_cluster.cluster_name }}"
+    - name: Select first deployed cluster
+      ansible.builtin.set_fact:
+        selected_cluster: >-
+          {{ vars[cluster_var_name]
+              | selectattr('deployment', 'equalto', 'true')
+              | list
+              | first }}
 
-- name: Lookup HA config for selected cluster
-  ansible.builtin.set_fact:
-    selected_cluster_ha: >-
-      {{ vars[cluster_ha_var_name]
-          | selectattr('cluster_name', 'equalto', cluster_name)
-          | list
-          | first }}
+    - name: Set cluster configuration facts
+      ansible.builtin.set_fact:
+        cluster_name: "{{ selected_cluster.cluster_name }}"
 
-- name: Set HA-related facts
-  when: selected_cluster_ha is defined
-  ansible.builtin.set_fact:
-    enable_k8s_ha: "{{ selected_cluster_ha.enable_k8s_ha | default(false) }}"
+    - name: Lookup HA config for selected cluster
+      ansible.builtin.set_fact:
+        selected_cluster_ha: >-
+          {{ vars[cluster_ha_var_name]
+              | selectattr('cluster_name', 'equalto', cluster_name)
+              | list
+              | first }}
+
+    - name: Set HA-related facts
+      when: selected_cluster_ha is defined
+      ansible.builtin.set_fact:
+        enable_k8s_ha: "{{ selected_cluster_ha.enable_k8s_ha | default(false) }}"

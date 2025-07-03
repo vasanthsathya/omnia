@@ -17,18 +17,12 @@
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
   tags: always
 
-- name: Set_fact for reset cluster playbook
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Set fact for reset cluster
-      ansible.builtin.set_fact:
-        reset_cluster: true
-
 - name: Warning and User confirmation for removing cluster
   hosts: localhost
   connection: local
   gather_facts: false
+  vars:
+    reset_cluster: true
   roles:
     - { role: remove_cluster/user_confirmation } # noqa: role-name[path]
     - { role: common }
