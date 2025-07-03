@@ -71,21 +71,25 @@ def get_node_info_db(cursor: cursor, node: str) -> tuple:
     return node_info
 def get_updated_cpu_gpu_info(node: str) -> tuple:
     """
-        Retrieves the updated CPU and GPU information for a given node.
-        Parameters:
-                node (str): The name of the node.
-        Returns:
-                tuple: A tuple containing the updated CPU and GPU information.
-                                The tuple contains the following elements:
-                                        - cpu (str): The type of CPU.
-                                        - gpu (str): The type of GPU.
-                                        - cpu_count (int): The count of CPU.
-                                        - gpu_count (int): The count of GPU.
-        Raises:
-                FileNotFoundError: If the log file is not found.
-                IOError: If there is an issue reading the log file.
-                Exception: If there is any other exception.
-        """
+    Retrieves the updated CPU and GPU information for a given node.
+
+    Parameters:
+            node (str): The name of the node.
+
+    Returns:
+            tuple: A tuple containing the updated CPU and GPU information.
+            The tuple contains the following elements:
+                    - cpu (str): The type of CPU.
+                    - gpu (str): The type of GPU.
+                    - cpu_count (int): The count of CPU.
+                    - gpu_count (int): The count of GPU.
+
+    Raises:
+            FileNotFoundError: If the log file is not found.
+            IOError: If there is an issue reading the log file.
+            Exception: If there is any other exception.
+    """
+
     # Define the strings to search for GPU and CPU
     nvidia_gpu_str = "NVIDIA GPU Found"
     amd_gpu_str = "AMD GPU Found"
@@ -94,6 +98,7 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
     amd_cpu_str = "AMD CPU Found"
     intel_gpu_str = "Intel GPU Found"
     no_cpu_str = "No CPU Found"
+
     # Initialize variables
     cpu = ""
     cpu_count = 0
@@ -101,11 +106,13 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
     gpu_count = 0
     gpu_found = False
     cpu_found = False
+
     # Define the path to the log file
-    computes_log_file_path = '/var/log/xcat/computes.log'
+    computes_log_file_path = "/var/log/xcat/computes.log"
+
     try:
         # Open the log file
-        with open(computes_log_file_path, 'r', encoding='utf-8') as file:
+        with open(computes_log_file_path, "r", encoding="utf-8") as file:
             # Read the contents of the file
             contents = file.readlines()
             if contents:
@@ -114,7 +121,7 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
                     # Check if the node name is present in the line
                     if node in line:
                         # Check if the GPU have been found
-                        if gpu_found == False:
+                        if not gpu_found:
                             # Check if the Nvidia GPU str is present in the line
                             if nvidia_gpu_str in line:
                                 gpu = "nvidia"
@@ -133,8 +140,9 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
                             # Check if the No GPU str is present in the line
                             elif no_gpu_str in line:
                                 gpu_found = True
+
                         # Check if the CPU has been found
-                        if cpu_found == False:
+                        if not cpu_found:
                             # Check if the Intel CPU str is present in the line
                             if intel_cpu_str in line:
                                 cpu = "intel"
@@ -148,21 +156,37 @@ def get_updated_cpu_gpu_info(node: str) -> tuple:
                             # Check if the No CPU str is present in the line
                             elif no_cpu_str in line:
                                 cpu_found = True
+
                         # Break out of the loop if both GPU and CPU have been found
-                        if cpu_found == True and gpu_found == True:
+                        if cpu_found and gpu_found:
                             break
+
     except FileNotFoundError:
         # Log an error if the file is not found
-        syslog.syslog(syslog.LOG_ERR, f"parse_syslog:get_updated_cpu_gpu_info: File '{computes_log_file_path}' not found")
-    except IOError as err:
+        syslog.syslog(
+            syslog.LOG_ERR,
+            f"parse_syslog:get_updated_cpu_gpu_info: File '{computes_log_file_path}' not found",
+        )
+    except IOError:
         # Log an error if there is an issue reading the file
-        syslog.syslog(syslog.LOG_ERR, f"parse_syslog:get_updated_cpu_gpu_info: Error reading file '{computes_log_file_path}'")
+        syslog.syslog(
+            syslog.LOG_ERR,
+            f"parse_syslog:get_updated_cpu_gpu_info: Error reading file '{computes_log_file_path}'",
+        )
     except Exception as err:
         # Log an error if there is any other exception
-        syslog.syslog(syslog.LOG_ERR, f"parse_syslog:get_updated_cpu_gpu_info: Exception in '{computes_log_file_path}' parsing: " + str(type(err)) + " " + str(err))
+        syslog.syslog(
+            syslog.LOG_ERR,
+            f"""parse_syslog:get_updated_cpu_gpu_info: Exception in '{computes_log_file_path}' 
+            parsing: """
+            + str(type(err))
+            + " "
+            + str(err),
+        )
     finally:
-        # Return the CPU and GPU information
-        return (cpu, gpu, cpu_count, gpu_count)
+        pass
+    return (cpu, gpu, cpu_count, gpu_count)
+
 def update_db(cursor: cursor, node: str, updated_node_info: tuple) -> None:
     """
         Update the database with the provided updated node information.
