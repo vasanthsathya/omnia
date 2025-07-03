@@ -127,6 +127,7 @@ def schema(config):
 
 
 # Code to run the L2 validation validate_input_logic function.
+
 def logic(config):
     """
     Validates the logic of the input file.

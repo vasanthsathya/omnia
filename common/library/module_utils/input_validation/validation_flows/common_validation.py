@@ -17,6 +17,7 @@ This module contains functions for validating common configuration files.
 """
 import json
 import os
+import ipaddress
 import ansible.module_utils.input_validation.common_utils.data_fetch as get
 import ansible.module_utils.input_validation.common_utils.data_validation as validate
 from ansible.modules.validate_input import generate_log_failure_message
@@ -873,31 +874,32 @@ def get_admin_bmc_networks(
             if key in ["admin_network", "bmc_network"]:
                 static_range = value.get("static_range", "N/A")
                 dynamic_range = value.get("dynamic_range", "N/A")
+                primary_oim_admin_ip = value.get("primary_oim_admin_ip")
                 admin_bmc_networks[key] = {
                     "static_range": static_range,
                     "dynamic_range": dynamic_range,
+                    "primary_oim_admin_ip": primary_oim_admin_ip
                 }
     return admin_bmc_networks
 
-
-def validate_omnia_config(
-    input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name
-):
+def is_ip_in_range(ip_str, ip_range_str):
     """
-    Validates the Omnia configuration.
-
-    Args:
-        input_file_path (str): The path to the input file.
-        data (dict): The data to be validated.
-        logger (Logger): A logger instance.
-        module (Module): A module instance.
-        omnia_base_dir (str): The base directory of the Omnia configuration.
-        module_utils_base (str): The base directory of the module utils.
-        project_name (str): The name of the project.
-
-    Returns:
-        list: A list of errors encountered during validation.
+    Checks if the given IP address is inside the given IP range.
+    The range format should be: "start_ip-end_ip"
     """
+    results=[]    
+    try:
+        ip = ipaddress.IPv4Address(ip_str)
+        start_ip_str, end_ip_str = ip_range_str.strip().split("-")
+        start_ip = ipaddress.IPv4Address(start_ip_str)
+        end_ip = ipaddress.IPv4Address(end_ip_str)
+        return start_ip <= ip <= end_ip
+    except ValueError as e:
+        # Invalid IP format
+        results.append(f"Value exception occurred: {e}")
+        return False, results
+
+def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     errors = []
     results = []
     tag_names = eval(module.params["tag_names"])
@@ -909,29 +911,10 @@ def validate_omnia_config(
     admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
     bmc_static_range = admin_bmc_networks["bmc_network"]["static_range"]
     bmc_dynamic_range = admin_bmc_networks["bmc_network"]["dynamic_range"]
-    _pod_external_ip_range = data["pod_external_ip_range"]
-    k8s_service_addresses = data["k8s_service_addresses"]
-    k8s_pod_network_cidr = data["k8s_pod_network_cidr"]
+    primary_oim_admin_ip = admin_bmc_networks["admin_network"]["primary_oim_admin_ip"]
 
-    if "k8s" in tag_names:
-        results = scheduler_validation.validate_k8s_parameters(
-            admin_static_range,
-            bmc_static_range,
-            admin_dynamic_range,
-            bmc_dynamic_range,
-            k8s_service_addresses,
-            k8s_pod_network_cidr,
-        )
-        if results:
-            errors.append(
-                create_error_msg("IP overlap -", results, en_us_validation_msg.IP_OVERLAP_FAIL_MSG)
-            )
-
+    #verify intel_gaudi with sofwate config json
     run_intel_gaudi_tests = data["run_intel_gaudi_tests"]
-    csi_powerscale_driver_secret_file_path = data["csi_powerscale_driver_secret_file_path"]
-    csi_powerscale_driver_values_file_path = data["csi_powerscale_driver_values_file_path"]
-
-    # verify intel_gaudi with sofwate config json
     software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
     software_config_json = json.load(open(software_config_file_path, "r"))
     softwares = software_config_json["softwares"]
@@ -944,46 +927,69 @@ def validate_omnia_config(
             )
         )
 
-    # verify csi with sofwate config json
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    softwares = software_config_json["softwares"]
-    if contains_software(softwares, "csi_driver_powerscale"):
-        # Validate if secret file path is empty
-        if not csi_powerscale_driver_secret_file_path:
-            errors.append(
-                create_error_msg(
-                    "csi_powerscale_driver_secret_file_path",
-                    csi_powerscale_driver_secret_file_path,
-                    en_us_validation_msg.CSI_DRIVER_SECRET_FAIL_MSG,
-                )
-            )
+    service_k8s_cluster = data["service_k8s_cluster"]
+    for svccluster in service_k8s_cluster:
+        cluster_name = svccluster.get("cluster_name")
+        deployment = svccluster.get("deployment")
+        pod_external_ip_range = svccluster.get("pod_external_ip_range")
+        k8s_service_addresses = svccluster.get("k8s_service_addresses")
+        k8s_pod_network_cidr = svccluster.get("k8s_pod_network_cidr")
+        k8s_offline_install = svccluster.get("k8s_offline_install")
+        csi_secret_path = svccluster.get("csi_powerscale_driver_secret_file_path")
+        csi_values_path = svccluster.get("csi_powerscale_driver_values_file_path")
 
-        # Validate if values file path is empty
-        if not csi_powerscale_driver_values_file_path:
-            errors.append(
-                create_error_msg(
-                    "csi_powerscale_driver_values_file_path",
-                    csi_powerscale_driver_values_file_path,
-                    en_us_validation_msg.CSI_DRIVER_VALUES_FAIL_MSG,
-                )
-            )
+        #check the admin ip overlap with pod external range
+        does_overlap= is_ip_in_range(primary_oim_admin_ip,pod_external_ip_range)
+        if does_overlap:
+            errors.append(create_error_msg(
+                           "Ip Overlap:", does_overlap,
+                           "The pod external IP range provided in omnia_config.yml overlaps " \
+                           "with the admin ip defined in network_spec.yml"
+                        ))
 
-    # Check IP range overlap between omnia IPs, admin network, and bmc network
-    ip_ranges = [
-        admin_static_range,
-        bmc_static_range,
-        admin_dynamic_range,
-        bmc_dynamic_range,
-        k8s_service_addresses,
-        k8s_pod_network_cidr,
-    ]
-    does_overlap, _ = validation_utils.check_overlap(ip_ranges)
+        #verify csi with sofwate config json
+        software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+        software_config_json = json.load(open(software_config_file_path, "r"))
+        softwares = software_config_json["softwares"]
+        if contains_software(softwares, "csi_driver_powerscale"):
+            # Validate if secret file path is empty
+            if not csi_secret_path:
+               errors.append(create_error_msg("csi_secret_path", csi_secret_path, en_us_validation_msg.csi_driver_secret_fail_msg))
 
-    if does_overlap:
-        errors.append(
-            create_error_msg("IP overlap -", None, en_us_validation_msg.IP_OVERLAP_FAIL_MSG)
-        )
+            # Validate if values file path is empty
+            if not csi_values_path:
+               errors.append(create_error_msg("csi_values_path", csi_values_path, en_us_validation_msg.csi_driver_values_fail_msg))
+
+    for computecluster in service_k8s_cluster:
+        cluster_name = computecluster.get("cluster_name")
+        deployment = computecluster.get("deployment")
+        pod_external_ip_range = computecluster.get("pod_external_ip_range")
+        k8s_service_addresses = computecluster.get("k8s_service_addresses")
+        k8s_pod_network_cidr = computecluster.get("k8s_pod_network_cidr")
+        k8s_offline_install = computecluster.get("k8s_offline_install")
+        csi_secret_path = computecluster.get("csi_powerscale_driver_secret_file_path")
+        csi_values_path = computecluster.get("csi_powerscale_driver_values_file_path")
+
+        #check the admin ip overlap with pod external range
+        does_overlap= is_ip_in_range(primary_oim_admin_ip,pod_external_ip_range)
+        if does_overlap:
+            errors.append(create_error_msg(
+                           "Ip Overlap:", does_overlap,
+                           "The pod external IP range provided in omnia_config.yml overlaps " \
+                           "with the admin ip defined in network_spec.yml"
+                        ))
+        #verify csi with sofwate config json
+        software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+        software_config_json = json.load(open(software_config_file_path, "r"))
+        softwares = software_config_json["softwares"]
+        if contains_software(softwares, "csi_driver_powerscale"):
+            # Validate if secret file path is empty
+            if not csi_secret_path:
+               errors.append(create_error_msg("csi_secret_path", csi_secret_path, en_us_validation_msg.csi_driver_secret_fail_msg))
+
+            # Validate if values file path is empty
+            if not csi_values_path:
+               errors.append(create_error_msg("csi_values_path", csi_values_path, en_us_validation_msg.csi_driver_values_fail_msg))
 
     return errors
 
