@@ -57,6 +57,7 @@ Groups:
 
   # grp1:
   #   location_id: SU-1.RACK-2
+  #   cluster_name: ""
   #   resource_mgr_id: ""
   #   parent: ""
   #   bmc_details:
