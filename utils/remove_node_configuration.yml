@@ -17,6 +17,14 @@
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
   tags: always
 
+- name: Set_fact for remove node playbook
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Set fact for remove_node
+      ansible.builtin.set_fact:
+        remove_node: true
+
 - name: Warning and User confirmation for removing slurm and kube node
   hosts: localhost
   connection: local

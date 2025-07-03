@@ -45,9 +45,4 @@ k8s_metadata_file_not_exist_msg: "The metadata file {{ metadata_file }} does not
 k8s_version_failed_msg: "Kubernetes version {{ k8s_version }} not found in metadata file. \
  Available versions are {{ metadata_dict.k8s_kubespray_versions.keys() | sort | join(', ') }} \
  Update the software_config.json with the available versions and rerun scheduler.yml or please run prepare_oim.yml for deploying the required kubespray container required for k8s deployment." # noqa: yaml[line-length]
-warning_msg: "[WARNING] This utility will remove {{ cluster_name }} kubernetes configuration from node hence job scheduling need to disable on node.
- Abort play if any jobs are running on the given kube node.
- Recommeded to drain node to disable job scheduling."
 warning_wait_time: 10
-confirmation_msg: "Are you sure you want to remove {{ cluster_name }} configuration from kube node? Type 'yes' to proceed."
-confirmation_fail_msg: "Remove node configuration confirmation failed"

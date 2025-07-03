@@ -43,6 +43,20 @@
         msg: "{{ cluster_name_not_found }}"
       when: cluster_found is not defined
 
+    - name: Set facts for remove node
+      ansible.builtin.set_fact:
+        warning_msg: "[WARNING] This utility will remove {{ cluster_name }} Kubernetes configuration from node hence job scheduling needs to be disabled.\nAbort play if any jobs are running on the given kube node.\nRecommended to drain the node." # noqa: yaml[line-length]
+        confirmation_msg: "Are you sure you want to remove {{ cluster_name }} configuration from kube node? Type 'yes' to proceed."
+        confirmation_fail_msg: "Remove node configuration confirmation failed"
+      when: remove_node is defined
+
+    - name: Set facts for reset cluster
+      ansible.builtin.set_fact:
+        warning_msg: "[WARNING] This utility will reset {{ cluster_name }} Kubernetes configuration."
+        confirmation_msg: "Are you sure you want to reset {{ cluster_name }} cluster configuration? Type 'yes' to proceed."
+        confirmation_fail_msg: "Cluster reset confirmation failed."
+      when: reset_cluster is defined
+
     - name: Warning message for removing {{ cluster_name }}
       ansible.builtin.pause:
         prompt: "{{ warning_msg }}"
