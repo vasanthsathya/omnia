@@ -81,7 +81,7 @@ class InventoryManager:
                     file.write(group_name)
                 file.flush()
 
-    def get_cluster_details_db(self) -> List[Tuple[str, str, str, str, str, str, str]]:
+    def get_cluster_details_db(self) -> List[Tuple[str, str, str, str, str, str, str, str]]:
         """
         Retrieves the details of the cluster from the database.
 
@@ -101,9 +101,9 @@ class InventoryManager:
             self (InventoryManager): The InventoryManager object.
 
         Returns:
-            List[Tuple[str, str, str, str, str, str, str]]: A list of tuples containing
+            List[Tuple[str, str, str, str, str, str, str, str]]: A list of tuples containing
             the details of the nodes with the status 'booted'. Each tuple
-            contains the node, service tag, hostname, admin IP, CPU, and GPU.
+            contains the node, service tag, hostname, admin IP, CPU, GPU, role, cluster_name.
         """
         if self.db_path:
             sys.path.insert(0, self.db_path)
@@ -124,7 +124,8 @@ class InventoryManager:
                         admin_ip,
                         cpu,
                         gpu,
-                        role
+                        role,
+                        cluster_name
                     FROM
                         cluster.nodeinfo
                     WHERE
@@ -199,57 +200,76 @@ class InventoryManager:
                          "Error message: %s",
                          hostname, inventory_file, type(err), err
                          )
-
     def add_hostname_cluster_layout_inventory(
-        self, inventory_file: str,
-        hostname: str,
-        roles_name: any
-    ) -> None:
+            self, inventory_file: str,
+            hostname: str,
+            roles_name: any,
+            cluster_name: str
+        ) -> None:
+        """
+        Adds a hostname to the cluster layout inventory file.
+        Parameters:
+        - inventory_file (str): The path to the inventory file.
+        - hostname (str): The hostname to add.
+        - roles_name (str): The roles associated with the hostname.
+        - cluster_name (str): The cluster name associated with the hostname.
+        Returns:
+        - None
+        Raises:
+        - KeyError: If the hostname is already in the file.
+        - OSError, Exception: If there is an error adding the hostname to the file.
+        This function reads the contents of the inventory file and checks if the hostname is already present.
+        If the hostname is not present, it reads the config file and checks if the section exists.
+        If the section does not exist, it creates it.
+        Then it sets the hostname under the correct section and writes the inventory file.
+        """
+        # Check if the cluster_name is empty
         try:
+            if cluster_name != "":
+                # If cluster_name is not empty, skip adding the node
+                logger.info("Cluster name is not empty, skipping adding node %s", hostname)
+                return
+            else:
+                # Read the config file
+                config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
+                config.read(inventory_file, encoding='utf-8')
 
-            # Read the config file
-            config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
-            config.read(inventory_file, encoding='utf-8')
+                roles_list = roles_name.strip().split(",")
+                for group in roles_list:
+                    group = group.strip()
+                    if 'default' in group:
+                        continue
+                    else:
+                        # Check if the section exists, otherwise create it
+                        if not config.has_section(group):
+                            config.add_section(group)
 
-            roles_list = roles_name.strip().split(",")
-            for group in roles_list:
-                group = group.strip()
-                if 'default' in group:
-                    continue
-                else:
-                    # Check if the section exists, otherwise create it
-                    if not config.has_section(group):
-                        config.add_section(group)
+                        # Set the hostname under the correct section
+                        # Use None as value since no value is required
+                        config.set(group, hostname, None)
 
-                    # Set the hostname under the correct section
-                    # Use None as value since no value is required
-                    config.set(group, hostname, None)
-
-            # Write the inventory file
-            with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
-                config.write(configfile, space_around_delimiters=False)
-                configfile.flush()
+                # Write the inventory file
+                with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
+                    config.write(configfile, space_around_delimiters=False)
+                    configfile.flush()
         except KeyError as e:
             logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
-                         "Error adding hostname %s to inventory file %s. "
-                         "Error type: %s. Error message: %s",
-                         hostname, inventory_file, type(e), e)
+                        "Error adding hostname %s to inventory file %s. "
+                        "Error type: %s. Error message: %s",
+                        hostname, inventory_file, type(e), e)
         except (OSError, Exception) as err:  # pylint: disable=W0718
             logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
-                         "Error adding hostname %s to inventory file %s. "
-                         "Error type: %s. "
-                         "Error message: %s",
-                         hostname, inventory_file, type(err), err
-                         )
+                        "Error adding hostname %s to inventory file %s. "
+                        "Error type: %s. "
+                        "Error message: %s",
+                        hostname, inventory_file, type(err), err)
 
-
-
-    def update_inventory(self, node_detail: Tuple[str, str, str, str, str, str, str]) -> None:
+    def update_inventory(self, node_detail: Tuple[str, str, str, str, str, str, str, str]) -> None:
         """
         Update the inventory based on the given node detail.
 
         Parameters:
-        - node_detail (Tuple[str, str, str, str, str, str, str]):
+        - node_detail (Tuple[str, str, str, str, str, str, str, str]):
             A tuple containing the node detail.
 
         Returns:
@@ -257,7 +277,7 @@ class InventoryManager:
         """
 
         # Unpack the node_detail tuple
-        node, service_tag, hostname, admin_ip, cpu, gpu, roles_name = node_detail
+        node, service_tag, hostname, admin_ip, cpu, gpu, roles_name, cluster_name = node_detail
         if not hostname:
             logger.warning("inventory_tagging:update_inventory: "
                            "hostname is unavailable for node %s; skipping inventory update", node)
@@ -281,11 +301,17 @@ class InventoryManager:
             inventory_file_name = self.vendors.get("gpu", {}).get(gpu)
             if inventory_file_name:
                 self.add_hostname_inventory(inventory_file_name, hostname)
+        # if roles_name:
+        #     inventory_file_name = "/opt/omnia/omnia_inventory/cluster_layout"
+        #     if inventory_file_name:
+        #         self.add_hostname_cluster_layout_inventory(
+        #             inventory_file_name, hostname, roles_name, cluster_name)
         if roles_name:
-            inventory_file_name = "/opt/omnia/omnia_inventory/cluster_layout"
-            if inventory_file_name:
-                self.add_hostname_cluster_layout_inventory(
-                    inventory_file_name, hostname, roles_name)
+            if cluster_name == "":  # Add a check for empty cluster name
+                inventory_file_name = "/opt/omnia/omnia_inventory/cluster_layout"
+                self.add_hostname_cluster_layout_inventory(inventory_file_name, hostname, roles_name, cluster_name)
+            else:
+                logger.info("Cluster name is not empty, skipping adding node %s to cluster layout inventory", hostname)
 
     def change_inventory_file_permission(self, inventory_files: List[str]) -> None:
         """
