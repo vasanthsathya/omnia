@@ -632,7 +632,6 @@ setup_container() {
     OPTIONS+=" -v $omnia_path/omnia/log/core/container:/var/log$selinux_option"
     OPTIONS+=" -v $omnia_path/omnia/hosts:/etc/hosts$selinux_option"
     OPTIONS+=" -v $omnia_path/omnia/pulp/pulp_ha:/root/.config/pulp$selinux_option"
-    OPTIONS+=" -e ROOT_PASSWORD_HASH=$hashed_passwd"
     OPTIONS+=" --net=host"
     OPTIONS+=" --name omnia_core"
     OPTIONS+=" --cap-add=CAP_AUDIT_WRITE"
@@ -716,6 +715,10 @@ post_setup_config() {
         fi
     fi
 
+    init_ssh_config
+}
+
+init_ssh_config() {
     touch $HOME/.ssh/known_hosts
     # Add entry to /root/.ssh/known_hosts file to prevent errors caused by Known host
     ssh-keygen -R "[localhost]:2222" >/dev/null 2>&1  # Remove existing entry if it exists
@@ -851,6 +854,7 @@ main() {
                     fetch_config
                     remove_container
                     setup_container
+                    init_ssh_config
                     start_container_session
                 # If the user wants to overwrite and create new configuration, call the cleanup_omnia_core function
                 elif [ "$choice" = "2" ]; then

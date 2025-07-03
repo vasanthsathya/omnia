@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,16 +13,8 @@
 # limitations under the License.
 ---
 
-- name: Create omnia container images directory
-  ansible.builtin.file:
-    path: "{{ images_directory_path }}"
-    state: directory
-    mode: "{{ read_write_mode }}"
-
-- name: Remove container images tar file if exists
-  ansible.builtin.file:
-    path: "{{ images_directory_path }}/{{ container_tar_file }}"
-    state: absent
+- name: Include image variables
+  ansible.builtin.include_vars: "../../vars/image_vars.yml"
 
 - name: Add kubespray to container image list if k8s_support is true
   when: hostvars['localhost']['k8s_support'] | default(false)
@@ -55,8 +47,10 @@
           'docker.io/grafana/promtail:' + promtail_image_tag
         ] }}
 
-- name: Save container images (This task may take 10 mins)
-  containers.podman.podman_save:
-    image: "{{ container_images }}"
-    dest: "{{ images_directory_path }}/{{ container_tar_file }}"
-    multi_image_archive: true
+- name: Set base_container_images fact
+  ansible.builtin.set_fact:
+    container_images: "{{ dict(container_images
+        | map('regex_replace', '[:/]', '_')
+        | map('regex_replace', '$', '.tar')
+        | zip(container_images))
+      }}"
