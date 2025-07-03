@@ -81,9 +81,9 @@ Groups:
 # | Role Name                  | Layer           |     | Role Name         | Layer          |
 # +---------------------------+------------------+     +-------------------+----------------+
 # | oim_ha_node                | management      |     | default           | compute        |
-# | service_kube_control_plane | management      |     | service_kube_node | compute        |
-# | service_etcd               | management      |     | kube_node         | compute        |
-# | service_node (future use)  | management      |     | slurm_node        | compute        |
+# | service_kube_control_plane | management      |     | kube_node         | compute        | 
+# | service_etcd               | management      |     | slurm_node        | compute        |
+# | service_node (future use)  | management      |     |                   |                |
 # | login                      | management      |     |                   |                |
 # | auth_server                | management      |     |                   |                |
 # | compiler_node              | management      |     |                   |                |
@@ -138,10 +138,10 @@ Roles:
 # The nodes in this role can be used to run kubernetes master on service cluster.
 #
 # Service k8s head Role: Service Cluster Kubernetes master node for groups to add into service_kube_control_plane role can be provided in this role
-  - name: "service_kube_control_plane"
-    groups:
-      - grp0
-      - grp1
+  # - name: "service_kube_control_plane"
+  #   groups:
+  #     - grp0
+  #     - grp1
 
 #
 # Service etcd Role: Service Cluster Kubernetes etcd node groups to add into service cluster k8s role can be provided in this role
@@ -157,10 +157,10 @@ Roles:
 # The nodes in this role can be used to run Kubernetes etcd on service cluster.
 #
 # Service etcd Role: Service Cluster Kubernetes etcd node groups to add into service cluster k8s role can be provided in this role
-  - name: "service_etcd"
-    groups:
-      - grp0
-      - grp1
+  # - name: "service_etcd"
+  #   groups:
+  #     - grp0
+  #     - grp1
 
 #
 # Service k8s Worker Role: Service Cluster Kubernetes worker node groups to add into service cluster k8s role can be provided in this role
@@ -176,10 +176,10 @@ Roles:
 # The nodes in this role can be used to run Kubernetes worker on service cluster.
 #
 # Service k8s Worker Role: Service Cluster Kubernetes worker node groups to add into service cluster k8s role can be provided in this role
-  - name: "service_kube_node"
-    groups:
-      - grp0
-      - grp1
+  # - name: "service_kube_node"
+  #   groups:
+  #     - grp0
+  #     - grp1
 
 # ----------------------------------------Not Supported ( Future Use )---------------------------------
 # Service Node Role: Service node groups to add into service_node role can be provided in this role
