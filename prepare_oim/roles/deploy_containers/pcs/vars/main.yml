@@ -93,7 +93,6 @@ omnia_core_run_opts: >-
   -v {{ core_container_logs_dir }}:/var/log{{ selinux_option }}
   -v {{ hosts_file }}:/etc/hosts{{ selinux_option }}
   -v {{ pulp_ha_dir }}:/root/.config/pulp{{ selinux_option }}
-  -e ROOT_PASSWORD_HASH={{ hostvars['localhost']['omnia_core_hashed_passwd'] }}
   --name {{ omnia_core_name }} --cap-add=CAP_AUDIT_WRITE
 
 # Usage: pcs-start.sh.j2: omnia_provision

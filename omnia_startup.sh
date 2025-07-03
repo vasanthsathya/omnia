@@ -632,7 +632,6 @@ setup_container() {
     OPTIONS+=" -v $omnia_path/omnia/log/core/container:/var/log$selinux_option"
     OPTIONS+=" -v $omnia_path/omnia/hosts:/etc/hosts$selinux_option"
     OPTIONS+=" -v $omnia_path/omnia/pulp/pulp_ha:/root/.config/pulp$selinux_option"
-    OPTIONS+=" -e ROOT_PASSWORD_HASH=$hashed_passwd"
     OPTIONS+=" --net=host"
     OPTIONS+=" --name omnia_core"
     OPTIONS+=" --cap-add=CAP_AUDIT_WRITE"
