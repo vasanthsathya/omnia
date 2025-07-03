@@ -75,9 +75,9 @@ input_file_inventory = {
     "proxy": [files["site_config"]],
     "prepare_oim": [
         files["software_config"],
+        files["network_spec"],
         files["roles_config"],
         files["high_availability_config"],
-        files["network_spec"],
         files["telemetry_config"]
     ],
     "high_availability": [files["high_availability_config"]],
