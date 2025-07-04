@@ -22,7 +22,7 @@
         omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['freeipa'] + ['openldap'] + ['security'] + ['slurm'] + ['storage']) | unique }}"
         cacheable: true
       when: not (config_file_status | default(false) | bool)
-    
+
     - name: Set fact for compute k8s playbook
       ansible.builtin.set_fact:
         compute_k8s_playbook: true
