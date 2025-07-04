@@ -53,7 +53,16 @@ echo "{{ nfs_server_ip }}:{{ nfs_server_share_path }} {{ oim_shared_path }} nfs 
 {% endif %}
 
 echo "INFO: Loading container images." >> "$LOGFILE"
-podman load -i {{ container_images_path }} || { echo "ERROR: Loading container images." >> "$LOGFILE"; exit 1; }
+
+for tar in {{ container_images_path }}*.tar; do
+  echo "INFO: Loading container image from $tar" >> "$LOGFILE"
+  if podman load -i "$tar" >> "$LOGFILE" 2>&1; then
+    echo "INFO: Successfully loaded $tar" >> "$LOGFILE"
+  else
+    echo "ERROR: Failed to load $tar" >> "$LOGFILE"
+  fi
+done
+
 
 echo -e "INFO: Copying omnia_pcs quadlet file from NFS." >> "$LOGFILE"
 cp {{ oim_shared_path }}/omnia/pcs/{{ pcs_container_name }}.container {{ container_systemd_dir }}/{{ pcs_container_name }}.container
@@ -73,14 +82,14 @@ chmod 600 $SECRET_PATH/secrets.json
 chmod 600 $SECRET_PATH/filedriver/secretsdata.json
 {% endif %}
 
-{% if idrac_telemetry_support %}
+{% if idrac_telemetry_support and not federated_idrac_telemetry_collection %}
 podman volume create --driver local --opt o=bind --opt device={{ mysql_data_dir }} mysqldb_data
 podman volume create --driver local --opt o=bind --opt device={{ mysql_log_dir }} mysqldb_log
 podman volume create --driver local --opt o=bind --opt device={{ activemq_log_dir }} activemq_log
 podman volume create --driver local --opt o=bind --opt device={{ idrac_telemetry_receiver_log_dir }} idrac_telemetry_receiver_log
 {% endif %}
 
-{% if idrac_telemetry_support and idrac_telemetry_collection_type == "prometheus" %}
+{% if idrac_telemetry_support and not federated_idrac_telemetry_collection and idrac_telemetry_collection_type == "prometheus" %}
 podman volume create --driver local --opt o=bind --opt device={{ prometheus_data_dir }} prometheus_data
 podman volume create --driver local --opt o=bind --opt device={{ prometheus_log_dir }} prometheus_log
 podman volume create --driver local --opt o=bind --opt device={{ prometheus_config_dir }} prometheus_config

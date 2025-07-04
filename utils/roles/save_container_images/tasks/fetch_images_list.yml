@@ -13,32 +13,21 @@
 # limitations under the License.
 ---
 
-- name: Create omnia container images directory
-  ansible.builtin.file:
-    path: "{{ images_directory_path }}"
-    state: directory
-    mode: "{{ read_write_mode }}"
-
-- name: Remove container images tar file if exists
-  ansible.builtin.file:
-    path: "{{ images_directory_path }}/{{ container_tar_file }}"
-    state: absent
-
 - name: Add kubespray to container image list if k8s_support is true
-  when: hostvars['localhost']['k8s_support'] | default(false)
+  when: k8s_support | default(false)
   ansible.builtin.set_fact:
-    container_images: "{{ container_images + ['omnia_kubespray:' + kubespray_tag] }}"
+    base_container_images: "{{ base_container_images + ['omnia_kubespray:' + kubespray_tag] }}"
 
 - name: Add squid to container image list if enable_routed_internet is true
-  when: hostvars['localhost']['enable_routed_internet'] | default(false)
+  when: enable_routed_internet | default(false)
   ansible.builtin.set_fact:
-    container_images: "{{ container_images + ['docker.io/ubuntu/squid:' + squid_tag] }}"
+    base_container_images: "{{ base_container_images + ['docker.io/ubuntu/squid:' + squid_tag] }}"
 
-- name: Add telemetry to container image list if telemetry_support is true
-  when: hostvars['localhost']['idrac_telemetry_support'] | default(false)
+- name: Add telemetry to container image list if idrac_telemetry_support is true
+  when: idrac_telemetry_support | default(false)
   ansible.builtin.set_fact:
-    container_images: >-
-      {{ container_images + [
+    base_container_images: >-
+      {{ base_container_images + [
           'docker.io/library/mysql:' + mysql_tag,
           'docker.io/rmohr/activemq:' + activemq_tag,
           'docker.io/library/golang:' + golang_tag,
@@ -46,17 +35,11 @@
         ] }}
 
 - name: Add telemetry to container image list if visualization_support is true
-  when: hostvars['localhost']['visualization_support'] | default(false)
+  when: visualization_support | default(false)
   ansible.builtin.set_fact:
-    container_images: >-
-      {{ container_images + [
+    base_container_images: >-
+      {{ base_container_images + [
           'docker.io/grafana/grafana:' + grafana_image_tag,
           'docker.io/grafana/loki:' + loki_image_tag,
           'docker.io/grafana/promtail:' + promtail_image_tag
         ] }}
-
-- name: Save container images (This task may take 10 mins)
-  containers.podman.podman_save:
-    image: "{{ container_images }}"
-    dest: "{{ images_directory_path }}/{{ container_tar_file }}"
-    multi_image_archive: true

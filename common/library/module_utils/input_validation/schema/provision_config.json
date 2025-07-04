@@ -40,6 +40,9 @@
     },
     "ntp_support": {
       "type": "boolean"
+    },
+    "federated_provision": {
+      "type": "boolean"
     }
   },
   "required": [
@@ -49,6 +52,7 @@
     "timezone",
     "language",
     "default_lease_time",
-    "ntp_support"
+    "ntp_support",
+    "federated_provision"
   ]
 }

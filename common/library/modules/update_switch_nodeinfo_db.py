@@ -177,7 +177,7 @@ def main():
                                                             admin_uncorrelated_node_start_ip, discovery_mechanism, mtms_db_path)
                     omniadb_connection.insert_node_info(
                     None, node_name, fqdn_hostname, None, admin_ip, bmc_ip,
-                    group_name, roles, parent, location_id, architecture, discovery_mechanism, bmc_mode, switch_ip, switch_name, port
+                    group_name, roles, cluster_name, parent, location_id, architecture, discovery_mechanism, bmc_mode, switch_ip, switch_name, port
                 )
                     new_added_ports.append(str(port))
                 else:
