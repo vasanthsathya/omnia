@@ -66,10 +66,10 @@
 - name: Fail if service_k8s,success not found
   ansible.builtin.fail:
     msg: "{{ local_repo_service_missing_msg }}"
-  when: service_node_downloaded is not defined
+  when: service_k8s_downloaded is not defined
 
 - name: Proceed with telemetry validation if telemetry entry present in software_config.json
-  when: service_node_downloaded
+  when: service_k8s_downloaded
   block:
     - name: Get cluster_os_type from software_config.json
       ansible.builtin.set_fact:
