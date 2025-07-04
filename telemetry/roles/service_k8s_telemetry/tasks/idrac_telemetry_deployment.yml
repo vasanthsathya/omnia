@@ -98,7 +98,7 @@
             volumes:
               - name: telemetry-reference-tools
                 hostPath:
-                  path: "{{ service_cluster_idrac_telemetry_dir_path }}"
+                  path: "{{ idrac_telemetry_reference_git_clone_path }}"
                   type: Directory
 
             hostAliases:
