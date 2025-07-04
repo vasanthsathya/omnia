@@ -13,6 +13,27 @@
 #  limitations under the License.
 ---
 
+- name: Install python
+  ansible.builtin.package:
+    name: "{{ hostvars['localhost']['python_package_name'] }}"
+    state: present
+
+- name: Set ansible_python_interpreter to Python 3.11
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: "{{ hostvars['localhost']['python_version'] }}"
+
+- name: Ensure pip3 is available using ensurepip
+  ansible.builtin.command: "{{ hostvars['localhost']['python_version'] }} -m ensurepip"
+  changed_when: false
+
+- name: Install pip packages from offline repo
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    extra_args: >
+      --find-links={{ hostvars['localhost']['offline_pip_module_path'] }}/{{ item }}/
+      --no-index
+  loop: "{{ hostvars['localhost']['k8s_pip_packages'] }}"
+
 - name: Check if k8s is running
   ansible.builtin.command: kubectl get nodes -o='Name'
   register: kubectl_status

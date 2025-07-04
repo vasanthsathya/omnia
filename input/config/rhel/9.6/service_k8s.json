@@ -27,11 +27,6 @@
         "repo_name": "appstream"
       },
       {
-        "package": "python3.11-pip",
-        "type": "rpm",
-        "repo_name": "appstream"       
-      },
-      {
         "package": "kubernetes==32.0.1",
         "type": "pip_module"
       },
