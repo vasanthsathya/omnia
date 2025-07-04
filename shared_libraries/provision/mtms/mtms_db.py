@@ -122,7 +122,7 @@ def update_db():
                     if not output:
                         omniadb_connection.insert_node_info(serial[key], node,
                                                             host_name, None, admin_ip,
-                                                            bmc[key], group_name, role,
+                                                            bmc[key], group_name, role, cluster_name,
                                                             PARENT, location_id, architecture,
                                                             DISCOVERY_MECHANISM, BMC_MODE, None,
                                                             None, None)
@@ -134,7 +134,7 @@ def update_db():
                                                                 admin_static_end_range,
                                                                 DISCOVERY_MECHANISM)
                         omniadb_connection.insert_node_info(serial[key], node, host_name, None,
-                                                            admin_ip,bmc[key], group_name, role,
+                                                            admin_ip,bmc[key], group_name, role, cluster_name,
                                                             PARENT, location_id, architecture,
                                                             DISCOVERY_MECHANISM, BMC_MODE, None,
                                                             None, None)
@@ -146,8 +146,8 @@ def update_db():
                                                     DISCOVERY_MECHANISM)
                     omniadb_connection.insert_node_info(serial[key], node, host_name,
                                                         None, admin_ip,
-                                                        bmc[key], group_name, role, PARENT,
-                                                        location_id, architecture,
+                                                        bmc[key], group_name, role, cluster_name,
+                                                         PARENT, location_id, architecture,
                                                         DISCOVERY_MECHANISM,
                                                         BMC_MODE, None, None, None)
             else:
