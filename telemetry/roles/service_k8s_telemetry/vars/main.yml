@@ -26,21 +26,21 @@ mysql_image: "docker.io/library/mysql:9.3.0"
 mysqldb_secrets_name: mysqldb-credentials
 
 # Usage: idrac_telemetry_deployment.yml
-service_cluster_idrac_telemetry_dir_path: "/opt/omnia/service_cluster/telemetry/idrac_telemetry"
+omnia_nfs_share: "{{ hostvars['localhost']['oim_shared_path'] }}/omnia"
+service_cluster_idrac_telemetry_dir_path: "{{ omnia_nfs_share }}/service_cluster/telemetry/idrac_telemetry"
 dir_permissions_755: "0755"
 idrac_telemetry_github_repo: https://github.com/dell/iDRAC-Telemetry-Reference-Tools.git
 reference_tools_stable_commit: "94e7621"
 idrac_telemetry_reference_git_clone_path: "{{ service_cluster_idrac_telemetry_dir_path }}/iDRAC-Telemetry-Reference-Tools"
 idrac_git_clone_error_msg: |
   Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_github_repo }}
-  to {{ idrac_telemetry_reference_path }}.
-  Failure: {{ clone_idrac_telemetry.stderr | default(clone_idrac_telemetry.msg, true) | default('Unknown error', true) }}
+  to {{ idrac_telemetry_reference_git_clone_path }} directory in NFS share.
 idrac_telemetry_scripting_repo: "https://github.com/dell/iDRAC-Telemetry-Scripting.git"
 idrac_telemetry_scripting_stable_commit: "f6999f5"
 idrac_telemetry_scripting_git_clone_path: "{{ service_cluster_idrac_telemetry_dir_path }}/iDRAC-Telemetry-Scripting"
 idrac_script_git_clone_error_msg: |
   Failed to clone iDRAC Telemetry GitHub repository from {{ idrac_telemetry_scripting_repo }}
-  to {{ idrac_telemetry_scripting_git_clone_path }}.
+  to {{ idrac_telemetry_scripting_git_clone_path }} directory in NFS share.
 max_retries: 10
 delay_count: 5
 telemetry_namespace: "telemetry"
