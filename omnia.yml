@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
 # limitations under the License.
 ---
 
-- name: Set_fact for fetch omnia config credentials
+- name: Set variables for omnia run tags
   hosts: localhost
   connection: local
   tasks:
-    - name: Set dynamic run tags including 'local_repo'
+    - name: Set dynamic run tags for omnia flow
       ansible.builtin.set_fact:
-        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['freeipa'] + ['openldap'] + ['slurm']) | unique }}"
+        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['freeipa'] + ['openldap'] + ['security'] + ['slurm'] + ['storage']) | unique }}"
         cacheable: true
       when: not (config_file_status | default(false) | bool)
     
@@ -27,10 +27,12 @@
       ansible.builtin.set_fact:
         compute_k8s_playbook: true
 
+- name: Invoke validate_config.yml to perform L1 and L2 validations
+  ansible.builtin.import_playbook: input_validation/validate_config.yml
+
 - name: Invoke get_config_credentials.yml
   ansible.builtin.import_playbook: utils/credential_utility/get_config_credentials.yml
   when: not (config_file_status | default(false) | bool)
-
 
 - name: Check if package manager is not locked
   ansible.builtin.import_playbook: utils/check_package_lock.yml
@@ -106,6 +108,3 @@
 
 - name: Execute slurm/kubernetes
   ansible.builtin.import_playbook: scheduler/scheduler.yml
-
-# - name: Import playbook to start telemetry services
-#  ansible.builtin.import_playbook: telemetry/telemetry.yml

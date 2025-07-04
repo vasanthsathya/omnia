@@ -25,6 +25,7 @@
 # This file contains Roles and Groups used by the omnia for cluster formation.
 # Groups: - Groups will contain the list of groups defined by the user. User must define atleast one group.
 #   grpN:                 - <Mandatory> "grpN" -  User defined name of the group. Range for N is 0-99
+#     cluster_name:       - <Conditional Mandatory> Name of the cluster to which the group belongs. This input is case-sensitive. This will remain empty for groups which are not associated with any kubernetes roles.
 #     location_id:        - <Mandatory> SU-<n>.RACK-<n> Scalable unit and rack number range is 0-99. This input is case-sensitive. Please use uppercase letters only.
 #     resource_mgr_id:    - <Conditional Mandatory> list of service tag of active head node(s).
 #                         - Set the value only for group of nodes belonging to kube_node and slurm_node roles,
@@ -44,6 +45,7 @@
 Groups:
   grp0:
     location_id: SU-1.RACK-1
+    cluster_name: ""
     resource_mgr_id: ""
     parent: ""
     bmc_details:
@@ -55,6 +57,7 @@ Groups:
 
   # grp1:
   #   location_id: SU-1.RACK-2
+  #   cluster_name: ""
   #   resource_mgr_id: ""
   #   parent: ""
   #   bmc_details:
@@ -77,19 +80,22 @@ Groups:
 
 # This table lists the roles and the layers they belong to in the cluster.
 
-# +---------------------+-----------------+     +-------------+----------------+
-# | Role Name          | Layer            |     | Role Name   | Layer          |
-# +---------------------+-----------------+     +-------------+----------------+
-# | oim_ha_node        | management       |     | kube_node   | compute        |
-# | service_node       | management       |     | slurm_node  | compute        |
-# | login              | management       |     | default     | compute        |
-# | auth_server        | management       |     |             |                |
-# | compiler_node      | management       |     |             |                |
-# | kube_control_plane | management       |     |             |                |
-# | etcd               | management       |     |             |                |
-# | slurm_control_node | management       |     |             |                |
-# | slurm_dbd          | management       |     |             |                |
-# +---------------------+-----------------+     +-------------+----------------+
+# +---------------------------+------------------+     +-------------------+----------------+
+# | Role Name                  | Layer           |     | Role Name         | Layer          |
+# +---------------------------+------------------+     +-------------------+----------------+
+# | oim_ha_node                | management      |     | default           | compute        |
+# | service_kube_control_plane | management      |     | kube_node         | compute        | 
+# | service_etcd               | management      |     | slurm_node        | compute        |
+# | service_kube_node          | management      |     |                   |                |
+# | service_node (future use)  | management      |     |                   |                |
+# | login                      | management      |     |                   |                |
+# | auth_server                | management      |     |                   |                |
+# | compiler_node              | management      |     |                   |                |
+# | kube_control_plane         | management      |     |                   |                |
+# | etcd                       | management      |     |                   |                |
+# | slurm_control_node         | management      |     |                   |                |
+# | slurm_dbd                  | management      |     |                   |                |
+# +---------------------------+------------------+     +-------------------+----------------+
 
 # Default Role:
 # -------------
@@ -122,6 +128,7 @@ Roles:
   #   groups:
   #     - grp0
 
+#
 # Service k8s head Role: Service Cluster Kubernetes master node for groups to add into service_kube_control_plane role can be provided in this role
 # ----------------------------------------------------------------------------------------------------
 # 
@@ -135,10 +142,10 @@ Roles:
 # The nodes in this role can be used to run kubernetes master on service cluster.
 #
 # Service k8s head Role: Service Cluster Kubernetes master node for groups to add into service_kube_control_plane role can be provided in this role
-  - name: "service_kube_control_plane"
-    groups:
-      - grp0
-      - grp1
+  # - name: "service_kube_control_plane"
+  #   groups:
+  #     - grp0
+  #     - grp1
 
 #
 # Service etcd Role: Service Cluster Kubernetes etcd node groups to add into service cluster k8s role can be provided in this role
@@ -154,10 +161,10 @@ Roles:
 # The nodes in this role can be used to run Kubernetes etcd on service cluster.
 #
 # Service etcd Role: Service Cluster Kubernetes etcd node groups to add into service cluster k8s role can be provided in this role
-  - name: "service_etcd"
-    groups:
-      - grp0
-      - grp1
+  # - name: "service_etcd"
+  #   groups:
+  #     - grp0
+  #     - grp1
 
 #
 # Service k8s Worker Role: Service Cluster Kubernetes worker node groups to add into service cluster k8s role can be provided in this role
@@ -173,10 +180,10 @@ Roles:
 # The nodes in this role can be used to run Kubernetes worker on service cluster.
 #
 # Service k8s Worker Role: Service Cluster Kubernetes worker node groups to add into service cluster k8s role can be provided in this role
-  - name: "service_kube_node"
-    groups:
-      - grp0
-      - grp1
+  # - name: "service_kube_node"
+  #   groups:
+  #     - grp0
+  #     - grp1
 
 # ----------------------------------------Not Supported ( Future Use )---------------------------------
 # Service Node Role: Service node groups to add into service_node role can be provided in this role

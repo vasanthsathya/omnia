@@ -13,6 +13,20 @@
 # limitations under the License.
 ---
 
+- name: Set tag for input validator
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Set dynamic run tags - 'storage'
+      ansible.builtin.set_fact:
+        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['storage']) | unique }}"
+        cacheable: true
+      when: not (hostvars['127.0.0.1']['config_file_status'] | default(false) | bool)
+
+- name: Invoke validate_config.yml to perform L1 and L2 validations
+  ansible.builtin.import_playbook: ../input_validation/validate_config.yml
+  when: not (hostvars['127.0.0.1']['config_file_status'] | default(false) | bool)
+
 - name: Include input project directory
   ansible.builtin.import_playbook: ../utils/include_input_dir.yml
   when: not ( hostvars['127.0.0.1']['project_dir_status'] | default(false) | bool )
@@ -32,18 +46,6 @@
 - name: Check if package manager is not locked
   ansible.builtin.import_playbook: ../utils/check_package_lock.yml
   when: not ( hostvars['127.0.0.1']['apt_lock_status'] | default(false) | bool )
-
-- name: Set tag for input validator
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Set dynamic run tags - 'storage'
-      ansible.builtin.set_fact:
-        omnia_run_tags: "{{ (ansible_run_tags | default([]) + ['storage']) | unique }}"
-        cacheable: true
-
-- name: Invoke validate_config.yml to perform L1 and L2 validations
-  ansible.builtin.import_playbook: ../input_validation/validate_config.yml
 
 - name: Validate storage input parameters
   hosts: localhost

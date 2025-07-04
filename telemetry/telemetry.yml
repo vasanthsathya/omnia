@@ -37,6 +37,16 @@
   vars:
     oim_group: true
 
+- name: Validate telemetry input parameters
+  hosts: localhost
+  connection: local
+  any_errors_fatal: true
+  tasks:
+    - name: Validate telemetry input parameters
+      ansible.builtin.include_role:
+        name: telemetry_validation
+        tasks_from: validation_status_check.yml
+
 - name: Validate containers are running
   hosts: oim
   connection: ssh
@@ -51,16 +61,9 @@
         - "mysqldb"
       loop_control:
         loop_var: telemetry_container
-
-- name: Validate telemetry input parameters
-  hosts: localhost
-  connection: local
-  any_errors_fatal: true
-  tasks:
-    - name: Validate telemetry input parameters
-      ansible.builtin.include_role:
-        name: telemetry_validation
-        tasks_from: validation_status_check.yml
+      when:
+        - hostvars['localhost']['idrac_telemetry_support']
+        - not hostvars['localhost']['federated_idrac_telemetry_collection']
 
 # - name: Update Repositories/Registries on nodes
 #   ansible.builtin.import_playbook: ../utils/update_user_repo.yml
@@ -170,7 +173,7 @@
 #         tasks_from: prometheus_config_reload.yml
 
 - name: Telemetry report overview
-  hosts: localhost, sn_active
+  hosts: localhost
   connection: ssh
   gather_facts: false
   vars:

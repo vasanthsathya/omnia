@@ -70,7 +70,7 @@ pcs resource group add {{ pcs_group }} {{ omnia_core_name }} {{ pulp_container_n
 {% if hostvars['localhost']['k8s_support'] %}
 pcs resource create {{ kubespray_name }} ocf:heartbeat:podman \
  name={{ kubespray_name }} \
- image={{ kubespray_image }} \
+ image={{ kubespray_container_image }} \
  reuse=true \
  run_opts="{{ kubespray_run_opts }}" \
  op monitor interval={{ monitor_interval }} timeout={{ monitor_timeout }} on-fail=restart \
@@ -99,7 +99,7 @@ pcs constraint colocation add {{ vip_group }} with {{ pcs_group }} INFINITY
 {% endif %}
 
 # Resource for idrac_telemetry containers
-{% if hostvars['localhost']['idrac_telemetry_support'] %}
+{% if hostvars['localhost']['idrac_telemetry_support'] and not hostvars['localhost']['federated_idrac_telemetry_collection'] %}
 
 # Resource for MySQL container
 pcs resource create {{ mysql_container_name }} ocf:heartbeat:podman \
@@ -136,7 +136,7 @@ pcs constraint colocation add {{ telemetry_pcs_group }} with {{ pcs_group }} INF
 {% endif %}
 
 # Resource for prometheus and prometheus_pump
-{% if hostvars['localhost']['idrac_telemetry_support'] and hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus" %}
+{% if hostvars['localhost']['idrac_telemetry_support'] and not hostvars['localhost']['federated_idrac_telemetry_collection'] and hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus" %}
 # Resource for prometheus pump container
 pcs resource create {{ prometheus_pump_container_name }} ocf:heartbeat:podman \
   name={{ prometheus_pump_container_name }} \

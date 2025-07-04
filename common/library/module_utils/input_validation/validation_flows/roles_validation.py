@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# pylint: disable=unused-argument,too-many-locals,too-many-branches
+
+# pylint: disable=import-error,no-name-in-module,unused-argument,too-many-locals,too-many-branches
 """
 This module contains functions for validating roles configuration.
 """
@@ -119,9 +120,10 @@ def validate_layer_group_separation(logger, roles):
         "slurm_control_node",
         "slurm_dbd",
         "service_kube_control_plane",
-        "service_etcd"
+        "service_etcd",
+        "service_kube_node"
     }
-    compute_roles = {"service_kube_node", "kube_node", "slurm_node", "default"}
+    compute_roles = {"kube_node", "slurm_node", "default"}
 
     # Single pass through roles to build mappings and check for same group usage
     group_layer_mapping = {}  # {group: {"frontend": [roles], "compute": [roles]}}
@@ -161,6 +163,7 @@ def validate_layer_group_separation(logger, roles):
 
     return errors
 
+# Validate service cluster role's groups does not overlap with k8s role's group
 def validate_group_role_separation(logger, roles):
     """
     Validates that groups are not shared between service cluster roles and corresponding Kubernetes roles.
@@ -188,6 +191,7 @@ def validate_group_role_separation(logger, roles):
 
     return errors
 
+# Below function will be used to validate service_node entry in roles_config ()
 def validate_service_node_in_software_config(input_file_path):
     """
     verifies service_node entry present in sofwate config.json
@@ -216,23 +220,23 @@ def validate_roles_config(
         list: A list of errors.
     """
 
-    NAME = "name"
-    ROLES = "Roles"
-    GROUPS = "Groups"
-    ROLE_GROUPS = "groups"
-    SLURMWORKER = "slurm_node"
-    K8WORKER = "kube_node"
-    SERVICE_K8S_WORKER = "service_kube_node"
-    DEFAULT = "default"
-    SWITCH_DETAILS = "switch_details"
-    IP = "ip"
-    PORTS = "ports"
-    PARENT = "parent"
-    BMC_DETAILS = "bmc_details"
-    STATIC_RANGE = "static_range"
-    RESOURCE_MGR_ID = "resource_mgr_id"
-    ROLES_PER_GROUP = 5
-    MAX_ROLES = 100
+    name = "name"
+    roles = "Roles"
+    groups = "Groups"
+    role_groups = "groups"
+    slurmworker = "slurm_node"
+    service_k8s_worker = "service_kube_node"
+    k8worker = "kube_node"
+    default = "default"
+    switch_details = "switch_details"
+    ip = "ip"
+    ports = "ports"
+    parent = "parent"
+    bmc_details = "bmc_details"
+    static_range = "static_range"
+    resource_mgr_id = "resource_mgr_id"
+    max_roles_per_group = 5
+    max_roles = 100
 
     roles_per_group = {}
     empty_parent_roles = {
@@ -313,6 +317,7 @@ def validate_roles_config(
             )
         )
 
+    # Validate all service cluster roles should be deined in roles_config.yml
     service_cluster_roles = ["service_kube_control_plane", "service_etcd", "service_kube_node"]
     defined_service_roles = [role["name"] for role in roles if role["name"] in service_cluster_roles]
 
@@ -320,27 +325,28 @@ def validate_roles_config(
         service_cluster_str = ', '.join(defined_service_roles)
         errors.append(create_error_msg("Roles", service_cluster_str, en_us_validation_msg.service_cluster_roles_msg))
 
-    # Role Service_node is defined in roles_config.yml,
-    # verify service_node entry present in sofwate_config.json
-    # If no entry is present, then fail the input validator
+    # Fail if Role Service_node is defined in roles_config.yml,
+    # it is not supported now, for future use
     service_role_defined = False
     if validation_utils.key_value_exists(roles, name, "service_node"):
-        service_role_defined = True
-
-        try:
-            if not validate_service_node_in_software_config(input_file_path):
-                errors.append(
-                    create_error_msg(
-                        "software_config.json",
-                        None,
-                        en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG
+        # service_role_defined = True
+        errors.append(create_error_msg("roles_config.yml", None, \
+                                        en_us_validation_msg.SERVICE_NODE_ENTRY_INVALID_ROLES_CONFIG_MSG))
+        if service_role_defined:
+            try:
+                if not validate_service_node_in_software_config(input_file_path):
+                    errors.append(
+                        create_error_msg(
+                            "software_config.json",
+                            None,
+                            en_us_validation_msg.SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG
+                        )
                     )
-                )
-        except Exception as e:
-            errors.append(
-                create_error_msg("software_config.json", 
-                                 None,
-                                f"An error occurred while validating software_config.json: {str(e)}"))
+            except Exception as e:
+                errors.append(
+                    create_error_msg("software_config.json",
+                                    None,
+                                    f"An error occurred while validating software_config.json: {str(e)}"))
 
 
     if len(errors) <= 0:
@@ -356,17 +362,17 @@ def validate_roles_config(
 
         for role in roles:
             # Check role-group association, all roles must have a group
-            if role[ROLE_GROUPS] and (None in role[ROLE_GROUPS] or not role[ROLE_GROUPS]):
+            if role[role_groups] and (None in role[role_groups] or not role[role_groups]):
                 errors.append(
-                    role[NAME],
+                    role[name],
                     create_error_msg(
-                        None, 
-                        f'Role {role[NAME]} must be associated with a group:', 
-                        en_us_validation_msg.min_number_of_groups_msg
+                        None,
+                        f"Role {role[name]} must be associated with a group:",
+                        en_us_validation_msg.MIN_NUMBER_OF_GROUPS_MSG
                     ),
                 )
-            if role[NAME] == SLURMWORKER or role[NAME] == K8WORKER or role[NAME] == SERVICE_K8S_WORKER:
-                for group in role[ROLE_GROUPS]:
+            if role[name] == slurmworker or role[name] == k8worker or role[name] == service_k8s_worker:
+                for group in role[role_groups]:
                     set_resource_mgr_id.add(group)
 
             if not role[role_groups]:
@@ -384,57 +390,58 @@ def validate_roles_config(
                             f"is {str(roles_per_group[group])}:",
                             en_us_validation_msg.MAX_NUMBER_OF_ROLES_PER_GROUP_MSG
                         )
-                    )
-                if group in groups:
-                    # Validate parent field is empty for specific role cases
-                    if role[name] in empty_parent_roles and not validation_utils.is_string_empty(
-                        groups[group].get(parent, None)
-                    ):
-                        # If parent is not empty and group is associated with login,
-                        #  compiler_node, service_node, kube_control_plane,
-                        # or slurm_control_plane
-                        errors.append(
-                            create_error_msg(
-                                group,
-                                f"Group {group} should not have parent defined.",
-                                en_us_validation_msg.PARENT_SERVICE_NODE_MSG
-                            )
-                        )
-                    if not service_role_defined and (
-                        role[name] == k8worker
-                        or role[name] == slurmworker
-                        or role[name] == default
-                    ):
-                        # If a service_node role is not present,
-                        # the parent is not empty and the group is
-                        # associated with worker or default roles.
-                        if not validation_utils.is_string_empty(groups[group].get(parent, None)):
-                            errors.append(
-                                create_error_msg(
-                                    group,
-                                    f"Group {group} should not have parent defined.",
-                                    en_us_validation_msg.PARENT_SERVICE_ROLE_MSG
-                                )
-                            )
-                    elif not service_role_defined and not validation_utils.is_string_empty(
-                        groups[group].get(parent, None)
-                    ):
-                        errors.append(
-                            create_error_msg(
-                                group,
-                                f"Group {group} parent is provided.",
-                                en_us_validation_msg.PARENT_SERVICE_ROLE_DNE_MSG
-                            )
-                        )
-                else:
-                    # Error log for if a group under a role does not exist
-                    errors.append(
-                        create_error_msg(
-                            group,
-                            f"Group {group} does not exist.",
-                            en_us_validation_msg.GRP_EXIST_MSG
-                        )
-                    )
+                     )
+                # commenting below code to skip parent validation when federated_provison false supported
+                # if group in groups:
+                #     # Validate parent field is empty for specific role cases
+                #    if role[name] in empty_parent_roles and not validation_utils.is_string_empty(
+                #         groups[group].get(parent, None)
+                #     ):
+                #         # If parent is not empty and group is associated with login,
+                #         #  compiler_node, service_node, kube_control_plane,
+                #         # or slurm_control_plane
+                #         errors.append(
+                #             create_error_msg(
+                #                 group,
+                #                 f"Group {group} should not have parent defined.",
+                #                 en_us_validation_msg.PARENT_SERVICE_NODE_MSG
+                #             )
+                #         )
+                #     if not service_role_defined and (
+                #         role[name] == k8worker
+                #         or role[name] == slurmworker
+                #         or role[name] == default
+                #     ):
+                #         # If a service_node role is not present,
+                #         # the parent is not empty and the group is
+                #         # associated with worker or default roles.
+                #         if not validation_utils.is_string_empty(groups[group].get(parent, None)):
+                #             errors.append(
+                #                 create_error_msg(
+                #                     group,
+                #                     f"Group {group} should not have parent defined.",
+                #                     en_us_validation_msg.PARENT_SERVICE_ROLE_MSG
+                #                 )
+                #             )
+                #     elif not service_role_defined and not validation_utils.is_string_empty(
+                #         groups[group].get(parent, None)
+                #     ):
+                #         errors.append(
+                #             create_error_msg(
+                #                 group,
+                #                 f"Group {group} parent is provided.",
+                #                 en_us_validation_msg.PARENT_SERVICE_ROLE_DNE_MSG
+                #             )
+                #         )
+                # else:
+                #     # Error log for if a group under a role does not exist
+                #     errors.append(
+                #         create_error_msg(
+                #             group,
+                #             f"Group {group} does not exist.",
+                #             en_us_validation_msg.GRP_EXIST_MSG
+                #         )
+                #     )
 
         for group in groups.keys():
 
@@ -445,7 +452,7 @@ def validate_roles_config(
                 groups[group].get(switch_details, {}).get(ports, None)
             )
             bmc_static_range_provided = not validation_utils.is_string_empty(
-                groups[group].get(mbc_details, {}).get(static_range, None)
+                groups[group].get(bmc_details, {}).get(static_range, None)
             )
             if group in groups_used:
                 errors.append(
@@ -520,7 +527,7 @@ def validate_roles_config(
 
             # Validate bmc details for each group
             if not validation_utils.is_string_empty(
-                groups[group].get(mbc_details, {}).get(static_range, None)
+                groups[group].get(bmc_details, {}).get(static_range, None)
             ):
                 # # Check if bmc details are defined, but enable_switch_based
                 # is true or the bmc_network is not defined
@@ -530,7 +537,7 @@ def validate_roles_config(
                 #                    en_us_validation_msg.bmc_static_range_msg))
                 # Validate the static range is properly defined
                 if not validation_utils.validate_ipv4_range(
-                    groups[group].get(mbc_details, {}).get(static_range, "")
+                    groups[group].get(bmc_details, {}).get(static_range, "")
                 ):
                     errors.append(
                         create_error_msg(
@@ -542,7 +549,7 @@ def validate_roles_config(
                 elif group not in static_range_mapping:
                     # A valid static range was provided,
                     # now a check is performed to ensure static ranges do not overlap
-                    static_range = groups[group][mbc_details][static_range]
+                    static_range = groups[group][bmc_details][static_range]
                     grp_overlaps = validation_utils.check_bmc_static_range_overlap(
                         static_range, static_range_mapping
                     )
@@ -560,7 +567,7 @@ def validate_roles_config(
             # Validate resource_mgr_id is set for groups that belong
             #  to kube_node, service_kube_node, slurm_node roles
             if group in set_resource_mgr_id and validation_utils.is_string_empty(
-                groups[group].get(RESOURCE_MGR_ID, None)
+                groups[group].get(resource_mgr_id, None)
             ):
                 errors.append(
                     create_error_msg(
@@ -570,9 +577,9 @@ def validate_roles_config(
                     )
                 )
             elif group not in set_resource_mgr_id and not validation_utils.is_string_empty(
-                groups[group].get(RESOURCE_MGR_ID, None)
+                groups[group].get(resource_mgr_id, None)
             ):
-                # Validate RESOURCE_MGR_ID is not set for groups
+                # Validate resource_mgr_id is not set for groups
                 # that do not belong to kube_node, service_kube_node, slurm_node roles
                 errors.append(
                     create_error_msg(
