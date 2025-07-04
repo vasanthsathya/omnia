@@ -112,7 +112,3 @@
           }
         ]
       }}
-
-- name: Debug software_cleanup_list
-  ansible.builtin.debug:
-    var: software_cleanup_list
