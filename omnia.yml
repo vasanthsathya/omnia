@@ -23,7 +23,6 @@
         cacheable: true
       when: not (config_file_status | default(false) | bool)
 
- 
     - name: Set fact for compute k8s playbook
       ansible.builtin.set_fact:
         compute_k8s_playbook: true
