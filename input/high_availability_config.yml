@@ -102,22 +102,8 @@ service_k8s_cluster_ha:
     loadbalancer_port:
     active_node_service_tags: [] # List of service tags, separated by commas. e.g. ["ABC","DEF"]
 
-  - cluster_name: service_cluster2
-    enable_k8s_ha: false
-    virtual_ip_address: ""
-    external_loadbalancer_ip: ""
-    loadbalancer_port:
-    active_node_service_tags: [] # List of service tags, separated by commas. e.g. ["ABC","DEF"]
-
 compute_k8s_cluster_ha:
   - cluster_name: compute_cluster1
-    enable_k8s_ha: false
-    virtual_ip_address: ""
-    external_loadbalancer_ip: ""
-    loadbalancer_port:
-    active_node_service_tags: [] # List of service tags, separated by commas. e.g. ["ABC","DEF"]
-
-  - cluster_name: compute_cluster2
     enable_k8s_ha: false
     virtual_ip_address: ""
     external_loadbalancer_ip: ""
