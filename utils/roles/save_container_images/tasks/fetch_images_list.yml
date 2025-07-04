@@ -17,6 +17,7 @@
   when: k8s_support | default(false)
   ansible.builtin.set_fact:
     base_container_images: "{{ base_container_images + ['omnia_kubespray:' + kubespray_tag] }}"
+
 - name: Add squid to container image list if enable_routed_internet is true
   when: enable_routed_internet | default(false)
   ansible.builtin.set_fact:

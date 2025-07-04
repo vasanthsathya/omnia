@@ -131,25 +131,25 @@
                   - name: MESSAGEBUS_HOST
                     value: activemq
                   - name: MESSAGEBUS_PORT
-                    value: "{{ messagebus_http_port }}"
+                    value: "{{ messagebus_http_port | string }}"
                   - name: CONFIGUI_HTTP_PORT
-                    value: "{{ configui_http_port }}"
+                    value: "{{ configui_http_port | string }}"
                   - name: MYSQL_DATABASE
                     value: "{{ mysqldb_name }}"
                   - name: MYSQL_USER
                     valueFrom:
                       secretKeyRef:
                         name: "{{ mysqldb_secrets_name }}"
-                        key: sqldb_user
+                        key: mysqldb_user
                   - name: MYSQL_PASSWORD
                     valueFrom:
                       secretKeyRef:
                         name: "{{ mysqldb_secrets_name }}"
-                        key: sqldb_password
+                        key: mysqldb_password
                   - name: MYSQL_HOST
                     value: mysqldb
                   - name: MYSQL_HOST_PORT
-                    value: "{{ mysqldb_port1 }}"
+                    value: "{{ mysqldb_container_port1 | string }}"
                 command:
                   - "/bin/sh"
                   - "-c"
@@ -166,7 +166,7 @@
                   - name: MESSAGEBUS_HOST
                     value: activemq
                   - name: MESSAGEBUS_PORT
-                    value: "{{ messagebus_http_port }}"
+                    value: "{{ messagebus_http_port | string }}"
                   - name: PROMETHEUSDB_SERVER
                     value: prometheus
                 command:

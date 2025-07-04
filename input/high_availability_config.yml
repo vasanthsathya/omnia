@@ -54,7 +54,8 @@ oim_ha:
 #     - node_service_tags: <Mandatory if enable_service_ha is true> List of service tags for passive nodes for this active
 #       service node. Separate tags with commas.
 # ***********************************************************************
-
+#
+# ----------------------------------------- Service Node Not Supported ( Future Use ) -----------------------------------------
 service_node_ha:
   enable_service_ha: false
   service_nodes:
