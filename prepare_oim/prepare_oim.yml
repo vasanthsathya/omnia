@@ -234,7 +234,7 @@
     )
   ansible.builtin.import_playbook: "{{ playbook_dir }}/../utils/save_container_images.yml"
   vars:
-    container_images: "{{ hostvars['localhost']['container_images'] | default({}) }}"
+    container_images: "{{ hostvars['localhost']['container_images'] | default([]) }}"
     oim_group: false
   tags: oim_ha
 

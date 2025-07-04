@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,26 +15,26 @@
 
 - name: Generate safe file name for image
   ansible.builtin.set_fact:
-    safe_image_name: "{{ image.name | regex_replace('[:/]', '_') }}"
+    safe_image_name: "{{ image | regex_replace('[:/]', '_') }}"
 
 - name: Generate tar and digest path
   ansible.builtin.set_fact:
     image_tar_path: "{{ images_directory_path }}/{{ safe_image_name }}.tar"
     image_digest_path: "{{ images_directory_path }}/.{{ safe_image_name }}.digest"
 
-- name: Check if {{ image.name }} image tar exists # noqa: name[template]
+- name: Check if {{ image }} image tar exists # noqa: name[template]
   ansible.builtin.stat:
     path: "{{ image_tar_path }}"
   register: tar_file_check
 
-- name: Check if {{ image.name }} digest file exists # noqa: name[template]
+- name: Check if {{ image }} digest file exists # noqa: name[template]
   ansible.builtin.stat:
     path: "{{ image_digest_path }}"
   register: digest_file_check
 
-- name: Get {{ image.name }} image info # noqa: name[template]
+- name: Get {{ image }} image info # noqa: name[template]
   containers.podman.podman_image_info:
-    name: "{{ image.name }}"
+    name: "{{ image }}"
   register: image_info
   changed_when: false
 
@@ -50,7 +50,7 @@
   register: previous_digest
   when: digest_file_check.stat.exists
 
-- name: Determine if {{ image.name }} image changed # noqa: name[template]
+- name: Determine if {{ image }} image changed # noqa: name[template]
   ansible.builtin.set_fact:
     image_changed: "{{ (previous_digest.content | b64decode).strip() != current_digest }}"
   when:
@@ -73,12 +73,13 @@
     - "{{ image_tar_path }}"
     - "{{ image_digest_path }}"
   when: image_changed | default(true)
+
 - name: Save image as tar
   block:
 
-    - name: Save {{ image.name }} image as tar at {{ image_tar_path }} (this may take a few minutes) # noqa: name[template]
+    - name: Save {{ image }} image as tar at {{ image_tar_path }} (this may take a few minutes) # noqa: name[template]
       containers.podman.podman_save:
-        image: "{{ image.name }}"
+        image: "{{ image }}"
         dest: "{{ image_tar_path }}"
       register: saved_result
       when:
@@ -86,7 +87,7 @@
 
     - name: Add image to saved list if it was saved
       ansible.builtin.set_fact:
-        saved_images: "{{ saved_images + [image.name] }}"
+        saved_images: "{{ saved_images + [image] }}"
       when: saved_result is defined and saved_result is changed
 
     - name: Save current digest
@@ -110,6 +111,6 @@
         path: "{{ image_digest_path }}"
         state: absent
 
-    - name: Fail the task
+    - name: Failed to save the image
       ansible.builtin.debug:
-        msg: "Image `{{ image.name }}` save failed and partial tar and digest was removed."
+        msg: "Image {{ image }} save failed and partial tar and digest was removed."
