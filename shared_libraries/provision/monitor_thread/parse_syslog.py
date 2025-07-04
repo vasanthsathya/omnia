@@ -402,7 +402,7 @@ def generate_inventory_per_cluster(cursor) -> None:
             roles_list = [r.strip() for r in roles_str.split(",") if r.strip() and r.strip() != "default"]
             cluster_map.setdefault(cluster_name, {})
             for role in roles_list:
-                if role.startswith("service_"):
+                if role.startswith("service_") and role != "service_node":
                     role = role[len("service_"):]
                 cluster_map[cluster_name].setdefault(role, []).append(hostname)
 
