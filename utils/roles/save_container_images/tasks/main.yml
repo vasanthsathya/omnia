@@ -1,4 +1,4 @@
-# Copyright 2024 Dell Inc. or its subsidiaries. All Rights Reserved.
+# Copyright 2025 Dell Inc. or its subsidiaries. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@
 - name: Include image save logic
   ansible.builtin.include_tasks: save_image_as_tar.yml
   when: container_images | length > 0
-  loop: "{{ container_images | dict2items(key_name='tar', value_name='name') }}"
+  loop: "{{ container_images }}"
   loop_control:
     loop_var: image
 
