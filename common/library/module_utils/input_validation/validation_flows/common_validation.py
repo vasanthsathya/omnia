@@ -15,6 +15,8 @@
 import json
 import os
 import ipaddress
+from ast import literal_eval
+# pylint: disable=no-name-in-module,E0401
 import ansible.module_utils.input_validation.common_utils.data_fetch as get
 import ansible.module_utils.input_validation.common_utils.data_validation as validate
 from ansible.module_utils.input_validation.common_utils import config
@@ -338,9 +340,23 @@ def validate_server_spec(input_file_path, data, logger, module, omnia_base_dir, 
 
     return errors
 
-def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name):
+def get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, project_name):
+    """
+    Retrieves the admin and BMC network configurations from a network specification JSON object.
+
+    Parameters:
+        input_file_path (str): The path to the input configuration file.
+        logger (Logger): Logger instance for logging messages.
+        module (AnsibleModule): Ansible module instance.
+        omnia_base_dir (str): The base directory path for Omnia.
+        project_name (str): The name of the project.
+
+    Returns:
+        dict: A dictionary containing the admin and BMC network configurations.
+    """
     network_spec_file_path = create_file_path(input_file_path, file_names["network_spec"])
-    network_spec_json = validation_utils.load_yaml_as_json(network_spec_file_path, omnia_base_dir, project_name, logger, module)
+    network_spec_json = validation_utils.load_yaml_as_json(
+        network_spec_file_path, omnia_base_dir, project_name, logger, module)
     admin_bmc_networks = {}
 
     for network in network_spec_json["Networks"]:
@@ -373,25 +389,21 @@ def is_ip_in_range(ip_str, ip_range_str):
         results.append(f"Value exception occurred: {e}")
         return False, results
 
-def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
-    errors = []
-    results=[]
-    tag_names = eval(module.params["tag_names"])
+def validate_k8s(data, admin_bmc_networks, softwares, errors):
+    """
+    Validates Kubernetes cluster configurations.
 
-    admin_bmc_networks = get_admin_bmc_networks(input_file_path, logger, module, omnia_base_dir, module_utils_base, project_name)
+    Parameters:
+        data (dict): A dictionary containing Kubernetes cluster configurations.
+        admin_bmc_networks (dict): A dictionary containing admin BMC network information.
+        softwares (list): A list of software configurations.
+        errors (list): A list to store error messages.
+    """
     admin_static_range = admin_bmc_networks["admin_network"]["static_range"]
     admin_dynamic_range = admin_bmc_networks["admin_network"]["dynamic_range"]
     bmc_static_range = admin_bmc_networks["bmc_network"]["static_range"]
     bmc_dynamic_range = admin_bmc_networks["bmc_network"]["dynamic_range"]
     primary_oim_admin_ip = admin_bmc_networks["admin_network"]["primary_oim_admin_ip"]
-
-    #verify intel_gaudi with sofwate config json
-    run_intel_gaudi_tests = data["run_intel_gaudi_tests"]
-    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-    software_config_json = json.load(open(software_config_file_path, "r"))
-    softwares = software_config_json["softwares"]
-    if contains_software(softwares, "intelgaudi") and not run_intel_gaudi_tests:
-        errors.append(create_error_msg("run_intel_gaudi_tests", run_intel_gaudi_tests, en_us_validation_msg.intel_gaudi_fail_msg))
 
     # service_k8s_cluster = data["service_k8s_cluster"]
     k8s_clusters = data.get("service_k8s_cluster", []) + data.get("compute_k8s_cluster", [])
@@ -421,22 +433,68 @@ def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir,
                             "with the admin ip defined in network_spec.yml"))
             k8s_service_addresses = kluster.get("k8s_service_addresses")
             k8s_pod_network_cidr = kluster.get("k8s_pod_network_cidr")
-            k8s_offline_install = kluster.get("k8s_offline_install")
+            # k8s_offline_install = kluster.get("k8s_offline_install")
+            ip_ranges = [admin_static_range, bmc_static_range, admin_dynamic_range,
+                         bmc_dynamic_range, k8s_service_addresses, k8s_pod_network_cidr]
+            does_overlap, _ = validation_utils.check_overlap(ip_ranges)
+            if does_overlap:
+                errors.append(create_error_msg("IP overlap -", None,
+                                               en_us_validation_msg.ip_overlap_fail_msg))
             csi_secret_path = kluster.get("csi_powerscale_driver_secret_file_path")
             csi_values_path = kluster.get("csi_powerscale_driver_values_file_path")
 
             #verify csi with sofwate config json
-            software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
-            software_config_json = json.load(open(software_config_file_path, "r"))
-            softwares = software_config_json["softwares"]
             if contains_software(softwares, "csi_driver_powerscale"):
                 # Validate if secret file path is empty
                 if not csi_secret_path:
-                    errors.append(create_error_msg("csi_secret_path", csi_secret_path, en_us_validation_msg.csi_driver_secret_fail_msg))
+                    errors.append(
+                        create_error_msg("csi_secret_path",
+                                         csi_secret_path,
+                                         en_us_validation_msg.csi_driver_secret_fail_msg))
 
                 # Validate if values file path is empty
                 if not csi_values_path:
-                    errors.append(create_error_msg("csi_values_path", csi_values_path, en_us_validation_msg.csi_driver_values_fail_msg))
+                    errors.append(
+                        create_error_msg("csi_values_path",
+                                         csi_values_path,
+                                         en_us_validation_msg.csi_driver_values_fail_msg))
+
+def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
+    """
+    Validates the L2 logic of the omnia_config.yml file.
+
+    Args:
+        input_file_path (str): The path to the input file.
+        data (dict): The data to be validated.
+        logger (object): The logger to be used.
+        module (object): The module to be used.
+        omnia_base_dir (str): The base directory of Omnia.
+        module_utils_base (str): The base directory of module_utils.
+        project_name (str): The name of the project.
+
+    Returns:
+        list: A list of errors.
+    """
+    errors = []
+    tag_names = literal_eval(module.params["tag_names"])
+
+    software_config_file_path = create_file_path(input_file_path, file_names["software_config"])
+    with open(software_config_file_path, "r", encoding="utf-8") as f:
+        software_config_json = json.load(f)
+    softwares = software_config_json["softwares"]
+    sw_list = [k['name'] for k in softwares]
+
+    #verify intel_gaudi with sofwate config json
+    run_intel_gaudi_tests = data["run_intel_gaudi_tests"]
+    if "intelgaudi" in sw_list and not run_intel_gaudi_tests:
+        errors.append(
+            create_error_msg("run_intel_gaudi_tests",
+                             run_intel_gaudi_tests, en_us_validation_msg.intel_gaudi_fail_msg))
+
+    if "k8s" in sw_list and "k8s" in tag_names:
+        admin_bmc_networks = get_admin_bmc_networks(
+            input_file_path, logger, module, omnia_base_dir, project_name)
+        validate_k8s(data, admin_bmc_networks, softwares, errors)
     return errors
 
 def validate_telemetry_config(
