@@ -23,7 +23,7 @@
   ansible.builtin.set_fact:
     base_container_images: "{{ base_container_images + ['docker.io/ubuntu/squid:' + squid_tag] }}"
 
-- name: Add telemetry to container image list if telemetry_support is true
+- name: Add telemetry to container image list if idrac_telemetry_support is true
   when: idrac_telemetry_support | default(false)
   ansible.builtin.set_fact:
     base_container_images: >-
