@@ -52,6 +52,7 @@ class InventoryManager:
     def add_inventory_files(self) -> None:
         """
         Create inventory files based on the configured filenames.
+
         This method iterates over the filenames in `self.inventory_filenames`
             and creates a file in the `self.inventory_dir_path` directory.
         The file is opened in write mode and the inventory header is written to it.
@@ -151,6 +152,7 @@ class InventoryManager:
         Raises:
             KeyError: If the hostname is already in the file.
             OSError, Exception: If there is an error adding the hostname to the file.
+
         This function reads the contents of the inventory file and
             checks if the hostname is already present.
         If the hostname is not present, it reads the config file and checks if the section exists.
