@@ -28,17 +28,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class InventoryManager:
-     """Inventory tagging module.
+    """Inventory tagging module.
     Handles inventory updates and database interactions for nodes.
     """
     def __init__(self, inventory_filenames, vendors, inventory_dir_path, path_to_db_file):
         """
         Initializes an InventoryManager object.
+        
         Parameters:
             inventory_filenames (List[str]): A list of filenames for the inventory.
             vendors (List[str]): A list of vendors.
             inventory_dir_path (str): The path to the inventory directory.
             path_to_db_file (str): The path to the database file.
+            
         Returns:
             None
         """
@@ -54,8 +56,10 @@ class InventoryManager:
             and creates a file in the `self.inventory_dir_path` directory.
         The file is opened in write mode and the inventory header is written to it.
         The group name is also written to the file.
+        
         Parameters:
             self (InventoryManager): The InventoryManager object.
+            
         Returns:
             None
         """
@@ -79,18 +83,22 @@ class InventoryManager:
     def get_cluster_details_db(self) -> List[Tuple[str, str, str, str, str, str, str, str]]:
         """
         Retrieves the details of the cluster from the database.
+        
         This method retrieves the details of the cluster from the database.
         It first checks if the `db_path` attribute is set. If it is, it inserts
         the `db_path` into `sys.path` to ensure that the module can be imported.
         It then tries to import the `create_connection` module from the
         `omniadb_connection` package. If the import fails, it logs an error
         message and returns an empty list.
+        
         If the import is successful, it establishes a connection to the
         database using the `create_connection` function. It then executes a
         SQL query to fetch the details of the nodes with the status 'booted'
         from the `cluster.nodeinfo` table. The fetched data is returned.
+
         Parameters:
             self (InventoryManager): The InventoryManager object.
+
         Returns:
             List[Tuple[str, str, str, str, str, str, str, str]]: A list of tuples containing
             the details of the nodes with the status 'booted'. Each tuple
@@ -132,11 +140,14 @@ class InventoryManager:
     def add_hostname_inventory(self, inventory_file: str, hostname: str) -> None:
         """
         Adds a hostname to the inventory file.
+        
         Parameters:
             inventory_file (str): The path to the inventory file.
             hostname (str): The hostname to add.
+            
         Returns:
             None
+            
         Raises:
             KeyError: If the hostname is already in the file.
             OSError, Exception: If there is an error adding the hostname to the file.
@@ -177,10 +188,12 @@ class InventoryManager:
     def add_hostname_cluster_layout_inventory(self, cluster_name: str, hostname: str, roles_name: str) -> None:
         """
         Adds a hostname to the cluster layout inventory file.
+        
         Parameters:
         - cluster_name (str): The name of the cluster.
         - hostname (str): The hostname to add.
         - roles_name (str): The roles associated with the hostname.
+        
         Returns:
         - None
         """
@@ -219,10 +232,12 @@ class InventoryManager:
     def add_hostname_to_cluster_layout(self, inventory_file: str, hostname: str, roles_name: str) -> None:
         """
         Adds a hostname to the cluster layout inventory file.
+        
         Parameters:
         - inventory_file (str): The name of the inventory file.
         - hostname (str): The hostname to add.
         - roles_name (str): The roles associated with the hostname.
+        
         Returns:
         - None
         """
@@ -306,10 +321,13 @@ class InventoryManager:
     def change_inventory_file_permission(self, inventory_files: List[str]) -> None:
         """
         Change the file permissions of the inventory files.
+        
         This function takes a list of inventory file names and
             changes their permissions to read-only.
+            
         Parameters:
         - inventory_files (List[str]): A list of inventory file names.
+        
         Returns:
         - None
         """
