@@ -209,7 +209,16 @@ def validate_service_node_in_software_config(input_file_path):
         return True
     return False
 
+# Validate that service cluster K8s roles do not overlap with non-service k8s roles
 def validate_cluster_name_overlap(roles, groups):
+    """
+    Validates that service cluster K8s roles do not overlap with non-service k8s roles.
+    Args:
+        roles (list): List of role dictionaries from the config
+        groups (dict): Dictionary of group definitions from the config  
+    Returns:
+        list: List of validation errors
+    """
     errors = []
     service_k8s_roles = {"service_kube_control_plane", "service_etcd", "service_kube_node"}
     k8s_roles = {"kube_control_plane", "etcd", "kube_node"}
