@@ -189,7 +189,7 @@ class InventoryManager:
 
     def add_hostname_cluster_layout_inventory(self, cluster_name: str, hostname: str, roles_name: str) -> None:
         """
-        Adds a hostname to the cluster layout inventory file.
+        Adds a hostname to the cluster_name>_cluster_layout inventory file.
 
         Parameters:
         - cluster_name (str): The name of the cluster.
@@ -233,7 +233,7 @@ class InventoryManager:
 
     def add_hostname_to_cluster_layout(self, inventory_file: str, hostname: str, roles_name: str) -> None:
         """
-        Adds a hostname to the cluster layout inventory file.
+        Adds a hostname to the cluster_layout inventory file.
 
         Parameters:
         - inventory_file (str): The name of the inventory file.
