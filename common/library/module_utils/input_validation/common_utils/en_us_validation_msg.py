@@ -19,7 +19,7 @@ These messages are used to provide user-friendly error messages during configura
 """
 
 MISSING_CLUSTER_NAME_MSG = "Cluster name is mandatory for all kubernetes roles."
-CLUSTER_NAME_OVERLAP_MSG = "Cluster name '{0}' is used in both service and non-service Kubernetes roles, which is not allowed."
+CLUSTER_NAME_OVERLAP_MSG = "The cluster name '{0}' cannot be shared between service and compute Kubernetes roles."
 MAX_NUMBER_OF_ROLES_MSG = "A max of 100 roles can be supported."
 MIN_NUMBER_OF_GROUPS_MSG = "At least 1 group is required."
 MIN_NUMBER_OF_ROLES_MSG = "At least 1 role is required."
