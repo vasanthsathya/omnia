@@ -440,24 +440,6 @@ def validate_k8s(data, admin_bmc_networks, softwares, errors):
             if does_overlap:
                 errors.append(create_error_msg("IP overlap -", None,
                                                en_us_validation_msg.ip_overlap_fail_msg))
-            csi_secret_path = kluster.get("csi_powerscale_driver_secret_file_path")
-            csi_values_path = kluster.get("csi_powerscale_driver_values_file_path")
-
-            #verify csi with sofwate config json
-            if contains_software(softwares, "csi_driver_powerscale"):
-                # Validate if secret file path is empty
-                if not csi_secret_path:
-                    errors.append(
-                        create_error_msg("csi_secret_path",
-                                         csi_secret_path,
-                                         en_us_validation_msg.csi_driver_secret_fail_msg))
-
-                # Validate if values file path is empty
-                if not csi_values_path:
-                    errors.append(
-                        create_error_msg("csi_values_path",
-                                         csi_values_path,
-                                         en_us_validation_msg.csi_driver_values_fail_msg))
 
 def validate_omnia_config(input_file_path, data, logger, module, omnia_base_dir, module_utils_base, project_name):
     """
