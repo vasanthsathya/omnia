@@ -97,7 +97,6 @@
         n_latest: 3
         arch: "amd64"
         mode: "clone"
-        software_name: "k8s"
         check_version: true
       register: k8s_to_kubespray_comp_ver
 
