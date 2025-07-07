@@ -304,7 +304,7 @@ class InventoryManager:
                          "Error type: %s. Error message: %s",
                          hostname, inventory_file, type(e), e)
         except (OSError, Exception) as err:  # pylint: disable=W0718
-            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
+            logger.error("inventory_tagging:add_hostname_cluster_layout: "
                          "Error adding hostname %s to inventory file %s. "
                          "Error type: %s. "
                          "Error message: %s",
