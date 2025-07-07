@@ -51,6 +51,7 @@ files = {
 input_file_inventory = {
     "scheduler": [
         files["software_config"],
+        files['roles_config'],
         files["omnia_config"],
         files["high_availability_config"]
     ],
@@ -75,6 +76,7 @@ input_file_inventory = {
         files["high_availability_config"]
     ],
     "k8s": [
+        files['roles_config'],
         files["omnia_config"],
         files["high_availability_config"]
     ],
