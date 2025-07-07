@@ -946,7 +946,7 @@ def validate_k8s(data, admin_bmc_networks, softwares, ha_config, errors):
                         create_error_msg(
                             f"Cluster - {cluster_name} - not found in high_availability_config.yml",
                             cluster_name,
-                            "{cluster_name} not found in high_availability_config.yml"
+                            f"{cluster_name} not found in high_availability_config.yml"
                         ))
                 pod_external_ip_range = kluster.get("pod_external_ip_range")
                 # check the admin ip overlap with pod external range
