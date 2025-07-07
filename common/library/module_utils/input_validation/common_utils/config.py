@@ -24,7 +24,7 @@ module_log_dir = {
 }
 
 # log path for input validator
-input_validator_log_path = '/opt/omnia/log/core/playbooks/'
+INPUT_VALIDATOR_LOG_PATH = '/opt/omnia/log/core/playbooks/'
 
 # dict to hold the file names. If any file's name changes just change it here.
 files = {
