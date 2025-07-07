@@ -879,6 +879,7 @@ def get_admin_bmc_networks(
                 admin_bmc_networks[key] = {
                     "static_range": static_range,
                     "dynamic_range": dynamic_range,
+                    "primary_oim_admin_ip": value.get("primary_oim_admin_ip")
                 }
     return admin_bmc_networks
 
