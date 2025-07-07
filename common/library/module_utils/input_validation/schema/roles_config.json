@@ -21,7 +21,7 @@
             "cluster_name": {
               "type": "string",
               "pattern": "^$|^[a-zA-Z0-9_]+$",
-              "description": "Name of the cluster. Mandatory for service cluster roles like 'service_node', 'service_kube_control_plane', 'service_kube_node', 'service_etcd', 'kube_control_plane', 'etcd', 'slurm_control_plane'."
+              "description": "Name of the cluster. Mandatory for service and compute kubernetes roles like 'service_kube_control_plane', 'service_kube_node', 'service_etcd', 'kube_control_plane', 'etcd', 'kube_node'."
             },
             "parent": {
               "type": "string",
