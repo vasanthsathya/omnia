@@ -368,7 +368,7 @@ def validate_roles_config(
                                   "service_kube_node"},
         "k8s_cluster_roles": {"kube_control_plane", "kube_node", "etcd"},
         "slurm_cluster_roles": {"slurm_control_plane", "slurm_node"},
-    }        
+    }
     for role_type, service_cluster_roles in role_sets.items():
         defined_service_roles = role_name_set.intersection(service_cluster_roles)
         if 0 < len(defined_service_roles) < len(service_cluster_roles):
@@ -377,6 +377,10 @@ def validate_roles_config(
                 create_error_msg(
                     "Roles", service_cluster_str,
                     f"{role_type} Required role types should be defined in roles_config.yml"))
+    cluster_name_mandatory_roles = {
+                    "service_kube_control_plane", "service_etcd", "service_kube_node",
+                    "kube_control_plane", "etcd", "kube_node"
+                }
     # Fail if Role Service_node is defined in roles_config.yml,
     # it is not supported now, for future use
     service_role_defined = False
@@ -443,6 +447,19 @@ def validate_roles_config(
                             en_us_validation_msg.MAX_NUMBER_OF_ROLES_PER_GROUP_MSG
                         )
                      )
+                # Validate cluster_name for service cluster roles
+                # If the role is a service cluster role, check if cluster_name is defined
+                if role[name] in cluster_name_mandatory_roles:
+                    if group in groups:
+                        cluster_name_val = groups[group].get("cluster_name", "")
+                        if validation_utils.is_string_empty(cluster_name_val):
+                            errors.append(
+                                create_error_msg(
+                                    group,
+                                    f"Group {group} must have non-empty cluster_name for role '{role[name]}'.",
+                                    en_us_validation_msg.MISSING_CLUSTER_NAME_MSG
+                                )
+                            )
                 # commenting below code to skip parent validation when federated_provison false supported
                 # if group in groups:
                 #     # Validate parent field is empty for specific role cases
