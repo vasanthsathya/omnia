@@ -171,21 +171,35 @@ class InventoryManager:
                 logger.info("Hostname '%s' already exists in %s. Skipping addition.", hostname, inventory_file)
                 return
 
+            # Read the config file
             config = commentedconfigparser.CommentedConfigParser(allow_no_value=True)
             config.read(inventory_file, encoding='utf-8')
             section = os.path.basename(inventory_file)
 
+            # Check if the section exists, otherwise create it
             if not config.has_section(section):
                 config.add_section(section)
 
+            # Set the hostname under the correct section
+            # Use None as value since no value is required
             config.set(section, hostname, None)
 
             # Write the inventory file
             with open(os.path.abspath(inventory_file), 'w', encoding='utf-8') as configfile:
                 config.write(configfile, space_around_delimiters=False)
                 configfile.flush()
-        except Exception as err:
-            logger.error("Error adding hostname %s to %s: %s", hostname, inventory_file, err)
+        except KeyError as e:
+            logger.error("inventory_tagging:add_hostname_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. Error message: %s",
+                         hostname, inventory_file, type(e), e)
+        except (OSError, Exception) as err:  # pylint: disable=W0718
+            logger.error("inventory_tagging:add_hostname_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. "
+                         "Error message: %s",
+                         hostname, inventory_file, type(err), err
+                         )
 
     def add_hostname_cluster_layout_inventory(self, cluster_name: str, hostname: str, roles_name: str) -> None:
         """
@@ -228,8 +242,18 @@ class InventoryManager:
             with open(file_path, 'w', encoding='utf-8') as configfile:
                 config.write(configfile, space_around_delimiters=False)
                 configfile.flush()
-        except Exception as err:
-            logger.error("Error adding hostname %s to cluster layout: %s", hostname, err)
+        except KeyError as e:
+            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. Error message: %s",
+                         hostname, inventory_file, type(e), e)
+        except (OSError, Exception) as err:  # pylint: disable=W0718
+            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. "
+                         "Error message: %s",
+                         hostname, inventory_file, type(err), err
+                         )
 
     def add_hostname_to_cluster_layout(self, inventory_file: str, hostname: str, roles_name: str) -> None:
         """
@@ -274,8 +298,18 @@ class InventoryManager:
             with open(file_path, 'w', encoding='utf-8') as configfile:
                 config.write(configfile, space_around_delimiters=False)
                 configfile.flush()
-        except Exception as err:
-            logger.error("Error adding hostname %s to cluster layout: %s", hostname, err)
+        except KeyError as e:
+            logger.error("inventory_tagging:add_hostname_cluster_layout: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. Error message: %s",
+                         hostname, inventory_file, type(e), e)
+        except (OSError, Exception) as err:  # pylint: disable=W0718
+            logger.error("inventory_tagging:add_hostname_cluster_layout_inventory: "
+                         "Error adding hostname %s to inventory file %s. "
+                         "Error type: %s. "
+                         "Error message: %s",
+                         hostname, inventory_file, type(err), err
+                         )
 
     def update_inventory(self, node_detail: Tuple[str, str, str, str, str, str, str, str]) -> None:
         """
