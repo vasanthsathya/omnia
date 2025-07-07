@@ -209,6 +209,44 @@ def validate_service_node_in_software_config(input_file_path):
         return True
     return False
 
+# Validate that service cluster K8s roles do not overlap with non-service k8s roles
+def validate_cluster_name_overlap(roles, groups):
+    """
+    Validates that service cluster K8s roles do not overlap with non-service k8s roles.
+    Args:
+        roles (list): List of role dictionaries from the config
+        groups (dict): Dictionary of group definitions from the config  
+    Returns:
+        list: List of validation errors
+    """
+    errors = []
+    service_k8s_roles = {"service_kube_control_plane", "service_etcd", "service_kube_node"}
+    k8s_roles = {"kube_control_plane", "etcd", "kube_node"}
+
+    service_k8s_clusters = set()
+    k8s_clusters = set()
+
+    for role in roles:
+        role_name = role.get("name", "")
+        for group in role.get("groups", []):
+            cluster_name = groups.get(group, {}).get("cluster_name", "").strip()
+            if not cluster_name:
+                continue
+            if role_name in service_k8s_roles:
+                service_k8s_clusters.add(cluster_name)
+            elif role_name in k8s_roles:
+                k8s_clusters.add(cluster_name)
+
+    overlapping_clusters = service_k8s_clusters & k8s_clusters
+    for cluster in overlapping_clusters:
+        errors.append(
+            create_error_msg(
+                "cluster_name",
+                cluster,
+                en_us_validation_msg.CLUSTER_NAME_OVERLAP_MSG.format(cluster)
+            )
+        )
+    return errors
 
 def validate_roles_config(
     input_file_path, data, logger, _module, _omnia_base_dir, _module_utils_base, _project_name
@@ -269,6 +307,11 @@ def validate_roles_config(
 
     # Validate basic structure
     errors.extend(validate_basic_structure(data, roles, groups))
+    if errors:
+        return errors
+
+    # Validate cluster name overlap
+    errors.extend(validate_cluster_name_overlap(roles, groups))
     if errors:
         return errors
 
