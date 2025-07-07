@@ -118,3 +118,8 @@ service_node_not_defined: |
 service_node_not_booted: |
   The following service nodes with these service tags are currently not booted: {{ validation_result.service_nodes_not_booted | join(', ') }}.
   Please wait for the nodes to boot or re-provision the nodes in case of failure.
+
+# Usage: include_network_spec.yml
+network_spec_path: "{{ input_project_dir }}/network_spec.yml"
+fail_msg_network_spec_file: "network_spec.yml file doesn't exist."
+network_spec_syntax_fail_msg: "Failed. Syntax errors present in network_spec.yml. Fix errors and re-run playbook again."
