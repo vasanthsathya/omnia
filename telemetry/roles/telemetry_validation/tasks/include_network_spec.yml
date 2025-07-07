@@ -25,10 +25,6 @@
     msg: "{{ fail_msg_network_spec_file }}"
   when: not stat_result.stat.exists
 
-- name: Include variable file provision_config.yml
-  ansible.builtin.include_vars: "{{ network_spec_path }}"
-  no_log: true
-
 - name: Include network_spec.yml
   block:
     - name: Include network_spec.yml
