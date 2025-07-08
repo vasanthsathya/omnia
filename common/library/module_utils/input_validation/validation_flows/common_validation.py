@@ -1018,7 +1018,7 @@ def validate_omnia_config(
             create_error_msg(
                 "run_intel_gaudi_tests",
                 run_intel_gaudi_tests,
-                en_us_validation_msg.intel_gaudi_fail_msg))
+                en_us_validation_msg.INTEL_GAUDI_FAIL_MSG))
 
     if ("k8s" in sw_list or "service_k8s" in sw_list) and \
         ("k8s" in tag_names or "service_k8s" in tag_names):
@@ -1030,7 +1030,6 @@ def validate_omnia_config(
             ha_config = yaml.safe_load(f)
         for k in ["service_k8s_cluster_ha", "compute_k8s_cluster_ha"]:
             ha_config[k] = [xha["cluster_name"] for xha in ha_config.get(k, [])]
-        # module.exit_json(ha_config=ha_config)
         validate_k8s(data, admin_bmc_networks, sw_list, ha_config, errors)
     return errors
 
