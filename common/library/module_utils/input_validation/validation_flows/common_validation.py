@@ -168,15 +168,16 @@ def validate_software_config(
 
     # create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
-    mismatches = validate_versions(software_json_data, config.expected_versions)
-    if mismatches:
-        for msg in mismatches:
-            errors.append(
-                create_error_msg(
-                    "Validation Error: ","Version Mismatch found at" , msg
-                    )
-                )
     subgroup_dict, _ = get_subgroup_dict(software_json_data)
+
+    # mismatches = validate_versions(software_json_data, config.expected_versions)
+    # if mismatches:
+    #     for msg in mismatches:
+    #         errors.append(
+    #             create_error_msg(
+    #                 "Validation Error: ","Version Mismatch found at" , msg
+    #                 )
+    #             )
 
     # check if the corresponding json files for softwares and subgroups exists in config folder
     software_list = get_software_names(input_file_path)
