@@ -168,6 +168,14 @@ def validate_software_config(
 
     # create the subgroups and softwares dictionary with version details
     software_json_data = load_json(input_file_path)
+    mismatches = validate_versions(software_json_data, config.expected_versions)
+    if mismatches:
+        for msg in mismatches:
+            errors.append(
+                create_error_msg(
+                    "Validation Error: ","Version Mismatch found at" , msg
+                    )
+                )
     subgroup_dict, _ = get_subgroup_dict(software_json_data)
 
     # check if the corresponding json files for softwares and subgroups exists in config folder
@@ -214,6 +222,46 @@ def validate_software_config(
         )
 
     return errors
+
+def is_version_valid(actual_version, expected):
+    if isinstance(expected, list):
+        return actual_version in expected
+    return actual_version == expected
+ 
+def validate_versions(data, expected):
+    mismatches = []
+ 
+    # Validate top-level 'softwares'
+    for sw in data.get("softwares", []):
+        name = sw.get("name")
+        version = sw.get("version")
+        expected_version = expected.get(name)
+ 
+        if expected_version:
+            if not version:
+                mismatches.append(f"{name} is missing a version")
+            elif not is_version_valid(version, expected_version):
+                mismatches.append(f"{name} version mismatch: expected {expected_version}, got {version}")
+ 
+    # Validate subgroup software (e.g. "amdgpu": [{...}])
+    for parent_key, children in data.items():
+        if parent_key == "softwares" or not isinstance(children, list):
+            continue
+ 
+        for sub_sw in children:
+            name = sub_sw.get("name")
+            version = sub_sw.get("version")
+            expected_version = expected.get(name)
+ 
+            # Skip if version is not provided
+            if expected_version and version:
+                if not is_version_valid(version, expected_version):
+                    mismatches.append(
+                        f"{name} version mismatch in {parent_key}: expected {expected_version}, got {version}"
+                    )
+ 
+    return mismatches
+
 
 def validate_openldap_input_params(authentication_type, mandatory_fields, data, errors, _logger):
 
