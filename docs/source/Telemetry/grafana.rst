@@ -72,7 +72,7 @@ Filter logs using Loki
         
             http://localhost:5000/login
 
-        .. note:: In the above command, instead of ``localhost``, you can also provide the admin IP or public IP address to access the Grafana UI.
+        .. note:: In the above URL, instead of ``localhost``, you can also provide the admin IP or public IP address to access the Grafana UI.
 
     2. In the Explore page, select **oim-loki** to view the log browser.
 

@@ -6,11 +6,11 @@ The telemetry feature in Omnia allows you to set up a telemetry service that col
 Prerequisites
 ---------------
 
-* Redfish should be enabled in iDRAC.
+* Redfish must be enabled in iDRAC.
 
-* Datacenter license should also be present for the nodes
+* Datacenter license must be installed on the nodes
 
-* BMC IP/iDRAC IP should be reachable from OIM.
+* The BMC IP address or iDRAC IP address must be reachable from OIM.
 
 * Ensure that the ``discovery_provision.yml`` playbook has been executed successfully. Post execution, an inventory file called ``bmc_group_data.csv`` file is created under the ``/opt/omnia/telemetry/`` directory. This file acts as the default inventory for the ``telemetry.yml`` playbook. 
 
