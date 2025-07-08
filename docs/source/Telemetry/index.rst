@@ -30,8 +30,7 @@ Prerequisites
    :keepspace:
 
 .. note:: 
-    * Credentials must be provided using the ``get_config_credential.yml`` utility. 
-    * The credentials must be provided during the execution of the ``prepare_oim.yml`` playbook.          
+    * Credentials can be provided using the ``get_config_credential.yml`` utility or can be provided during the execution of the ``prepare_oim.yml`` playbook.          
 
 .. note:: To update the ``bmc_username`` and ``bmc_password`` fields in the ``omnia_config_credentials.yml`` input file for the connected iDRACs, use the command provided below. Do not alter any other fields in the file, as this may lead to unexpected failures. For more information, `click here <../OmniaInstallGuide/RHEL_new/credentials_utility.html>`_.
     ::
