@@ -25,6 +25,9 @@
     - name: Include high_availability_config variables
       ansible.builtin.include_tasks: include_high_availability_config.yml
 
+    - name: Include network_spec variables
+      ansible.builtin.include_tasks: include_network_spec.yml
+
     - name: Include local_repo_access variables
       ansible.builtin.include_tasks: read_software_config.yml
       when: federated_idrac_telemetry_collection
