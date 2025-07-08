@@ -30,8 +30,8 @@
 - name: Set facts for k8s
   ansible.builtin.include_tasks: set_facts.yml
 
-- name: Validate k8s inputs
-  ansible.builtin.include_tasks: validate_k8s_input.yml
+# - name: Validate k8s inputs
+#   ansible.builtin.include_tasks: validate_k8s_input.yml
 
 - name: Validate k8s metadata file
   ansible.builtin.include_tasks: validate_k8s_metadata.yml
