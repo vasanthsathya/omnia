@@ -27,8 +27,8 @@
 - name: Fetch omnia_config.yml inputs
   ansible.builtin.include_tasks: fetch_omnia_inputs.yml
 
-# - name: Include high_availability variables
-#   ansible.builtin.include_tasks: include_high_availability_config.yml
+- name: Include high_availability variables
+  ansible.builtin.include_tasks: include_high_availability_config.yml
 
 - name: Update the ip in inventory
   ansible.builtin.include_tasks: append_ip_to_inventory.yml
