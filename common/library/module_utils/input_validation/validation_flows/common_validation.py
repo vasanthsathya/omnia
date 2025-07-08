@@ -938,19 +938,16 @@ def is_ip_in_range(ip_str, ip_range_str):
     Checks if the given IP address is inside the given IP range.
     The range format should be: "start_ip-end_ip"
     """
-    results = []
     try:
         ip = ipaddress.IPv4Address(ip_str)
         start_ip_str, end_ip_str = ip_range_str.strip().split("-")
         start_ip = ipaddress.IPv4Address(start_ip_str)
         end_ip = ipaddress.IPv4Address(end_ip_str)
         return start_ip <= ip <= end_ip
-    except ValueError as e:
-        # Invalid IP format
-        results.append(f"Value exception occurred: {e}")
-        return False, results
+    except ValueError:
+        return False
 
-def validate_k8s(data, admin_bmc_networks, softwares, ha_config, errors):
+def validate_k8s(data, admin_bmc_networks, softwares, ha_config, tag_names, errors):
     """
     Validates Kubernetes cluster configurations.
 
@@ -968,16 +965,17 @@ def validate_k8s(data, admin_bmc_networks, softwares, ha_config, errors):
 
     # service_k8s_cluster = data["service_k8s_cluster"]
     cluster_set = {}
-    if "k8s" in softwares:
+    if "k8s" in softwares and "k8s" in tag_names:
         cluster_set["compute_k8s_cluster"] = data.get(
             "compute_k8s_cluster", [])
-    if "service_k8s" in softwares:
+    if "service_k8s" in softwares and "service_k8s" in tag_names:
         cluster_set["service_k8s_cluster"] = data.get(
             "service_k8s_cluster", [])
 
     for k8s_cluster_type, k8s_clusters in cluster_set.items():
         deployments_list = [k.get('deployment', False) for k in k8s_clusters]
         true_count = deployments_list.count(True)
+
         if true_count > 1:
             errors.append(create_error_msg(
                 f"{k8s_cluster_type} Multiple cluster", true_count,
@@ -999,17 +997,24 @@ def validate_k8s(data, admin_bmc_networks, softwares, ha_config, errors):
                             f"{cluster_name} not found in high_availability_config.yml"
                         ))
                 pod_external_ip_range = kluster.get("pod_external_ip_range")
-                # check the admin ip overlap with pod external range
-                does_overlap = is_ip_in_range(
-                    primary_oim_admin_ip, pod_external_ip_range)
-                if does_overlap:
+                if not pod_external_ip_range:
                     errors.append(
                         create_error_msg(
-                            "Ip Overlap:",
-                            does_overlap,
+                            "Pod External IP Range -",
+                            pod_external_ip_range,
                             f"For Cluster with name - {cluster_name} - "
-                            "The pod external IP range provided in omnia_config.yml overlaps "
-                            "with the admin ip defined in network_spec.yml"))
+                            "The pod external IP range is not provided in omnia_config.yml"))
+                else:
+                    does_overlap = is_ip_in_range(
+                        primary_oim_admin_ip, pod_external_ip_range)
+                    if does_overlap:
+                        errors.append(
+                            create_error_msg(
+                                "Ip Overlap:",
+                                does_overlap,
+                                f"For Cluster with name - {cluster_name} - "
+                                "The pod external IP range provided in omnia_config.yml overlaps "
+                                "with the admin ip defined in network_spec.yml"))
                 k8s_service_addresses = kluster.get("k8s_service_addresses")
                 k8s_pod_network_cidr = kluster.get("k8s_pod_network_cidr")
                 # k8s_offline_install = kluster.get("k8s_offline_install")
@@ -1082,7 +1087,7 @@ def validate_omnia_config(
             ha_config = yaml.safe_load(f)
         for k in ["service_k8s_cluster_ha", "compute_k8s_cluster_ha"]:
             ha_config[k] = [xha["cluster_name"] for xha in ha_config.get(k, [])]
-        validate_k8s(data, admin_bmc_networks, sw_list, ha_config, errors)
+        validate_k8s(data, admin_bmc_networks, sw_list, ha_config, tag_names, errors)
     return errors
 
 def validate_telemetry_config(
