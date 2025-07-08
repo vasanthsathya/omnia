@@ -183,7 +183,8 @@ def validate_software_config(
         if json_path is None:
             errors.append(
                 create_error_msg(
-                    "Validation Error: ", None, en_us_validation_msg.json_file_mandatory(json_path)
+                    "Validation Error: ", software,
+                    f"is present in software_config.json. JSON file not found: {os.path.dirname(input_file_path)}/config/{cluster_os_type}/{cluster_os_version}/{software}.json"
                 )
             )
         else:
