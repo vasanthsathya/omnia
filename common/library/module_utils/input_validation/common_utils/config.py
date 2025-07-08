@@ -80,6 +80,11 @@ input_file_inventory = {
         files["omnia_config"],
         files["high_availability_config"]
     ],
+    "service_k8s": [
+        files['roles_config'],
+        files["omnia_config"],
+        files["high_availability_config"]
+    ],
     "roce": [files["roce_plugin_config"]],
     "storage": [files["storage_config"]],
     "proxy": [files["site_config"]],
