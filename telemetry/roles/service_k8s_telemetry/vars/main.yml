@@ -13,7 +13,7 @@
 #  limitations under the License.
 ---
 
-# Usage: prechecks.yml
+# Usage: prereq_checks.yml
 storage_class_name: "nfs-client"
 k8s_not_installed_fail_msg: "Failed. Kubernetes installation required.
   Execute scheduler/service_k8s_cluster.yml to install Kubernetes and re-run the playbook."
