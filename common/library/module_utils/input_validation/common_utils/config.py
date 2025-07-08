@@ -112,6 +112,18 @@ input_file_inventory = {
     ],
 }
 
+expected_versions = {
+    "amdgpu": "6.3.1",
+    "cuda": "12.8.0",
+    "ofed": "24.10-1.1.4.0",
+    "beegfs": "7.4.5",
+    "intel_benchmarks": "2024.1.0",
+    "ucx": "1.15.0",
+    "openmpi": "4.1.6",
+    "csi_driver_powerscale": "v2.11.0",
+    "rocm": "6.3.1"
+}
+
 # All of the passwords fields
 passwords_set = {
     "slurm_db_password",

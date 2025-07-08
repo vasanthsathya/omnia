@@ -170,6 +170,15 @@ def validate_software_config(
     software_json_data = load_json(input_file_path)
     subgroup_dict, _ = get_subgroup_dict(software_json_data)
 
+    # mismatches = validate_versions(software_json_data, config.expected_versions)
+    # if mismatches:
+    #     for msg in mismatches:
+    #         errors.append(
+    #             create_error_msg(
+    #                 "Validation Error: ","Version Mismatch found at" , msg
+    #                 )
+    #             )
+
     # check if the corresponding json files for softwares and subgroups exists in config folder
     software_list = get_software_names(input_file_path)
     validation_results = []
@@ -183,7 +192,8 @@ def validate_software_config(
         if json_path is None:
             errors.append(
                 create_error_msg(
-                    "Validation Error: ", None, en_us_validation_msg.json_file_mandatory(json_path)
+                    "Validation Error: ", software,
+                    f"is present in software_config.json. JSON file not found: {os.path.dirname(input_file_path)}/config/{cluster_os_type}/{cluster_os_version}/{software}.json"
                 )
             )
         else:
@@ -213,6 +223,46 @@ def validate_software_config(
         )
 
     return errors
+
+def is_version_valid(actual_version, expected):
+    if isinstance(expected, list):
+        return actual_version in expected
+    return actual_version == expected
+ 
+def validate_versions(data, expected):
+    mismatches = []
+ 
+    # Validate top-level 'softwares'
+    for sw in data.get("softwares", []):
+        name = sw.get("name")
+        version = sw.get("version")
+        expected_version = expected.get(name)
+ 
+        if expected_version:
+            if not version:
+                mismatches.append(f"{name} is missing a version")
+            elif not is_version_valid(version, expected_version):
+                mismatches.append(f"{name} version mismatch: expected {expected_version}, got {version}")
+ 
+    # Validate subgroup software (e.g. "amdgpu": [{...}])
+    for parent_key, children in data.items():
+        if parent_key == "softwares" or not isinstance(children, list):
+            continue
+ 
+        for sub_sw in children:
+            name = sub_sw.get("name")
+            version = sub_sw.get("version")
+            expected_version = expected.get(name)
+ 
+            # Skip if version is not provided
+            if expected_version and version:
+                if not is_version_valid(version, expected_version):
+                    mismatches.append(
+                        f"{name} version mismatch in {parent_key}: expected {expected_version}, got {version}"
+                    )
+ 
+    return mismatches
+
 
 def validate_openldap_input_params(authentication_type, mandatory_fields, data, errors, _logger):
 
