@@ -73,7 +73,7 @@ run_intel_gaudi_tests: false
 
 #validation wrt roles config L2
 service_k8s_cluster:
-  - cluster_name: service_cluster1
+  - cluster_name: service_cluster
     deployment: true
     k8s_cni: "calico"
     pod_external_ip_range: ""
@@ -84,7 +84,7 @@ service_k8s_cluster:
     k8s_offline_install: true
  
 compute_k8s_cluster:
-  - cluster_name: compute_cluster1
+  - cluster_name: compute_cluster
     deployment: true
     k8s_cni: "calico"
     pod_external_ip_range: ""
