@@ -20,17 +20,17 @@ Omnia can be installed via CLI only. Slurm and Kubernetes are deployed and confi
 
 To perform these configurations and installations, a secure SSH channel is established between the management node and the following entities:
 
-* slurm_control_node
+* ``slurm_control_node``
 
-* slurm_node
+* ``slurm_node``
 
-* kube_control_plane
+* ``kube_control_plane``
 
-* kube_node
+* ``kube_node``
 
-* auth_server
+* ``auth_server``
 
-* login
+* ``login``
 
 Authentication
 ---------------
@@ -82,9 +82,9 @@ Similarly, passwords for the following tools have to be provided in ``input/omni
 
 For setting up authentication on the cluster, the following credentials have to be provided in ``input/security_config.yml``:
 
-    1. FreeIPA (directory_manager_password, ipa_admin_password)
+    1. FreeIPA (``directory_manager_password``, ``ipa_admin_password``)
 
-    2. OpenLDAP (openldap_db_username, openldap_db_password, openldap_config_username, openldap_config_password)
+    2. OpenLDAP (``openldap_db_username``, ``openldap_db_password``, ``openldap_config_username``, ``openldap_config_password``)
 
 Once Omnia is invoked, these files are validated and encrypted using Ansible Vault. They are hidden from external visibility and access.
 
@@ -402,10 +402,10 @@ The format is described in the following table.
 | Name of the process executing    | n=xxxx                           | n=ansible                                |
 +----------------------------------+----------------------------------+------------------------------------------+
 | The task being executed/ invoked | PLAY/TASK                        | PLAY [Executing omnia roles]   TASK      |
-|                                  |                                  |[Gathering Facts]                         |
+|                                  |                                  | [Gathering Facts]                        |
 +----------------------------------+----------------------------------+------------------------------------------+
 | Error                            | fatal: [hostname]: Error Message | fatal: [localhost]: FAILED! =>   {"msg": |
-|                                  |                                  |"lookup_plugin.lines}                     |
+|                                  |                                  | "lookup_plugin.lines}                    |
 +----------------------------------+----------------------------------+------------------------------------------+
 | Warning                          | [WARNING]: warning message       | [WARNING]: provided hosts list is empty  |
 +----------------------------------+----------------------------------+------------------------------------------+
