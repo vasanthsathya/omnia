@@ -11,12 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
 ---
 
 - name: Deploy Prometheus Pump and Prometheus container
   when:
     - hostvars['localhost']['idrac_telemetry_support']
+    - not hostvars['localhost']['federated_idrac_telemetry_collection']
     - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
   block:
     - name: Deploy Prometheus Pump Container

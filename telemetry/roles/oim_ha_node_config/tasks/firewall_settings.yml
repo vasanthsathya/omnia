@@ -21,6 +21,7 @@
   loop: "{{ idrac_firewall_ports }}"
   when:
     - hostvars['localhost']['idrac_telemetry_support']
+    - not hostvars['localhost']['federated_idrac_telemetry_collection']
 
 - name: Add Prometheus-related ports on host firewalld
   ansible.posix.firewalld:
@@ -30,6 +31,7 @@
   loop: "{{ prometheus_firewall_ports }}"
   when:
     - hostvars['localhost']['idrac_telemetry_support']
+    - not hostvars['localhost']['federated_idrac_telemetry_collection']
     - hostvars['localhost']['idrac_telemetry_collection_type'] == "prometheus"
 
 - name: Add visualization-related ports on host firewalld

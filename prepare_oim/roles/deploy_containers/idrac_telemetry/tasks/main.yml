@@ -14,15 +14,17 @@
 
 ---
 
-- name: Create idrac telemetry directories
-  ansible.builtin.file:
-    path: "{{ idrac_telemetry_dir }}"
-    state: directory
-    mode: "{{ root_read_write }}"
-
 - name: Deploy idrac containers when idrac_telemetry_support is true
-  when: hostvars['localhost']['idrac_telemetry_support']
+  when:
+    - hostvars['localhost']['idrac_telemetry_support']
+    - not hostvars['localhost']['federated_idrac_telemetry_collection']
   block:
+    - name: Create idrac telemetry directories
+      ansible.builtin.file:
+        path: "{{ idrac_telemetry_dir }}"
+        state: directory
+        mode: "{{ root_read_write }}"
+
     - name: Deploy MySQL container
       ansible.builtin.include_tasks: deploy_mysql_container.yml
 

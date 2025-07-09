@@ -18,7 +18,8 @@ This module contains validation messages in English (US) for input validation.
 These messages are used to provide user-friendly error messages during configuration validation.
 """
 
-# roles_config.yml
+MISSING_CLUSTER_NAME_MSG = "Cluster name is mandatory for all kubernetes roles."
+CLUSTER_NAME_OVERLAP_MSG = "The cluster name '{0}' cannot be shared between service and compute Kubernetes roles."
 MAX_NUMBER_OF_ROLES_MSG = "A max of 100 roles can be supported."
 MIN_NUMBER_OF_GROUPS_MSG = "At least 1 group is required."
 MIN_NUMBER_OF_ROLES_MSG = "At least 1 role is required."
@@ -30,9 +31,12 @@ INVALID_SWITCH_IP_MSG = "Please provide a valid switch IPv4 address (example: 10
 GRP_ROLE_MSG = "Please associate this group with a role."
 PARENT_SERVICE_NODE_MSG = ("Group is associated with login, compiler_node, service_node, "
                           "kube_control_plane, slurm_control_plane role(s).")
-PARENT_SERVICE_ROLE_DNE_MSG = "A service_node role must be present when the parent is provided."
-PARENT_SERVICE_ROLE_MSG = ("A service_node role does not exist, the parent should be empty "
-                          "for any group associated with worker or default roles.")
+# PARENT_SERVICE_ROLE_DNE_MSG = ("Parent field is only supported for the 'service_node' role,"
+#     "which is currently not supported and reserved for future use. Please remove the"
+#     " 'parent' field from this role's group definition.")
+# PARENT_SERVICE_ROLE_MSG = (" A 'service_node' role is not defined, so the 'parent' field should"
+#     " be empty for groups associated with 'worker' or 'default' roles. Note that 'service_node'"
+#     " is a reserved role for future use and is not currently valid in the role_config.yml")
 BMC_STATIC_RANGE_INVALID_MSG = ("Static range should be in the following format: "
                                "IPv4Start-IPv4End (example: 10.5.0.1-10.5.0.200).")
 OVERLAPPING_STATIC_RANGE = "bmc_detail's static_range is overlapping with other static ranges."
@@ -62,7 +66,9 @@ SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = ("The role service_node defined in
     " but service_node entry missing in sofware_config.json, "
     "Please rerun local repo with service_node entry in software_config.json "
     "to deploy service nodes successfully")
-
+SERVICE_NODE_ENTRY_INVALID_ROLES_CONFIG_MSG = ("The 'service_node' role defined in roles_config.yml"
+    " is not currently supported and is reserved for future use. Please remove or update this role"
+    " to avoid configuration errors.")
 # provision_config.yml
 DEFAULT_LEASE_TIME_FAIL_MSG = "Please provide a valid default_lease_time."
 TIMEZONE_FAIL_MSG = ("Unsupported Timezone. Please check the timezone.txt file "

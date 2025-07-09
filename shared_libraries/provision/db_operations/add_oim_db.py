@@ -54,13 +54,13 @@ def oim_details_db():
     if pxe_mac_op is None:
         if str(BMC_NIC_IP) == "0.0.0.0":
             omniadb_connection.insert_node_info(
-                None, NODE_NAME, OIM_HOSTNAME, PXE_MAC_ADDRESS, ADMIN_NIC_IP, None,
+                None, NODE_NAME, OIM_HOSTNAME, PXE_MAC_ADDRESS, ADMIN_NIC_IP, None, None,
                 None, None, None, None, None, None, None, None, None, None
             )
         else:
             omniadb_connection.insert_node_info(
                 None, NODE_NAME, OIM_HOSTNAME, PXE_MAC_ADDRESS, ADMIN_NIC_IP, BMC_NIC_IP,
-                None, None, None, None, None, None, None, None, None, None
+                None, None, None, None, None, None, None, None, None, None, None
             )
 
 oim_details_db()
