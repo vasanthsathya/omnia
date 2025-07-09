@@ -618,20 +618,20 @@ def validate_roles_config(
                 elif group not in static_range_mapping:
                     # A valid static range was provided,
                     # now a check is performed to ensure static ranges do not overlap
-                    static_range = groups[group][bmc_details][static_range]
+                    static_range_value = groups[group][bmc_details][static_range]
                     grp_overlaps = validation_utils.check_bmc_static_range_overlap(
-                        static_range, static_range_mapping
+                        static_range_value, static_range_mapping
                     )
                     if len(grp_overlaps) > 0:
                         errors.append(
                             create_error_msg(
                                 group,
-                                f"Static range {static_range} "
+                                f"Static range {static_range_value} "
                                 f"overlaps with the following group(s): {grp_overlaps}.",
                                 en_us_validation_msg.OVERLAPPING_STATIC_RANGE
                             )
                         )
-                    static_range_mapping[group] = static_range
+                    static_range_mapping[group] = static_range_value
 
             # Validate resource_mgr_id is set for groups that belong
             #  to kube_node, service_kube_node, slurm_node roles
