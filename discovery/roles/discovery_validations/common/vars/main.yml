@@ -95,6 +95,9 @@ service_node_no_parent_msg: |
 ha_nfs_error_msg: |
   ERROR: Internal NFS is not supported with HA OIM or Service HA.
   Please configure External NFS for HA capabilities.
+service_cluster_nfs_error_msg: |
+  ERROR: Internal NFS is not supported for K8s Service Cluster.
+  Please configure External NFS for Service Cluster capabilities.
 warning_wait_time_10s: 10
 hierarchical_provision_warning_msg: |
   "WARNING: The service_node role is defined in roles_config.yml, but none of the groups have a parent field specified.
