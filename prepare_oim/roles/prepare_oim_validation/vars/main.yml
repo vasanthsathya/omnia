@@ -94,5 +94,5 @@ telemetry_config_syntax_fail_msg: "Failed. Syntax errors present in telemetry_co
 
 # Usage: check_service_role.yml
 service_cluster_nfs_error_msg: |
-  ERROR: Internal NFS is not supported for K8s Service Cluster.
-  Please configure External NFS for Service Cluster capabilities.
+  ERROR: Internal NFS is not supported for K8s Service Cluster, external NFS server must be configured.
+  Please run the OIM cleanup in utils and re-run the Omnia startup script using the NFS(external) option.
