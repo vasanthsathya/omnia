@@ -146,4 +146,9 @@ Omnia installs the following packages on top of the Kubernetes stack:
 
 To set up any other Kubernetes version apart from what is present as default in the ``input/software_config.json`` file, `click here <dynamic_k8s.html>`_.
 
-.. note:: Currently Omnia only supports Kubernetes versions compatible with the last 3 releases of Kubespray. 
+.. note:: Currently Omnia only supports Kubernetes versions compatible with the last 3 releases of Kubespray.
+
+[Optional] Service Kubernetes cluster
+==========================================
+
+To set up Kubernetes on the service cluster, `click here <service_k8s.html>`_.
