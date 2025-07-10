@@ -39,7 +39,7 @@ Configurations made by the ``discovery_provision.yml`` playbook
 
 **Installation of additional software packages**
 
-Apart from the packages listed in the ``/opt/omnia/input/project_default/software_config.json`` file, additional software can also be installed on the cluster nodes during cluster provisioning. TO do so, follow the below steps:
+Apart from the packages listed in the ``/opt/omnia/input/project_default/software_config.json`` file, additional software can also be installed on the cluster nodes during cluster provisioning. To do so, follow the below steps:
 
     1. First, fill up the ``additional_software.json`` and ``software_config.json`` input files.
     2. Then, execute the ``local_repo.yml`` playbook in order to download the required packages.
@@ -93,6 +93,6 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
 **Next steps**:
 
-* After successfully running ``discovery_provision.yml``, go to `Building Clusters <../OmniaCluster/index.html>`_ to setup Kubernetes, NFS, BeeGFS, and Authentication.
+* View generated node inventory in ``/opt/omnia/omnia_inventory``. For more information, `click here <../ViewInventory.html>`_.
 
-* To create a node inventory in ``/opt/omnia``, `click here <../ViewInventory.html>`_.
+* After successfully running ``discovery_provision.yml``, go to `Building Clusters <../OmniaCluster/index.html>`_ to setup Kubernetes, NFS, BeeGFS, and Authentication.
