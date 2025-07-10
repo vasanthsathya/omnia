@@ -27,7 +27,7 @@ ofed_permission: "0644"
 cuda_tmp_path: /tmp/cuda
 cuda_core_path: /install/cuda/x86_64/cuda-core
 invalid_cuda_rpm_fail_msg: "Failed. Invalid cuda_toolkit_path: {{ cuda_toolkit_path }} provided in provision_config.yml.
-Make sure cuda rpm file is downloaded completely."
+  Make sure cuda rpm file is downloaded completely."
 cuda_postscripts_path:
   - { src: "{{ role_path }}/../common/templates/omnia_cuda.j2", dest: "/install/postscripts/omnia_cuda", mode: "755" }
 xcat_path: /opt/xcat/bin
@@ -49,6 +49,14 @@ service_node_postbootscript_path:
 
 allow_firewall_postbootscript_path:
   - { src: "{{ role_path }}/templates/omnia_allow_firewall_ports.j2", dest: "/install/postscripts/omnia_allow_firewall_ports", mode: "755" }
+
+k8s_service_cluster_postbootscript_path:
+  - { src: "{{ role_path }}/templates/omnia_k8s_service_cluster_postboot.j2", dest: "/install/postscripts/omnia_k8s_service_cluster_postboot", mode: "755" }
+
+k8s_service_cluster_roles:
+  - service_kube_control_plane
+  - service_kube_node
+  - service_etcd
 
 # Usage: configure_racadm.yml
 racadm_postscripts_path:

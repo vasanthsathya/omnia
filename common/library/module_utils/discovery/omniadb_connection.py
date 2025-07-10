@@ -11,6 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+# pylint: disable=import-error,no-name-in-module,line-too-long
+
 """
 Database connection utilities for Omnia discovery modules.
 """
@@ -93,6 +96,7 @@ def insert_node_info(
     bmc_ip,
     group_name,
     role,
+    cluster_name,
     parent,
     location_id,
     architecture,
@@ -102,6 +106,7 @@ def insert_node_info(
     switch_name,
     switch_port,
 ):
+
     """
     Inserts node information into the cluster.nodeinfo table.
 
@@ -114,6 +119,7 @@ def insert_node_info(
         bmc_ip (Union[str, None]): The IP address of the BMC.
         group_name (str): The group the node belongs to.
         role (str): The role of the node.
+        cluster_name (str): The name of the cluster.
         parent (str): The parent node service tag.
         location_id (str): The location ID of the node.
         architecture (str): The architecture of the node.
@@ -130,9 +136,9 @@ def insert_node_info(
     cursor = conn.cursor()
 
     sql = """INSERT INTO cluster.nodeinfo(
-                service_tag, node, hostname, admin_mac, admin_ip, bmc_ip, group_name, role, parent, location_id, architecture,
+                service_tag, node, hostname, admin_mac, admin_ip, bmc_ip, group_name, role, cluster_name, parent, location_id, architecture,
                 discovery_mechanism, bmc_mode, switch_ip, switch_name, switch_port)
-             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
     params = (
         service_tag,
@@ -143,6 +149,7 @@ def insert_node_info(
         str(bmc_ip) if bmc_ip else None,
         group_name,
         role,
+        cluster_name,
         parent,
         location_id,
         architecture,

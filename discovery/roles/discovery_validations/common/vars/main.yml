@@ -19,7 +19,9 @@ provision_validation_vars:
   - "{{ role_path }}/../mtms/vars/main.yml"
   - "{{ role_path }}/../switch_based/vars/main.yml"
 provision_shared_library_path: /opt/omnia/shared_libraries/provision
-ansible_tag_fail_msg: "Please run the playbook with the tag 'management_layer' only. Other tags are not allowed."
+ansible_invalid_tag_fail_msg: "Please run the playbook with the tag 'management_layer' only. Other tags are not allowed."
+ansible_tag_fail_msg: "Please run the playbook without specifying any tags, as this feature is currently disabled and will be available in a future update."
+federated_provision_unsupported: "The federated_provision feature is not currently supported but will be available soon."
 
 # Usage: validate_provision_container.yml
 xcatd_service: "xcatd.service"
@@ -54,19 +56,21 @@ telemetry_config_syntax_fail_msg: "Failed. Syntax errors present in telemetry_co
 # Usage: include_high_availability_config.yml
 high_availability_config_path: "{{ hostvars['localhost']['input_project_dir'] }}/high_availability_config.yml"
 high_availability_config_syntax_fail_msg: "Failed. Syntax errors present in high_availability_config.yml. Fix errors and re-run playbook again."
-nfs_not_configured: "When enabling OIM HA or Service Node HA or Heirarchical cluster an NFS server must be configured.
-  Please run the OIM cleanup in utils and re-run the Omnia startup script using the NFS option."
+nfs_not_configured: "When enabling OIM HA or K8s Service Cluster an NFS server must be configured.
+  Please run the oim_cleanup.yml in utils and re-run the omnia_startup.sh script using the NFS option."
+# nfs_not_configured: "When enabling OIM HA or Service Node HA or Heirarchical cluster or K8s Service Cluster an NFS server must be configured.
+#   Please run the OIM cleanup in utils and re-run the Omnia startup script using the NFS option."
 
 # Usage: include_composable_roles_config.yml
 omnia_metadata_file: "/opt/omnia/.data/oim_metadata.yml"
 service_node_metadata_path: "/opt/omnia/.data/service_node_metadata.yml"
 metadata_perm: "0644"
-omnia_images_path: "/opt/omnia/images/omnia_images.tar"
-omnia_images_path_fail_msg: |
-  "Images tarball does not exist. To support either OIM HA or heirarchical provisioning, input must be provided in
-  the high_availability_config.yml or roles_config.yml before running the prepare_oim.yml playbook.
-  For a Hierarchical Cluster, service node role should be defined in the roles_config.yml.
-  Please run oim_cleanup.yml and then re-run prepare_oim.yml with the appropriate inputs."
+
+# Usage: validate_image_tars.yml
+omnia_images_tar_missing_msg: |
+  Following Images tarball does not exist - {{ missing_tars }}.
+  To support either OIM HA or heirarchical provisioning, these images tar file is required.
+  To ensure all omnia base image tar files are present execute `utils/save_container_images.yml` utility playbook.
 
 # invalid_share_option_msg: |
 #   [ERROR] Invalid value \"{{ omnia_share_option }}\" provided for omnia share path type.
@@ -91,6 +95,9 @@ service_node_no_parent_msg: |
 ha_nfs_error_msg: |
   ERROR: Internal NFS is not supported with HA OIM or Service HA.
   Please configure External NFS for HA capabilities.
+service_cluster_nfs_error_msg: |
+  ERROR: Internal NFS is not supported for K8s Service Cluster, external NFS server must be configured.
+  Please run the oim_cleanup.yml in utils and re-run the omnia_startup.sh script using the NFS(external) option.
 warning_wait_time_10s: 10
 hierarchical_provision_warning_msg: |
   "WARNING: The service_node role is defined in roles_config.yml, but none of the groups have a parent field specified.
