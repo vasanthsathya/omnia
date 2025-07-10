@@ -23,7 +23,7 @@ All work on Omnia should be done in a `fork of the repository <https://help.gith
 Issue branch
 ------------
 
-`Create a new branch <https://help.github.com/en/desktop/contributing-to-projects/creating-a-branch-for-your-work>`_ on your fork of the repository. All contributions should be branched from devel.::
+`Create a new branch <https://help.github.com/en/desktop/contributing-to-projects/creating-a-branch-for-your-work>`_ on your fork of the repository. All contributions should be branched from devel. ::
 
         git checkout devel
         git checkout -b <new-branch-name>
