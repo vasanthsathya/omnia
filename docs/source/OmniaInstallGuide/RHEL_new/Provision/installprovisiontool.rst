@@ -20,7 +20,7 @@ Configurations made by the ``discovery_provision.yml`` playbook
 * Configures the OIM with NTP services for cluster  node synchronization.
 * The minimal version of the RHEL operating system is provisioned on the primary disk partition on the nodes. If a BOSS Controller card is available on the target node, the operating system is provisioned on the BOSS card.
 
-[Optional] Additional configuration handled by the provision tool
+[Optional] Additional configurations handled by the provision tool
 -------------------------------------------------------------------------
 
 **Disk partitioning**
@@ -46,6 +46,17 @@ Apart from the packages listed in the ``/opt/omnia/input/project_default/softwar
     3. Finally, execute the ``discover_and_provision.yml`` playbook in order to provision the cluster nodes along with the new additional software packages.
 
 For more information on how to fill up the input files, `click here <../../../Utils/software_update.html>`_.
+
+**Configure additional NICs, assign IP rules, and specify Kernel Parameters on the nodes during cluster provisioning**
+
+To do this, you need to add the necessary inputs to the ``input/network_spec.yml`` and ``input/server_spec.yml`` and then run the ``discovery_provision.yml`` playbook with your created `inventory file <../../samplefiles.html#inventory-file-for-additional-nic-and-kernel-parameter-configuration>`_. 
+For more information on what inputs are required, `click here <../../AdvancedConfigurations/AdditionalNIC_rhel.html>`_.
+
+.. caution::
+
+    * If you intend to configure additional NICs during provisioning, ensure that you are aware of the network and NIC details of the cluster.
+    * Configuring additional NICs, assigning IP rules, and specifying Kernel Parameters is only possible during provisioning of new nodes (first provisioning). Nodes which have already been provisioned and are in booted state can't be modified with a re-run of ``discovery_provision.yml`` playbook.
+    * For a node in the "booted" state, configuring additional NICs or kernel parameter changes is not possible with a re-run of the ``discovery_provision.yml`` playbook. Instead, use the ``server_spec_update.yml`` playbook to make any changes to the "booted" node. For more information, `click here <../AdvancedConfigurationsUbuntu/AdditionalNIC_ubuntu.html>`_.
 
 Playbook execution
 ----------------------
