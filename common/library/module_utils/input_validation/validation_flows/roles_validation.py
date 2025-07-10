@@ -367,7 +367,7 @@ def validate_roles_config(
         "service_cluster_roles": {"service_kube_control_plane", "service_etcd",
                                   "service_kube_node"},
         "k8s_cluster_roles": {"kube_control_plane", "kube_node", "etcd"},
-        "slurm_cluster_roles": {"slurm_control_plane", "slurm_node"},
+        "slurm_cluster_roles": {"slurm_control_node", "slurm_node"},
     }
     for role_type, service_cluster_roles in role_sets.items():
         defined_service_roles = role_name_set.intersection(service_cluster_roles)
