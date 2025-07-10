@@ -9,5 +9,4 @@ Omnia provides an array of utilities as separate playbooks. Using these playbook
     software_update
     KernelUpdate
     portcleanup
-    timescaledb_utility
     freeipa_installation
