@@ -49,7 +49,7 @@ When ``discovery_provision.yml`` or ``utils/inventory_tagging.yml`` is run, a se
                 * Node's hostname information is present in DB.
     * To regenerate all the inventory files, use the playbook ``utils/inventory_tagging.yml``.
     * After the nodes have successfully PXE booted, it may take up to three minutes for their details to appear in the generated inventory files.
-    * Addition and deletion of service cluster nodes are not supported via inventory files.
+    * Addition and deletion of service cluster nodes via inventory files is not supported.
 
 
 
