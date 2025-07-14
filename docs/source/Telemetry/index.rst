@@ -22,8 +22,6 @@ Prerequisites
     
     * Additionally, the ``idrac_telemetry_receiver``, ``activemq``, ``mysqldb``, ``prometheus``, and ``prometheus_pump`` containers are deployed on the service nodes to facilitate telemetry data collection. 
 
-.. note:: Federated telemetry support is only available for a `hierarchical cluster <../OmniaInstallGuide/RHEL_new/xcat_hierarchical.html>`_. For a non-hierarchical cluster, telemetry data for all nodes in the cluster is collected by the OIM. 
-
 .. csv-table:: telemetry_config.yml
    :file: ../Tables/telemetry_config.csv
    :header-rows: 1
