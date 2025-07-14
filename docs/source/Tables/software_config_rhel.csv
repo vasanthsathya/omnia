@@ -3,7 +3,7 @@
 * Specify the operating system running on the OIM and the one to be provisioned on the compute nodes.
 * **Accepted value**: ``rhel``"
 **cluster_os_version**,Mandatory,"* **Type**: string
-* The OS Version that will be provisoned on compute nodes.
+* The OS Version that will be provisioned on compute nodes.
 * **Accepted value**: ``9.6``."
 **iso_file_path**,Mandatory,"* **Type**: string
 * Path where the user has placed the ``<OS>.iso`` image that needs to be provisioned on target nodes. 
