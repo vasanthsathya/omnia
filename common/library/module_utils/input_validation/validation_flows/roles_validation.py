@@ -118,7 +118,6 @@ def validate_layer_group_separation(logger, roles):
         "kube_control_plane",
         "etcd",
         "slurm_control_node",
-        "slurm_dbd",
         "service_kube_control_plane",
         "service_etcd",
         "service_kube_node"
@@ -368,7 +367,6 @@ def validate_roles_config(
         "kube_control_plane",
         "etcd",
         "slurm_control_plane",
-        "slurm_dbd",
         "auth_server"
     }
 
