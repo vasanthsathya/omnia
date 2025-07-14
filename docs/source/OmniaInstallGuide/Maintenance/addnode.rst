@@ -51,44 +51,6 @@ Verify that the node has been provisioned successfully by checking the Omnia `no
 
 1. Add the new IP addresses to the existing inventory file, as shown in the following example.
 
-*Existing kubernetes inventory*
-
-::
-
-    [kube_control_plane]
-    10.5.0.101
-
-    [kube_node]
-    10.5.0.102
-    10.5.0.103
-
-    [auth_server]
-    10.5.0.101
-
-    [etcd]
-    10.5.0.110
-
-
-*Updated kubernetes inventory with the new node information*
-
-::
-
-    [kube_control_plane]
-    10.5.0.101
-
-    [kube_node]
-    10.5.0.102
-    10.5.0.103
-    10.5.0.105
-    10.5.0.106
-
-    [auth_server]
-    10.5.0.101
-
-    [etcd]
-    10.5.0.110
-
-
 *Existing Slurm inventory*
 
 ::
@@ -131,10 +93,10 @@ In the above examples, nodes 10.5.0.105 and 10.5.0.106 have been added to the cl
 
 .. note::
     * The ``[etcd]`` group only supports an odd number of servers in the group. Adding nodes to ``[etcd]`` groups is not supported in re-run scenarios.
-    * Do not change the ``kube_control_plane``, ``slurm_control_node`` and/or ``auth_server`` in the existing inventory file. Add only the new node information to the ``kube_node`` and/or ``slurm_node`` groups.
+    * Do not change the ``slurm_control_node`` and/or ``auth_server`` in the existing inventory file. Add only the new node information to the ``slurm_node`` group.
     * When re-running ``omnia.yml`` to add a new node, ensure that the ``input/security_config.yml`` and ``input/omnia_config.yml`` are not edited between runs.
 
-2. Once the new node IPs have been provided in the inventory, you can install security tools (OpenLDAP, FreeIPA), job schedulers (Kubernetes, Slurm), and storage tools (NFS, BeeGFS) on the nodes by executing ``omnia.yml`` with the updated inventory file: ::
+2. Once the new node IPs have been provided in the inventory, you can install security tools (OpenLDAP, FreeIPA), job schedulers (Slurm), and storage tools (NFS, BeeGFS) on the nodes by executing ``omnia.yml`` with the updated inventory file: ::
 
     ansible-playbook omnia.yml -i inventory
 

@@ -1,7 +1,7 @@
 Delete provisioned node
 ========================
 
-Use this playbook to remove discovered or provisioned nodes from all inventory files and Omnia database tables. No changes are made to the Slurm or Kubernetes cluster.
+Use this playbook to remove discovered or provisioned nodes from all inventory files and Omnia database tables. No changes are made to the existing Slurm cluster.
 
 **Configurations performed by the playbook**
 
