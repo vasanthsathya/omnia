@@ -8,7 +8,6 @@ Advanced configurations
     CustomLocalRepo
     install_ucx_openmpi
     KubernetesAccess
-    ConfiguringStorage/index
     AdditionalNIC
     ROCm_accelerator
     AutomatingOneAPI
