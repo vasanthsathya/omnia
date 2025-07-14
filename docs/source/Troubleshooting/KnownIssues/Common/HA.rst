@@ -12,3 +12,9 @@ High Availability (HA)
 **Potential Cause**: The issue occurs because the passive node, although its NIC is disabled, continues to run containers. The HA stack is unable to synchronize the state between the two OIM nodes, leading to a split-brain scenario where both nodes operate independently and fail to coordinate resource management. As a result, containers attempt to start on both nodes simultaneously, causing service conflicts and instability.
 
 **Resolution**: Ensure that the failed NIC on the affected OIM node is fixed, and the node is properly shut down before HA failover is triggered. This allows the healthy OIM node to take over completely and operate without container conflicts. After resolving the hardware issue, power on the repaired OIM node to restore full HA functionality and sync between nodes.
+
+⦾ **In an HA-enabled OIM setup, while switching back from the passive to the active OIM, the telemetry containers fail to start up on the active OIM.**
+
+**Potential Cause**: This is a known issue and we are working on a fix.
+
+**Resolution**: As a workaround, once the switch-over from passive to active OIM is complete, run the ``prepare_oim.yml`` playbook on the active OIM to bring up the telemetry containers.
