@@ -5,7 +5,6 @@ Advanced configurations
     :maxdepth: 2
 
     AdditionalNIC_rhel
-    CustomLocalRepo
     install_ucx_openmpi
     KubernetesAccess
     AdditionalNIC
