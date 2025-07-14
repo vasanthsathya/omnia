@@ -40,7 +40,7 @@
         state: absent
         force: true
       register: directory_deletion
-      until: directory_deletion 
+      until: directory_deletion is not failed
       retries: "{{ max_retries }}"
       with_items:
         - "{{ idrac_telemetry_receiver_cleanup_directory }}"

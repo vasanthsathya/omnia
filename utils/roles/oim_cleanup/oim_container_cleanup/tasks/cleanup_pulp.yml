@@ -38,7 +38,7 @@
     state: absent
     force: true
   register: directory_deletion
-  until: directory_deletion 
+  until: directory_deletion is not failed
   retries: "{{ max_retries }}"
   with_items:
     - "{{ pulp_cleanup_directory }}"
