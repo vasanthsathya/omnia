@@ -52,7 +52,7 @@ When ``discovery_provision.yml`` or ``utils/inventory_tagging.yml`` is run, a se
             [kube_control_plane]
             node1.omnia.test
 
-      * ``<cluster_name>_cluster_layout``: This will be generated based on the ``cluster_name`` provided by the user in ``roles_config.yml``. This inventory is specifically generated (but not limited to) for the service cluster roles. After ``discovery_provision.yml`` execution is complete, details about service cluster nodes will be added here.
+      * ``<cluster_name>_cluster_layout``: This will be generated based on the ``cluster_name`` provided by the user in ``roles_config.yml``. This inventory is specifically generated for the service cluster roles. After ``discovery_provision.yml`` execution is complete, details about service cluster nodes will be added here.
 
 .. note::
 
