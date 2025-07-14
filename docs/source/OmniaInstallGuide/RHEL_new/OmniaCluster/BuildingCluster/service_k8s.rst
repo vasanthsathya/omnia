@@ -41,14 +41,16 @@ Steps
 
 2. Run ``local_repo.yml`` playbook to download the artifacts required to set up Kubernetes on the service cluster nodes.
 
-3. Run ``discovery_provision.yml`` playbook to discover and provision OS on the service cluster nodes.
-
-4. Fill in the required paramters in ``roles_config.yml``, ``omnia_config.yml``, and ``high_availability_config.yml`` as described in the tables below:
+3. Fill in the service cluster details in the ``roles_config.yml``.
 
 .. csv-table:: roles_config.yml
    :file: ../../Tables/service_k8s_roles.csv
    :header-rows: 1
    :keepspace:
+
+4. Run ``discovery_provision.yml`` playbook to discover and provision OS on the service cluster nodes.
+
+5. Fill up the ``omnia_config.yml`` and ``high_availability_config.yml`` as described in the tables below:
 
 .. csv-table:: omnia_config.yml
    :file: ../../Tables/service_k8s_omnia_config.csv
@@ -67,3 +69,5 @@ Once all the required input files are filled up, use the below commands to set u
 
     cd scheduler
     ansible-playbook service_k8s_cluster.yml - i <service_cluster_layout_filepath>
+
+In the command above, ``<service_cluster_layout_filepath>`` refers to the inventory generated based on the ``cluster_name`` in ``/opt/omnia/omnia_inventory``. For more details, `click here <../../ViewInventory.html>`_.
