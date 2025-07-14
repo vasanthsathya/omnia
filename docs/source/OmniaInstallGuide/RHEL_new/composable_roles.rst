@@ -18,6 +18,7 @@ Roles offered by Omnia
     * The roles are case-sensitive in nature.
     * Groups assigned to the **Management** layer roles should not be assigned to **Compute** layer roles.
     * Omnia also supports HA functionality for the ``OIM`` and the ``service_cluster``. For more information, `click here <HighAvailability/index.html>`_.
+    * To set up a service cluster, all three roles (``service_kube_control_plane``, ``service_etcd``, ``service_kube_node``) must be present in the ``input/roles_config.yml``.
 
 .. csv-table:: Types of Roles
    :file: ../../Tables/omnia_roles.csv
