@@ -1,7 +1,7 @@
 Step 10: View node inventory
 =================================
 
-When ``discovery_provision.yml`` or ``utils/inventory_tagging.yml`` is run, a set of inventory files is created in the ``/opt/omnia/omnia_inventory/`` directory on the ``omnia_core`` container, based on the `Omnia database <Provision/ViewingDB.html>`_. The inventory files are:
+When ``discovery_provision.yml`` or ``utils/inventory_tagging.yml`` playbook is executed, a set of inventory files is created in the ``/opt/omnia/omnia_inventory/`` directory on the ``omnia_core`` container, based on the `Omnia database <Provision/ViewingDB.html>`_. The inventory files are:
 
       * ``compute_cpu_amd`` ::
 
