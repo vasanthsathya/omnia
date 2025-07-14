@@ -4,16 +4,12 @@ High Availability (HA) for the Service Cluster
 Prerequisites
 --------------
 
-* Ensure that the passive service nodes have ``service_node`` role assigned to them in the ``/opt/omnia/input/project_default/roles_config.yml`` input file. For more information, `click here <../composable_roles.html>`_.
-
-* Ensure that all the service nodes (active/passive) are connected to the Internet.
-
-* Ensure that the ``local_repo.yml`` playbook has been run successfully at least once. Before running it, verify that the ``opt/omnia/input/project_default/software_config.json`` file contains ``{"name": "service_node"}`` in the ``softwares`` list.
+* Ensure that the ``local_repo.yml`` playbook has been run successfully at least once. Before running it, verify that the ``opt/omnia/input/project_default/software_config.json`` file contains ``{"name": "service_k8s"}`` in the ``softwares`` list.
 
 * To enable and configure the HA for Service cluster, fill up the necessary parameters in the ``high_availability_config.yml`` config file present in the ``/opt/omnia/input/project_default/`` directory. Once the config file is updated, run the ``prepare_oim.yml`` playbook.
 
     .. csv-table:: Parameters for Service Cluster HA
-        :file: ../../../Tables/service_cluster_ha.csv
+        :file: ../../../Tables/service_k8s_high_availability.csv
         :header-rows: 1
         :keepspace:
 
@@ -29,7 +25,7 @@ Once the details have been provided to the input files and the ``prepare_oim.yml
 
 ::
 
-    ansible-playbook discovery_provision.yml --tags "management_layer"
+    ansible-playbook discovery_provision.yml
 
 .. note:: Ensure that ``local_repo.yml`` playbook has been executed successfully before provisioning.
 
