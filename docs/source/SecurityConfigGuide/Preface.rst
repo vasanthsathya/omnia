@@ -30,7 +30,7 @@ Dell takes reports of potential security vulnerabilities in our products very se
 
 Follow Dell Security on these sites:
 
-* `dell.com/security <https://www.dell.com/support/security/en-us>`_
-* `dell.com/support <https://www.dell.com/support/home/en-us>`_
+* `Security@Dell <https://www.dell.com/support/security/en-us>`_
+* `Support@Dell <https://www.dell.com/support/home/en-us>`_
 
 To provide feedback on this solution, email us at security@dell.com.
