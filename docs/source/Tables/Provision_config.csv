@@ -112,3 +112,11 @@ Required","* The ``ntp_support`` variable denotes whether the cluster will have 
 * If ``ntp_support`` is set to ``false``, the NTP server will not be configured and time will not be synchronized across the cluster nodes.
 * **Default value**: ``true``
 .. caution:: In a restricted network or proxy environment, it is not recommended to set up an NTP server on the OIM due to potential failures in connecting to the public NTP pools."
+"**federated_provision**
+
+``boolean``
+
+Required","* When ``federated_provision`` is set to ``false``, all nodes are provisioned from OIM.
+* **Default value**: ``false``
+
+.. note:: Currently, Omnia does not support setting the value of this variable to ``true``. Do not change the value as this can cause unexpected failures."

@@ -61,7 +61,6 @@ When ``discovery_provision.yml`` or ``utils/inventory_tagging.yml`` playbook is 
             servicekubenode1.omnia.test
             servicekubenode2.omnia.test
 
-
 .. note::
 
     * Hostnames will only be written into the inventory files after the nodes are successfully PXE booted post provisioning.

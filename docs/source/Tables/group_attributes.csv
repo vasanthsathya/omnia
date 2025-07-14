@@ -4,9 +4,8 @@ Group Name - ``grpN``,Mandatory,"* User defined name of the group.
 
  **Example**: ``grp0``, ``grp1``, and ``grp2``."
 Name of the cluster- ``cluster_name``,Conditional mandatory,"* Name of the cluster to which the group belongs to. 
-* ``cluster_name`` attribute is mandatory for Kubernetes related roles.
-* This input is case-sensitive. Do not add any special characters except ``_`` (unserscore) for the cluster name.
-* This will remain empty for groups which are not associated with any kubernetes roles."
+* ``cluster_name`` attribute is mandatory for Kubernetes related roles. For non-Kubernetes roles, this field will remain empty.
+* This input is case-sensitive. Do not add any special characters except ``_`` (unserscore) for the cluster name."
 Location of the node - ``location_id``,Mandatory,"* Scalable unit and rack number range.
 * Range for ``<n>`` is 0-99.
 * **Format**: ``SU-<n>.RACK-<n>``
