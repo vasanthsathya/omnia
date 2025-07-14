@@ -37,4 +37,4 @@ Local Repositories
 
 **Potential cause**: This occurs due to resource saturation on the Pulp container.
 
-**Resolution**: If you encounter a failure during multiple runs at the task ``Process URL mirrors from local_repo config``, it is recommended to let the system remain idle for approximately one hour before re-running the ``local_repo.yml`` playbook.
+**Resolution**: If you're running ``local_repo.yml`` playbook multiple times and encounter a failure at the task ``Process URL mirrors from local_repo config``, it is recommended to let the system remain idle for approximately one hour before re-running the ``local_repo.yml`` playbook.
