@@ -11,11 +11,10 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the containers required for iDRAC telemetry service (if ``idrac_telemetry_support`` is ``true`` in ``opt/omnia/input/project/defaut/telemetry_config.yml``): ``idrac_telemetry_receiver``, ``mysqldb``, and ``activemq``
 * Sets up the containers required for collecting iDRAC telemetry metrics using the Prometheus toolkit (If ``idrac_telemetry_service`` is set to ``true`` and ``idrac_telemetry_collection_type`` is ``prometheus``): ``prometheus`` and ``prometheus_pump`` 
 
-Prerequisites
+Prerequisite
 ----------------
 
-* Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
-* If you intend to set up a `hierarchical cluster <xcat_hierarchical.html>`_, ensure that the ``service_kube_control_plane``, ``service_etcd``, and ``service_kube_node`` role has been defined in the ``/opt/omnia/input/project_default/roles_config.yml`` input file before executing ``prepare_oim.yml`` playbook.
+Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
 
 Input files for the playbook
 ------------------------------

@@ -45,7 +45,20 @@ Steps
 
 4. Fill in the required paramters in ``roles_config.yml``, ``omnia_config.yml``, and ``high_availability_config.yml`` as described in the tables below:
 
+.. csv-table:: roles_config.yml
+   :file: ../../Tables/service_k8s_roles.csv
+   :header-rows: 1
+   :keepspace:
 
+.. csv-table:: omnia_config.yml
+   :file: ../../Tables/service_k8s_omnia_config.csv
+   :header-rows: 1
+   :keepspace:
+
+.. csv-table:: high_availability_config.yml
+   :file: ../../Tables/service_k8s_high_availability.csv
+   :header-rows: 1
+   :keepspace:
 
 Playbook execution
 ====================
@@ -53,4 +66,4 @@ Playbook execution
 Once all the required input files are filled up, use the below commands to set up Kubernetes on the service cluster: ::
 
     cd scheduler
-    ansible-playbook service_k8s_cluster.yml - i <service_cluster_inventory_filepath>
+    ansible-playbook service_k8s_cluster.yml - i <service_cluster_layout_filepath>

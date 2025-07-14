@@ -53,7 +53,7 @@ Here's a sample (using mapping file) for your reference:
     Groups:
         grp0:
             location_id: SU-1.RACK-1
-            cluster_name": ""
+            cluster_name: ""
             resource_mgr_id: ""
             parent: ""
             bmc_details:
