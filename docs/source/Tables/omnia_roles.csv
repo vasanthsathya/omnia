@@ -33,7 +33,8 @@ Service cluster Kubernetes head node- ``service_kube_control_plane``,Management,
 *  The nodes included in this role will have the necessary tools and configurations to configure and run kubernetes master on service cluster.
 
 * ``service_kube_control_plane``: Service Cluster Kubernetes master node groups can be provided in this role. 
-      ::
+      
+         ::
          
                - name: ""service_kube_control_plane""
                  groups:
@@ -46,7 +47,8 @@ Service Cluster Kubernetes etcd node- ``service_etcd``,Management,"* This role i
 * The nodes included in this role will have the necessary tools and configurations to configure and run Kubernetes etcd on service cluster.
 
 * ``service_etcd`` role: Service Cluster Kubernetes etcd node groups can be provided in this role. 
-     ::
+     
+      ::
   
                - name: ""service_etcd""
                groups:
@@ -57,7 +59,8 @@ Service Cluster Kubernetes worker node- ``service_kube_node``,Management,"* This
 * The nodes included in this role will have the necessary tools and configurations to configure and run Kubernetes worker on service cluster.
 
 * ``service_kube_node`` role: Service Cluster Kubernetes worker node groups can be provided in this role.
-    ::
+    
+     ::
 
           - name: ""service_kube_node""
            groups:
