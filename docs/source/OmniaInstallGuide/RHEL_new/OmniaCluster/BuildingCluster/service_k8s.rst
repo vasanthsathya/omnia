@@ -7,7 +7,7 @@ Omnia supports deploying Kubernetes on the service cluster via the ``service_k8s
 Prerequisite
 ==============
 
-To deploy Kubernetes on service cluster, ``k8s`` and ``service_k8s`` must be added under ``softwares`` in the ``input/software_config.json``. Refer the sample config file below: ::
+To deploy Kubernetes on service cluster, ensure that ``service_k8s`` is added under ``softwares`` in the ``input/software_config.json``. Refer the sample config file below: ::
 
     {
         "cluster_os_type": "rhel",
@@ -20,7 +20,6 @@ To deploy Kubernetes on service cluster, ``k8s`` and ``service_k8s`` must be add
             {"name": "ofed", "version": "24.10-1.1.4.0"},
             {"name": "openldap"},
             {"name": "nfs"},
-            {"name": "k8s", "version":"1.31.4"},
             {"name": "service_k8s","version": "1.31.4"},
             {"name": "slurm"}
         ],
@@ -44,7 +43,7 @@ Steps
 3. Fill in the service cluster details in the ``roles_config.yml``.
 
 .. csv-table:: roles_config.yml
-   :file: ../../Tables/service_k8s_roles.csv
+   :file: ../../../../Tables/service_k8s_roles.csv
    :header-rows: 1
    :keepspace:
 
@@ -53,12 +52,12 @@ Steps
 5. Fill up the ``omnia_config.yml`` and ``high_availability_config.yml`` as described in the tables below:
 
 .. csv-table:: omnia_config.yml
-   :file: ../../Tables/service_k8s_omnia_config.csv
+   :file: ../../../../Tables/scheduler_k8s_rhel.csv
    :header-rows: 1
    :keepspace:
 
 .. csv-table:: high_availability_config.yml
-   :file: ../../Tables/service_k8s_high_availability.csv
+   :file: ../../../../Tables/service_k8s_high_availability.csv
    :header-rows: 1
    :keepspace:
 
