@@ -36,7 +36,7 @@ RESOURCE_MGR_ID_MSG = ("The resource_mgr_id is mandatory if the group is mapped 
 GRP_EXIST_MSG = "A valid group must be provided."
 INVALID_SWITCH_IP_MSG = "Please provide a valid switch IPv4 address (example: 10.5.0.1)."
 GRP_ROLE_MSG = "Please associate this group with a role."
-PARENT_SERVICE_NODE_MSG = ("Group is associated with login, compiler_node," #service_node, "
+PARENT_SERVICE_NODE_MSG = ("Group is associated with login, compiler_node,"
                           "kube_control_plane, slurm_control_plane, service_kube_control_plane role(s).")
 # PARENT_SERVICE_ROLE_DNE_MSG = ("Parent field is only supported for the 'service_node' role,"
 #     "which is currently not supported and reserved for future use. Please remove the"
@@ -48,9 +48,6 @@ BMC_STATIC_RANGE_INVALID_MSG = ("Static range should be in the following format:
                                "IPv4Start-IPv4End (example: 10.5.0.1-10.5.0.200).")
 OVERLAPPING_STATIC_RANGE = "bmc_detail's static_range is overlapping with other static ranges."
 DUPLICATE_SWITCH_IP_PORT_MSG = "Please remove duplicate ports."
-SERVICE_CLUSTER_ROLES_MSG = ("To enable service cluster configuration, all three roles must be defined" 
-                          " together: service_kube_control_plane, service_etcd, and service_kube_node. "
-                          "If the service cluster configuration is not required, omit all three roles.")
 SWITCH_DETAILS_INCOMPLETE_MSG = ("If providing switch details, please provide both the IP "
                                  "and Ports fields.")
 SWITCH_DETAILS_NO_BMC_DETAILS_MSG = ("If switch details are provided then bmc_detail's "
