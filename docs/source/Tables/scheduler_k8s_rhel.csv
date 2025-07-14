@@ -3,7 +3,8 @@
 
      ``string``
 
-     Required  ",Name of the cluster on which you want to deploy Kubernetes.
+     Required  ","* Name of the cluster on which you want to deploy Kubernetes.
+* This input is case-sensitive. Do not add any special characters except ``_`` (unserscore) for the cluster name."
 "**deployment**
 
      ``boolean``
