@@ -601,8 +601,7 @@ validate_oim() {
 }
 
 # Checks if the required directories for Omnia are present.
-# This function iterates over a list of required directories and checks if each one exists.
-# Returns: None (exits the script if a directory is not found)
+# This function iterates over a list of required directories/files and checks if each one exists.
 check_required_directories() {
     required_paths=(
         "$omnia_path/omnia"
