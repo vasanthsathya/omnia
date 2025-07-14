@@ -15,7 +15,7 @@ Prerequisites
 ----------------
 
 * Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
-* If you intend to set up a `hierarchical cluster <xcat_hierarchical.html>`_, ensure that the ``service_node`` role has been defined in the ``/opt/omnia/input/project_default/roles_config.yml`` input file before executing ``prepare_oim.yml`` playbook.
+* If you intend to set up a `hierarchical cluster <xcat_hierarchical.html>`_, ensure that the ``service_kube_control_plane``, ``service_etcd``, and ``service_kube_node`` role has been defined in the ``/opt/omnia/input/project_default/roles_config.yml`` input file before executing ``prepare_oim.yml`` playbook.
 
 Input files for the playbook
 ------------------------------
@@ -124,10 +124,10 @@ A sample of the ``software_config.json`` file for RHEL clusters is attached belo
             {"name": "amdgpu", "version": "6.3.1"},
             {"name": "cuda", "version": "12.8.0"},
             {"name": "ofed", "version": "24.10-1.1.4.0"},
-            {"name": "service_node" },
             {"name": "openldap"},
             {"name": "nfs"},
-            {"name": "k8s", "version":"1.31.4"},
+            {"name": "k8s", "version": "1.31.4"},
+            {"name": "service_k8s", "version": "1.31.4"},
             {"name": "slurm"}
         ],
         "amdgpu": [

@@ -3,6 +3,8 @@ Group Name - ``grpN``,Mandatory,"* User defined name of the group.
 * Range for ``N`` is 0-99.
 
  **Example**: ``grp0``, ``grp1``, and ``grp2``."
+Name of the cluster- ``cluster_name``,Conditional mandatory,"* Name of the cluster to which the group belongs to. This input is case-sensitive. 
+* This will remain empty for groups which are not associated with any kubernetes roles."
 Location of the node - ``location_id``,Mandatory,"* Scalable unit and rack number range.
 * Range for ``<n>`` is 0-99.
 * **Format**: ``SU-<n>.RACK-<n>``

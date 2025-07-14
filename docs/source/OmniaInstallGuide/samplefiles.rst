@@ -75,10 +75,10 @@ software_config.json for RHEL
             {"name": "amdgpu", "version": "6.3.1"},
             {"name": "cuda", "version": "12.8.0"},
             {"name": "ofed", "version": "24.10-1.1.4.0"},
-            {"name": "service_node" },
             {"name": "openldap"},
             {"name": "nfs"},
             {"name": "k8s", "version":"1.31.4"},
+            {"name": "service_k8s", "version":"1.3.14"},
             {"name": "slurm"}
         ],
         "amdgpu": [
