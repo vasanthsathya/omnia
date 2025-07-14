@@ -51,7 +51,7 @@ Service Cluster Kubernetes etcd node- ``service_etcd``,Management,"* This role i
       ::
   
                - name: ""service_etcd""
-               groups:
+                 groups:
                       - grp0
                       - grp1"
 Service Cluster Kubernetes worker node- ``service_kube_node``,Management,"* This role is used to configure the Kubernetes worker nodes on service cluster. This role should not have same group as ``kube_node`` role.
@@ -63,7 +63,7 @@ Service Cluster Kubernetes worker node- ``service_kube_node``,Management,"* This
      ::
 
           - name: ""service_kube_node""
-           groups:
+             groups:
                 - grp0
                 - grp1"
 Authentication server - ``auth_server``,Management,"* This role is used to configure the nodes for authentication. The nodes included in this role will have the necessary tools and configurations to support authentication activities.
