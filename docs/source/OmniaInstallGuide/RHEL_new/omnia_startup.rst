@@ -39,7 +39,7 @@ The ``omnia_startup.sh`` script performs the following tasks:
 
 	* Initiates the container engine: The script initiates the Podman container engine present on the OIM.
 
-	* Creates an input folder containing all the playbook inputs files and the software configs.
+	* Creates an input folder containing all the playbook input files and the software configs.
 
 	* The script checks if Podman is installed and initiates the Podman socket. Further, it pulls the Omnia container image from the Dell registry and starts the ``omnia_core`` container.
 
@@ -48,7 +48,7 @@ Execute the ``omnia_startup.sh`` script
 
 To initiate the ``omnia_startup.sh`` script, execute the following commands:
 ::
-    wget https://raw.githubusercontent.com/dell/omnia/refs/heads/pub/staging/omnia_startup.sh
+    wget https://raw.githubusercontent.com/dell/omnia/refs/heads/staging/omnia_startup.sh
     chmod +x omnia_startup.sh
     sh omnia_startup.sh
 

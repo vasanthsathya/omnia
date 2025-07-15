@@ -84,7 +84,7 @@ Additional installations
 .. note:: 
     
     * Additional packages for Kubernetes will be deployed only if ``nfs`` entry is present in the ``/opt/omnia/input/project_default/software_config.json``.
-    * If the ``nfs_server_ip`` in ``input/project_default/storage_config.yml`` is left blank, set to ``localhost``, or set to ``<admin_nic_ip>``, all additional installations will be skipped. To enable additional installations, you must provide a valid external NFS server IP for the ``nfs_server_ip`` parameter.
+    * If the ``nfs_server_ip`` in ``/opt/omnia/input/project_default/storage_config.yml`` is left blank, set to ``localhost``, or set to ``<admin_nic_ip>``, all additional installations will be skipped. To enable additional installations, you must provide a valid external NFS server IP for the ``nfs_server_ip`` parameter.
 
 Omnia installs the following packages on top of the Kubernetes stack:
 

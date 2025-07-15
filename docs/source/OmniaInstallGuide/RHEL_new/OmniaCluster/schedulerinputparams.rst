@@ -3,13 +3,13 @@ Input parameters for the cluster
 
 The ``omnia.yml`` playbook is dependent on the inputs provided to the following input files:
 
-* ``input/project_default/omnia_config.yml``
-* ``input/project_default/security_config.yml``
-* ``input/project_default/storage_config.yml``
+* ``/opt/omnia/input/project_default/omnia_config.yml``
+* ``/opt/omnia/input/project_default/security_config.yml``
+* ``/opt/omnia/input/project_default/storage_config.yml``
 
 .. caution:: Do not remove, edit, or comment any lines in the above mentioned input files.
 
-``input/project_default/omnia_config.yml``
+``/opt/omnia/input/project_default/omnia_config.yml``
 --------------------------------------------
 
 .. csv-table:: Parameters for kubernetes setup
@@ -22,7 +22,7 @@ The ``omnia.yml`` playbook is dependent on the inputs provided to the following 
    :header-rows: 1
    :keepspace:
 
-``input/project_default/security_config.yml``
+``/opt/omnia/input/project_default/security_config.yml``
 ------------------------------------------------
 
 .. csv-table:: Parameters for Authentication
@@ -41,7 +41,7 @@ The ``omnia.yml`` playbook is dependent on the inputs provided to the following 
    :keepspace:
 
 
-``input/project_default/storage_config.yml``
+``/opt/omnia/input/project_default/storage_config.yml``
 -----------------------------------------------
 
 .. csv-table:: Parameters for Storage
@@ -54,7 +54,7 @@ Click here for more information on `OpenLDAP, FreeIPA <BuildingCluster/Authentic
 
 .. note::
 
-    * The ``input/project_default/omnia_config.yml`` and ``input/project_default/security_config.yml`` input files are encrypted during the execution of ``omnia.yml`` playbook. Use the below commands to edit the encrypted input files:
+    * The ``/opt/omnia/input/project_default/omnia_config.yml`` and ``/opt/omnia/input/project_default/security_config.yml`` input files are encrypted during the execution of ``omnia.yml`` playbook. Use the below commands to edit the encrypted input files:
 
         * ``omnia_config.yml``: ::
 
