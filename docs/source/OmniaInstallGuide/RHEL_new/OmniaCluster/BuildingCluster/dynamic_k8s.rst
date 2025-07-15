@@ -13,7 +13,7 @@ Check the table below for the minimum and maximum Kubernetes version supported f
     +-------------------+------------------------------+
     | Kubespray Version | Validated Kubernetes version |
     +===================+==============================+
-    | 2.28.0            | 1.30.0, 1.31.4               |
+    | 2.28.0            | 1.31.4, 1.32.5               |
     +-------------------+------------------------------+
 
 Prerequisites
