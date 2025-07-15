@@ -44,9 +44,7 @@ switch_based
     * If you are re-provisioning your cluster (that is, re-running the ``discovery_provision.yml`` playbook) after a `clean-up <../../../Maintenance/cleanup.html>`_, ensure you use a different ``static_range`` against ``bmc_network`` in ``/opt/omnia/input/project_default/roles_config.yml`` to avoid a conflict with newly assigned servers. Alternatively, disable any OS available in the ``Boot Option Enable/Disable`` section of your BIOS settings (**BIOS Settings > Boot Settings > UEFI Boot Settings**) on all target nodes.
 
 
-.. note::
-    * If any of the target nodes have a pre-provisioned BMC IP, ensure that these IPs are not part of the ``static_range`` specified in ``/opt/omnia/input/project_default/roles_config.yml`` under the ``bmc_network`` to avoid any bmc IP conflicts.
-    * In case of a duplicate node object, duplicate BMC nodes will be deleted automatically by the **duplicate_node_cleanup** service that runs every 30 minutes. When nodes are discovered via mapping and switch details, the nodes discovered via switch details will not be deleted. Delete the node manually `using the delete node playbook. <../../../Maintenance/deletenode.html>`_
+.. note:: If any of the target nodes have a pre-provisioned BMC IP, ensure that these IPs are not part of the ``static_range`` specified in ``/opt/omnia/input/project_default/roles_config.yml`` under the ``bmc_network`` to avoid any bmc IP conflicts.
 
 * [Optional] To clear the configuration on Omnia provisioned switches and ports, `click here <../../../../Utils/portcleanup.html>`_.
 

@@ -65,4 +65,3 @@ Run either of the following commands:
 
             ansible-playbook scheduler/scheduler.yml -i <inventory_file_path>
     
-.. note:: To add new nodes to an existing cluster, click `here. <../../../Maintenance/addnode.html>`_

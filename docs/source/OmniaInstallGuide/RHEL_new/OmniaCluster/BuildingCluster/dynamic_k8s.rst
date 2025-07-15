@@ -8,7 +8,7 @@ Based on the version that you choose, Omnia will download and configure all Kube
 Compatibility Matrix
 ==========================
 
-Check the table below for the minimum and maximum Kubernetes version supported for the last 3 Kubespray release:
+Check the table below for the supported Kubespray and Kubernetes version:
 
     +-------------------+------------------------------+
     | Kubespray Version | Validated Kubernetes version |

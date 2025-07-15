@@ -64,7 +64,7 @@ Configuring specific local repositories
             "cluster": [
               { "package": "ofed",
                 "type": "iso",
-                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.10-3.2.5.0/MLNX_OFED_LINUX-24.10-3.2.5.0-rhel9.0-x86_64.iso",
+                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.10-3.2.5.0/MLNX_OFED_LINUX-24.10-3.2.5.0-rhel9.6-x86_64.iso",
                 "path": ""
               }
             ]
