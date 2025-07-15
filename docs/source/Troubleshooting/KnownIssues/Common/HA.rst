@@ -19,4 +19,8 @@ High Availability (HA)
 
 **Resolution**: As a workaround, once the switch-over from passive to active OIM is complete, run the ``prepare_oim.yml`` playbook on the active OIM to bring up the telemetry containers.
 
-⦾ **
+⦾ **In an HA-enabled OIM setup, SSH to** ``omnia_core`` **container is not working after running** ``oim_cleanup.yml`` **and trying to manually exit the container.**
+
+**Potential Cause**: This issue occurs intermittently due to network issues.
+
+**Resolution**: Wait for a few minutes and retry SSH to ``omnia_core`` container. If the issue still persists, re-deploy the ``omnia_core`` container.
