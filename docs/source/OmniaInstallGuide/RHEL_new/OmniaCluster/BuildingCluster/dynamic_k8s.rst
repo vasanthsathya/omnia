@@ -56,10 +56,10 @@ Playbook executions
     ::
 
         cd /omnia/scheduler
-        ansible-playbook scheduler.yml -i <inventory_filepath>
+        ansible-playbook scheduler.yml -i <inventory_file_path>
 
     ::
 
         cd /omnia
-        ansible-playbook omnia.yml -i <inventory_filepath>
+        ansible-playbook omnia.yml -i <inventory_file_path>
 

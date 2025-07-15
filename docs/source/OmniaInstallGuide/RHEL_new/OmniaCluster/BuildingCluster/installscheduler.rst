@@ -24,7 +24,7 @@ To run ``omnia.yml``: ::
 
         ssh omnia_core
         cd /omnia
-        ansible-playbook omnia.yml -i <inventory filepath>
+        ansible-playbook omnia.yml -i <inventory_file_path>
 
 
 .. note::

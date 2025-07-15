@@ -67,6 +67,6 @@ Playbook execution
 Once all the required input files are filled up, use the below commands to set up Kubernetes on the service cluster: ::
 
     cd scheduler
-    ansible-playbook service_k8s_cluster.yml - i <service_cluster_layout_filepath>
+    ansible-playbook service_k8s_cluster.yml - i <service_cluster_layout_file_path>
 
-In the command above, ``<service_cluster_layout_filepath>`` refers to the inventory generated based on the ``cluster_name`` in ``/opt/omnia/omnia_inventory``. For more details, `click here <../../ViewInventory.html>`_.
+In the command above, ``<service_cluster_layout_file_path>`` refers to the inventory generated based on the ``cluster_name`` in ``/opt/omnia/omnia_inventory``. For more details, `click here <../../ViewInventory.html>`_.

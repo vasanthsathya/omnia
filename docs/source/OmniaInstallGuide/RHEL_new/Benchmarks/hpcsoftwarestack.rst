@@ -30,7 +30,7 @@ Use this playbook to download docker images and pull images onto cluster nodes u
 |                         | * If provided, docker credentials in ``omnia_config.yml``, it will be used for downloading docker images. |
 |                         |                                                                                                           |
 +-------------------------+-----------------------------------------------------------------------------------------------------------+
-| **hpc_apptainer_path**  | * Directory to filepath for storing apptainer sif files on cluster nodes.                                 |
+| **hpc_apptainer_path**  | * Directory to file path for storing apptainer sif files on cluster nodes.                                |
 |                         |                                                                                                           |
 | ``string``              | * It is recommended to use a directory inside a shared path that is accessible to all cluster nodes.      |
 |                         |                                                                                                           |

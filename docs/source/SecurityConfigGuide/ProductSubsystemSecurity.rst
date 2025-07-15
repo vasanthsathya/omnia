@@ -98,8 +98,8 @@ Configuring remote connections
 When setting up BeeGFS client services on the cluster, a connection authentication file is used to maintain the security of the communications between server and client.
 
     1. 	Generate the connection authentication file (connAuth) and use it to set up BeeGFS meta, server and storage services.
-    2. 	Copy the connAuth file to the OIM and note the filepath.
-    3. 	Populate the value of ``beegfs_secret_storage_filepath`` in ``input/storage_config.yml`` with the filepath from the previous step.
+    2. 	Copy the connAuth file to the OIM and note the file path.
+    3. 	Populate the value of ``beegfs_secret_storage_filepath`` in ``input/storage_config.yml`` with the file path from the previous step.
 
 Omnia will configure the BeeGFS clients on th cluster using the provided file. BeeGFS is responsible for maintaining and securing connAuthFile. For more information, `click here <https://doc.beegfs.io/latest/advanced_topics/authentication.html>`_.
 

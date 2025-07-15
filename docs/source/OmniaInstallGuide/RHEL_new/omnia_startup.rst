@@ -29,7 +29,7 @@ Tasks performed by the ``omnia_startup.sh`` script
 
 The ``omnia_startup.sh`` script performs the following tasks:
 
-	* The script prompts you to provide the path for the Omnia shared path, which can be a NFS share path or even a local filepath.
+	* The script prompts you to provide the path for the Omnia shared path, which can be a NFS share path or even a local file path.
 
 	* Sets up the Omnia root password: The script prompts you to provide a combination of alphanumeric characters, which will be used as password to facilitate direct access to the ``omnia_core`` container.
 	.. caution:: Do not use ``\,|,&,;,`,<>,*,?!,$,(),{},[]`` characters in your password.
