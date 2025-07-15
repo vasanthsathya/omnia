@@ -327,7 +327,6 @@ def generate_inventory_for_node(node_info_db: tuple) -> None:
     Generates or updates an inventory file for a node based on its database information.
     Depending on the presence of a cluster name, writes the node's hostname under its roles
     to either 'cluster_layout' or '<cluster_name>_cluster_layout' in the inventory directory.
-    Roles prefixed with 'service_' (except 'service_node') are cleaned before use.
     Skips nodes with missing hostname or role information. Ensures the inventory file has
     the correct header and permissions. Logs errors to syslog.
     """
@@ -343,6 +342,7 @@ def generate_inventory_for_node(node_info_db: tuple) -> None:
 
         if not hostname or not role_str:
             return
+            
         # Always create cluster_layout
         cluster_layout_file = os.path.join(inventory_dir, "cluster_layout")
         if not os.path.exists(cluster_layout_file):
