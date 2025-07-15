@@ -20,17 +20,24 @@ These messages are used to provide user-friendly error messages during configura
 
 MISSING_CLUSTER_NAME_MSG = "Cluster name is mandatory for all kubernetes roles."
 CLUSTER_NAME_OVERLAP_MSG = "The cluster name '{0}' cannot be shared between service and compute Kubernetes roles."
+CLUSTER_NAME_INCONSISTENT_MSG = (
+    "Inconsistent 'cluster_name' values found across Service or Compute Kubernetes roles. "
+    "Each of the following role sets must use the same 'cluster_name': "
+    "[service_kube_control_plane, service_kube_node, service_etcd] and "
+    "[kube_control_plane, kube_node, etcd].")
+CLUSTER_ROLE_MISSING_MSG = (
+    "Cluster '{0}' is missing the following required Kubernetes roles: {1}.")
 MAX_NUMBER_OF_ROLES_MSG = "A max of 100 roles can be supported."
 MIN_NUMBER_OF_GROUPS_MSG = "At least 1 group is required."
 MIN_NUMBER_OF_ROLES_MSG = "At least 1 role is required."
 MAX_NUMBER_OF_ROLES_PER_GROUP_MSG = "Groups can support a maximum of 5 roles."
 RESOURCE_MGR_ID_MSG = ("The resource_mgr_id is mandatory if the group is mapped to "
-                       "kube_node or slurm_node roles.")
+                       "kube_node, slurm_node roles, service_kube_node, etcd, service_etcd roles.")
 GRP_EXIST_MSG = "A valid group must be provided."
 INVALID_SWITCH_IP_MSG = "Please provide a valid switch IPv4 address (example: 10.5.0.1)."
 GRP_ROLE_MSG = "Please associate this group with a role."
-PARENT_SERVICE_NODE_MSG = ("Group is associated with login, compiler_node, service_node, "
-                          "kube_control_plane, slurm_control_plane role(s).")
+PARENT_SERVICE_NODE_MSG = ("Group is associated with login, compiler_node,"
+                          "kube_control_plane, slurm_control_plane, service_kube_control_plane role(s).")
 # PARENT_SERVICE_ROLE_DNE_MSG = ("Parent field is only supported for the 'service_node' role,"
 #     "which is currently not supported and reserved for future use. Please remove the"
 #     " 'parent' field from this role's group definition.")
@@ -41,7 +48,6 @@ BMC_STATIC_RANGE_INVALID_MSG = ("Static range should be in the following format:
                                "IPv4Start-IPv4End (example: 10.5.0.1-10.5.0.200).")
 OVERLAPPING_STATIC_RANGE = "bmc_detail's static_range is overlapping with other static ranges."
 DUPLICATE_SWITCH_IP_PORT_MSG = "Please remove duplicate ports."
-
 SWITCH_DETAILS_INCOMPLETE_MSG = ("If providing switch details, please provide both the IP "
                                  "and Ports fields.")
 SWITCH_DETAILS_NO_BMC_DETAILS_MSG = ("If switch details are provided then bmc_detail's "
@@ -66,9 +72,13 @@ SERVICE_NODE_ENTRY_MISSING_ROLES_CONFIG_MSG = ("The role service_node defined in
     " but service_node entry missing in sofware_config.json, "
     "Please rerun local repo with service_node entry in software_config.json "
     "to deploy service nodes successfully")
+SERVICE_K8S_ENTRY_MISSING_SOFTWARE_CONFIG_MSG = ("The role service_kube_control_plane is defined in roles_config.yml, "
+    "but the service_k8s package entry is missing in software_config.json. "
+    "To deploy Kubernetes in the service_k8s cluster, the package must be added to software_config.json.")
 SERVICE_NODE_ENTRY_INVALID_ROLES_CONFIG_MSG = ("The 'service_node' role defined in roles_config.yml"
     " is not currently supported and is reserved for future use. Please remove or update this role"
     " to avoid configuration errors.")
+
 # provision_config.yml
 DEFAULT_LEASE_TIME_FAIL_MSG = "Please provide a valid default_lease_time."
 TIMEZONE_FAIL_MSG = ("Unsupported Timezone. Please check the timezone.txt file "
