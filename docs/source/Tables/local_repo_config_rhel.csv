@@ -1,7 +1,4 @@
-﻿Parameter,Mandatory/Optional,Details,
-**pulp_protocol_https**,Mandatory,"* **Type**: Boolean
-* By default, set to ``false`` to enable secure (HTTP) connection to the Pulp server.
-* Update to ``true`` if you want to connect to the Pulp server using HTTPS.",
+﻿Parameter,Mandatory/Optional,Details
 **user_repo_url**,Optional,"* **Type**: JSON list
 * This variable accepts the repository urls from which the software packages/images will be downloaded and accessed by the cluster.
 * Omnia downloads the software packages from the given list of URLs and stores them into a local Pulp container. These packages are then accessed by the cluster nodes from that Pulp container.
@@ -13,7 +10,7 @@
 
 * **Example**: ``- { url: ""https://download.docker.com/linux/centos/9/x86_64/stable"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo"", sslcacert: """", sslclientkey: """", sslclientcert: """", policy: """" }``
 
-.. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<user_repo_name>``. The certificate files are encypted post ``local_repo.yml`` playbook execution. Execute the ``ansible-vault decrypt <certificate_file> --vault-password-file /opt/omnia/input/project_default/.local_repo_credentials_key`` command to decrypt the files. ",`
+.. note:: All SSL related certificates must be kept in ``/opt/omnia/user-repo-certs/<user_repo_name>``. The certificate files are encrypted post ``local_repo.yml`` playbook execution. Execute the ``ansible-vault decrypt <certificate_file> --vault-password-file /opt/omnia/input/project_default/.local_repo_credentials_key`` command to decrypt the files. "
 **user_registry**,Optional,"* **Type**: JSON list
 * This variable accepts the URL and port of the user's own software image registry. 
 * If you have your own registry and want Omnia to use it, you can specify its URL and port using this variable. If the package is available there, Omnia will pull the image from the ``user_registry`` instead of the Internet.
@@ -42,15 +39,15 @@
                       user_registry_credential:
                              - {name: """", username: """", password: """"}
 
-.. note:: The ``user_registry_credential.yml``file  will get encrypted once ``local_repo.yml`` playbook has been executed. To edit or modify any fields, use the following command: 
+.. note:: The ``user_registry_credential.yml`` file  will get encrypted once ``local_repo.yml`` playbook has been executed. To edit or modify any fields, use the following command: 
      
       ::
               
-                     ansible-vault edit user_registry_credential.yml --vault-password-file .local_repo_credentials_key",
+                     ansible-vault edit user_registry_credential.yml --vault-password-file .local_repo_credentials_key"
 **rhel_os_url**,Mandatory,"* **Type**: string
 * Mandatory when ``cluster_os_type`` is ``rhel`` in ``/opt/omnia/input/project_default/software_config.json``.
 * Only CodeReady Linux Builder (crb) repository URLs are supported. This repository contains additional packages for the RHEL OS, generally used by developers.
-* Additional packages requied for the cluster are downloaded from the provided ``rhel_os_url`` and stored in the Pulp container.
+* Additional packages required for the cluster are downloaded from the provided ``rhel_os_url`` and stored in the Pulp container.
 * ``url`` defines the baseurl for the repository where the OS package is hosted.
 * ``gpgkey`` defines the gpgkey for the repository. If ``gpgkey`` is omitted, then ``gpgcheck=0`` is set for that repository.
 * ``name`` defines the name of the OS package.
@@ -59,7 +56,7 @@
 
 .. note:: The ``rhel_os_url`` is configured via proxy in compute nodes.
 
-.. caution:: Omnia does not support adding a Red Hat subscription URL to the ``rhel_os_url`` parameter. Adding it results in an error during ``local_repo.yml`` playbook execution. For more information, `click here <../../../Troubleshooting/KnownIssues/RHEL/local_repo.html>`_.",
+.. caution:: Omnia does not support adding a Red Hat subscription URL to the ``rhel_os_url`` parameter. Adding it results in an error during ``local_repo.yml`` playbook execution. For more information, `click here <../../../Troubleshooting/KnownIssues/RHEL/local_repo.html>`_."
 **omnia_repo_url_rhel**,Mandatory,"* **Type**: JSON list
 * This variable accepts a list of all the repo urls from where ``.rpm`` packages will be downloaded for RHEL clusters.
 * ``url`` defines the baseurl for the repository where the package is hosted.
@@ -80,9 +77,9 @@
 
 .. note::
       * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
-      * Ensure that all the listed URLs are reachable from the OIM.",
+      * Ensure that all the listed URLs are reachable from the OIM."
 **enable_routed_internet**,Mandatory,"* **Type**: boolean
 * When ``enable_routed_internet`` is set to true, a Squid container is deployed on the OIM to act as a proxy, enabling clusters with limited or no direct internet access to download packages from the Internet.
 * It is recommended to set ``enable_routed_internet`` to ``false`` if the cluster has direct internet access.
 * **Accepted values**: ``true`` or ``false``
-* **Default value**: ``true``",
+* **Default value**: ``true``"
