@@ -130,21 +130,21 @@ Omnia installs the following packages on top of the Kubernetes stack:
 
     Whereabouts is an IP address management (IPAM) CNI plugin that assigns dynamic IP addresses cluster-wide in Kubernetes, ensuring no IP address collisions across nodes.
     It uses a range of IPs and tracks assignments with backends like etcd or Kubernetes Custom Resources.
-    Omnia installs the whereabouts plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
+    Omnia installs the whereabouts plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``/opt/omnia/input/project_default/config/<cluster os>/<os version>/k8s.json`` file.
 
     Click `here <https://github.com/k8snetworkplumbingwg/whereabouts>`_ for more information.
 
 7. *multus-cni-plugin*
 
     Multus is a Kubernetes CNI (Container Network Interface) plugin that enables pods to have multiple network interfaces. It acts as a meta-plugin, allowing the use of multiple CNI plugins (for example, Flannel, Calico, Macvlan) within the same cluster.
-    Omnia installs the multus plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
+    Omnia installs the multus plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``/opt/omnia/input/project_default/config/<cluster os>/<os version>/k8s.json`` file.
 
     Click `here <https://github.com/k8snetworkplumbingwg/multus-cni>`_ for more information.
 
 [Optional] Dynamic Kubernetes installation
 =============================================
 
-To set up any other Kubernetes version apart from what is present as default in the ``input/software_config.json`` file, `click here <dynamic_k8s.html>`_.
+To set up any other Kubernetes version apart from what is present as default in the ``/opt/omnia/input/project_default/software_config.json`` file, `click here <dynamic_k8s.html>`_.
 
 .. note:: Currently Omnia only supports Kubernetes versions compatible with the last 3 releases of Kubespray.
 
