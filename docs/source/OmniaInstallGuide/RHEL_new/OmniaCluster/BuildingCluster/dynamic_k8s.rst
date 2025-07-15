@@ -21,7 +21,7 @@ Prerequisites
 
 * Build the Kubespray image based on your choice of Kubespray version. Check the table above for the supported versions. ::
 
-    ./build_images.sh kubespray_version=v<kubespray_version_number>
+    ./build_images.sh kubespray_version=v2.28.0
 
 * Ensure that a compatilable version of ``omnia_kubespray`` image is present based on the version list mentioned above. To know about all the supported versions of Kubernetes for a specific release of Kubespray, check out `Kubespray on github <https://github.com/kubernetes-sigs/kubespray>`_. 
 * Ensure that ``discovery_provision.yml`` has been executed and nodes are provisioned with OS.
