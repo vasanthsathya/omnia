@@ -29,7 +29,7 @@ Here's a sample of the ``software_config.json`` for RHEL clusters:
         "softwares": [
             {"name": "amdgpu", "version": "6.3.1"},
             {"name": "cuda", "version": "12.8.0"},
-            {"name": "ofed", "version": "24.10-1.1.4.0"},
+            {"name": "ofed", "version": "24.10-3.2.5.0"},
             {"name": "openldap"},
             {"name": "nfs"},
             {"name": "k8s", "version": "1.31.4"},

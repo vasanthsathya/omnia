@@ -55,7 +55,7 @@ Configuring specific local repositories
 
     To install OFED, include the following line under ``softwares`` in ``software_config.json``: ::
 
-            {"name": "ofed", "version": "24.01-0.3.3.1"},
+            {"name": "ofed", "version": "24.10-3.2.5.0"},
 
     For a list of repositories (and their types) configured for OFED, view the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>/ofed.json`` file. To customize your OFED installation, update the ``url`` parameter with your desired OFED version URL. ::
 
@@ -64,7 +64,7 @@ Configuring specific local repositories
             "cluster": [
               { "package": "ofed",
                 "type": "iso",
-                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.01-0.3.3.1/MLNX_OFED_LINUX-24.01-0.3.3.1-rhel9.0-x86_64.iso",
+                "url": "https://content.mellanox.com/ofed/MLNX_OFED-24.10-3.2.5.0/MLNX_OFED_LINUX-24.10-3.2.5.0-rhel9.0-x86_64.iso",
                 "path": ""
               }
             ]
