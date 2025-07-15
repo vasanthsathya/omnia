@@ -4,11 +4,11 @@ Checking node status
 Via CLI
 --------
 
-1. Establish a SSH connection to the ``omnia_core`` container using the following command: ::
+1. Establish an SSH connection to the ``omnia_core`` container using the following command: ::
 
     ssh omnia_core
 
-2. Establish a SSH connection to the ``omnia_provision`` container from inside the ``omnia_core`` container using the following command: ::
+2. Establish an SSH connection to the ``omnia_provision`` container from inside the ``omnia_core`` container using the following command: ::
 
     ssh omnia_provision
 

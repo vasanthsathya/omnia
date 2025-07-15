@@ -12,10 +12,34 @@ The ``omnia.yml`` playbook is dependent on the inputs provided to the following 
 ``/opt/omnia/input/project_default/omnia_config.yml``
 --------------------------------------------
 
-.. csv-table:: Parameters for kubernetes setup
+.. csv-table:: Parameters for kubernetes setup (service_k8s_cluster and compute_k8s_cluster)
    :file: ../../../Tables/scheduler_k8s_rhel.csv
    :header-rows: 1
    :keepspace:
+
+::
+
+   service_k8s_cluster:
+     - cluster_name: service_cluster
+       deployment: true
+       k8s_cni: "calico"
+       pod_external_ip_range: ""
+       k8s_service_addresses: "10.233.0.0/18"
+       k8s_pod_network_cidr: "10.233.64.0/18"
+       opology_manager_policy: "none"
+       topology_manager_scope: "container"
+       k8s_offline_install: true
+ 
+   compute_k8s_cluster:
+     - cluster_name: compute_cluster
+       deployment: true
+       k8s_cni: "calico"
+       pod_external_ip_range: ""
+       k8s_service_addresses: "10.233.0.0/18"
+       k8s_pod_network_cidr: "10.233.64.0/18"
+       topology_manager_policy: "none"
+       topology_manager_scope: "container"
+       k8s_offline_install: true
 
 .. csv-table:: Parameters for slurm setup
    :file: ../../../Tables/scheduler_slurm.csv

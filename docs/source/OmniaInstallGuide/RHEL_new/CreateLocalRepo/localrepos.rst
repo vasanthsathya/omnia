@@ -107,7 +107,7 @@ Configuring specific local repositories
 
     For more information about installing Slurm, `click here <../OmniaCluster/BuildingCluster/install_slurm.html>`_.
 
-.. note:: Omnia recommends to install Slurm with ``repo_config`` variable set to ``always``  in ``software_config.json``. This is due to intermittent connectivity issues with the EPEL8 repositories.
+.. note:: Omnia recommends installing Slurm with ``repo_config`` variable set to ``always``  in ``software_config.json``. This is due to intermittent connectivity issues with the EPEL8 repositories.
 
 **FreeIPA**
 
@@ -182,4 +182,4 @@ Configuring specific local repositories
 
                 {"name": "additional_software"},
 
-    Create a ``additional_software.json`` file in the following directory: ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and add your choice of additional software. For example, For a cluster running RHEL 9.6, go to ``/opt/omnia/input/project_default/config/rhel/9.6/`` and create the file there. For more information, `click here <../../../Utils/software_update.html>`_.
+    Create an ``additional_software.json`` file in the following directory: ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and add your choice of additional software. For a cluster running RHEL 9.6, go to ``/opt/omnia/input/project_default/config/rhel/9.6/`` and create the file there. For more information, `click here <../../../Utils/software_update.html>`_.

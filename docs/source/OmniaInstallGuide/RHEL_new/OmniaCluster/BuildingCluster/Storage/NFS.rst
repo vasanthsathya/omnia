@@ -13,7 +13,7 @@ Network File System (NFS) is a networking protocol for distributed file sharing.
     | Parameter             | Details                                                                                                                                                     |
     +=======================+=============================================================================================================================================================+
     | **nfs_client_params** | * This JSON list contains all parameters required to set up NFS.                                                                                            |
-    |                       | * For a bolt-on set up where there is a pre-existing NFS server, set ``nfs_server`` to ``false``.                                                           |
+    |                       | * For a bolt-on setup where there is a pre-existing NFS server, set ``nfs_server`` to ``false``.                                                            |
     |      ``JSON List``    | * When ``nfs_server`` is set to ``true``, an NFS share is created on a server IP in the cluster for access by all other cluster nodes.                      |
     |                       | * Ensure that the value of ``share_path`` in ``input/omnia_config.yml`` matches at least one of the ``client_share_path`` values in the JSON list provided. |
     |      Required         |                                                                                                                                                             |
@@ -28,7 +28,7 @@ Network File System (NFS) is a networking protocol for distributed file sharing.
 
       - **server_ip**: IP of the intended NFS server. To set up an NFS server on the OIM, use the value ``localhost``. Use an IP  address to configure access anywhere else.
 
-      - **server_share_path**: Folder on which the NFS server mounted.
+      - **server_share_path**: Folder on which the NFS server is mounted.
 
       - **client_share_path**: Target directory for the NFS mount on the client. If left empty, the respective ``server_share_path value`` will be taken for ``client_share_path``.
 
@@ -57,9 +57,9 @@ Network File System (NFS) is a networking protocol for distributed file sharing.
         - { server_ip: 198.168.0.2, server_share_path: "/mnt/share2", client_share_path: "/mnt/mount2", client_mount_options: "nosuid,rw,sync,hard", nfs_server: false, slurm_share: true, k8s_share: true }
 
 
-* Ensure that an NFS local repository is created by including ``{"name": "nfs"},`` in ``input/software_config.json``. For more information, `click here <../../../CreateLocalRepo/index.html>`_.
-* If the intended cluster will run Slurm, set the value of ``slurm_installation_type`` in ``input/omnia_config.yml`` to ``nfs_share``.
-* If an external NFS share is used, make sure that ``/etc/exports`` on the NFS server is populated with the same paths listed as ``server_share_path`` in the ``nfs_client_params`` in ``input/storage_config.yml``.
+* Ensure that an NFS local repository is created by including ``{"name": "nfs"},`` in ``/opt/omnia/input/software_config.json``. For more information, `click here <../../../CreateLocalRepo/index.html>`_.
+* If the intended cluster will run Slurm, set the value of ``slurm_installation_type`` in ``/opt/omnia/input/omnia_config.yml`` to ``nfs_share``.
+* If an external NFS share is used, make sure that ``/etc/exports`` on the NFS server is populated with the same paths listed as ``server_share_path`` in the ``nfs_client_params`` in ``/opt/omnia/input/storage_config.yml``.
 * Omnia supports all NFS mount options. Without user input, the default mount options are ``nosuid,rw,sync,hard,intr``.
 
 

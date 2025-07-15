@@ -1,7 +1,7 @@
 Centralized authentication on the cluster
 ==========================================
 
-The security feature allows cluster admin users to set up FreeIPA or OpenLDAP in order to allow or deny user access.
+The security feature allows cluster admin users to set up FreeIPA or OpenLDAP in order to allow or deny access to the user(s).
 
 Configuring FreeIPA/OpenLDAP security
 ______________________________________
@@ -16,7 +16,7 @@ ______________________________________
 
     {"name": "openldap"}
 
-* Run ``local_repo.yml`` to create offline repositories of FreeIPA or OpenLDAP. If both were downloaded, ensure that the non-required system is removed from ``input/software_config.json`` before running ``security.yml``. For more information, `click here <../../CreateLocalRepo/index.html>`_.
+* Run ``local_repo.yml`` to create offline repositories of FreeIPA or OpenLDAP. If both were downloaded, ensure that the non-required software is removed from ``input/software_config.json`` before running ``security.yml``. For more information, `click here <../../CreateLocalRepo/index.html>`_.
 
 * Enter the following parameters in ``input/security_config.yml``:
 

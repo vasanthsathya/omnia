@@ -3,9 +3,9 @@ Provisioning the cluster
 
 The ``discovery_provision.yml`` playbook discovers the probable bare-metal cluster nodes and provisions the minimal version of RHEL OS onto those nodes. This playbook is dependent on inputs from the following input files:
 
-* ``input/provision_config.yml``
-* ``input/provision_config_credentials.yml``
-* ``input/network_spec.yml``
+* ``/opt/omnia/input/provision_config.yml``
+* ``/opt/omnia/input/provision_config_credentials.yml``
+* ``/opt/omnia/input/network_spec.yml``
 
 .. note:: The first PXE device on target nodes should be the designated active NIC for PXE booting.
 
@@ -43,7 +43,7 @@ Apart from the packages listed in the ``/opt/omnia/input/project_default/softwar
 
     1. First, fill up the ``additional_software.json`` and ``software_config.json`` input files.
     2. Then, execute the ``local_repo.yml`` playbook in order to download the required packages.
-    3. Finally, execute the ``discover_and_provision.yml`` playbook in order to provision the cluster nodes along with the new additional software packages.
+    3. Finally, execute the ``discovery_provision.yml`` playbook in order to provision the cluster nodes along with the new additional software packages.
 
 For more information on how to fill up the input files, `click here <../../../Utils/software_update.html>`_.
 
@@ -71,7 +71,7 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
     * If the ``input/software_config.json`` has AMD ROCm and NVIDIA CUDA drivers mentioned, the AMD and NVIDIA accelerator drivers are installed on the nodes post provisioning.
 
-    * After executing ``discovery_provision.yml`` playbook, user can check the log file available at ``/var/log/omnia.log`` for more information.
+    * After executing ``discovery_provision.yml`` playbook, you can check the log files available at ``/opt/omnia/log`` for more information.
 
     * Ansible playbooks by default run concurrently on 5 nodes. To change this, update the ``forks`` value in ``ansible.cfg`` present in the respective playbook directory.
 
@@ -81,7 +81,7 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
     * All ports required for xCAT to run will be opened (For a complete list, check out the `Security Configuration Document <../../../SecurityConfigGuide/ProductSubsystemSecurity.html#firewall-settings>`_).
 
-    * After running ``discovery_provision.yml``, the file ``input/provision_config_credentials.yml`` will be encrypted. To edit the file, use the command: ``ansible-vault edit provision_config_credentials.yml --vault-password-file .provision_credential_vault_key``
+    * After running ``discovery_provision.yml``, the file ``input/provision_config_credentials.yml`` will be encrypted. To edit the file, use the command: ``ansible-vault edit omnia_config_credentials.yml --vault-password-file .omnia_config_credentials_key``
 
     * Post execution of ``discovery_provision.yml``, IPs/hostnames cannot be re-assigned by changing the mapping file. However, the addition of new nodes is supported as explained `here <../../Maintenance/addnode.html>`_.
 

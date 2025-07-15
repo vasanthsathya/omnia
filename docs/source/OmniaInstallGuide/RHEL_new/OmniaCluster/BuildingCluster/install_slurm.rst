@@ -65,6 +65,4 @@ Run either of the following commands:
 
             ansible-playbook scheduler/scheduler.yml -i <inventory_file_path>
     
-.. caution:: The ``scheduler.yml`` playbook can be run only after executing ``omnia.yml`` at least once.
-
 .. note:: To add new nodes to an existing cluster, click `here. <../../../Maintenance/addnode.html>`_

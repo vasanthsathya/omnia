@@ -29,7 +29,7 @@ User permissions for ROCm platforms
         * This command must be run with ``root`` permissions.
         * If the root user wants to provide access to other users and their individual GPU nodes, the previous command needs to be run on all of them separately. ::
 
-* To enable users to use rocm tools, use the following command as shown in the below added sample file: ::
+* To enable users to use ROCm tools, use the following command as shown in the sample file below: ::
 
         /opt/rocm/bin/<rocm command>
 
