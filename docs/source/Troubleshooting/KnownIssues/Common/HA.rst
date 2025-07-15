@@ -15,6 +15,8 @@ High Availability (HA)
 
 ⦾ **In an HA-enabled OIM setup, while switching back from the passive to the active OIM, the telemetry containers fail to start up on the active OIM.**
 
-**Potential Cause**: This is a known issue and we are working on a fix.
+**Potential Cause**: To deploy telemetry data collection on the OIM, you need to execute ``prepare_oim.yml`` and ``telemetry.yml``. While switching back from passive to active OIM if containers are shifted before executing ``telemetry.yml`` on the passive OIM, then telemetry containers will not shift-back.
 
 **Resolution**: As a workaround, once the switch-over from passive to active OIM is complete, run the ``prepare_oim.yml`` playbook on the active OIM to bring up the telemetry containers.
+
+⦾ **
