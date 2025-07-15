@@ -15,14 +15,6 @@ Prerequisites
     ::
         yum groupinstall "Infiniband Support" -y
 
-5. Clone the Omnia repository from GitHub on to the OIM server using the following command: ::
-
-    git clone https://github.com/dell/omnia.git
-
-.. note:: If you do not specify a branch while cloning the repository, the ``omnia/main`` branch is cloned by default. To clone a specific branch, add ``-b <branch name>`` at the end of the git clone command. For example:
-    ::
-        git clone https://github.com/dell/omnia.git -b v2.0.0.0
-
-6. Clone the `Omnia artifacts repository <https://github.com/dell/omnia-artifactory/tree/omnia-container>`_ and then run the following command to build the container images. For detailed information, `click here <https://github.com/dell/omnia-artifactory/blob/omnia-container/README.md>`_. ::
+5. Clone the `Omnia artifacts repository <https://github.com/dell/omnia-artifactory/tree/omnia-container>`_ and then run the following command to build the container images. For detailed information, `click here <https://github.com/dell/omnia-artifactory/blob/omnia-container/README.md>`_. ::
 
     ./build_images.sh all
