@@ -49,7 +49,7 @@ For more information on how to fill up the input files, `click here <../../../Ut
 
 **Configure additional NICs and specify Kernel Parameters on the nodes during cluster provisioning**
 
-To do this, you need to add the necessary inputs to the ``input/network_spec.yml`` and ``input/server_spec.yml`` and then run the ``discovery_provision.yml`` playbook with your created `inventory file <../../samplefiles.html#inventory-file-for-additional-nic-and-kernel-parameter-configuration>`_. 
+To do this, you need to add the necessary inputs to the ``/opt/omnia/input/project_default/network_spec.yml`` and ``/opt/omnia/input/project_default/server_spec.yml`` and then run the ``discovery_provision.yml`` playbook with your created `inventory file <../../samplefiles.html#inventory-file-for-additional-nic-and-kernel-parameter-configuration>`_. 
 For more information on what inputs are required, `click here <../../AdvancedConfigurations/AdditionalNIC_rhel.html>`_.
 
 .. caution::
@@ -69,7 +69,7 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
 .. note::
 
-    * If the ``input/software_config.json`` has AMD ROCm and NVIDIA CUDA drivers mentioned, the AMD and NVIDIA accelerator drivers are installed on the nodes post provisioning.
+    * If the ``/opt/omnia/input/project_default/software_config.json`` has AMD ROCm and NVIDIA CUDA drivers mentioned, the AMD and NVIDIA accelerator drivers are installed on the nodes post provisioning.
 
     * After executing ``discovery_provision.yml`` playbook, you can check the log files available at ``/opt/omnia/log`` for more information.
 
@@ -81,7 +81,7 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
     * All ports required for xCAT to run will be opened (For a complete list, check out the `Security Configuration Document <../../../SecurityConfigGuide/ProductSubsystemSecurity.html#firewall-settings>`_).
 
-    * After running ``discovery_provision.yml``, the file ``input/provision_config_credentials.yml`` will be encrypted. To edit the file, use the command: ``ansible-vault edit omnia_config_credentials.yml --vault-password-file .omnia_config_credentials_key``
+    * After running ``discovery_provision.yml``, the file ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` will be encrypted. To edit the file, use the command: ``ansible-vault edit omnia_config_credentials.yml --vault-password-file .omnia_config_credentials_key``
 
     * Post execution of ``discovery_provision.yml``, IPs/hostnames cannot be re-assigned by changing the mapping file. However, the addition of new nodes is supported as explained `here <../../Maintenance/addnode.html>`_.
 
