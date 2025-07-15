@@ -343,7 +343,12 @@ def generate_inventory_for_node(node_info_db: tuple) -> None:
 
         if not hostname or not role_str:
             return
-
+        # Always create cluster_layout
+        cluster_layout_file = os.path.join(inventory_dir, "cluster_layout")
+        if not os.path.exists(cluster_layout_file):
+            with open(cluster_layout_file, 'w', encoding='utf-8') as f:
+                f.write(inventory_header)
+                
         if cluster_name and cluster_name.strip():
             inventory_file = os.path.join(inventory_dir, f"{cluster_name.strip()}_cluster_layout")
         else:
