@@ -1,7 +1,7 @@
 Cluster formation
 =====================
 
-1. In the ``/opt/omnia/input/omnia_config.yml``, ``/opt/omnia/input/security_config.yml``, and ``/opt/omnia/input/storage_config.yml`` files, provide the `required details <../schedulerinputparams.html>`_. For ``input/telemetry_config.yml``, the details can be found `here <../../../../Telemetry/index.html#id13>`_.
+1. In the ``/opt/omnia/input/project_default/omnia_config.yml``, ``/opt/omnia/input/project_default/security_config.yml``, and ``/opt/omnia/input/project_default/storage_config.yml`` files, provide the `required details <../schedulerinputparams.html>`_. For ``/opt/omnia/input/project_default/telemetry_config.yml``, the details can be found `here <../../../../Telemetry/index.html#id13>`_.
 
 2. Create an inventory file in the *omnia* folder. Check out the `sample inventory <../../../samplefiles.html>`_ for more information. If a hostname is used to refer to the target nodes, ensure that the domain name is included in the entry. IP addresses are also accepted in the inventory file.
 
