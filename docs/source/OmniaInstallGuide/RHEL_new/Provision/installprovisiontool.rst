@@ -17,7 +17,7 @@ Configurations made by the ``discovery_provision.yml`` playbook
 
 * Discovers all target servers.
 * PostgreSQL database is set up with all relevant cluster information such as MAC IDs, hostname, admin IP, BMC IPs etc.
-* Configures the OIM with NTP services for cluster  node synchronization.
+* Configures the OIM with NTP services for cluster node synchronization.
 * The minimal version of the RHEL operating system is provisioned on the primary disk partition on the nodes. If a BOSS Controller card is available on the target node, the operating system is provisioned on the BOSS card.
 
 [Optional] Additional configurations handled by the provision tool
