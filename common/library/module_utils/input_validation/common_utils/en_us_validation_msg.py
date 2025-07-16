@@ -202,7 +202,7 @@ ISO_FILE_PATH_NOT_CONTAIN_ISO_MSG = "The provided ISO file path must have the .i
 def iso_file_path_invalid_os_msg(iso_file_path, provision_os, provision_os_version):
     """Returns a formatted message indicating iso_file_path_not_contain_os_msg."""
     return (f'Make sure iso_file_path: {iso_file_path} variable in software_config.json contains value mentioned '
-            f'in the variables cluster_type: {provision_os} and cluster_os_version: '
+            f'in the variables cluster_os_type: {provision_os} and cluster_os_version: '
             f'{provision_os_version} mentioned in software_config.json')
 def os_version_fail_msg(cluster_os_type, min_version, max_version):
     """Returns a formatted message indicating os_version_fail_msg."""
