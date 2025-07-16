@@ -199,9 +199,9 @@ SMTP_SERVER_FAIL_MSG = ("Failed. smtp_server details are mandatory when "
 ISO_FILE_PATH_FAIL_MSG = ("The provided ISO file path is invalid. "
                          "Please ensure that the ISO file exists at the specified iso_file_path.")
 ISO_FILE_PATH_NOT_CONTAIN_ISO_MSG = "The provided ISO file path must have the .iso extension."
-def iso_file_path_not_contain_os_msg(provision_os, provision_os_version):
+def iso_file_path_invalid_os_msg(iso_file_path, provision_os, provision_os_version):
     """Returns a formatted message indicating iso_file_path_not_contain_os_msg."""
-    return (f'Make sure iso_file_path variable in provision_config.yml contains value mentioned '
+    return (f'Make sure iso_file_path: {iso_file_path} variable in software_config.json contains value mentioned '
             f'in the variables cluster_type: {provision_os} and cluster_os_version: '
             f'{provision_os_version} mentioned in software_config.json')
 def os_version_fail_msg(cluster_os_type, min_version, max_version):
@@ -280,8 +280,8 @@ BMC_VIRTUAL_IP_NOT_VALID = ("should be outside any bmc static and dynamic ranges
 FEILD_MUST_BE_EMPTY = "feild must be empty."
 DUPLICATE_VIRTUAL_IP = "is already used. Please give unique virtual ip address"
 INVALID_PASSIVE_NODE_SERVICE_TAG = "active node and passive node service tag cannot be same."
-GROUP_NOT_FOUND = "is not defined in the roles_config. Please define the group in roles_config."
-ROLE_NODE_FOUND = "is not defined in roles_config. Please define the role in roles_config."
+GROUP_NOT_FOUND = "is not defined in the roles_config.yml. Please define the group in roles_config.yml"
+ROLE_NODE_FOUND = "is not defined in roles_config.yml. Please define the role in roles_config.yml"
 DUPLICATE_ACTIVE_NODE_SERVICE_TAG = ("the service tag configured for a active node is already "
                                     "present elsewhere in the config file. ")
 DUPLICATE_PASSIVE_NODE_SERVICE_TAG = ("the service tag configured for a passive node is already "
