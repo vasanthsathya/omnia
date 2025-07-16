@@ -209,7 +209,7 @@ def os_version_fail_msg(cluster_os_type, min_version, max_version):
     if cluster_os_type == "ubuntu":
         return (f"For OS type '{cluster_os_type}', the version must be either {min_version} or "
                 f"{max_version}.")
-    return f"For OS type '{cluster_os_type}', the version must be {min_version}."
+    return f"For OS type '{cluster_os_type}', the supported version is {min_version}."
 def software_mandatory_fail_msg(software_name):
     """Returns a formatted message indicating software_mandatory_fail_msg."""
     return (f"in software_config.json. Please add the corresponding field '{software_name}' "
