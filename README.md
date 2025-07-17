@@ -178,6 +178,7 @@ Our thanks go to everyone who makes Omnia possible ([emoji key](https://allcontr
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Lakshmi-Patneedi"><img src="https://avatars.githubusercontent.com/u/94051091?v=4?s=100" width="100px;" alt="Lakshmi-Patneedi"/><br /><sub><b>Lakshmi-Patneedi</b></sub></a><br /><a href="https://github.com/dell/omnia/commits?author=Lakshmi-Patneedi" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Artlands"><img src="https://avatars.githubusercontent.com/u/31781106?v=4?s=100" width="100px;" alt="Jie Li"/><br /><sub><b>Jie Li</b></sub></a><br /><a href="https://github.com/dell/omnia/commits?author=Artlands" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://jlec.de"><img src="https://avatars.githubusercontent.com/u/79732?v=4?s=100" width="100px;" alt="Justin Lecher"/><br /><sub><b>Justin Lecher</b></sub></a><br /><a href="#ideas-jlec" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MoshiBin"><img src="https://avatars.githubusercontent.com/u/1297388?v=4?s=100" width="100px;" alt="Moshi Binyamini"/><br /><sub><b>Moshi Binyamini</b></sub></a><br /><a href="https://github.com/dell/omnia/commits?author=MoshiBin" title="Code">💻</a><a href="#maintenance-MoshiBin" title="Maintenance">🚧</a></td>
     </tr>
   </tbody>
 </table>
