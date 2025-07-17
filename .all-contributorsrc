@@ -184,7 +184,8 @@
       "profile": "https://github.com/Aditya-DP",
       "contributions": [
         "code",
-        "bug"
+        "bug",
+        "test"
       ]
     },
     {
@@ -194,7 +195,8 @@
       "profile": "https://github.com/Katakam-Rakesh",
       "contributions": [
         "code",
-        "bug"
+        "bug",
+        "test"
       ]
     },
     {
@@ -669,7 +671,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/52577117?v=4",
       "profile": "https://github.com/Milisha-Gupta",
       "contributions": [
-        "code"
+        "code",
+        "test"
       ]
     },
     {
@@ -723,7 +726,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/169249531?v=4",
       "profile": "https://github.com/Kratika-P",
       "contributions": [
-        "code"
+        "code",
+        "test"
       ]
     },
     {
@@ -741,7 +745,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/169263232?v=4",
       "profile": "https://github.com/VrindaMarwah",
       "contributions": [
-        "code"
+        "code",
+        "test"
       ]
     },
     {
@@ -759,6 +764,7 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/169248535?v=4",
       "profile": "https://github.com/balajikumaran-c-s",
       "contributions": [
+        "code",
         "test",
         "bug",
         "code"
@@ -878,7 +884,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/pranavkumar74980",
       "profile": "https://github.com/pranavkumar74980",
       "contributions": [
-        "code"
+        "code",
+        "test"
       ]
     },
     {
@@ -1019,6 +1026,16 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/208789597?v=4",
       "profile": "https://github.com/Sindhu-Ranganath",
       "contributions": [
+        "test"
+      ]
+    },
+    {
+      "login": "Manasa-Hemmanur",
+      "name": "Manasa H",
+      "avatar_url": "https://avatars.githubusercontent.com/u/205002578?v=4",
+      "profile": "https://github.com/Manasa-Hemmanur",
+      "contributions": [
+        "code",
         "test"
       ]
     }
