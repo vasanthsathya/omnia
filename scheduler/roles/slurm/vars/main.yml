@@ -106,6 +106,7 @@ slurm_support_msg: "Slurm is not added in software_config, hence skipping slurm 
 share_unavailable_msg: "Slurm install type is nfs_share, but share_path not available, hence skipping slurm deployment"
 
 # Usage: slurm-pam
+enable_slurm_pam: true
 pam_sshd_path: /etc/pam.d/sshd
 pam_sshd_regexp: "^account    required"
 pam_sshd_config_compute: "account    required     pam_slurm_adopt.so action_no_jobs=deny"

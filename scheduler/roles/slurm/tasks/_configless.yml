@@ -130,4 +130,3 @@
     - name: Enable etc enviroment
       ansible.builtin.shell: source {{ sys_env_path }} # noqa: command-instead-of-shell
       changed_when: false
-
