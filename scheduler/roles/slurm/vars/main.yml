@@ -109,3 +109,6 @@ share_unavailable_msg: "Slurm install type is nfs_share, but share_path not avai
 pam_sshd_path: /etc/pam.d/sshd
 pam_sshd_regexp: "^account    required"
 pam_sshd_config_compute: "account    required     pam_slurm_adopt.so action_no_jobs=deny"
+slurm_pam_packages:
+  RedHat:
+    - slurm-pam_slurm

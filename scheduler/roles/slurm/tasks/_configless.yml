@@ -131,9 +131,3 @@
       ansible.builtin.shell: source {{ sys_env_path }} # noqa: command-instead-of-shell
       changed_when: false
 
-    - name: Create a symbolic link for slurm conf
-      ansible.builtin.file:
-        src: "{{ slurm_share_prefix }}{{ slurm_config_dir }}/slurm.conf"
-        dest: "/{{ slurm_config_dir }}/slurm.conf"
-        state: link
-        force: true

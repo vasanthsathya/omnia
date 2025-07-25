@@ -51,12 +51,6 @@
     - "{{ slurm_conf_dict['SlurmdLogFile'] }}"
     - "{{ slurm_conf_dict['SlurmdPidFile'] }}"
 
-- name: Modify sshd file for slurm pam configuration
-  ansible.builtin.lineinfile:
-    path: "{{ pam_sshd_path }}"
-    insertafter: "{{ pam_sshd_regexp }}"
-    line: "{{ pam_sshd_config_compute }}"
-
 - name: Remove the local slurm conf # !!?? this is taking prirority
   ansible.builtin.file:
     path: "/{{ slurm_config_dir }}/slurm.conf"
