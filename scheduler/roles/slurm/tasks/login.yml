@@ -127,7 +127,7 @@
     src: "{{ slurm_share_prefix }}{{ slurm_config_dir }}/slurm.conf"
     dest: "/{{ slurm_config_dir }}/slurm.conf"
     state: link
-    force: yes
+    force: true
   when: slurm_installation_type == nfs_share_slurm
 
 - name: Enable etc enviroment

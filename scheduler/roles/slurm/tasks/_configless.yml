@@ -136,4 +136,4 @@
         src: "{{ slurm_share_prefix }}{{ slurm_config_dir }}/slurm.conf"
         dest: "/{{ slurm_config_dir }}/slurm.conf"
         state: link
-        force: yes
+        force: true
