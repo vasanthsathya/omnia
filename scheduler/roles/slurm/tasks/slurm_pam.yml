@@ -29,7 +29,8 @@
   when: '"slurm_node" in group_names'
 
 
-# Login node and NFS
+# Slurm_pam needs slurm.conf in the default path /etc/slurm
+# Creating symlink for nfs_share mode
 - name: Create a symbolic link for slurm conf (login node)
   ansible.builtin.file:
     src: "{{ slurm_share_prefix }}{{ slurm_config_dir }}/slurm.conf"
