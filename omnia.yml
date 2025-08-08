@@ -23,6 +23,10 @@
         cacheable: true
       when: not (config_file_status | default(false) | bool)
 
+    - name: Set fact for compute k8s playbook
+      ansible.builtin.set_fact:
+        compute_k8s_playbook: true
+
 - name: Invoke validate_config.yml to perform L1 and L2 validations
   ansible.builtin.import_playbook: input_validation/validate_config.yml
 
@@ -56,7 +60,7 @@
         apt_lock_status: true
 
 - name: Gather facts from all the nodes
-  hosts: slurm_control_node, slurm_node, slurm_dbd, login, kube_control_plane, kube_node, etcd, auth_server
+  hosts: slurm_control_node, slurm_node, login, kube_control_plane, kube_node, etcd, auth_server
   gather_facts: true
 
 - name: Validate all input parameters

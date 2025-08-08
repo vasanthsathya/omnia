@@ -26,6 +26,20 @@
   ansible.builtin.set_fact:
     service_oim_groups: "{{ sn_oim_group_list | join(',') }}"
 
+- name: Create a list of unique roles
+  ansible.builtin.set_fact:
+    all_roles: "{{ (all_roles | default([])) + ((item | default('') | string).split(',') | map('trim') | list) }}"
+  loop: "{{ discovered_nodes | map(attribute='role') | select('defined') | list }}"
+  when: item | length > 0
+
+- name: Fetch list of unique supported roles
+  ansible.builtin.set_fact:
+    fetch_k8s_service_roles: "{{ all_roles | unique | select('in', k8s_service_cluster_roles) | list }}"
+
+- name: Set xcat_target_groups for k8s service cluster as comma-separated string
+  ansible.builtin.set_fact:
+    k8s_service_groups: "{{ fetch_k8s_service_roles | join(',') }}"
+
 - name: Configure postbootscripts
   ansible.builtin.command: "{{ xcat_path }}/chdef all postbootscripts=\"otherpkgs\""
   changed_when: true
@@ -52,6 +66,14 @@
   with_items: "{{ service_node_postbootscript_path }}"
   when: service_role_required
 
+- name: Copy k8s service cluster postboot script to postscripts
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: "{{ k8s_service_cluster_postbootscript_path }}"
+  when: fetch_k8s_service_roles | length > 0
+
 - name: Copy allow firewall postboot script to postscripts
   ansible.builtin.template:
     src: "{{ item.src }}"
@@ -74,3 +96,8 @@
   ansible.builtin.command: "{{ xcat_path }}/chdef {{ service_oim_groups }} -p postbootscripts=\"omnia_allow_firewall_ports\""
   changed_when: true
   when: service_oim_groups != ''
+
+- name: Configure k8s service cluster postboot script to postscripts
+  ansible.builtin.command: "{{ xcat_path }}/chdef {{ k8s_service_groups }} -p postbootscripts=\"omnia_k8s_service_cluster_postboot\""
+  changed_when: true
+  when: k8s_service_groups != ''

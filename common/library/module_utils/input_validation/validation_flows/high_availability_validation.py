@@ -76,11 +76,11 @@ def check_and_validate_ha_role_in_roles_config(errors, roles_config_json, ha_rol
                 create_error_msg(
                     f"group: '{group}' associated for role",
                     ha_role,
-                    en_us_validation_msg.group_not_found,
+                    en_us_validation_msg.GROUP_NOT_FOUND,
                 )
             )
     else:
-        errors.append(create_error_msg("role", ha_role, en_us_validation_msg.role_node_found))
+        errors.append(create_error_msg("role", ha_role, en_us_validation_msg.ROLE_NODE_FOUND))
 
 
 def get_admin_static_dynamic_ranges(network_spec_json):
@@ -262,7 +262,7 @@ def validate_service_tag_presence(
             create_error_msg(
                 f"{config_type}",
                 active_node_service_tag,
-                en_us_validation_msg.duplicate_active_node_service_tag,
+                en_us_validation_msg.DUPLICATE_ACTIVE_NODE_SERVICE_TAG,
             )
         )
 
@@ -276,7 +276,7 @@ def validate_service_tag_presence(
                     create_error_msg(
                         f"{config_type}",
                         service_tag,
-                        en_us_validation_msg.duplicate_passive_node_service_tag,
+                        en_us_validation_msg.DUPLICATE_PASSIVE_NODE_SERVICE_TAG,
                     )
                 )
 
@@ -314,7 +314,7 @@ def validate_vip_address(
             create_error_msg(
                 f"{config_type} virtual_ip_address:",
                 vip_address,
-                en_us_validation_msg.duplicate_virtual_ip,
+                en_us_validation_msg.DUPLICATE_VIRTUAL_IP,
             )
         )
     else:
@@ -345,7 +345,6 @@ def validate_vip_address(
                 )
             )
 
-
 def validate_k8s_head_node_ha(
     errors,
     config_type,
@@ -375,39 +374,42 @@ def validate_k8s_head_node_ha(
     Returns:
         None: Errors are collected in the provided `errors` list.
     """
-    # get network_spec data
     admin_network = network_spec_data["admin_network"]
     admin_static_range = admin_network.get("static_range", "N/A")
     admin_dynamic_range = admin_network.get("dynamic_range", "N/A")
     oim_admin_ip = network_spec_data["oim_admin_ip"]
-    does_overlap = []
-    external_loadbalancer_ip = ha_data.get("external_loadbalancer_ip")
-    active_node_service_tags = ha_data.get("active_node_service_tags")
-    # validate active_node_service_tag and passive_node_service_tag
-    all_service_tags_set = set(all_service_tags)
-    active_node_service_tags_set = set(active_node_service_tags)
 
-    # Find the intersection
-    common_tags = all_service_tags_set & active_node_service_tags_set
+    if not isinstance(ha_data, list):
+        ha_data = [ha_data]
+    for hdata in ha_data:
+        does_overlap = []
+        external_loadbalancer_ip = hdata.get("external_loadbalancer_ip")
+        active_node_service_tags = hdata.get("active_node_service_tags")
+        # validate active_node_service_tag and passive_node_service_tag
+        all_service_tags_set = set(all_service_tags)
+        active_node_service_tags_set = set(active_node_service_tags)
 
-    # Optional: check if there are common values
-    if common_tags:
-        errors.append(
-            create_error_msg(
-                f"{config_type}",
-                common_tags,
-                en_us_validation_msg.duplicate_active_node_service_tag,
+        # Find the intersection
+        common_tags = all_service_tags_set & active_node_service_tags_set
+
+        # Optional: check if there are common values
+        if common_tags:
+            errors.append(
+                create_error_msg(
+                    f"{config_type}",
+                    common_tags,
+                    en_us_validation_msg.DUPLICATE_ACTIVE_NODE_SERVICE_TAG,
+                )
             )
-        )
 
-    if external_loadbalancer_ip:
-        ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
-        does_overlap, _ = validation_utils.check_overlap(ip_ranges)
+        if external_loadbalancer_ip:
+            ip_ranges = [admin_static_range, admin_dynamic_range, external_loadbalancer_ip]
+            does_overlap, _ = validation_utils.check_overlap(ip_ranges)
 
-    if does_overlap:
-        errors.append(
-            create_error_msg("IP overlap -", None, en_us_validation_msg.IP_OVERLAP_FAIL_MSG)
-        )
+        if does_overlap:
+            errors.append(
+                create_error_msg("IP overlap -", None, en_us_validation_msg.IP_OVERLAP_FAIL_MSG)
+            )
 
 
 def validate_service_node_ha(
@@ -517,7 +519,7 @@ def validate_oim_ha(
                     errors.append(create_error_msg(
                         f"{config_type} bmc_virtual_ip_address conflict with roles_config",
                         bmc_virtual_ip,
-                        en_us_validation_msg.bmc_virtual_ip_not_valid
+                        en_us_validation_msg.BMC_VIRTUAL_IP_NOT_VALID
                     ))
 
         bmc_vip_conflict_dynamic = False
@@ -544,7 +546,7 @@ def validate_oim_ha(
             errors.append(create_error_msg(
                 f"{config_type} bmc_virtual_ip_address conflict with network_spec",
                 bmc_virtual_ip,
-                en_us_validation_msg.bmc_virtual_ip_not_valid
+                en_us_validation_msg.BMC_VIRTUAL_IP_NOT_VALID
             ))
 
 # Dispatch table maps config_type to validation handler
@@ -552,8 +554,9 @@ ha_validation = {
     "service_node_ha": validate_service_node_ha,
     # Add more config_type functions here as needed
     "oim_ha": validate_oim_ha,
-    # "slurm_head_node_ha":validation_slurm_head_node_ha
-    "k8s_head_node_ha": validate_k8s_head_node_ha
+    # "slurm_head_node_ha":validation_slurm_head_node_ha # TODO: Add slurm head node validation
+    "service_k8s_cluster_ha": validate_k8s_head_node_ha,
+    "compute_k8s_cluster_ha": validate_k8s_head_node_ha
 }
 
 
