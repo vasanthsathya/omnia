@@ -98,8 +98,8 @@ The omnia.sh --help command provides usage instructions for managing the OMNIA C
 
    The help menu typically includes: 
 
-   * --install: Deploy the OMNIA Core Container and configure it as a SystemD service.
-   * --uninstall: Stop and remove the OMNIA Core Container and associated service.
-   * --help: Display usage information.
+   * ``--install``: Deploy the OMNIA Core Container and configure it as a SystemD service.
+   * ``--uninstall``: Stop and remove the OMNIA Core Container and associated service.
+   * ``--help``: Display usage information.
 
 .. note:: Provide any file paths (ISO, mapping files, etc.) that are mentioned in input files in the ``/opt/omnia`` directory.
