@@ -5,8 +5,8 @@ The OMNIA Core Container is deployed on the Omnia Infrastructure Manager (OIM) a
 It operates in a diskless (stateless) mode, where no data is stored inside the container.
 You can use the ``omnia.sh`` script to install, uninstall, and view help on the actions that you can perform on the OMNIA Core Container. 
 
-Prerequisites
----------------
+Prerequisites for deploying the Omnia core container
+-----------------------------------------------------
 
 * The OIM has internet access to download necessary packages for cluster deployment and configuration.
 * The OIM much have two active Network Interface Cards (NICs): 
@@ -74,12 +74,12 @@ The script also performs the following:
       ./omnia.sh -uninstall playbook
 
 
-Access the OMNIA Core Container
+Access the Omnia Core Container
 ----------------------------------------
 
-You can access the OMNIA Core Container using either of the following methods:
+You can access the Omnia Core Container using either of the following methods:
 
-1. **Podman**: To access the OMNIA Core Container using Podman, run the following command:
+1. **Podman**: To access the Omnia Core Container using Podman, run the following command:
 
         podman exec -it -u root omnia_core bash
 
@@ -88,7 +88,7 @@ You can access the OMNIA Core Container using either of the following methods:
         ssh omnia_core
 
 
-Uninstall OMNIA Core Container
+Uninstall Omnia Core Container
 -------------------------------
 
 **Prerequisites**: ensure that there are no other containers on the OIM except ``omnia_core``. If you have other containers running on the OIM, run the ``oim_cleanup.yml`` playbook to delete those.

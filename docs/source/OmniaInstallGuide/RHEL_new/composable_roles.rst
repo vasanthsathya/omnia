@@ -1,9 +1,9 @@
-Step 2: Composable roles in Omnia
+Step 2: Composable groups and functional groups in Omnia
 ==================================
 
-In Omnia, nodes are organized based on their assigned roles. Nodes with the same role can be clubbed under a group. By combining both roles and groups, Omnia offers a powerful and flexible approach to managing large-scale node infrastructures, ensuring both logical organization and physical optimization of resources.
+In Omnia, nodes are organized based on their assigned groups and functional groups. By combining both groups and functional groups, Omnia offers a powerful and flexible approach to managing large-scale node infrastructures, ensuring both logical organization and physical optimization of resources.
 
-* **Role**: A role defines what a node does in the system. It is a way to categorize nodes based on their functionality. For example, a node could have the role of a Login server, a Compiler, a K8Worker (Kubernetes Worker), or a SLURMWorker (a node in a slurm job scheduler system). Roles help group nodes that perform similar tasks, making it easier to manage and assign resources.
+* **Functional Group**: A functional group defines what a node does in the system. It is a way to categorize nodes based on their functionality. For example, a node could have the role of a Login server, a Compiler, a K8Worker (Kubernetes Worker), or a SLURMWorker (a node in a slurm job scheduler system). Roles help group nodes that perform similar tasks, making it easier to manage and assign resources.
 
 * **Group**: A group is based on the physical characteristics of the nodes. It refers to nodes that are located in the same place or have similar hardware. For example, nodes in the same rack or SU (Scalable Unit) might be grouped together, with specific roles like HeadNode or ServiceNode. Groups help with physical organization and management of nodes.
 
@@ -54,28 +54,16 @@ Here's a sample (using mapping file) for your reference:
         grp0:
             location_id: SU-1.RACK-1
             cluster_name: "service_node_cluster"
-            resource_mgr_id: ""
             parent: ""
-            bmc_details:
-                static_range: ""
-            switch_details:
-                ip: ""
-                ports: ""
             architecture: "x86_64"
 
         grp1:
             location_id: SU-1.RACK-2
             cluster_name: "slurm_node_cluster"
-            resource_mgr_id: ""
             parent: ""
-            bmc_details:
-                static_range: ""
-            switch_details:
-                ip: ""
-                ports: ""
-            architecture: "aarch64"
+            architecture: "ARM"
 
-    Roles:
+    Functional Groups:
         - name: "default"
           groups:
             - grp0
