@@ -53,7 +53,7 @@ A sample of the ``network_spec.yml`` where nodes are discovered using a **mappin
 Add necessary inputs to the ``provision_config.yml`` file for the provisioning of the cluster. Use the below table as reference while doing so:
 
 .. csv-table:: provision_config.yml
-   :file: ../../Tables/local_repo_config_rhel.csv
+   :file: ../../Tables/Provision_config.csv
    :header-rows: 1
    :keepspace:
 

@@ -28,7 +28,7 @@ Kubernetes worker node - ``kube_node``,Compute,x86_64 and aarch64,"* This  funct
         groups:
           - grp0
           - grp1"
-Service Cluster Kubernetes worker node - ``service_kube_node``,Management,x86_64 and aarch64,"* This  functional_group is used to configure the Kubernetes worker nodes on service cluster. This  functional group should not have same group as ``kube_node``  functional group.
+Service Cluster Kubernetes worker node - ``service_kube_node``,Management,x86_64 and aarch64,"* This  functional group is used to configure the Kubernetes worker nodes on service cluster. This  functional group should not have same group as ``kube_node``  functional group.
 * The nodes included in this  functional group will have the necessary tools and configurations to configure and run Kubernetes worker on service cluster.
 * ``service_kube_node``  functional group: Service Cluster Kubernetes worker node groups can be provided in this  functional group.
 
