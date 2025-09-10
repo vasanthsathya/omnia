@@ -33,7 +33,7 @@ Install Omnia core container
 The ``omnia.sh --install`` command is used to deploy the OMNIA Core Container on the OIM. This container is managed as a SystemD service (omnia_core.service) 
 and serves as the central orchestration point for provisioning and configuring the HPC clusters.
 
-1. Download the ``omnia.sh`` script from the Dell Omnia GitHub repository::
+1. Download the ``omnia.sh`` script from the Dell Omnia GitHub repository. To download, run the following command::
 
     OMNIA_BRANCH=(OMNIA_Version)
     wget https://raw.githubusercontent.com/dell/omnia/refs/heads/$OMNIA_BRANCH/omnia.sh

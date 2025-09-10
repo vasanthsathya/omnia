@@ -1,6 +1,6 @@
 Step 6: Verify the status of Omnia Core Container Service and associated services
 =================================================================================
-After deploying the Omnai Core Container, you can verify that the Omnia core service and
+After deploying the Omnia Core Container, you can verify that the Omnia core service and
 its dependent services are running correctly.
 
 1. Run the following command to check the status of the OMNIA Core service:
