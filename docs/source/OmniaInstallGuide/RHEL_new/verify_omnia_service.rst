@@ -1,5 +1,6 @@
 Step 6: Verify the status of Omnia Core Container Service and associated services
 =================================================================================
+
 After deploying the Omnia Core Container, you can verify that the Omnia core service and
 its dependent services are running correctly.
 
@@ -49,4 +50,32 @@ its dependent services are running correctly.
    * A **green circle** indicates that the service is running.
    * A **grey circle** indicates that the service is not running.
    * A **circle with a cross** indicates that the service failed to start.
+
+View usage instructions for OpenCHAMI Containers
+--------------------------------------------------
+
+The ``ochami --help`` command provides usage instructions for interacting with **OpenCHAMI services**.  
+The help menu lists the supported commands you can use for node discovery, provisioning, and service management.
+
+1. Access the OpenCHAMI container via Podman or SSH.
+
+2. On the Omnia Infrastructure Manager (OIM), run the following command::
+
+       ochami --help
+
+The help menu includes:
+
+* ``bss``: Communicate with the Boot Script Service (BSS).
+* ``cloud-init``: Interact with the cloud-init service.
+* ``completion``: Generate the autocompletion script for the specified shell.
+* ``config``: View or modify configuration options.
+* ``discover``: Perform static or dynamic discovery of nodes.
+* ``pcs``: Interact with the Power Control Service (PCS).
+* ``smd``: Communicate with the State Management Database (SMD).
+* ``version``: Display detailed version information and exit.
+* ``help``: Display help for a specific command.
+
+For more details about a specific command, run::
+
+   ochami [command] --help
 

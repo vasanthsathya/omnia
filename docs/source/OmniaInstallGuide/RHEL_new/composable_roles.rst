@@ -30,8 +30,6 @@ Group attributes
 
 Nodes with similar roles or functionalities can be grouped together. To do so, fill up the ``roles_config.yml`` input file in the ``/opt/omnia/input/project_default`` directory which includes all necessary attributes for the nodes, based on their role within the cluster. Each group will have following attributes as indicated in the table below:
 
-.. note:: Groups associated with the ``service_kube_control_plane``, ``service_etcd``, ``service_kube_node``, and ``oim_ha_node`` roles should not be used to fulfill any other roles.
-
 .. csv-table:: Group attributes
    :file: ../../Tables/group_attributes.csv
    :header-rows: 1
@@ -42,18 +40,12 @@ Sample
 
 Here's a sample (using mapping file) for your reference:
 
-.. note:: 
-    
-    * If you want to use BMC discovery mechanism, ensure to provide the value for BMC ``static_range``.
-    * If you want to use switch-based discovery, ensure to provide the switch ``ip`` and ``port`` along with the BMC details.
-
-
 ::
     
-    Groups:
+    groups:
         grp0:
             location_id: SU-1.RACK-1
-            cluster_name: "service_node_cluster"
+            cluster_name: ""
             parent: ""
             architecture: "x86_64"
 
@@ -61,14 +53,14 @@ Here's a sample (using mapping file) for your reference:
             location_id: SU-1.RACK-2
             cluster_name: "slurm_node_cluster"
             parent: ""
-            architecture: "ARM"
+            architecture: "aarch64"
 
-    Functional Groups:
+    functional_groups:
         - name: "default"
           groups:
             - grp0
 
-        - name: "service_kube_control_plane"
+        - name: "slurm_node"
           groups:
             - grp1
 
