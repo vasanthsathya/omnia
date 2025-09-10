@@ -37,7 +37,7 @@ and serves as the central orchestration point for provisioning and configuring t
 
    ::
 
-        OMNIA_BRANCH=<OMNIA_Version>
+        OMNIA_BRANCH=(OMNIA_Version)
         wget https://raw.githubusercontent.com/dell/omnia/refs/heads/$OMNIA_BRANCH/omnia.sh
         chmod +x omnia.sh
 
