@@ -145,8 +145,8 @@ The help menu lists the supported actions you can perform, such as installing an
    * ``--help``: Display usage information.
 
 
-View usage instructions for Ochami
-----------------------------------
+View usage instructions for Ochami Containers
+----------------------------------------------
 
 The ``ochami --help`` command provides usage instructions for interacting with **OpenCHAMI services**.  
 The help menu lists the supported commands you can use for node discovery, provisioning, and service management.
