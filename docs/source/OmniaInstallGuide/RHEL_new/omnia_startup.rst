@@ -2,7 +2,7 @@ Step 1: Deploy Omnia core container
 =========================================
 
 The OMNIA Core Container is deployed on the Omnia Infrastructure Manager (OIM) and it is managed as a SystemD service (``omnia_core.service``). 
-It operates in a diskless (stateless) mode, where no data is stored inside the container.
+It operates in a diskless (stateless) mode, where no data is stored inside the container. As part of cluster setup, Omnia integrates with Ochami that provides the capabilities for node discovery and provisioning.
 You can use the ``omnia.sh`` script to install, uninstall, and view help on the actions that you can perform on the OMNIA Core Container. 
 
 Prerequisites for deploying the Omnia core container
@@ -33,12 +33,18 @@ Install Omnia core container
 The ``omnia.sh --install`` command is used to deploy the OMNIA Core Container on the OIM. This container is managed as a SystemD service (omnia_core.service) 
 and serves as the central orchestration point for provisioning and configuring the HPC clusters.
 
-1. On the OIM, run the following command::
+1. Download the ``omnia.sh` script from the Dell Omnia GitHub repository.::
+
+   OMNIA_BRANCH=<OMNIA_Version>
+   wget https://raw.githubusercontent.com/dell/omnia/refs/heads/$OMNIA_BRANCH/omnia.sh
+   chmod +x omnia.sh
+
+2. On the OIM, run the following command::
 
    ./omnia.sh --install
 
-2. When promted for the shared path, enter the path for the OMNIA shared directory. This can be a local file path or an NFS share path.
-3. When prompted for the password, enter a secure alphanumeric password for accessing the OMNIA Core Container.
+3. When promted for the shared path, enter the path for the OMNIA shared directory. This can be a local file path or an NFS share path.
+4. When prompted for the password, enter a secure alphanumeric password for accessing the OMNIA Core Container.
    
 .. caution:: The password must not contain special characters such as \ , | , & , ; , ` , < > , * , ? , ! , $ , ( ) , { } , [ ] . 
   
@@ -64,7 +70,7 @@ The ``omnia.sh`` script performs the following tasks:
 
   ``omnia``:  Contains the OMNIA source code.  
 
-  ``/opt/workdir/omnia/log/core/playbooks``: Contains the playbook execution logs.  
+  ``/opt/omnia/log/core/playbooks``: Contains the playbook execution logs.  
 
 .. note::
 
@@ -94,9 +100,6 @@ You can access the Omnia Core Container using either of the following methods:
 Uninstall Omnia Core Container
 -------------------------------
 
-Uninstall Omnia Core Container
-==============================
-
 The ``omnia.sh --uninstall`` command removes the ``omnia_core`` container and its associated SystemD service 
 (``omnia_core.service``). It also cleans up the Omnia shared directory and generated files, while preserving 
 user-generated files such as inventory and mapping files.
@@ -123,15 +126,15 @@ To uninstall the Omnia Core Container, do the following:
    * Preserves user-generated files (for example, inventory and mapping files).
 
 
-View Help
------------
+View usage instructions for Omnia Core Container
+-------------------------------------------------
 
 The ``omnia.sh --help`` command provides usage instructions for managing the Omnia Core Container. 
 The help menu lists the supported actions you can perform, such as installing and uninstalling the Omnia Core Container.
 
 1. Access the Omnia Core Container via Podman or SSH.
 
-2. On the Omnia Infrastructure Manager (OIM), run the help command::
+2. On the Omnia Infrastructure Manager (OIM), run the following command::
 
        ./omnia.sh --help
 
@@ -140,3 +143,52 @@ The help menu lists the supported actions you can perform, such as installing an
    * ``--install``: Deploy the ``omnia_core`` container and configure it as a SystemD service.
    * ``--uninstall``: Stop and remove the ``omnia_core`` Container and its associated service.
    * ``--help``: Display usage information.
+
+
+View usage instructions for Ochami
+----------------------------------
+
+The ``ochami --help`` command provides usage instructions for interacting with **OpenCHAMI services**.  
+The help menu lists the supported commands you can use for node discovery, provisioning, and service management.
+
+1. Access the Ochami container via Podman or SSH.
+
+2. On the Omnia Infrastructure Manager (OIM), run the following command::
+
+       ochami --help
+
+The help menu includes:
+
+* ``bss``: Communicate with the Boot Script Service (BSS).
+* ``cloud-init``: Interact with the cloud-init service.
+* ``completion``: Generate the autocompletion script for the specified shell.
+* ``config``: View or modify configuration options.
+* ``discover``: Perform static or dynamic discovery of nodes.
+* ``pcs``: Interact with the Power Control Service (PCS).
+* ``smd``: Communicate with the State Management Database (SMD).
+* ``version``: Display detailed version information and exit.
+* ``help``: Display help for a specific command.
+
+The following flags can be used with ``ochami``:
+
+.. code-block:: text
+
+   --cacert string        Path to root CA certificate in PEM format
+-C, --cluster string       Name of cluster whose config to use for this command
+-u, --cluster-uri string   Base URI for OpenCHAMI services, excluding service base path
+                           (overrides cluster.uri in config file)
+-c, --config string        Path to configuration file to use
+-h, --help                 Show help for ochami
+    --ignore-config        Do not use any config file
+-k, --insecure             Do not verify TLS certificates
+-L, --log-format string    Log format (json, rfc3339, basic)
+-l, --log-level string     Set verbosity of logs (info, warning, debug)
+    --no-token             Do not check for or use an access token
+-t, --token string         Access token to present for authentication
+-v, --verbose              Enable verbose output before logging is initialized
+    --version              Show version for ochami
+
+For more details about a specific command, run::
+
+   ochami [command] --help
+
