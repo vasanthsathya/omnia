@@ -169,25 +169,6 @@ The help menu includes:
 * ``version``: Display detailed version information and exit.
 * ``help``: Display help for a specific command.
 
-The following flags can be used with ``ochami``:
-
-.. code-block:: text
-
-   --cacert string        Path to root CA certificate in PEM format
--C, --cluster string       Name of cluster whose config to use for this command
--u, --cluster-uri string   Base URI for OpenCHAMI services, excluding service base path
-                           (overrides cluster.uri in config file)
--c, --config string        Path to configuration file to use
--h, --help                 Show help for ochami
-    --ignore-config        Do not use any config file
--k, --insecure             Do not verify TLS certificates
--L, --log-format string    Log format (json, rfc3339, basic)
--l, --log-level string     Set verbosity of logs (info, warning, debug)
-    --no-token             Do not check for or use an access token
--t, --token string         Access token to present for authentication
--v, --verbose              Enable verbose output before logging is initialized
-    --version              Show version for ochami
-
 For more details about a specific command, run::
 
    ochami [command] --help
