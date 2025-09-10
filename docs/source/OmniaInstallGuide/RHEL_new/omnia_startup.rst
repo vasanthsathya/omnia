@@ -35,9 +35,11 @@ and serves as the central orchestration point for provisioning and configuring t
 
 1. Download the ``omnia.sh`` script from the Dell Omnia GitHub repository::
 
-   OMNIA_BRANCH=<OMNIA_Version>
-   wget https://raw.githubusercontent.com/dell/omnia/refs/heads/$OMNIA_BRANCH/omnia.sh
-   chmod +x omnia.sh
+   ::
+
+        OMNIA_BRANCH=<OMNIA_Version>
+        wget https://raw.githubusercontent.com/dell/omnia/refs/heads/$OMNIA_BRANCH/omnia.sh
+        chmod +x omnia.sh
 
 
 2. On the OIM, run the following command::
