@@ -14,4 +14,5 @@ Prerequisites
 5. Clone the `Omnia artifacts repository <https://github.com/dell/omnia-artifactory/tree/omnia-container>`_ and then run the following command to build the container images. For detailed information, `click here <https://github.com/dell/omnia-artifactory/blob/omnia-container/README.md>`_. ::
 
     git clone https://github.com/dell/omnia-artifactory.git
+    cd omnia-artifactory
     ./build_images.sh all
