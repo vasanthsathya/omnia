@@ -6,7 +6,7 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the OpenCHAMI containers.
 * Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
 * Sets up the Pulp container: ``pulp``
-` 
+
 
 Prerequisite
 ----------------
@@ -56,6 +56,14 @@ Add necessary inputs to the ``provision_config.yml`` file for the provisioning o
    :file: ../../Tables/Provision_config.csv
    :header-rows: 1
    :keepspace:
+
+
+3. ``local_repo_config.yml``
+-------------------------------
+
+Add pulp_protocol_https (type- Boolean): This enables a secure communication to the pulp server. By default,  is set to true, so it runs with HTTPS. 
+To connect to the pulp server using HTTPS, select true. To connect to the pulp server using HTTP, select false.
+
 
 Playbook execution
 -------------------

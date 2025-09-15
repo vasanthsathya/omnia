@@ -27,8 +27,8 @@ its dependent services are running correctly.
       ● ├─omnia_core.service
       ● ├─network-online.target
       ● │ └─NetworkManager-wait-online.service
-      ● ├─(enter the kubespray service)
-      ● ├─(enter the pulp service)
+      ● ├─kubespray.service[k8s]
+      ● ├─pulp.service
       ● └─openchami.target
       ●   ├─acme-deploy.service
       ●   ├─acme-register.service
