@@ -15,8 +15,7 @@ Follow the below steps to deploy the Omnia container on RHEL-based platforms:
     input_validator
     prepare_oim
     verify_omnia_service
-    HighAvailability/index
+    build_images
     CreateLocalRepo/index
-    Provision/index
-    ViewInventory
-    OmniaCluster/index
+    HighAvailability/index
+    Provision/index    

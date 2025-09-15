@@ -13,5 +13,4 @@ The ``discovery_provision.yml`` playbook achieves the following tasks:
     provisionprereqs
     DiscoveryMechanisms/index
     provisionparams
-    installprovisiontool
-    ViewingDB
+    installprovisiontool   
