@@ -8,7 +8,7 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the Pulp container: ``pulp``
 ` 
 
-Prerequisite
+Prerequisite1
 ----------------
 
 Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
