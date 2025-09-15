@@ -57,6 +57,14 @@ Add necessary inputs to the ``provision_config.yml`` file for the provisioning o
    :header-rows: 1
    :keepspace:
 
+
+3. ``local_repo_config.yml``
+-------------------------------
+
+Add pulp_protocol_https (type- Boolean): This enables a secure communication to the pulp server. By default,  is set to true, so it runs with HTTPS. 
+To connect to the pulp server using HTTPS, select true. To connect to the pulp server using HTTP, select false.
+
+
 Playbook execution
 -------------------
 
