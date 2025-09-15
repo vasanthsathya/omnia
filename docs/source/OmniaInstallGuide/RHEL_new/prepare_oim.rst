@@ -6,9 +6,9 @@ The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 * Sets up the OpenCHAMI containers.
 * Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
 * Sets up the Pulp container: ``pulp``
-` 
 
-Prerequisite1
+
+Prerequisite
 ----------------
 
 Ensure that the system time is synchronized across all compute nodes and the OIM. Time mismatch can lead to certificate-related issues during or after the ``prepare_oim.yml`` playbook execution.
