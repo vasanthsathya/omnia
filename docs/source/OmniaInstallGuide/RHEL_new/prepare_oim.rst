@@ -3,13 +3,10 @@ Step 5: Execute the ``prepare_oim.yml`` playbook
 
 The ``prepare_oim.yml`` playbook accomplishes the following tasks:
 
-* Sets up the PCS container: ``omnia_pcs``
+* Sets up the OpenCHAMI containers.
 * Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
-* Sets up the Provision container: ``omnia_provision``
 * Sets up the Pulp container: ``pulp``
-* Sets up the Squid container (if ``enable_routed_internet`` is ``true`` in ``/opt/omnia/input/project_default/local_repo_config.yml``): ``squid``
-* Sets up the containers required for iDRAC telemetry service (if ``idrac_telemetry_support`` is ``true`` in ``opt/omnia/input/project_default/telemetry_config.yml``): ``idrac_telemetry_receiver``, ``mysqldb``, and ``activemq``
-* Sets up the containers required for collecting iDRAC telemetry metrics using the Prometheus toolkit (If ``idrac_telemetry_service`` is set to ``true`` and ``idrac_telemetry_collection_type`` is ``prometheus``): ``prometheus`` and ``prometheus_pump`` 
+` 
 
 Prerequisite
 ----------------
@@ -22,9 +19,7 @@ Input files for the playbook
 The ``prepare_oim.yml`` playbook is dependent on the inputs provided to the following input files:
 
 * ``network_spec.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the necessary configurations for the cluster network.
-* ``software_config.json``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the software packages which are to be installed on the cluster.
-* ``local_repo_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about the local repositories which are to be created on the Pulp container present on the OIM.
-* ``telemetry_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about running the iDRAC telemetry service on the cluster.
+* ``provision_config.yml``: This input file is located in the ``/opt/omnia/input/project_default`` folder and contains the details about provisioning of clusters.
 
 1. ``network_spec.yml``
 ------------------------
@@ -36,16 +31,7 @@ Add necessary inputs to the ``network_spec.yml`` file to configure the network o
    :header-rows: 1
    :keepspace:
 
-.. note::
-
-    * If the ``nic_name`` is identical on both the ``admin_network`` and the ``bmc_network``, it indicates a LOM setup. Otherwise, it's a dedicated setup.
-    * BMC network details are not required when target nodes are discovered using a mapping file.
-    * If ``bmc_network`` properties are provided, target nodes will be discovered using the BMC method in addition to the methods whose details are explicitly provided in ``provision_config.yml``.
-    * The strings ``admin_network`` and ``bmc_network`` should not be edited. Also, the properties ``nic_name``, ``static_range``, and ``dynamic_range`` cannot be edited on subsequent runs of the provision tool.
-    * ``netmask_bits`` are mandatory and should be same for both ``admin_network`` and ``bmc_network`` (that is, between 1 and 32; 1 and 32 are also acceptable values).
-
 .. caution::
-    * Do not assign the subnet 10.4.0.0/24 to any interfaces in the network as nerdctl uses it by default.
     * All provided network ranges and NIC IP addresses should be distinct with no overlap.
     * All iDRACs must be reachable from the OIM.
 
@@ -59,61 +45,15 @@ A sample of the ``network_spec.yml`` where nodes are discovered using a **mappin
              primary_oim_admin_ip: "10.5.255.254"
              dynamic_range: "10.5.1.1-10.5.1.200"
           
-2. ``software_config.json``
--------------------------------
-
-The ``/opt/omnia/input/project_default/software_config.json`` file lists all the software packages to be installed on the OIM. Edit the ``software_config.json`` file based on the software stack you want on the OIM. Use the below table as reference while doing so:
-
-.. csv-table:: software_config.json
-   :file: ../../Tables/software_config_rhel.csv
-   :header-rows: 1
-   :keepspace:
-
-A sample of the ``software_config.json`` file for RHEL clusters is attached below: ::
-
-    {
-    "cluster_os_type": "rhel",
-    "cluster_os_version": "9.6",
-    "repo_config": "always",
-    "softwares": [
-        {"name": "cuda", "version": "12.9.1", "arch": ["x86_64","aarch64"]},
-        {"name": "ofed", "version": "24.10-3.2.5.0", "arch": ["x86_64"]},
-        {"name": "openldap", "arch": ["x86_64"]},
-        {"name": "nfs", "arch": ["x86_64","aarch64"]},
-        {"name": "slurm", "arch": ["x86_64","aarch64"]},
-        {"name": "k8s", "version": "1.31.4", "arch": ["x86_64"]},
-        {"name": "service_k8s", "version": "1.31.4", "arch": ["x86_64"]},
-        {"name": "utils", "arch": ["x86_64"]},
-        {"name": "ucx", "version": "1.15.0", "arch": ["x86_64"]},
-        {"name": "openmpi", "version": "4.1.6", "arch": ["x86_64"]},
-    ],
-
-    "slurm": [
-        {"name": "slurm_control_node"},
-        {"name": "slurm_node"},
-        {"name": "login"}
-    ]
-
-    }
-     
+  
    
-3. ``local_repo_config.yml``
+2. ``provision_config.yml``
 -------------------------------
 
-Add necessary inputs to the ``local_repo_config.yml`` file for the local repositories to be created on the Pulp container present on the OIM. Use the below table as reference while doing so:
+Add necessary inputs to the ``provision_config.yml`` file for the provisioning of the cluster. Use the below table as reference while doing so:
 
-.. csv-table:: local_repo_config.yml
-   :file: ../../Tables/local_repo_config_rhel.csv
-   :header-rows: 1
-   :keepspace:
-
-4. ``telemetry_config.yml``
------------------------------
-
-Add necessary inputs to the ``telemetry_config.yml`` file for the telemetry service. Use the below table as reference while doing so:
-
-.. csv-table:: telemetry_config.yml
-   :file: ../../Tables/telemetry_config.csv
+.. csv-table:: provision_config.yml
+   :file: ../../Tables/Provision_config.csv
    :header-rows: 1
    :keepspace:
 

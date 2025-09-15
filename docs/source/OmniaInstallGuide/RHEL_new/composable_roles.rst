@@ -1,26 +1,26 @@
 Step 2: Composable groups and functional groups in Omnia
-==================================
+============================================================
 
 In Omnia, nodes are organized based on their assigned groups and functional groups. By combining both groups and functional groups, Omnia offers a powerful and flexible approach to managing large-scale node infrastructures, ensuring both logical organization and physical optimization of resources.
 
-* **Functional Group**: A functional group defines what a node does in the system. It is a way to categorize nodes based on their functionality. For example, a node could have the role of a Login server, a Compiler, a K8Worker (Kubernetes Worker), or a SLURMWorker (a node in a slurm job scheduler system). Roles help group nodes that perform similar tasks, making it easier to manage and assign resources.
+* **Functional Group**: A functional group defines what a node does in the system. It is a way to categorize nodes based on their functionality. For example, a node could have the functional group of a Login server, a Compiler, a K8Worker (Kubernetes Worker), or a SLURMWorker (a node in a slurm job scheduler system). Functional groups help group nodes that perform similar tasks, making it easier to manage and assign resources.
 
-* **Group**: A group is based on the physical characteristics of the nodes. It refers to nodes that are located in the same place or have similar hardware. For example, nodes in the same rack or SU (Scalable Unit) might be grouped together, with specific roles like HeadNode or ServiceNode. Groups help with physical organization and management of nodes.
+* **Group**: A group is based on the physical characteristics of the nodes. It refers to nodes that are located in the same place or have similar hardware. For example, nodes in the same rack or SU (Scalable Unit) might be grouped together, with specific functional groups like HeadNode or ServiceNode. Groups help with physical organization and management of nodes.
 
-Roles offered by Omnia
--------------------------
+Functional groups offered by Omnia
+-------------------------------------
 
 .. note:: 
     
-    * Nested roles and groups are not supported.
-    * Maximum number of supported roles are 100.
-    * At least one role is mandatory, and you must not change the name of the roles.
-    * The roles are case-sensitive in nature.
-    * Groups assigned to the **Management** layer roles should not be assigned to **Compute** layer roles.
+    * Nested functional groups and groups are not supported.
+    * Maximum number of supported functional groups are 100.
+    * At least one functional group is mandatory, and you must not change the name of functional groups.
+    * The functional groups are case-sensitive in nature.
+    * Groups assigned to the **Management** layer functional groups should not be assigned to **Compute** layer functional groups.
     * Omnia also supports HA functionality for the ``OIM`` and the ``service_cluster``. For more information, `click here <HighAvailability/index.html>`_.
-    * To set up a service cluster, all three roles (``service_kube_control_plane``, ``service_etcd``, ``service_kube_node``) must be present in the ``input/roles_config.yml``.
+    * To set up a service cluster, all three functional groups (``service_kube_control_plane``, ``service_etcd``, ``service_kube_node``) must be present in the ``input/roles_config.yml``.
 
-.. csv-table:: Types of Roles
+.. csv-table:: Types of Functional Groups
    :file: ../../Tables/omnia_roles.csv
    :header-rows: 1
    :keepspace:
@@ -29,8 +29,6 @@ Group attributes
 ----------------
 
 Nodes with similar roles or functionalities can be grouped together. To do so, fill up the ``roles_config.yml`` input file in the ``/opt/omnia/input/project_default`` directory which includes all necessary attributes for the nodes, based on their role within the cluster. Each group will have following attributes as indicated in the table below:
-
-.. note:: Groups associated with the ``service_kube_control_plane``, ``service_etcd``, ``service_kube_node``, and ``oim_ha_node`` roles should not be used to fulfill any other roles.
 
 .. csv-table:: Group attributes
    :file: ../../Tables/group_attributes.csv
@@ -42,18 +40,12 @@ Sample
 
 Here's a sample (using mapping file) for your reference:
 
-.. note:: 
-    
-    * If you want to use BMC discovery mechanism, ensure to provide the value for BMC ``static_range``.
-    * If you want to use switch-based discovery, ensure to provide the switch ``ip`` and ``port`` along with the BMC details.
-
-
 ::
     
-    Groups:
+    groups:
         grp0:
             location_id: SU-1.RACK-1
-            cluster_name: "service_node_cluster"
+            cluster_name: ""
             parent: ""
             architecture: "x86_64"
 
@@ -61,14 +53,14 @@ Here's a sample (using mapping file) for your reference:
             location_id: SU-1.RACK-2
             cluster_name: "slurm_node_cluster"
             parent: ""
-            architecture: "ARM"
+            architecture: "aarch64"
 
-    Functional Groups:
+    functional_groups:
         - name: "default"
           groups:
             - grp0
 
-        - name: "service_kube_control_plane"
+        - name: "slurm_node"
           groups:
             - grp1
 
