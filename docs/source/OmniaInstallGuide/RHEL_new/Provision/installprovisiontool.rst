@@ -1,4 +1,4 @@
-Provisioning the cluster
+Discover the cluster
 ============================
 
 The ``discovery.yml`` playbook discovers the probable bare-metal cluster nodes and provisions the minimal version of RHEL OS as a diskless image on the nodes. This playbook is dependent on inputs from the following input files:
