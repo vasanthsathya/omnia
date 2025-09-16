@@ -6,25 +6,21 @@ Each image is created based on the functional groups defined in the
 ``functional_groups_config.yml`` file. 
 
 **Prerequisites**: 
-* Ensure that the ``functional_groups_config.yml`` file defines the functional groups required for your environment. For more information on functional groups, see :doc:`composable_roles`.
-* Download the following ISO to the OIM:
 
-    * `RHEL 10.x <https://access.redhat.com/products/red-hat-enterprise-linux>`_
-
-    .. note:: Ensure the ISO provided has downloaded seamlessly (No corruption). Verify the SHA checksum or download size of the ISO file before provisioning to avoid failures.
-
-    Note the compatibility between cluster OS and OIM OS below:
+   * Ensure that the ``functional_groups_config.yml`` file defines the functional groups required for your environment. For more information on functional groups, see :doc:`composable_roles`.
+   * Download the `RHEL 10.x <https://access.redhat.com/products/red-hat-enterprise-linux>`_ ISO to the OIM.
+   * Ensure the ISO provided has downloaded seamlessly (No corruption). Verify the SHA checksum or download size of the ISO file before provisioning to avoid failures. 
+   * Ensure that OIMs running RHEL have an active subscription or are configured to access local repositories. The following repositories should be enabled on the OIM: **AppStream**, **BaseOS**.
+   * Note the compatibility between cluster OS and OIM OS below:
 
         +---------------------+--------------------+------------------+
         |                     |                    |                  |
         | OIM OS              | Cluster  Node OS   | Compatibility    |
         +=====================+====================+==================+
         |                     |                    |                  |
-        | RHEL [1]_           | RHEL               | Yes              |
+        | RHEL                | RHEL               | Yes              |
         +---------------------+--------------------+------------------+
-
-    .. [1] Ensure that OIMs running RHEL have an active subscription or are configured to access local repositories. The following repositories should be enabled on the OIM: **AppStream**, **BaseOS**.
-
+   
 To build images for the nodes present in each functional group, do the following.
 
 1. Navigate to the image build directory::
