@@ -19,16 +19,6 @@ Slurm worker node - ``slurm_node_x86_64``,Compute,"* This  functional group is u
         location_id: SU-1.RACK-1
         cluster_name: """"
         parent: """""
-Kubernetes worker node - ``kube_node``,Compute,"* This  functional group is used to configure the nodes for Kubernetes worker. The nodes included in this  functional group will have the necessary tools and configurations to run Kubernetes worker.
-* The nodes in this  functional group can be used to run Kubernetes worker.
-
-**Example**:
-::
-     functional_groups:
-      - name: ""kube_node""
-        groups:
-          - grp0
-          - grp1"
 Service Cluster Kubernetes worker node - ``service_kube_node_x86_64``,Management,"* This  functional group is used to configure the Kubernetes worker nodes on service cluster. This  functional group should not have same group as ``kube_node``  functional group.
 * The nodes included in this  functional group will have the necessary tools and configurations to configure and run Kubernetes worker on service cluster.
 * ``service_kube_node``  functional group: Service Cluster Kubernetes worker node groups can be provided in this  functional group.
