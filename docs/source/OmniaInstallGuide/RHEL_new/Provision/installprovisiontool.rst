@@ -1,7 +1,7 @@
 Provisioning the cluster
 ============================
 
-The ``discovery.yml`` playbook discovers the probable bare-metal cluster nodes and provisions the minimal version of RHEL OS onto those nodes. This playbook is dependent on inputs from the following input files:
+The ``discovery.yml`` playbook discovers the probable bare-metal cluster nodes and provisions the minimal version of RHEL OS as a diskless image on the nodes. This playbook is dependent on inputs from the following input files:
 
 * ``/opt/omnia/input/project_default/provision_config.yml``
 * ``/opt/omnia/input/project_default/functional_groups_config.yml``
@@ -53,4 +53,5 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
 **Next steps**:
 
-*  After successfully running ``discovery.yml``, manually verify all the nodes are booted.
+* After successfully running  the``discovery.yml``, manually PXE boot the nodes or use the ``set_pxe_boot.yml`` to boot the nodes.
+* Execute ``telemetry.yml`` to start the telmetry collection.
