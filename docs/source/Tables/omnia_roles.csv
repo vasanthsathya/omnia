@@ -40,7 +40,7 @@ Compiler - ``login_compiler_node_x86_64``,Management,"* This  functional group i
          location_id: SU-1.RACK-1
          cluster_name: """"
           parent: """""
-Slurm control plane - `` slurm_control_node_x86_64``,Management,"* Nodes with ``slurm_control_node``  functional group can be added to the Slurm head node groups.
+Slurm control plane - ``slurm_control_node_x86_64``,Management,"* Nodes with ``slurm_control_node``  functional group can be added to the Slurm head node groups.
 * This  functional group is used to configure the nodes for Slurm head. The nodes included in this  functional group will have the necessary tools and configurations to run Slurm head.
 * The nodes in this  functional group can be used to run the Slurm head.
 
