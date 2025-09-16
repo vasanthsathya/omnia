@@ -1,7 +1,7 @@
-Step 5: Execute the ``prepare_oim.yml`` playbook
-==================================================
+Step 5:  Prepare the Omnia Infrastructure Manager
+========================================================
 
-The ``prepare_oim.yml`` playbook accomplishes the following tasks:
+The ``prepare_oim.yml`` playbook is used to prepare the Omnia Infrastructure Manager (OIM). The playbook performs the following on the OIM:
 
 * Sets up the OpenCHAMI containers.
 * Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
