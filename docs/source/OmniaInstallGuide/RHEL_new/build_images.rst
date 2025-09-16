@@ -5,10 +5,10 @@ The ``build_image.yml`` playbook is used to build diskless images for cluster no
 Each image is created based on the functional groups defined in the 
 ``functional_groups_config.yml`` file. 
 
-**Prerequisites**: Ensure that the ``functional_groups_config.yml`` file defines the functional 
- groups required for your environment. For more information on functional groups, see :doc:`composable_roles`.
+**Prerequisites**: 
+Ensure that the ``functional_groups_config.yml`` file defines the functional groups required for your environment. For more information on functional groups, see :doc:`composable_roles`.
 
-To build images for nodes in each functional group, do the following.
+To build images for the nodes present in each functional group, do the following.
 
 1. Navigate to the image build directory::
 
