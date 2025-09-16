@@ -1,4 +1,4 @@
-Step 5:  Prepare the Omnia Infrastructure Manager
+Step 5:  Prepare the OIM
 ========================================================
 
 The ``prepare_oim.yml`` playbook is used to prepare the Omnia Infrastructure Manager (OIM). The playbook performs the following on the OIM:
