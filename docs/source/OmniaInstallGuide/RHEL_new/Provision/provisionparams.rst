@@ -36,7 +36,7 @@ Fill in all required parameters in ``/opt/omnia/input/project_default/provision_
    :header-rows: 1
    :keepspace:
 
-.
+
 .. caution::
     * All provided network ranges and NIC IP addresses should be distinct with no overlap in the ``/opt/omnia/input/project_default/network_spec.yml``.
     * Ensure that all the iDRACs are reachable from the OIM.

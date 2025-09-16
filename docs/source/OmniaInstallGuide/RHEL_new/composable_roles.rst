@@ -10,13 +10,10 @@ Functional groups offered by Omnia
 
 .. note:: 
     
-    * Nested functional groups and groups are not supported.
-    * Maximum number of supported functional groups are 100.
     * At least one functional group is mandatory, and you must not change the name of functional groups.
     * The functional groups are case-sensitive in nature.
-    * Groups assigned to the **Management** layer functional groups should not be assigned to **Compute** layer functional groups.
-    * Omnia also supports HA functionality for the ``OIM`` and the ``service_cluster``. For more information, `click here <HighAvailability/index.html>`_.
-    * To set up a service cluster, all three functional groups (``service_kube_control_plane``, ``service_etcd``, ``service_kube_node``) must be present in the ``input/roles_config.yml``.
+    * Omnia supports HA functionality for the ``service_cluster``. For more information, `click here <HighAvailability/index.html>`_.
+    * To set up a service cluster, the ``service_kube_node`` must be present in the ``input/functional_groups_config.yml``.
 
 .. csv-table:: Types of Functional Groups
    :file: ../../Tables/omnia_roles.csv
@@ -39,6 +36,11 @@ Here's a sample (using mapping file) for your reference:
 
         - name: "slurm_node_x86_64"
           location_id: SU-1.RACK-2
+          cluster_name: ""
+          parent: ""
+
+        - name: ""slurm_control_node_x86_64""
+          location_id: SU-1.RACK-1
           cluster_name: ""
           parent: ""
    
