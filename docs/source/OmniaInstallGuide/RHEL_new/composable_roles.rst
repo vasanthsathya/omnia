@@ -1,4 +1,4 @@
-Step 2: Composable functional groups in Omnia
+Step 2: Create composable functional groups in Omnia
 ============================================================
 
 In Omnia, nodes are organized using **functional groups**. Functional groups provide a unified approach to managing large-scale node infrastructures, combining logical organization, physical placement, and resource optimization.

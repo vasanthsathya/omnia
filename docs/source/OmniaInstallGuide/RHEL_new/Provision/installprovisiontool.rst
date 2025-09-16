@@ -39,7 +39,7 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
     * While the ``admin_nic`` on cluster nodes is configured by Omnia to be static, the public NIC IP address should be configured by user.
 
-    * All ports required by OpenCHAMI will be opened (For a complete list, check out the `Security Configuration Document <../../../SecurityConfigGuide/ProductSubsystemSecurity.html#firewall-settings>`_).
+    * All ports required by OpenCHAMI will be opened (For a complete list, see :doc:`Omnia Ports <omnia_ports>`).
 
     * After running ``discovery.yml``, the file ``/opt/omnia/input/project_default/omnia_config_credentials.yml`` will be encrypted. To edit the file, use the command: ``ansible-vault edit omnia_config_credentials.yml --vault-password-file .omnia_config_credentials_key``
 
@@ -53,4 +53,4 @@ To deploy the Omnia provision tool, execute the following commands: ::
 
 **Next steps**:
 
-*  After successfully running ``discovery.yml``, verify all the nodes are booted manually.
+*  After successfully running ``discovery.yml``, manually verify all the nodes are booted.
