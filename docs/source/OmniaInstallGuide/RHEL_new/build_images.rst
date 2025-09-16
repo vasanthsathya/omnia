@@ -1,4 +1,4 @@
-Step 7: Build cluster node images
+Step 8: Build cluster node images
 ============================
 
 The ``build_image.yml`` playbook is used to build diskless images for cluster nodes. 
