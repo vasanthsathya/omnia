@@ -36,8 +36,8 @@ Things to keep in mind
 Post execution
 ----------------
 
-After the playbook has been executed, navigate to the ``omnia_config_credentials.yml`` input file is present in the ``/opt/omnia/input/project_default`` folder.
-Provide all required credentials for the cluster. See the table below to know more:
+After the playbook has been executed, verify if the ``omnia_config_credentials.yml`` input file is present in the ``/opt/omnia/input/project_default`` folder.
+Provide all required mandatory credentials for the cluster. See the table below to know more:
 
 .. note:: By default, the ``omnia_config_credentials.yml`` input file is encrypted. Use the below command to decrypt the file: 
     ::

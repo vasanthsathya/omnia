@@ -1,22 +1,46 @@
 Sample Files
 =============
 
-inventory file
------------------
+Inventory file for service K8s cluster
+------------------------------------------
 
 .. caution:: All the file contents mentioned below are case sensitive.
 
 ::
 
+             
+
+        #AI Scheduler: Kubernetes
+
+        [kube_control_plane]
+
+        10.5.1.101
+
+        [etcd]
+
+        10.5.1.101
+
+        [kube_node]
+
+        10.5.1.102
+
+        10.5.1.103
+
+        10.5.1.104
+
+        10.5.1.105
+
+        10.5.1.106
+
+
+Inventory file for PXE boot order
+---------------------------------
+
+::
+
     [bmc]
-    10.3.0.101
-    10.3.0.102
-
-.. note::
-
-            * For Slurm, all the applicable inventory groups are ``service_kube_node_x86_64``, ``slurm_control_node_x86_64`` , and ``slurm_node_x86_64``.
-            * For Kubernetes, all the applicable groups are ``service_kube_node_x86_64``, ``kube_node``, and ``etcd``.
-            * For secure login node functionality, ensure to add the ``login_node_x86_64`` and ``slurm_control_node_x86_64`` groups in the provided inventory file.
+    10.3.0.1
+    10.3.0.2
 
 software_config.json for RHEL
 -------------------------------------------
@@ -28,19 +52,22 @@ software_config.json for RHEL
     "cluster_os_version": "10.0",
     "repo_config": "always",
     "softwares": [
-        {"name": "cuda", "version": "12.9.1", "arch": ["x86_64","aarch64"]},
-        {"name": "ofed", "version": "24.10-3.2.5.0", "arch": ["x86_64"]},
-        {"name": "openldap", "arch": ["x86_64"]},
-        {"name": "nfs", "arch": ["x86_64","aarch64"]},
-        {"name": "service_k8s","version": "1.31.4", "arch": ["x86_64"]},
-        {"name": "slurm", "arch": ["x86_64","aarch64"]}
+        {"name": "cuda", "version": "13.0.1"},
+        {"name": "ofed", "version": "24.10-3.2.5.0"},
+        {"name": "openldap"},
+        {"name": "nfs"},
+        {"name": "slurm"},
+        {"name": "service_k8s", "version": "1.31.4"},
+        {"name": "ucx", "version": "1.15.0"},
+        {"name": "openmpi", "version": "4.1.6"},
+        {"name": "csi_driver_powerscale", "version":"v2.14.0"}        
     ],
     "slurm": [
         {"name": "slurm_control_node"},
         {"name": "slurm_node"},
         {"name": "login_node"}
     ]
- 
+
     }
 
 pxe_mapping_file.csv

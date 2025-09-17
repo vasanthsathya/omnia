@@ -3,7 +3,7 @@ Omnia Logs
 
 .. toctree::
     LogManagement
-    ControlPlaneLogs
+    OIM_logs
 
 
 
