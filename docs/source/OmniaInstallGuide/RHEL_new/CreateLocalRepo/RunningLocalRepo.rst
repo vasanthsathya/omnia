@@ -84,11 +84,11 @@ Command format
 Examples
 ---------
 
-* If you modified ``k8s.json``: ::
+* If you modified ``service_k8s.json``: ::
 
     ansible-playbook local_repo.yml -e "softwares=k8s"
 
-* If you modified multiple ``.json`` files, such as ``k8s.json`` and ``slurm.json``: ::
+* If you modified multiple ``.json`` files, such as ``service_k8s.json`` and ``slurm.json``: ::
 
     ansible-playbook local_repo.yml -e "softwares=k8s,slurm"
 

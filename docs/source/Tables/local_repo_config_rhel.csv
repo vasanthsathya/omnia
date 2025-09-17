@@ -92,17 +92,10 @@
 * ``name`` defines the name of the software ``.rpm`` package.
 * Irrespective of the value set to ``repo_config`` in ``/opt/omnia/input/project_default/software_config.json``, you can set individual policies (``always``, ``partial``, ``never``) for the repository URLs. To do so, add the ``policy`` key and provide the desired value while providing the repository URLs.
 * **Default value**: 
-    - { url: ""https://download.docker.com/linux/centos/9/x86_64/stable/"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce""}
-    - { url: ""https://repo.radeon.com/rocm/rhel9/{{ rocm_version }}/main/"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""rocm""}
-    - { url: ""https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/"", gpgkey: ""https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"", name: ""epel""}
-    - { url: ""https://repo.radeon.com/amdgpu/{{ amdgpu_version }}/rhel/{{ cluster_os_version }}/main/x86_64/"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""amdgpu""}
-    - { url: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/dists/rhel9/"", gpgkey: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/gpg/GPG-KEY-beegfs"", name: ""beegfs""}
+    - { url: ""https://download.docker.com/linux/centos/10/x86_64/stable/"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce-repo""}
+    - { url: ""https://dl.fedoraproject.org/pub/epel/10/Everything/x86_64/"", gpgkey: ""https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"", name: ""epel""}
     - { url: ""https://yum.repos.intel.com/oneapi/"", gpgkey: ""https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB"", name: ""oneapi""}
-    - { url: ""https://ltb-project.org/rpm/openldap26/9/x86_64/"", gpgkey: """", name: ""ldap""}
     - { url: ""https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64/"", gpgkey: ""https://nvidia.github.io/libnvidia-container/gpgkey"", name: ""nvidia-repo""}
-    - { url: ""https://xcat.org/files/xcat/repos/yum/2.17/xcat-core/"", gpgkey: ""http://xcat.org/files/xcat/repos/yum/2.17/xcat-core/repodata/repomd.xml.key"", name: ""xcat-core""}
-    - { url: ""https://xcat.org/files/xcat/repos/yum/2.17/xcat-dep/rh9/x86_64/"", gpgkey: ""http://xcat.org/files/xcat/repos/yum/xcat-dep/rh9/x86_64/repodata/repomd.xml.key"", name: ""xcat-dep""}
-
 .. note::
       * These inputs are not validated by Omnia. Incorrect values provided to this variable can lead to unexpected failures during Omnia's deployment.
       * Ensure that all the listed URLs are reachable from the OIM."
@@ -113,10 +106,8 @@
 * ``name`` defines the name of the software ``.rpm`` package.
 * Irrespective of the value set to ``repo_config`` in ``/opt/omnia/input/project_default/software_config.json``, you can set individual policies (``always``, ``partial``, ``never``) for the repository URLs. To do so, add the ``policy`` key and provide the desired value while providing the repository URLs.
 * **Default value**: 
-    - { url: ""https://download.docker.com/linux/centos/9/aarch64/stable/"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce""}
-    - { url: ""https://repo.radeon.com/rocm/rhel9/{{ rocm_version }}/main/"", gpgkey: ""https://repo.radeon.com/rocm/rocm.gpg.key"", name: ""rocm""}
-    - { url: ""https://dl.fedoraproject.org/pub/epel/9/Everything/aarch64/"", gpgkey: ""https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"", name: ""epel""}
-    - { url: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/dists/rhel9/"", gpgkey: ""https://www.beegfs.io/release/beegfs_{{beegfs_version}}/gpg/GPG-KEY-beegfs"", name: ""beegfs""}
+    - { url: ""https://download.docker.com/linux/centos/10/aarch64/stable/"", gpgkey: ""https://download.docker.com/linux/centos/gpg"", name: ""docker-ce""}
+    - { url: ""https://dl.fedoraproject.org/pub/epel/10/Everything/aarch64/"", gpgkey: ""https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"", name: ""epel""}
     - { url: ""https://nvidia.github.io/libnvidia-container/stable/rpm/aarch64/"", gpgkey: ""https://nvidia.github.io/libnvidia-container/gpgkey"", name: ""nvidia-repo""}
 
 .. note::
