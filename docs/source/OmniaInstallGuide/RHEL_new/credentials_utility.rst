@@ -1,5 +1,5 @@
-Step 3: Provide all credentials required during Omnia's execution
-===================================================================
+Step 3: Provide required credentials for Omnia
+================================================
 
 Omnia provides an additional utility playbook called ``get_config_credentials.yml``. This playbook upon execution creates an input file called ``omnia_config_credentials.yml`` in the ``/opt/omnia/input/project_default`` folder.
 In this input file, you can preemptively provide all types of mandatory and optional credentials required by Omnia during its execution. Otherwise, you'll be prompted to enter them during playbook execution.

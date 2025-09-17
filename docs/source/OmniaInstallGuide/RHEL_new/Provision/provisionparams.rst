@@ -1,5 +1,5 @@
-Input parameters for the provision tool
------------------------------------------
+Update the input parameters for discovering the nodes
+========================================================
 
 Fill in all required parameters in ``/opt/omnia/input/project_default/provision_config.yml``, ``/opt/omnia/input/project_default/omnia_config_credentials.yml``, ``/opt/omnia/input/project_default/software_config.json``, and ``/opt/omnia/input/project_default/network_spec.yml``.
 

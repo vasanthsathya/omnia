@@ -1,5 +1,5 @@
-Discover the target nodes using mapping file
-===============================================
+Create mapping file with the target node information
+========================================================
 
 Depending on the values provided in ``/opt/omnia/input/project_default/provision_config.yml``, target nodes can be discovered only using the mapping file.
 Manually collect PXE NIC information for target servers and manually define them to Omnia using the **pxe_mapping_file.csv** file. Provide the file path to the ``pxe_mapping_file`` variable in ``/opt/omnia/input/project_default/provision_config.yml``. 
