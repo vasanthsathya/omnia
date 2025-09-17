@@ -30,6 +30,3 @@ A sample format is shown below:
 |                                                         | not configured.                                      |
 +---------------------------------------------------------+------------------------------------------------------+
 
-Next step:
-
-* `Provisioning the cluster <../installprovisiontool.html>`_
