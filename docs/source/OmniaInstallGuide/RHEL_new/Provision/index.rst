@@ -1,10 +1,7 @@
-Step 10: Discover and provision the cluster
+Step 10: Discover cluster nodes
 ===========================================
 
-The ``discovery_provision.yml`` playbook discovers the potential cluster nodes.
-1. Installation and configuration of the provision tool.
-2. Discovery of potential cluster nodes.
-3. Provisioning the minimal version of RHEL OS on the discovered cluster nodes.
+The ``discovery_provision.yml`` playbook is used to discover the potential cluster nodes, configure the boot script and cloud-init based on the functional groups.
 
 .. toctree::
     :maxdepth: 2
