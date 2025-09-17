@@ -7,6 +7,6 @@ The ``discovery_provision.yml`` playbook is used to discover the potential clust
     :maxdepth: 2
 
     provisionprereqs
-    DiscoveryMechanisms/index
+    discover_mechanism_mappingfile
     provisionparams
     installprovisiontool   
