@@ -45,7 +45,7 @@ Here's a sample of the ``software_config.json`` for RHEL clusters:
 
     * To download a software with both x86_64 and aarch64 architectures, the arch key input is mandatory. Ensure that you check if the .json files for all the specified architectures are available in the input or configuration file. Else, update the .json files. See the following sample:
 
-     {
+    {
        "cluster_os_type": "rhel",
        "cluster_os_version": "10.0",
        "repo_config": "always",
@@ -58,16 +58,16 @@ Here's a sample of the ``software_config.json`` for RHEL clusters:
            {"name": "service_k8s", "version": "1.31.4", "arch": ["x86_64"]},
            {"name": "ucx", "version": "1.15.0", "arch": ["x86_64"]},
            {"name": "openmpi", "version": "4.1.6", "arch": ["x86_64"]}
-         ],
+        ],
             "slurm": [
             {"name": "slurm_control_node"},
             {"name": "slurm_node"},
             {"name": "login_node"}
-         ]
+        ]
  
-     }
+    }
 
-    * For additional_software support, update the input/config/{arch}/rhel/9.6/additional_software.json file with the required {arch} data,
+    * For additional_software support, update the input/config/{arch}/rhel/10.0/additional_software.json file with the required {arch} data,
 where {arch} can either be x86_64 or aarch64, or a combination of both.
 
 .. note::
