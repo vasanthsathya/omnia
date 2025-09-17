@@ -6,6 +6,7 @@ Omnia provides an array of utilities as separate playbooks. Using these playbook
 .. toctree::
     :maxdepth: 2
 
+    set_pxe_boot_order
     software_update
     KernelUpdate
     portcleanup
