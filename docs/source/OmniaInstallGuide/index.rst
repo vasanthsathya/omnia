@@ -10,7 +10,7 @@ Omnia Deployment Guide
 * `Sample Files <samplefiles.html>`_
 
 
-.. image:: ../images/deployment_flowchart_2.0_rc1.jpg
+.. image:: ../images/deployment_flowchart_2.0_OpenCHAMI.jpg
     :width: 800pt
 
 
