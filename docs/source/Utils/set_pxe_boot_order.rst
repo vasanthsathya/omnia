@@ -5,7 +5,7 @@ When PXE boot order is set on a node in Omnia, the node automatically retrieves 
 
 To configure PXE boot for nodes after they are discovered with the ``discovery.yml`` playbook, do the following:
 
-1. Generate the inventory file based on the mapping file. For the sample map and inventory files, see :ref:`Sample files <omnia/docs/source/OmniaInstallGuide/samplefiles>`.
+1. Generate the inventory file based on the mapping file. For the sample map and inventory files, see :ref:`Sample files <../omnia/docs/source/OmniaInstallGuide/samplefiles>`.
 
 2. Run the following playbook to configure PXE boot on the nodes using the inventory file::
 
