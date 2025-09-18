@@ -27,7 +27,7 @@ its dependent services are running correctly.
       ● ├─omnia_core.service
       ● ├─network-online.target
       ● │ └─NetworkManager-wait-online.service
-      ● ├─kubespray.service[k8s]
+      ● ├─omnia_kubespray.service[k8s]
       ● ├─pulp.service
       ● └─openchami.target
       ●   ├─acme-deploy.service
