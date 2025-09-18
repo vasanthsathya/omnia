@@ -13,7 +13,7 @@ Functional groups offered by Omnia
     * At least one functional group is mandatory, and you must not change the name of functional groups.
     * The functional groups are case-sensitive in nature.
     * Omnia supports HA functionality for the ``service_cluster``. For more information, `click here <HighAvailability/index.html>`_.
-    * To set up a service cluster, the ``service_kube_node`` must be present in the ``/opt/omnia/input/functional_groups_config.yml``.
+    * To set up a service cluster, the ``service_kube_node`` must be present in the ``/opt/omnia/input/project_default/functional_groups_config.yml``.
 
 .. csv-table:: Types of Functional Groups
    :file: ../../Tables/omnia_roles.csv
