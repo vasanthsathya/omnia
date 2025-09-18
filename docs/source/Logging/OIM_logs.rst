@@ -9,14 +9,14 @@ OIM logs
 
 Logs of individual Podman containers in OIM
 ------------------------------------------------
-   1. To find the container running in OIM, run the following command:
+   1. To view the containers running on the OIM, run the following command:
 
      ``podman ps -a``
-   2. For a specific container log, run the following command:
+   2. To view the logs from a specific container, run the following command:
 
      ``podman logs <container name>``
 
-Logs of individual K8s containers in service cluster
+Logs of individual K8s containers on service cluster
 -----------------------------------------------------
    1. A list of namespaces and their corresponding pods can be obtained using:
       ``kubectl get pods -A``

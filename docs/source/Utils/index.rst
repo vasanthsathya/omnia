@@ -1,7 +1,7 @@
 Utilities provided by Omnia
 ==============================
 
-Omnia provides an array of utilities as separate playbooks. Using these playbooks, you can do things like:
+Omnia provides utilities as separate playbooks. Using these playbooks, you can perform the following:
 
 .. toctree::
     :maxdepth: 2

@@ -13,4 +13,3 @@ To configure PXE boot for nodes after they are discovered with the ``discovery.y
       cd /omnia/utils
       ansible-playbook set_pxe_boot.yml -i inventory
 
-
