@@ -1,11 +1,12 @@
 Input parameters for the cluster
 ===================================
 
-The ``omnia.yml`` playbook is dependent on the inputs provided to the following input files:
+The ``service_k8s_cluster.yml`` playbook is dependent on the inputs provided to the following input files:
 
 * ``/opt/omnia/input/project_default/omnia_config.yml``
 * ``/opt/omnia/input/project_default/security_config.yml``
 * ``/opt/omnia/input/project_default/storage_config.yml``
+* ``/opt/omnia/input/project_default/high_availability_config.yml``
 
 .. caution:: Do not remove, edit, or comment any lines in the above mentioned input files.
 
@@ -71,3 +72,6 @@ The ``omnia.yml`` playbook is dependent on the inputs provided to the following 
 
 
 Click here for more information on `OpenLDAP, FreeIPA <BuildingCluster/Authentication.html>`_, `BeeGFS <BuildingCluster/Storage/BeeGFS.html>`_, or `NFS <BuildingCluster/Storage/NFS.html>`_.
+
+``/opt/omnia/input/project_default/high_availability_config.yml``
+----------------------------------------------------------
