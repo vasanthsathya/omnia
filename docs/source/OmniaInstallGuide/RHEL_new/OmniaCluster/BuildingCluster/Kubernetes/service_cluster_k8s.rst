@@ -13,43 +13,82 @@ Prerequisites
 
     {
         "cluster_os_type": "rhel",
-        "cluster_os_version": "9.6",
-        "iso_file_path": "",
+        "cluster_os_version": "10.0",
         "repo_config": "always",
         "softwares": [
-            {"name": "amdgpu", "version": "6.3.1"},
-            {"name": "cuda", "version": "12.8.0"},
-            {"name": "ofed", "version": "24.10-1.1.4.0"},
-            {"name": "openldap"},
-            {"name": "nfs"},
-            {"name": "service_k8s","version": "1.31.4"},
-            {"name": "slurm"}
-        ],
-        "amdgpu": [
-            {"name": "rocm", "version": "6.3.1" }
+            {"name": "cuda", "version": "13.0.1", "arch": ["x86_64","aarch64"]},
+            {"name": "ofed", "version": "24.10-3.2.5.0", "arch": ["x86_64"]},
+            {"name": "openldap", "arch": ["x86_64"]},
+            {"name": "nfs", "arch": ["x86_64","aarch64"]},
+            {"name": "service_k8s","version": "1.31.4", "arch": ["x86_64"]},
+            {"name": "slurm", "arch": ["x86_64","aarch64"]}
         ],
         "slurm": [
             {"name": "slurm_control_node"},
             {"name": "slurm_node"},
             {"name": "login_node"}
+        ],
+        "service_k8s": [
+            {"name": "service_kube_control_plane"},
+            {"name": "service_etcd"},
+            {"name": "service_kube_node"}
         ]
     }
+
+* Ensure that there are a minimum of  three ``kube_control_planes``.
+
+* Ensure that the ``kube_control_planes`` has a full-featured RHEL operating system (OS) installed. 
+
+* Ensure that the ``kube_control_planes`` has internet access and Git installed. If Git is not installed, use the following command to install it.
+
+    ::
+        dnf install git -y
+
+* The ``kube_control_planes`` has internet access to download necessary packages for cluster deployment and configuration.
+* The ``kube_control_planes`` must have two active Network Interface Cards (NICs):  
+
+  * One connected to the public network.  
+  * One dedicated to internal cluster communication. 
+* If you want to use a NFS share for the omnia shared path, ensure the following:
+
+  * The NFS share has 755 permissions and ``no_root_squash`` is enabled on the mounted NFS share. 
+  * Edit the ``/etc/exports`` file on the NFS server to include the ``no_root_squash`` option for the exported path.
+    
+    ::
+        
+        /<your_exported_path>  *(rw,sync,no_root_squash,no_subtree_check)
+
+* Ensure that the following ``kube_control_planes`` hostname prerequisites are met.
+
+    .. include:: ../../Appendices/hostnamereqs.rst
 
 Steps
 =======
 
 1. Run ``local_repo.yml`` playbook to download the artifacts required to set up Kubernetes on the service cluster nodes.
 
-2. Fill in the service cluster details in the ``roles_config.yml``.
+2. Fill in the service cluster details in the ``functional_groups_config.yml``.
 
-.. csv-table:: roles_config.yml
+.. csv-table:: functional_groups_config.yml
    :file: ../../../../../Tables/service_k8s_roles.csv
    :header-rows: 1
    :keepspace:
 
-3. Run ``discovery_provision.yml`` playbook to discover and provision OS on the service cluster nodes.
+3. Fill  the ``omnia_config.yml``,  ``high_availability_config.yml`` (for `service cluster HA <../../HighAvailability/service_cluster_ha.html>`_), and ``storage_config.yml``. The nfs_name mentioned in ``storage_config.yml`` should match the ``nfs_storage_name`` of the entries for the ``service_k8s_cluster`` in ``omnia_config.yml`` where deployment is set to true.
+   See the following sample:
 
-4. Fill up the ``omnia_config.yml`` and ``high_availability_config.yml`` (for `service cluster HA <../../HighAvailability/service_cluster_ha.html>`_) as described in the tables below:
+    ::
+
+        nfs_client_params:
+        -{
+           nfs_name: "nfs_storage_default"
+           server_ip: "", # Provide the IP of the NFS server
+           server_share_path: "", # Provide server share path of the NFS Server
+           client_share_path: /home,
+           client_mount_options: "nosuid,rw,sync,hard,intr",
+           nfs_server: false,
+        }
+       
 
 .. csv-table:: omnia_config.yml
    :file: ../../../../Tables/scheduler_k8s_rhel.csv
@@ -61,15 +100,30 @@ Steps
    :header-rows: 1
    :keepspace:
 
+4. Run ansible-playbook ``service_k8s_cluster.yml``.
+
+
+5. Run ``build.image.yml`` playbook to build diskless images for cluster nodes. 
+
+6. Run ``discovery.yml`` playbook to discover the potential cluster nodes, configure the boot script, and cloud-init based on the functional groups.
+   After successfully running the ``discovery.yml`` playbook, you can either manually PXE boot the nodes or use the ``set_pxe_boot.yml`` playbook. PXE booting allows the nodes to load diskless images from the Omnia Infrastructure Manager (OIM). For detailed steps on using ``set_pxe_boot.yml``, see Set PXE Boot Order.
+
+
 Playbook execution
 ====================
 
 Once all the required input files are filled up, use the below commands to set up Kubernetes on the service cluster: ::
 
     cd scheduler
-    ansible-playbook service_k8s_cluster.yml - i <service_cluster_layout_file_path>
+    ansible-playbook service_k8s_cluster.yml - i <ivn>
 
-In the command above, ``<service_cluster_layout_file_path>`` refers to the inventory generated based on the ``cluster_name`` in ``/opt/omnia/omnia_inventory``. For more details, `click here <../../ViewInventory.html>`_.
+In the command above, ``<ivn>`` refers to the inventory, See the following sample:
+
+    ::
+        [Inventory]
+        10.5.0.201  
+        10.5.0.202 
+        10.5.0.203 
 
 Additional installations
 =========================
@@ -79,19 +133,13 @@ After deploying Kubernetes, you can install the following additional packages on
 1. **nfs-client-provisioner**
 
         * NFS subdir external provisioner is an automatic provisioner that use your existing and already configured external NFS server to support dynamic provisioning of Kubernetes Persistent Volumes via Persistent Volume Claims.
-        * The NFS server utilised here is the one mentioned during ``omnia_core`` container deployment using ``omnia_startup.sh`` script.
+        * The nfs_name mentioned in ``storage_config.yml`` should match the ``nfs_storage_name`` of the entries for the ``service_k8s_cluster``.
+   See the following sample:
         * Use the same NFS server IP provided during ``omnia_startup.sh`` execution. 
         * Path is mentioned in ``/omnia/k8s_pvc_data`` under ``{{ nfs_server_share_path }}``.
 
     Click `here <https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner>`_ for more information.
 
-2. **whereabouts-cni-plugin**
-
-    Whereabouts is an IP address management (IPAM) CNI plugin that assigns dynamic IP addresses cluster-wide in Kubernetes, ensuring no IP address collisions across nodes.
-    It uses a range of IPs and tracks assignments with backends like etcd or Kubernetes Custom Resources.
-    Omnia installs the whereabouts plugin as part of ``omnia.yml`` or ``scheduler.yml`` execution. The details of the plugin is present in the ``omnia/input/config/<cluster os>/<os version>/k8s.json`` file.
-
-    Click `here <https://github.com/k8snetworkplumbingwg/whereabouts>`_ for more information.
 
 3. **CSI-driver-for-PowerScale**
 

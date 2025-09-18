@@ -74,7 +74,7 @@ where {arch} can either be x86_64 or aarch64, or a combination of both.
 
 .. note::
 
-    * For a list of accepted ``softwares``, go to the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For a cluster running RHEL 9.6, go to ``/opt/omnia/input/project_default/config/rhel/9.6/`` and view the file list for accepted softwares.
+    * For a list of accepted ``softwares``, go to the ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>`` and view the list of JSON files available. The filenames present in this location are the list of accepted softwares. For a cluster running RHEL 10.0, go to ``/opt/omnia/input/project_default/config/rhel/9.6/`` and view the file list for accepted softwares.
     * Omnia supports a single version of any software packages in the ``software_config.json`` file. Ensure that multiple versions of the same package is not mentioned.
     * For software packages that do not have a pre-defined json file in ``/opt/omnia/input/project_default/config/<cluster_os_type>/<cluster_os_version>``, you need to create a ``custom.json`` file with the package details. For more information, `click here <../../AdvancedConfigurations/CustomLocalRepo.html>`_.
 
