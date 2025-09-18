@@ -4,7 +4,7 @@ Step 5:  Prepare the OIM
 The ``prepare_oim.yml`` playbook is used to prepare the Omnia Infrastructure Manager (OIM). The playbook performs the following on the OIM:
 
 * Sets up the OpenCHAMI containers.
-* Sets up the Kubespray container (if ``k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
+* Sets up the Kubespray container (if ``service_k8s`` entry is present in ``/opt/omnia/input/project_default/software_config.json``): ``omnia_kubespray_<version>``
 * Sets up the Pulp container: ``pulp``
 
 
@@ -55,13 +55,6 @@ Add necessary inputs to the ``provision_config.yml`` file for the provisioning o
    :file: ../../Tables/Provision_config.csv
    :header-rows: 1
    :keepspace:
-
-
-3. ``local_repo_config.yml``
--------------------------------
-
-Add pulp_protocol_https (type- Boolean): This enables a secure communication to the pulp server. By default,  is set to true, so it runs with HTTPS. 
-To connect to the pulp server using HTTPS, select true. To connect to the pulp server using HTTP, select false.
 
 
 Playbook execution

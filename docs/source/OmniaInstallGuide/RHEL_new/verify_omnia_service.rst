@@ -1,7 +1,7 @@
-Step 6: Verify the status of Omnia Core Container Service and associated services
-=================================================================================
+Step 6: Verify the status of Omnia container services
+======================================================
 
-After deploying the Omnia Core Container, you can verify that the Omnia core service and
+After successfully running the ``prepare.oim.yml``, you can verify if the omnia.target and
 its dependent services are running correctly.
 
 1. Run the following command to check the status of the OMNIA Core service:
@@ -57,7 +57,7 @@ View usage instructions for OpenCHAMI Containers
 The ``ochami --help`` command provides usage instructions for interacting with **OpenCHAMI services**.  
 The help menu lists the supported commands you can use for node discovery, provisioning, and service management.
 
-1. Access the OpenCHAMI container via Podman or SSH.
+1. Access the OpenCHAMI container via Podman.
 
 2. On the Omnia Infrastructure Manager (OIM), run the following command::
 
