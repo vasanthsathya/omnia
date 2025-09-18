@@ -42,6 +42,7 @@ Prerequisites
 * Ensure that the ``kube_control_planes`` has internet access and Git installed. If Git is not installed, use the following command to install it.
 
     ::
+
         dnf install git -y
 
 * The ``kube_control_planes`` has internet access to download necessary packages for cluster deployment and configuration.
@@ -117,13 +118,15 @@ Once all the required input files are filled up, use the below commands to set u
     cd scheduler
     ansible-playbook service_k8s_cluster.yml - i <ivn>
 
-In the command above, ``<ivn>`` refers to the inventory, See the following sample:
+In the command above, ``<ivn>`` refers to the inventory. See the following sample:
 
     ::
+
         [Inventory]
         10.5.0.201  
         10.5.0.202 
         10.5.0.203 
+
 
 Additional installations
 =========================
@@ -134,7 +137,6 @@ After deploying Kubernetes, you can install the following additional packages on
 
         * NFS subdir external provisioner is an automatic provisioner that use your existing and already configured external NFS server to support dynamic provisioning of Kubernetes Persistent Volumes via Persistent Volume Claims.
         * The nfs_name mentioned in ``storage_config.yml`` should match the ``nfs_storage_name`` of the entries for the ``service_k8s_cluster``.
-   See the following sample:
         * Use the same NFS server IP provided during ``omnia_startup.sh`` execution. 
         * Path is mentioned in ``/omnia/k8s_pvc_data`` under ``{{ nfs_server_share_path }}``.
 
