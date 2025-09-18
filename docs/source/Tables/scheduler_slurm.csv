@@ -24,3 +24,10 @@
 
 .. caution:: If any slurm jobs are running,  restarting ``slurmctld`` can cause failure of jobs. Set ``restart_slurm_services`` to ``false`` if jobs are running and restart manually the service after playbook execution.
 "
+"**cluster_name**
+
+    Mandatory",* Indicates the name of the cluster.
+"** nfs_storage_name **
+
+    Mandatory","* Indicates the NFS storage name for the NFS storage to be used by this slurm cluster.
+* This is defined in storage_config.yml."
